@@ -412,8 +412,8 @@
     <div class="deck-sub">Fill out the form below and we'll send you the deck directly.</div>
 
     <form id="deck-form" style="display:flex;flex-direction:column;">
-      <!-- Honeypot: leave empty (FormSubmit spam filter) -->
-      <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;">
+      <!-- Honeypot: leave empty (FormSubmit uses _honey) -->
+      <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;">
       <div class="ct-field" id="dk-field-name">
         <label class="ct-label" for="dk-name">Name *</label>
         <input type="text" id="dk-name" name="name" required autocomplete="off">
@@ -495,9 +495,14 @@
     if (e.key === 'Escape') closeDeckModal();
   });
 
-  /* Delivered to inquiries@xyzstudios.co via FormSubmit (activate inbox on first use). */
+  /*
+   * Capabilities requests → inquiries@xyzstudios.co
+   * Recommended: paste a free key from https://web3forms.com (set notification email to inquiries@ when creating the key).
+   * Fallback: FormSubmit — you must activate the inbox via FormSubmit’s first email, and AJAX needs _captcha disabled.
+   */
+  var WEB3FORMS_ACCESS_KEY = '';
   var DECK_NOTIFY_EMAIL = 'inquiries@xyzstudios.co';
-  var DECK_SUBMIT_URL = 'https://formsubmit.co/ajax/' + encodeURIComponent(DECK_NOTIFY_EMAIL);
+  var FORMSUBMIT_AJAX_URL = 'https://formsubmit.co/ajax/' + encodeURIComponent(DECK_NOTIFY_EMAIL);
 
   document.getElementById('deck-form').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -511,37 +516,75 @@
     var email = (payload.email || '').trim();
     var role = (payload.role || '').trim();
 
-    payload._subject = 'WEBSITE: Capabilities deck request';
-    payload._replyto = email;
-    payload._template = 'table';
-    payload.message =
+    var messageBody =
       'New capabilities deck request (submitted via xyzstudios.co contact)\r\n\r\n' +
       'Name: ' + name + '\r\n' +
       'Company: ' + company + '\r\n' +
       'Email: ' + email + '\r\n' +
       'Role / Title: ' + (role || '—');
 
+    payload._subject = 'WEBSITE: Capabilities deck request';
+    payload._replyto = email;
+    payload._template = 'table';
+    payload._captcha = false;
+    payload.message = messageBody;
+
     var btn = form.querySelector('button[type="submit"]');
     if (btn) { btn.disabled = true; btn.style.opacity = '0.5'; }
 
-    fetch(DECK_SUBMIT_URL, {
+    function showSuccess() {
+      document.getElementById('deck-form').style.display = 'none';
+      document.getElementById('deck-success').classList.add('visible');
+    }
+    function showErr(msg) {
+      alert(msg || 'Could not send your request. Please email ' + DECK_NOTIFY_EMAIL + ' directly.');
+    }
+
+    function finish() {
+      if (btn) { btn.disabled = false; btn.style.opacity = ''; }
+    }
+
+    if (WEB3FORMS_ACCESS_KEY) {
+      fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
+          subject: 'WEBSITE: Capabilities deck request',
+          name: name,
+          email: email,
+          from_name: name || 'Capabilities request',
+          message: messageBody,
+          company: company,
+          role: role
+        })
+      })
+        .then(function(res) { return res.json().catch(function() { return {}; }); })
+        .then(function(data) {
+          if (data.success === true || data.success === 'true') showSuccess();
+          else showErr(data.message);
+        })
+        .catch(function() { showErr(); })
+        .finally(finish);
+      return;
+    }
+
+    fetch(FORMSUBMIT_AJAX_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify(payload)
     })
       .then(function(res) {
-        if (!res.ok) throw new Error('submit failed');
+        return res.json().catch(function() { return {}; })        .then(function(data) {
+          if (!res.ok) throw new Error(data.error || data.message || 'HTTP ' + res.status);
+          if (data.success === false || data.success === 'false') {
+            throw new Error(data.message || 'FormSubmit rejected the submission (confirm inbox at formsubmit.co or use Web3Forms key)');
+          }
+        });
       })
-      .then(function() {
-        document.getElementById('deck-form').style.display = 'none';
-        document.getElementById('deck-success').classList.add('visible');
-      })
-      .catch(function() {
-        alert('Could not send your request. Please email inquiries@xyzstudios.co directly.');
-      })
-      .finally(function() {
-        if (btn) { btn.disabled = false; btn.style.opacity = ''; }
-      });
+      .then(showSuccess)
+      .catch(function(err) { showErr(err.message); })
+      .finally(finish);
   });
 
   // Float labels for modal fields
