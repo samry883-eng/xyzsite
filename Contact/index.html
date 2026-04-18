@@ -511,7 +511,7 @@
     var email = (payload.email || '').trim();
     var role = (payload.role || '').trim();
 
-    payload._subject = 'Capabilities deck request — ' + (name || email || 'XYZ site');
+    payload._subject = 'WEBSITE: Capabilities deck request';
     payload._replyto = email;
     payload._template = 'table';
     payload.message =
