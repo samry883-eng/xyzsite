@@ -209,8 +209,13 @@
       background: none; border: none; color: rgba(255,255,255,0.25);
       font-size: 22px; cursor: pointer; line-height: 1; padding: 4px;
       transition: color 0.2s;
+      outline: none;
     }
     .deck-close:hover { color: #fff; }
+    .deck-close:focus-visible {
+      outline: 2px solid rgba(255,255,255,0.35);
+      outline-offset: 2px;
+    }
     .deck-eyebrow {
       font: 400 8px/1 Micross, Arial, sans-serif;
       letter-spacing: 0.22em; text-transform: uppercase;
@@ -439,6 +444,9 @@
     var backdrop = document.getElementById('deck-backdrop');
     var panel = document.getElementById('deck-panel');
     modal.style.display = 'block';
+    modal.style.pointerEvents = 'auto';
+    backdrop.style.pointerEvents = 'auto';
+    panel.style.pointerEvents = 'auto';
     document.body.style.overflow = 'hidden';
     requestAnimationFrame(function() {
       backdrop.style.opacity = '1';
@@ -446,14 +454,37 @@
     });
   }
 
+  function resetDeckModal() {
+    var form = document.getElementById('deck-form');
+    var success = document.getElementById('deck-success');
+    if (form) {
+      form.style.display = 'flex';
+      form.reset();
+    }
+    if (success) success.classList.remove('visible');
+    ['dk-name','dk-company','dk-email','dk-role'].forEach(function(id) {
+      var input = document.getElementById(id);
+      if (!input) return;
+      var field = input.closest('.ct-field');
+      if (field) field.classList.toggle('filled', false);
+    });
+  }
+
   function closeDeckModal() {
+    var modal = document.getElementById('deck-modal');
+    if (!modal || window.getComputedStyle(modal).display === 'none') return;
     var backdrop = document.getElementById('deck-backdrop');
     var panel = document.getElementById('deck-panel');
+    /* Drop invisible hit targets immediately so the page is usable during the close animation */
+    modal.style.pointerEvents = 'none';
+    backdrop.style.pointerEvents = 'none';
+    panel.style.pointerEvents = 'none';
     backdrop.style.opacity = '0';
     panel.classList.remove('open');
     setTimeout(function() {
-      document.getElementById('deck-modal').style.display = 'none';
+      modal.style.display = 'none';
       document.body.style.overflow = '';
+      resetDeckModal();
     }, 600);
   }
 
