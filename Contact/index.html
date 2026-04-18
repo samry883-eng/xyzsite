@@ -495,9 +495,9 @@
     if (e.key === 'Escape') closeDeckModal();
   });
 
-  /* Capabilities requests: emailed via FormSubmit → inquiries@xyzstudios.co
-     First submission: FormSubmit sends that inbox a one-time activation link (check spam). */
-  var DECK_SUBMIT_URL = 'https://formsubmit.co/ajax/inquiries@xyzstudios.co';
+  /* Delivered to inquiries@xyzstudios.co via FormSubmit (activate inbox on first use). */
+  var DECK_NOTIFY_EMAIL = 'inquiries@xyzstudios.co';
+  var DECK_SUBMIT_URL = 'https://formsubmit.co/ajax/' + encodeURIComponent(DECK_NOTIFY_EMAIL);
 
   document.getElementById('deck-form').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -505,8 +505,21 @@
     var data = new FormData(form);
     var payload = {};
     data.forEach(function(v, k) { payload[k] = v; });
-    payload._subject = 'Capabilities deck request — XYZ Studios';
+
+    var name = (payload.name || '').trim();
+    var company = (payload.company || '').trim();
+    var email = (payload.email || '').trim();
+    var role = (payload.role || '').trim();
+
+    payload._subject = 'Capabilities deck request — ' + (name || email || 'XYZ site');
+    payload._replyto = email;
     payload._template = 'table';
+    payload.message =
+      'New capabilities deck request (submitted via xyzstudios.co contact)\r\n\r\n' +
+      'Name: ' + name + '\r\n' +
+      'Company: ' + company + '\r\n' +
+      'Email: ' + email + '\r\n' +
+      'Role / Title: ' + (role || '—');
 
     var btn = form.querySelector('button[type="submit"]');
     if (btn) { btn.disabled = true; btn.style.opacity = '0.5'; }
