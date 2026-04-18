@@ -706,6 +706,20 @@
     });
     setTimeout(() => { window.location.href = dest; }, 540);
   }
+
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('nav a[href]');
+    if (!a) return;
+    const href = a.getAttribute('href');
+    if (!href || href.charAt(0) === '#') return;
+    if (/mailto:|tel:/i.test(href)) return;
+    let u;
+    try { u = new URL(href, location.href); } catch (x) { return; }
+    if (u.origin !== location.origin) return;
+    if (u.pathname === location.pathname && !u.search) return;
+    e.preventDefault();
+    navigateTo(u.pathname + u.search + u.hash);
+  }, true);
 </script>
 </body>
 </html>
