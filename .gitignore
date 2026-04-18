@@ -1,6 +1,9 @@
 # Local screen recordings / scratch
 Recording*.mp4
 
+# Exceeds GitHub 100MB limit — keep locally only
+Work/making-of/gold-cup/breakdown 1.mp4
+
 dist/
 
 node_modules/
