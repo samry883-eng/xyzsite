@@ -1,6 +1,8 @@
 # Local screen recordings / scratch
 Recording*.mp4
 
+dist/
+
 node_modules/
 temporary screenshots/
 Capabilities/screenshots/
