@@ -151,16 +151,10 @@
     }
     .work-row-cards::-webkit-scrollbar { display: none; }
 
-    /* ── ROW HEADER REVEAL ──────────────────────────────── */
+    /* ── ROW HEADER (no load-in animation) ──────────────── */
     .work-row-header {
-      opacity: 0;
-      transform: translateY(14px);
-      transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-                  transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .work-row-header.revealed {
       opacity: 1;
-      transform: translateY(0);
+      transform: none;
     }
 
     /* ── CARD WRAP — height from row strip; width = 16:9 of thumb area ─ */
@@ -172,14 +166,8 @@
       display: flex;
       flex-direction: column;
       cursor: pointer;
-      opacity: 0;
-      transform: translateY(28px);
-      transition: opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1),
-                  transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .work-card-wrap.revealed {
       opacity: 1;
-      transform: translateY(0);
+      transform: none;
     }
 
     /* ── CARD HEADER ── */
@@ -642,33 +630,6 @@
       tilt.style.boxShadow  = '';
     });
   });
-
-  // ── CARD REVEAL ──────────────────────────────────────────────
-  function startCardReveal() {
-    // baseDelay: wait for the loader slide-out to fully finish (700ms)
-    const BASE = 700;
-    document.querySelectorAll('.work-row').forEach((row, rowIdx) => {
-      const header   = row.querySelector('.work-row-header');
-      const rowCards = row.querySelector('.work-row-cards');
-      if (!rowCards) return;
-
-      // Row header staggers in first, before its cards
-      const headerDelay = BASE + rowIdx * 260;
-      if (header) setTimeout(() => header.classList.add('revealed'), headerDelay);
-
-      // Cards stagger in after their row header
-      rowCards.querySelectorAll('.work-card-wrap:not([data-clone])').forEach((wrap, cardIdx) => {
-        const delay = headerDelay + 80 + cardIdx * 110;
-        setTimeout(() => wrap.classList.add('revealed'), delay);
-      });
-    });
-  }
-
-  if (document.getElementById('xyz-wl')) {
-    document.addEventListener('xyz-exiting', startCardReveal, { once: true });
-  } else {
-    startCardReveal();
-  }
 
   // ── TOP FADE (no vertical scroll on work grid; stays hidden) ─
   const fadeTop = document.querySelector('.work-fade-top');

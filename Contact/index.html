@@ -180,34 +180,44 @@
     }
     .ct-submit:hover { color: #fff; }
 
-    /* ── TOAST (replaces browser alert font) ── */
-    #xyz-toast {
-      position: fixed;
-      left: 50%;
-      bottom: 34px;
-      transform: translate(-50%, 10px);
-      z-index: 20050;
-      max-width: min(520px, calc(100vw - 96px));
-      padding: 12px 14px;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.10);
-      background: rgba(10,10,10,0.92);
-      color: rgba(255,255,255,0.86);
-      font: 400 11px/1.6 Micross, Arial, sans-serif;
-      letter-spacing: 0.02em;
+    /* ── CONTACT FORM → SUCCESS (in-column fade) ── */
+    .ct-form-stage {
+      position: relative;
+      width: 100%;
+    }
+    #ct-form-wrap {
+      transition: opacity 0.55s ease;
+    }
+    #ct-form-wrap.is-sent {
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.25s ease, transform 0.25s ease;
-      display: none;
     }
-    #xyz-toast.visible {
-      display: block;
+    #ct-form-success {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.55s ease 0.08s, visibility 0s linear 0.63s;
+    }
+    #ct-form-success.is-visible {
       opacity: 1;
-      transform: translate(-50%, 0);
+      visibility: visible;
+      pointer-events: auto;
+      transition: opacity 0.55s ease 0.08s, visibility 0s linear 0s;
     }
-    #xyz-toast.error {
-      border-color: rgba(255,255,255,0.18);
-      color: rgba(255,255,255,0.92);
+    .ct-success-title {
+      font: 400 24px/1.2 Micross, Arial, sans-serif;
+      letter-spacing: -0.01em;
+      color: #fff;
+      margin-bottom: 14px;
+    }
+    .ct-success-body {
+      font: 400 11px/1.7 Micross, Arial, sans-serif;
+      color: rgba(255,255,255,0.32);
+      max-width: 36em;
     }
 
     /* ── CAPABILITIES MODAL ── */
@@ -232,10 +242,13 @@
       transform: translateX(100%);
       transition: transform 0.58s cubic-bezier(0.16,1,0.3,1);
       overflow-y: auto;
+      /* stacking context for absolutely centered success state */
+      isolation: isolate;
     }
     #deck-panel.open { transform: translateX(0); }
     .deck-close {
       position: absolute; top: 28px; right: 28px;
+      z-index: 4;
       background: none; border: none; color: rgba(255,255,255,0.25);
       font-size: 22px; cursor: pointer; line-height: 1; padding: 4px;
       transition: color 0.2s;
@@ -259,17 +272,35 @@
       font: 400 11px/1.65 Micross, Arial, sans-serif;
       color: rgba(255,255,255,0.3); margin-bottom: 44px;
     }
-    #deck-success {
-      display: none; flex-direction: column; justify-content: center; flex: 1;
+    /* Success: fill drawer and center copy for any viewport */
+    #deck-panel.deck-success-on .deck-eyebrow,
+    #deck-panel.deck-success-on .deck-title,
+    #deck-panel.deck-success-on .deck-sub {
+      display: none;
     }
-    #deck-success.visible { display: flex; }
+    #deck-success {
+      display: none;
+    }
+    #deck-success.visible {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      box-sizing: border-box;
+      text-align: center;
+    }
     .deck-success-title {
-      font: 400 24px/1.2 Micross, Arial, sans-serif;
+      font: 400 clamp(20px, 2.8vmin, 24px)/1.2 Micross, Arial, sans-serif;
       letter-spacing: -0.01em; color: #fff; margin-bottom: 14px;
+      max-width: min(22em, 100%);
     }
     .deck-success-body {
-      font: 400 11px/1.7 Micross, Arial, sans-serif;
+      font: 400 clamp(10px, 2.2vmin, 11px)/1.7 Micross, Arial, sans-serif;
       color: rgba(255,255,255,0.32);
+      max-width: min(32em, 100%);
     }
 
     /* ── STAGGER ANIMATION ── */
@@ -366,9 +397,10 @@
           </div>
         </div>
         <div class="ct-section">
-          <div class="anim-wrap"><div class="ct-section-label anim-item soft" id="an-s4">Work With Us</div></div>
+          <div class="anim-wrap"><div class="ct-section-label anim-item soft" id="an-s4">Join Us!</div></div>
           <div class="ct-section-links">
             <div class="anim-wrap"><a href="mailto:careers@xyzstudios.co" class="anim-item soft" id="an-s5">careers@xyzstudios.co</a></div>
+            <div class="anim-wrap"><span class="anim-item soft" id="an-s6">Artists interested in working with us can submit their portfolio and a brief introduction for future collaboration opportunities.</span></div>
           </div>
         </div>
       </div>
@@ -377,26 +409,35 @@
 
     <!-- RIGHT COLUMN: form -->
     <div class="ct-right">
-      <form id="ct-form" action="https://api.web3forms.com/submit" method="POST">
-        <input type="hidden" name="access_key" value="f77d3594-3449-447d-8e43-483375d675cd">
-        <div class="anim-wrap"><div class="ct-field anim-item soft" id="an-f1">
-          <label class="ct-label" for="f-name">Name *</label>
-          <input type="text" name="name" id="f-name" autocomplete="name">
-        </div></div>
-        <div class="anim-wrap"><div class="ct-field anim-item soft" id="an-f2">
-          <label class="ct-label" for="f-email">Email *</label>
-          <input type="email" name="email" id="f-email" autocomplete="email">
-        </div></div>
-        <div class="anim-wrap"><div class="ct-field anim-item soft" id="an-f3">
-          <label class="ct-label" for="f-company">Company *</label>
-          <input type="text" name="company" id="f-company" autocomplete="organization">
-        </div></div>
-        <div class="anim-wrap"><div class="ct-field anim-item soft" id="an-f4">
-          <label class="ct-label" for="f-message">Tell us about your project *</label>
-          <textarea name="message" id="f-message"></textarea>
-        </div></div>
-        <div class="anim-wrap"><button type="submit" class="ct-submit anim-item soft" id="an-f5">Submit &rarr;</button></div>
-      </form>
+      <div class="ct-form-stage">
+        <div id="ct-form-wrap">
+          <form id="ct-form" action="https://api.web3forms.com/submit" method="POST">
+            <input type="hidden" name="access_key" value="f77d3594-3449-447d-8e43-483375d675cd">
+            <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;">
+            <div class="anim-wrap"><div class="ct-field anim-item soft" id="an-f1">
+              <label class="ct-label" for="f-name">Name *</label>
+              <input type="text" name="name" id="f-name" autocomplete="name">
+            </div></div>
+            <div class="anim-wrap"><div class="ct-field anim-item soft" id="an-f2">
+              <label class="ct-label" for="f-email">Email *</label>
+              <input type="email" name="email" id="f-email" autocomplete="email">
+            </div></div>
+            <div class="anim-wrap"><div class="ct-field anim-item soft" id="an-f3">
+              <label class="ct-label" for="f-company">Company *</label>
+              <input type="text" name="company" id="f-company" autocomplete="organization">
+            </div></div>
+            <div class="anim-wrap"><div class="ct-field anim-item soft" id="an-f4">
+              <label class="ct-label" for="f-message">Tell us about your project *</label>
+              <textarea name="message" id="f-message"></textarea>
+            </div></div>
+            <div class="anim-wrap"><button type="submit" class="ct-submit anim-item soft" id="an-f5">Submit &rarr;</button></div>
+          </form>
+        </div>
+        <div id="ct-form-success" role="status" aria-live="polite" aria-hidden="true">
+          <div class="ct-success-title">Thank you.</div>
+          <div class="ct-success-body">We’ve received your message and will respond shortly.</div>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -444,8 +485,8 @@
 
     <form id="deck-form" style="display:flex;flex-direction:column;">
       <input type="hidden" name="access_key" value="d8aee030-0698-4909-8496-a1b61cb4a567">
-      <!-- Honeypot: leave empty (FormSubmit uses _honey) -->
-      <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;">
+      <!-- Web3Forms honeypot: must stay unchecked (bots tick it). Sent as botcheck:false in fetch JSON. -->
+      <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;">
       <div class="ct-field" id="dk-field-name">
         <label class="ct-label" for="dk-name">Name *</label>
         <input type="text" id="dk-name" name="name" required autocomplete="name">
@@ -466,30 +507,14 @@
     </form>
 
     <div id="deck-success">
-      <div class="deck-success-title">Thank you.</div>
-      <div class="deck-success-body">We’ve received your request and will send the capabilities deck shortly.</div>
+      <div class="deck-success-title">Request received.</div>
+      <div class="deck-success-body">We'll review your information and send the capabilities deck to your email shortly.</div>
     </div>
   </div>
 </div>
 
 <script>
   // ── CAPABILITIES MODAL ─────────────────────────────────
-  (function () {
-    var t;
-    window.xyzToast = function (msg, isError) {
-      var el = document.getElementById('xyz-toast');
-      if (!el) {
-        el = document.createElement('div');
-        el.id = 'xyz-toast';
-        document.body.appendChild(el);
-      }
-      el.className = isError ? 'visible error' : 'visible';
-      el.textContent = msg || '';
-      clearTimeout(t);
-      t = setTimeout(function () { el.classList.remove('visible'); }, 2800);
-    };
-  })();
-
   function openDeckModal() {
     var modal = document.getElementById('deck-modal');
     var backdrop = document.getElementById('deck-backdrop');
@@ -508,11 +533,13 @@
   function resetDeckModal() {
     var form = document.getElementById('deck-form');
     var success = document.getElementById('deck-success');
+    var panel = document.getElementById('deck-panel');
     if (form) {
       form.style.display = 'flex';
       form.reset();
     }
     if (success) success.classList.remove('visible');
+    if (panel) panel.classList.remove('deck-success-on');
     ['dk-name','dk-company','dk-email','dk-role'].forEach(function(id) {
       var input = document.getElementById(id);
       if (!input) return;
@@ -573,28 +600,48 @@
       var btn = form.querySelector('button[type="submit"]');
       if (btn) { btn.disabled = true; btn.style.opacity = '0.5'; }
 
+      /* Web3Forms: build JSON from FormData so hidden botcheck is omitted when unchecked (their spam signal). */
+      var wf = {};
+      data.forEach(function (v, k) { wf[k] = v; });
+      wf.subject = 'WEBSITE: Contact form';
+      wf.message = messageBody;
+      wf.from_name = name || 'Website contact';
+      wf.replyto = email;
+
       fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({
-          access_key: CONTACT_WEB3FORMS_ACCESS_KEY,
-          subject: 'WEBSITE: Contact form',
-          name: name,
-          email: email,
-          from_name: name || 'Website contact',
-          message: messageBody,
-          company: company
-        })
+        body: JSON.stringify(wf)
       })
         .then(function (res) { return res.json().catch(function () { return {}; }); })
         .then(function (resp) {
           if (!(resp.success === true || resp.success === 'true')) throw new Error((resp.body && resp.body.message) || resp.message || 'Send failed');
           form.reset();
           form.querySelectorAll('.ct-field').forEach(function (f) { f.classList.remove('filled'); });
-          window.xyzToast('Thank you — we’ve received your message. We’ll respond shortly.');
+          var wrap = document.getElementById('ct-form-wrap');
+          var successEl = document.getElementById('ct-form-success');
+          if (wrap && successEl) {
+            var thanksShown = false;
+            function showThanks() {
+              if (thanksShown) return;
+              thanksShown = true;
+              successEl.classList.add('is-visible');
+              successEl.setAttribute('aria-hidden', 'false');
+            }
+            function onFadeOut(ev) {
+              if (ev.target !== wrap || ev.propertyName !== 'opacity') return;
+              wrap.removeEventListener('transitionend', onFadeOut);
+              showThanks();
+            }
+            wrap.addEventListener('transitionend', onFadeOut);
+            wrap.classList.add('is-sent');
+            setTimeout(showThanks, 900);
+          } else {
+            alert('Sent. We’ll get back to you shortly.');
+          }
         })
         .catch(function () {
-          window.xyzToast('Could not send. Please email inquiries@xyzstudios.co directly.', true);
+          alert('Could not send. Please email inquiries@xyzstudios.co directly.');
         })
         .finally(function () {
           if (btn) { btn.disabled = false; btn.style.opacity = ''; }
@@ -633,9 +680,11 @@
     function showSuccess() {
       document.getElementById('deck-form').style.display = 'none';
       document.getElementById('deck-success').classList.add('visible');
+      var panel = document.getElementById('deck-panel');
+      if (panel) panel.classList.add('deck-success-on');
     }
     function showErr(msg) {
-      window.xyzToast(msg || ('Could not send your request. Please email ' + DECK_NOTIFY_EMAIL + ' directly.'), true);
+      alert(msg || ('Could not send your request. Please email ' + DECK_NOTIFY_EMAIL + ' directly.'));
     }
 
     function finish() {
@@ -643,19 +692,17 @@
     }
 
     if (DECK_WEB3FORMS_ACCESS_KEY) {
+      var wf = {};
+      data.forEach(function (v, k) { wf[k] = v; });
+      wf.subject = 'WEBSITE: Capabilities deck request';
+      wf.message = messageBody;
+      wf.from_name = name || 'Capabilities request';
+      wf.replyto = email;
+
       fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({
-          access_key: DECK_WEB3FORMS_ACCESS_KEY,
-          subject: 'WEBSITE: Capabilities deck request',
-          name: name,
-          email: email,
-          from_name: name || 'Capabilities request',
-          message: messageBody,
-          company: company,
-          role: role
-        })
+        body: JSON.stringify(wf)
       })
         .then(function(res) { return res.json().catch(function() { return {}; }); })
         .then(function(data) {
@@ -666,6 +713,8 @@
         .finally(finish);
       return;
     }
+
+    if (!payload._honey) payload._honey = '';
 
     fetch(FORMSUBMIT_AJAX_URL, {
       method: 'POST',
