@@ -183,21 +183,19 @@
     /* ── TOAST (replaces browser alert font) ── */
     #xyz-toast {
       position: fixed;
-      left: 48px;
-      bottom: 36px;
+      left: 50%;
+      bottom: 34px;
+      transform: translate(-50%, 10px);
       z-index: 20050;
       max-width: min(520px, calc(100vw - 96px));
       padding: 12px 14px;
       border-radius: 10px;
       border: 1px solid rgba(255,255,255,0.10);
-      background: rgba(10,10,10,0.72);
-      -webkit-backdrop-filter: blur(18px);
-      backdrop-filter: blur(18px);
+      background: rgba(10,10,10,0.92);
       color: rgba(255,255,255,0.86);
       font: 400 11px/1.6 Micross, Arial, sans-serif;
       letter-spacing: 0.02em;
       opacity: 0;
-      transform: translateY(10px);
       pointer-events: none;
       transition: opacity 0.25s ease, transform 0.25s ease;
       display: none;
@@ -205,7 +203,7 @@
     #xyz-toast.visible {
       display: block;
       opacity: 1;
-      transform: translateY(0);
+      transform: translate(-50%, 0);
     }
     #xyz-toast.error {
       border-color: rgba(255,255,255,0.18);
@@ -468,8 +466,8 @@
     </form>
 
     <div id="deck-success">
-      <div class="deck-success-title">Request received.</div>
-      <div class="deck-success-body">We'll review your information and send the capabilities deck to your email shortly.</div>
+      <div class="deck-success-title">Thank you.</div>
+      <div class="deck-success-body">We’ve received your request and will send the capabilities deck shortly.</div>
     </div>
   </div>
 </div>
@@ -593,7 +591,7 @@
           if (!(resp.success === true || resp.success === 'true')) throw new Error((resp.body && resp.body.message) || resp.message || 'Send failed');
           form.reset();
           form.querySelectorAll('.ct-field').forEach(function (f) { f.classList.remove('filled'); });
-          window.xyzToast('Sent. We’ll get back to you shortly.');
+          window.xyzToast('Thank you — we’ve received your message. We’ll respond shortly.');
         })
         .catch(function () {
           window.xyzToast('Could not send. Please email inquiries@xyzstudios.co directly.', true);
