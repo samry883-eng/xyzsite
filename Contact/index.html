@@ -412,6 +412,8 @@
     <div class="deck-sub">Fill out the form below and we'll send you the deck directly.</div>
 
     <form id="deck-form" style="display:flex;flex-direction:column;">
+      <!-- Honeypot: leave empty (FormSubmit spam filter) -->
+      <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;">
       <div class="ct-field" id="dk-field-name">
         <label class="ct-label" for="dk-name">Name *</label>
         <input type="text" id="dk-name" name="name" required autocomplete="off">
@@ -493,17 +495,40 @@
     if (e.key === 'Escape') closeDeckModal();
   });
 
+  /* Capabilities requests: emailed via FormSubmit → inquiries@xyzstudios.co
+     First submission: FormSubmit sends that inbox a one-time activation link (check spam). */
+  var DECK_SUBMIT_URL = 'https://formsubmit.co/ajax/inquiries@xyzstudios.co';
+
   document.getElementById('deck-form').addEventListener('submit', function(e) {
     e.preventDefault();
-    var data = new FormData(this);
-    // Replace YOUR_FORM_ID with your Formspree form ID (formspree.io)
-    fetch('https://formspree.io/f/YOUR_FORM_ID', {
-      method: 'POST', body: data,
-      headers: { 'Accept': 'application/json' }
-    }).finally(function() {
-      document.getElementById('deck-form').style.display = 'none';
-      document.getElementById('deck-success').classList.add('visible');
-    });
+    var form = this;
+    var data = new FormData(form);
+    var payload = {};
+    data.forEach(function(v, k) { payload[k] = v; });
+    payload._subject = 'Capabilities deck request — XYZ Studios';
+    payload._template = 'table';
+
+    var btn = form.querySelector('button[type="submit"]');
+    if (btn) { btn.disabled = true; btn.style.opacity = '0.5'; }
+
+    fetch(DECK_SUBMIT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+      .then(function(res) {
+        if (!res.ok) throw new Error('submit failed');
+      })
+      .then(function() {
+        document.getElementById('deck-form').style.display = 'none';
+        document.getElementById('deck-success').classList.add('visible');
+      })
+      .catch(function() {
+        alert('Could not send your request. Please email inquiries@xyzstudios.co directly.');
+      })
+      .finally(function() {
+        if (btn) { btn.disabled = false; btn.style.opacity = ''; }
+      });
   });
 
   // Float labels for modal fields
