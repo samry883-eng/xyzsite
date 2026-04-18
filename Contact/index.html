@@ -347,18 +347,18 @@
 
     <!-- RIGHT COLUMN: form -->
     <div class="ct-right">
-      <form id="ct-form" action="mailto:inquiries@xyzstudios.co" method="post" enctype="text/plain">
+      <form id="ct-form" action="https://api.web3forms.com/submit" method="POST">
         <div class="anim-wrap"><div class="ct-field anim-item soft" id="an-f1">
           <label class="ct-label" for="f-name">Name *</label>
-          <input type="text" name="name" id="f-name" autocomplete="off">
+          <input type="text" name="name" id="f-name" autocomplete="name">
         </div></div>
         <div class="anim-wrap"><div class="ct-field anim-item soft" id="an-f2">
           <label class="ct-label" for="f-email">Email *</label>
-          <input type="email" name="email" id="f-email" autocomplete="off">
+          <input type="email" name="email" id="f-email" autocomplete="email">
         </div></div>
         <div class="anim-wrap"><div class="ct-field anim-item soft" id="an-f3">
           <label class="ct-label" for="f-company">Company *</label>
-          <input type="text" name="company" id="f-company" autocomplete="off">
+          <input type="text" name="company" id="f-company" autocomplete="organization">
         </div></div>
         <div class="anim-wrap"><div class="ct-field anim-item soft" id="an-f4">
           <label class="ct-label" for="f-message">Tell us about your project *</label>
@@ -416,19 +416,19 @@
       <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;">
       <div class="ct-field" id="dk-field-name">
         <label class="ct-label" for="dk-name">Name *</label>
-        <input type="text" id="dk-name" name="name" required autocomplete="off">
+        <input type="text" id="dk-name" name="name" required autocomplete="name">
       </div>
       <div class="ct-field" id="dk-field-company">
         <label class="ct-label" for="dk-company">Company *</label>
-        <input type="text" id="dk-company" name="company" required autocomplete="off">
+        <input type="text" id="dk-company" name="company" required autocomplete="organization">
       </div>
       <div class="ct-field" id="dk-field-email">
         <label class="ct-label" for="dk-email">Email *</label>
-        <input type="email" id="dk-email" name="email" required autocomplete="off">
+        <input type="email" id="dk-email" name="email" required autocomplete="email">
       </div>
       <div class="ct-field" id="dk-field-role" style="margin-bottom:44px;">
         <label class="ct-label" for="dk-role">Role / Title</label>
-        <input type="text" id="dk-role" name="role" autocomplete="off">
+        <input type="text" id="dk-role" name="role" autocomplete="organization-title">
       </div>
       <button type="submit" class="ct-submit">Submit &rarr;</button>
     </form>
