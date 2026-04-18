@@ -180,6 +180,38 @@
     }
     .ct-submit:hover { color: #fff; }
 
+    /* ── TOAST (replaces browser alert font) ── */
+    #xyz-toast {
+      position: fixed;
+      left: 48px;
+      bottom: 36px;
+      z-index: 20050;
+      max-width: min(520px, calc(100vw - 96px));
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(10,10,10,0.72);
+      -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: blur(18px);
+      color: rgba(255,255,255,0.86);
+      font: 400 11px/1.6 Micross, Arial, sans-serif;
+      letter-spacing: 0.02em;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      display: none;
+    }
+    #xyz-toast.visible {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    #xyz-toast.error {
+      border-color: rgba(255,255,255,0.18);
+      color: rgba(255,255,255,0.92);
+    }
+
     /* ── CAPABILITIES MODAL ── */
     #deck-modal {
       display: none;
@@ -444,6 +476,22 @@
 
 <script>
   // ── CAPABILITIES MODAL ─────────────────────────────────
+  (function () {
+    var t;
+    window.xyzToast = function (msg, isError) {
+      var el = document.getElementById('xyz-toast');
+      if (!el) {
+        el = document.createElement('div');
+        el.id = 'xyz-toast';
+        document.body.appendChild(el);
+      }
+      el.className = isError ? 'visible error' : 'visible';
+      el.textContent = msg || '';
+      clearTimeout(t);
+      t = setTimeout(function () { el.classList.remove('visible'); }, 2800);
+    };
+  })();
+
   function openDeckModal() {
     var modal = document.getElementById('deck-modal');
     var backdrop = document.getElementById('deck-backdrop');
@@ -545,10 +593,10 @@
           if (!(resp.success === true || resp.success === 'true')) throw new Error((resp.body && resp.body.message) || resp.message || 'Send failed');
           form.reset();
           form.querySelectorAll('.ct-field').forEach(function (f) { f.classList.remove('filled'); });
-          alert('Sent. We’ll get back to you shortly.');
+          window.xyzToast('Sent. We’ll get back to you shortly.');
         })
         .catch(function () {
-          alert('Could not send. Please email inquiries@xyzstudios.co directly.');
+          window.xyzToast('Could not send. Please email inquiries@xyzstudios.co directly.', true);
         })
         .finally(function () {
           if (btn) { btn.disabled = false; btn.style.opacity = ''; }
@@ -589,7 +637,7 @@
       document.getElementById('deck-success').classList.add('visible');
     }
     function showErr(msg) {
-      alert(msg || 'Could not send your request. Please email ' + DECK_NOTIFY_EMAIL + ' directly.');
+      window.xyzToast(msg || ('Could not send your request. Please email ' + DECK_NOTIFY_EMAIL + ' directly.'), true);
     }
 
     function finish() {
