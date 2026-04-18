@@ -496,9 +496,12 @@
   });
 
   /*
-   * Capabilities requests → inquiries@xyzstudios.co only (no auto-email to the person who filled the form).
-   * Web3Forms: optional access key — turn off “autoresponder” in the Web3Forms dashboard if you don’t want visitor copy (off by default).
-   * FormSubmit fallback: one-time setup link is emailed to inquiries@ only (not to visitors); _autoresponse is not used.
+   * WHY TEST EMAILS MIGHT NOT SHOW UP AT inquiries@:
+   * - WEB3FORMS_ACCESS_KEY is empty, so the site uses a free “FormSubmit” fallback. FormSubmit often requires a ONE-TIME
+   *   activation link (sent TO inquiries@, not to the person who filled the form). Until that’s done, mail may not arrive.
+   *   Also check spam for “formsubmit”.
+   * - Reliable fix: get a free key at https://web3forms.com — use inquiries@ as the address that receives submissions,
+   *   paste the key into WEB3FORMS_ACCESS_KEY below, deploy. (Visitors are not asked to “confirm email” for the deck form.)
    */
   var WEB3FORMS_ACCESS_KEY = '';
   var DECK_NOTIFY_EMAIL = 'inquiries@xyzstudios.co';
