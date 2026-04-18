@@ -496,9 +496,9 @@
   });
 
   /*
-   * Capabilities requests → inquiries@xyzstudios.co
-   * Recommended: paste a free key from https://web3forms.com (set notification email to inquiries@xyzstudios.co when creating the key).
-   * Fallback: FormSubmit — you must activate the inbox via FormSubmit’s first email, and AJAX needs _captcha disabled.
+   * Capabilities requests → inquiries@xyzstudios.co only (no auto-email to the person who filled the form).
+   * Web3Forms: optional access key — turn off “autoresponder” in the Web3Forms dashboard if you don’t want visitor copy (off by default).
+   * FormSubmit fallback: one-time setup link is emailed to inquiries@ only (not to visitors); _autoresponse is not used.
    */
   var WEB3FORMS_ACCESS_KEY = '';
   var DECK_NOTIFY_EMAIL = 'inquiries@xyzstudios.co';
@@ -578,7 +578,7 @@
         return res.json().catch(function() { return {}; })        .then(function(data) {
           if (!res.ok) throw new Error(data.error || data.message || 'HTTP ' + res.status);
           if (data.success === false || data.success === 'false') {
-            throw new Error(data.message || 'FormSubmit rejected the submission (confirm inbox at formsubmit.co or use Web3Forms key)');
+            throw new Error(data.message || 'FormSubmit rejected the submission. Try a Web3Forms access key or check formsubmit.co dashboard.');
           }
         });
       })
