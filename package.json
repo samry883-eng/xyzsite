@@ -1,0 +1,11 @@
+{
+  "name": "xyzsite",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/prepare-github-pages.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
