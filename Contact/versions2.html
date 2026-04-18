@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — Versions 06–15</title>
+  <style>
+    @font-face { font-family:'Micross'; src:url('/assets/micross.ttf') format('truetype'); font-weight:400; font-style:normal; font-display:swap; }
+    @font-face { font-family:'Micross'; src:url('/assets/micross.ttf') format('truetype'); font-weight:700; font-style:normal; font-display:swap; }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--p:48px;--n:80px;}
+    html,body{background:#000;color:#fff;font-family:Micross,Arial,sans-serif;-webkit-font-smoothing:antialiased;height:100%;overflow:hidden;}
+    a{color:inherit;text-decoration:none;transition:color .2s;}
+
+    /* SWITCHER */
+    .sw{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);display:flex;gap:2px;z-index:9999;background:rgba(16,16,16,.92);backdrop-filter:blur(12px);padding:8px 12px;border-radius:100px;}
+    .sw-btn{font:400 8px/1 Micross,Arial,sans-serif;letter-spacing:.1em;color:rgba(255,255,255,.3);background:none;border:none;cursor:pointer;padding:5px 10px;border-radius:100px;transition:color .15s,background .15s;}
+    .sw-btn.on{color:#000;background:#fff;}
+    .sw-btn:not(.on):hover{color:rgba(255,255,255,.7);}
+
+    /* VERSIONS */
+    .ver{display:none;height:100vh;overflow-y:auto;flex-direction:column;}
+    .ver.on{display:flex;}
+
+    /* SHARED NAV */
+    nav{height:var(--n);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 var(--p);}
+    .nl img{height:29px;display:block;}
+    .nr{display:flex;gap:40px;list-style:none;}
+    .nr a{font:400 10px/1 Micross,Arial,sans-serif;text-transform:uppercase;color:rgba(255,255,255,.28);text-decoration:none;transition:color .2s;}
+    .nr a.cur,.nr a:hover{color:#fff;}
+
+    /* SHARED ATOMS */
+    .tag{font:400 8px/1 Micross,Arial,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.2);}
+    .dim{color:rgba(255,255,255,.32);}
+    .dimmer{color:rgba(255,255,255,.18);}
+    .tiny{font:400 8px/1 Micross,Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;}
+    .sm{font:400 10px/2 Micross,Arial,sans-serif;}
+    .md{font:400 13px/1.5 Micross,Arial,sans-serif;}
+    .lg{font:400 18px/1.2 Micross,Arial,sans-serif;letter-spacing:-.01em;}
+    .xl{font:400 52px/1.04 Micross,Arial,sans-serif;letter-spacing:-.03em;}
+    .loc{font:400 7px/1 Micross,Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.12);margin-top:12px;}
+
+
+    /* ════════════════════════════════════════
+       V6 — SPLIT
+       50/50 left‑right. No divider.
+    ════════════════════════════════════════ */
+    #v6{flex-direction:column;}
+    #v6 .body{flex:1;display:grid;grid-template-columns:1fr 1fr;padding:0 var(--p) 0;}
+    #v6 .left{display:flex;flex-direction:column;justify-content:center;padding-right:64px;}
+    #v6 .right{display:flex;flex-direction:column;justify-content:space-between;padding:52px 0 52px 64px;}
+    #v6 .v6-tag{margin-bottom:28px;}
+    #v6 .v6-h{font:400 46px/1.05 Micross,Arial,sans-serif;color:#fff;letter-spacing:-.03em;margin-bottom:36px;}
+    #v6 .v6-email{font:400 13px/1 Micross,Arial,sans-serif;color:rgba(255,255,255,.55);margin-bottom:10px;display:block;}
+    #v6 .v6-email:hover{color:#fff;}
+    #v6 .v6-deck{font:400 8px/1 Micross,Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.2);display:block;}
+    #v6 .v6-deck:hover{color:#fff;}
+    #v6 .v6-person{margin-bottom:44px;}
+    #v6 .v6-pname{font:400 16px/1.3 Micross,Arial,sans-serif;color:#fff;margin-bottom:10px;}
+    #v6 .v6-plink{display:block;font:400 10px/2 Micross,Arial,sans-serif;color:rgba(255,255,255,.3);}
+    #v6 .v6-plink:hover{color:#fff;}
+    #v6 .v6-soc{display:flex;gap:18px;}
+    #v6 .v6-soc a{font:400 8px/1 Micross,Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.22);}
+    #v6 .v6-soc a:hover{color:#fff;}
+
+    /* ════════════════════════════════════════
+       V7 — CENTERED
+       Perfect symmetry, everything centered.
+    ════════════════════════════════════════ */
+    #v7 .body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 var(--p);text-align:center;gap:0;}
+    #v7 .v7-tag{margin-bottom:24px;}
+    #v7 .v7-h{font:400 52px/1.04 Micross,Arial,sans-serif;color:#fff;letter-spacing:-.03em;margin-bottom:56px;}
+    #v7 .v7-people{display:flex;gap:80px;margin-bottom:48px;}
+    #v7 .v7-pname{font:400 14px/1.5 Micross,Arial,sans-serif;color:#fff;margin-bottom:8px;}
+    #v7 .v7-plink{display:block;font:400 10px/2 Micross,Arial,sans-serif;color:rgba(255,255,255,.3);}
+    #v7 .v7-plink:hover{color:#fff;}
+    #v7 .v7-loc{font:400 7px/1 Micross,Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.1);margin-top:10px;}
+    #v7 .v7-email{font:400 18px/1 Micross,Arial,sans-serif;color:rgba(255,255,255,.6);letter-spacing:-.01em;margin-bottom:16px;display:block;}
+    #v7 .v7-email:hover{color:#fff;}
+    #v7 .v7-soc{display:flex;gap:20px;justify-content:center;margin-bottom:0;}
+    #v7 .v7-soc a{font:400 8px/1 Micross,Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.2);}
+    #v7 .v7-soc a:hover{color:#fff;}
+    #v7 .v7-wm{font:400 14vw/1 Micross,Arial,sans-serif;letter-spacing:-.05em;color:rgba(255,255,255,.04);pointer-events:none;position:absolute;bottom:0;left:0;right:0;text-align:center;overflow:hidden;}
+
+    /* ════════════════════════════════════════
+       V8 — LETTER
+       Plain document. Text as design.
+    ════════════════════════════════════════ */
+    #v8 .body{flex:1;padding:52px var(--p) 52px;max-width:680px;}
+    #v8 .v8-studio{font:400 11px/1 Micross,Arial,sans-serif;color:rgba(255,255,255,.22);letter-spacing:.2em;text-transform:uppercase;margin-bottom:64px;}
+    #v8 .v8-note{font:400 12px/1.8 Micross,Arial,sans-serif;color:rgba(255,255,255,.4);margin-bottom:52px;}
+    #v8 .v8-person{margin-bottom:36px;}
+    #v8 .v8-pname{font:400 15px/1 Micross,Arial,sans-serif;color:#fff;letter-spacing:-.01em;margin-bottom:10px;}
+    #v8 .v8-row{font:400 10px/2 Micross,Arial,sans-serif;color:rgba(255,255,255,.35);}
+    #v8 .v8-row a{color:rgba(255,255,255,.35);}
+    #v8 .v8-row a:hover{color:#fff;}
+    #v8 .v8-general{margin-top:52px;}
+    #v8 .v8-gemail{font:400 13px/1 Micross,Arial,sans-serif;color:rgba(255,255,255,.55);display:block;margin-bottom:8px;}
+    #v8 .v8-gemail:hover{color:#fff;}
+    #v8 .v8-gdeck{font:400 8px/1 Micross,Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.18);display:block;margin-bottom:32px;}
+    #v8 .v8-gdeck:hover{color:#fff;}
+    #v8 .v8-soc{display:flex;gap:18px;}
+    #v8 .v8-soc a{font:400 8px/1 Micross,Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.22);}
+    #v8 .v8-soc a:hover{color:#fff;}
+
+    /* ════════════════════════════════════════
+       V9 — OFFSET RIGHT
+       Left half empty. Everything hugs right.
+    ════════════════════════════════════════ */
+    #v9 .body{flex:1;display:grid;grid-template-columns:1fr 1.4fr;padding:0 var(--p);}
+    #v9 .left-empty{position:relative;}
+    #v9 .v9-tag{position:absolute;top:48px;left:0;}
+    #v9 .right-content{display:flex;flex-direction:column;justify-content:center;padding-left:80px;}
+    #v9 .v9-h{font:400 48px/1.05 Micross,Arial,sans-serif;color:#fff;letter-spacing:-.03em;margin-bottom:52px;}
+    #v9 .v9-people{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-bottom:48px;}
+    #v9 .v9-pname{font:400 13px/1.5 Micross,Arial,sans-serif;color:#fff;margin-bottom:8px;}
+    #v9 .v9-plink{display:block;font:400 9px/2.2 Micross,Arial,sans-serif;color:rgba(255,255,255,.3);}
+    #v9 .v9-plink:hover{color:#fff;}
+    #v9 .v9-loc{font:400 7px/1 Micross,Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.1);margin-top:10px;}
+    #v9 .v9-bottom{display:flex;justify-content:space-between;align-items:center;}
+    #v9 .v9-email{font:400 12px/1 Micross,Arial,sans-serif;color:rgba(255,255,255,.5);}
+    #v9 .v9-email:hover{color:#fff;}
+    #v9 .v9-links{display:flex;gap:16px;}
+    #v9 .v9-links a{font:400 8px/1 Micross,Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.2);}
+    #v9 .v9-links a:hover{color:#fff;}
+
+    /* ════════════════════════════════════════
+       V10 — HERO STATEMENT
+       Two equal bold phrases, Sweet Punk style.
+    ════════════════════════════════════════ */
+    #v10 .body{flex:1;display:flex;flex-direction:column;padding:0 var(--p);}
+    #v10 .v10-hero{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:48px;margin-bottom:auto;}
+    #v10 .v10-phrase{font:400 44px/1.05 Micross,Arial,sans-serif;color:#fff;letter-spacing:-.03em;}
+    #v10 .v10-phrase span{color:rgba(255,255,255,.35);}
+    #v10 .v10-sub{padding-top:12px;font:400 11px/1 Micross,Arial,sans-serif;color:rgba(255,255,255,.35);}
+    #v10 .v10-sub a{color:rgba(255,255,255,.35);}
+    #v10 .v10-sub a:hover{color:#fff;}
+    #v10 .v10-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:48px;padding-bottom:52px;}
+    #v10 .v10-col-h{font:400 7px/1 Micross,Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.2);margin-bottom:14px;}
+    #v10 .v10-col-val{font:400 10px/2 Micross,Arial,sans-serif;color:rgba(255,255,255,.35);display:block;}
+    #v10 .v10-col-val a{color:rgba(255,255,255,.35);}
+    #v10 .v10-col-val a:hover{color:#fff;}
+    #v10 .v10-col-val:hover{color:#fff;}
+
+    /* ════════════════════════════════════════
+       V11 — CREDITS
+       Film credits, centered column, sparse.
+    ════════════════════════════════════════ */
+    #v11 .body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 var(--p);text-align:center;}
+    #v11 .v11-studio{font:400 8px/1 Micross,Arial,sans-serif;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.18);margin-bottom:72px;}
+    #v11 .v11-person{margin-bottom:52px;}
+    #v11 .v11-pname{font:400 20px/1.2 Micross,Arial,sans-serif;color:#fff;letter-spacing:-.01em;margin-bottom:14px;}
+    #v11 .v11-detail{font:400 10px/2.4 Micross,Arial,sans-serif;color:rgba(255,255,255,.3);display:block;}
+    #v11 .v11-detail a{color:rgba(255,255,255,.3);}
+    #v11 .v11-detail a:hover{color:#fff;}
+    #v11 .v11-loc{font:400 7px/1 Micross,Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.1);margin-top:10px;display:block;}
+    #v11 .v11-divspace{height:48px;}
+    #v11 .v11-email{font:400 16px/1 Micross,Arial,sans-serif;color:rgba(255,255,255,.55);letter-spacing:-.01em;display:block;margin-bottom:40px;}
+    #v11 .v11-email:hover{color:#fff;}
+    #v11 .v11-soc{display:flex;gap:24px;justify-content:center;}
+    #v11 .v11-soc a{font:400 8px/1 Micross,Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.2);}
+    #v11 .v11-soc a:hover{color:#fff;}
+
+    /* ════════════════════════════════════════
+       V12 — TIGHT CLUSTER
+       One dense block, floating in space.
+    ════════════════════════════════════════ */
+    #v12 .body{flex:1;display:flex;align-items:center;justify-content:flex-start;padding:0 var(--p);}
+    #v12 .cluster{max-width:480px;}
+    #v12 .v12-tag{margin-bottom:36px;}
+    #v12 .v12-block{margin-bottom:28px;}
+    #v12 .v12-pname{font:400 14px/1 Micross,Arial,sans-serif;color:#fff;margin-bottom:10px;}
+    #v12 .v12-row{font:400 9px/2 Micross,Arial,sans-serif;color:rgba(255,255,255,.3);display:block;}
+    #v12 .v12-row a{color:rgba(255,255,255,.3);}
+    #v12 .v12-row a:hover{color:#fff;}
+    #v12 .v12-sep{height:24px;}
+    #v12 .v12-email{font:400 13px/1 Micross,Arial,sans-serif;color:rgba(255,255,255,.55);display:block;margin-bottom:8px;}
+    #v12 .v12-email:hover{color:#fff;}
+    #v12 .v12-deck{font:400 7px/1 Micross,Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.18);display:block;margin-bottom:22px;}
+    #v12 .v12-deck:hover{color:#fff;}
+    #v12 .v12-soc{display:flex;gap:16px;}
+    #v12 .v12-soc a{font:400 7px/1 Micross,Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.2);}
+    #v12 .v12-soc a:hover{color:#fff;}
+
+    /* ════════════════════════════════════════
+       V13 — NAME BACKGROUND
+       Giant names as texture. Info small.
+    ════════════════════════════════════════ */
+    #v13{position:relative;}
+    #v13 .v13-bg{position:absolute;bottom:80px;left:0;right:0;pointer-events:none;overflow:hidden;}
+    #v13 .v13-bg-line{font:700 20vw/.85 Micross,Arial,sans-serif;letter-spacing:-.05em;color:rgba(255,255,255,.038);white-space:nowrap;display:block;}
+    #v13 .body{flex:1;position:relative;z-index:1;display:flex;flex-direction:column;padding:0 var(--p);}
+    #v13 .v13-top{padding-top:48px;margin-bottom:auto;}
+    #v13 .v13-tag{margin-bottom:10px;}
+    #v13 .v13-note{font:400 10px/1.6 Micross,Arial,sans-serif;color:rgba(255,255,255,.25);max-width:300px;}
+    #v13 .v13-bottom{padding-bottom:52px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:64px;align-items:end;}
+    #v13 .v13-pname{font:400 13px/1.5 Micross,Arial,sans-serif;color:#fff;margin-bottom:8px;}
+    #v13 .v13-plink{display:block;font:400 9px/2.2 Micross,Arial,sans-serif;color:rgba(255,255,255,.3);}
+    #v13 .v13-plink:hover{color:#fff;}
+    #v13 .v13-loc{font:400 7px/1 Micross,Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.1);margin-top:10px;}
+    #v13 .v13-right{}
+    #v13 .v13-email{font:400 12px/1 Micross,Arial,sans-serif;color:rgba(255,255,255,.55);display:block;margin-bottom:10px;}
+    #v13 .v13-email:hover{color:#fff;}
+    #v13 .v13-links a{display:block;font:400 8px/2.4 Micross,Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.2);}
+    #v13 .v13-links a:hover{color:#fff;}
+
+    /* ════════════════════════════════════════
+       V14 — SIDE BY SIDE FORM
+       People left, form right.
+    ════════════════════════════════════════ */
+    #v14 .body{flex:1;display:grid;grid-template-columns:1fr 1.2fr;gap:80px;padding:48px var(--p) 52px;}
+    #v14 .left{display:flex;flex-direction:column;}
+    #v14 .v14-tag{margin-bottom:28px;}
+    #v14 .v14-person{margin-bottom:36px;}
+    #v14 .v14-pname{font:400 16px/1.2 Micross,Arial,sans-serif;color:#fff;margin-bottom:10px;}
+    #v14 .v14-plink{display:block;font:400 10px/2 Micross,Arial,sans-serif;color:rgba(255,255,255,.32);}
+    #v14 .v14-plink:hover{color:#fff;}
+    #v14 .v14-loc{font:400 7px/1 Micross,Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.1);margin-top:10px;}
+    #v14 .v14-foot{margin-top:auto;display:flex;gap:20px;}
+    #v14 .v14-foot a{font:400 8px/1 Micross,Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.2);}
+    #v14 .v14-foot a:hover{color:#fff;}
+    #v14 .right{display:flex;flex-direction:column;justify-content:center;}
+    #v14 .v14-fhead{font:400 36px/1 Micross,Arial,sans-serif;color:#fff;letter-spacing:-.025em;margin-bottom:44px;}
+    #v14 .v14-ff{border-bottom:1px solid rgba(255,255,255,.09);padding-bottom:14px;margin-bottom:32px;}
+    #v14 .v14-ff input,#v14 .v14-ff textarea{background:none;border:none;outline:none;width:100%;font:400 13px/1.5 Micross,Arial,sans-serif;color:#fff;caret-color:rgba(255,255,255,.5);}
+    #v14 .v14-ff textarea{resize:none;height:52px;display:block;}
+    #v14 .v14-ff input::placeholder,#v14 .v14-ff textarea::placeholder{font:400 8px/1 Micross,Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.16);}
+    #v14 .v14-sub{font:400 8px/1 Micross,Arial,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);background:none;border:none;cursor:pointer;padding:0;text-align:left;}
+    #v14 .v14-sub:hover{color:#fff;}
+
+    /* ════════════════════════════════════════
+       V15 — MAGAZINE COLUMNS
+       Three unequal columns, editorial.
+    ════════════════════════════════════════ */
+    #v15 .body{flex:1;display:grid;grid-template-columns:.9fr 1.2fr .9fr;padding:0 var(--p);align-items:center;gap:56px;}
+    #v15 .col-l{display:flex;flex-direction:column;gap:20px;}
+    #v15 .v15-logo img{height:22px;display:block;opacity:.5;}
+    #v15 .v15-tag{margin-top:4px;}
+    #v15 .v15-tagline{font:400 10px/1.7 Micross,Arial,sans-serif;color:rgba(255,255,255,.22);margin-top:28px;max-width:200px;}
+    #v15 .col-m{display:flex;flex-direction:column;gap:36px;}
+    #v15 .v15-person{}
+    #v15 .v15-pname{font:400 18px/1.2 Micross,Arial,sans-serif;color:#fff;letter-spacing:-.01em;margin-bottom:12px;}
+    #v15 .v15-plink{display:block;font:400 10px/2.1 Micross,Arial,sans-serif;color:rgba(255,255,255,.3);}
+    #v15 .v15-plink:hover{color:#fff;}
+    #v15 .v15-loc{font:400 7px/1 Micross,Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.1);margin-top:10px;}
+    #v15 .col-r{display:flex;flex-direction:column;gap:10px;text-align:right;}
+    #v15 .v15-email{font:400 13px/1 Micross,Arial,sans-serif;color:rgba(255,255,255,.55);letter-spacing:-.01em;display:block;margin-bottom:6px;}
+    #v15 .v15-email:hover{color:#fff;}
+    #v15 .v15-link{font:400 8px/1 Micross,Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.2);display:block;}
+    #v15 .v15-link:hover{color:#fff;}
+    #v15 .v15-gap{height:24px;}
+  </style>
+</head>
+<body>
+
+<div class="sw">
+  <button class="sw-btn on" onclick="show('v6',this)">06</button>
+  <button class="sw-btn" onclick="show('v7',this)">07</button>
+  <button class="sw-btn" onclick="show('v8',this)">08</button>
+  <button class="sw-btn" onclick="show('v9',this)">09</button>
+  <button class="sw-btn" onclick="show('v10',this)">10</button>
+  <button class="sw-btn" onclick="show('v11',this)">11</button>
+  <button class="sw-btn" onclick="show('v12',this)">12</button>
+  <button class="sw-btn" onclick="show('v13',this)">13</button>
+  <button class="sw-btn" onclick="show('v14',this)">14</button>
+  <button class="sw-btn" onclick="show('v15',this)">15</button>
+</div>
+
+<!-- ══ V6 SPLIT ══ -->
+<div id="v6" class="ver on">
+  <nav><a class="nl" href="/"><img src="/assets/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ"></a><ul class="nr"><li><a href="/">Home</a></li><li><a href="/projects/">Work</a></li><li><a href="/services/">XYZ/Services</a></li><li><a href="/contact" class="cur">Contact</a></li></ul></nav>
+  <div class="body">
+    <div class="left">
+      <div class="tag v6-tag">[Contact]</div>
+      <div class="v6-h">Let's work<br>together.</div>
+      <a href="mailto:inquiries@xyzstudios.co" class="v6-email">inquiries@xyzstudios.co</a>
+      <a href="mailto:inquiries@xyzstudios.co" class="v6-deck">Request capabilities deck →</a>
+    </div>
+    <div class="right">
+      <div class="v6-person">
+        <div class="v6-pname">Samry Yussuf</div>
+        <a href="mailto:samry@xyzstudios.co" class="v6-plink">samry@xyzstudios.co</a>
+        <a href="tel:+15873405824" class="v6-plink">+1 587 340 5824</a>
+        <div class="loc">Canada</div>
+      </div>
+      <div class="v6-person">
+        <div class="v6-pname">Dris Yousif</div>
+        <a href="mailto:dris@xyzstudios.co" class="v6-plink">dris@xyzstudios.co</a>
+        <a href="tel:+97471015571" class="v6-plink">+974 7101 5571</a>
+        <div class="loc">Qatar</div>
+      </div>
+      <div class="v6-soc">
+        <a href="https://www.instagram.com/xyz__studios/" target="_blank">Instagram</a>
+        <a href="https://www.linkedin.com/company/xyzstudioss/" target="_blank">LinkedIn</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ V7 CENTERED ══ -->
+<div id="v7" class="ver" style="position:relative;">
+  <nav><a class="nl" href="/"><img src="/assets/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ"></a><ul class="nr"><li><a href="/">Home</a></li><li><a href="/projects/">Work</a></li><li><a href="/services/">XYZ/Services</a></li><li><a href="/contact" class="cur">Contact</a></li></ul></nav>
+  <div class="body">
+    <div class="tag v7-tag">[Contact]</div>
+    <div class="v7-h">Let's work together.</div>
+    <div class="v7-people">
+      <div>
+        <div class="v7-pname">Samry Yussuf</div>
+        <a href="mailto:samry@xyzstudios.co" class="v7-plink">samry@xyzstudios.co</a>
+        <a href="tel:+15873405824" class="v7-plink">+1 587 340 5824</a>
+        <div class="v7-loc">Canada</div>
+      </div>
+      <div>
+        <div class="v7-pname">Dris Yousif</div>
+        <a href="mailto:dris@xyzstudios.co" class="v7-plink">dris@xyzstudios.co</a>
+        <a href="tel:+97471015571" class="v7-plink">+974 7101 5571</a>
+        <div class="v7-loc">Qatar</div>
+      </div>
+    </div>
+    <a href="mailto:inquiries@xyzstudios.co" class="v7-email">inquiries@xyzstudios.co</a>
+    <div class="v7-soc">
+      <a href="mailto:inquiries@xyzstudios.co">Capabilities deck</a>
+      <a href="https://www.instagram.com/xyz__studios/" target="_blank">Instagram</a>
+      <a href="https://www.linkedin.com/company/xyzstudioss/" target="_blank">LinkedIn</a>
+    </div>
+  </div>
+  <div class="v7-wm">XYZSTUDIOS</div>
+</div>
+
+<!-- ══ V8 LETTER ══ -->
+<div id="v8" class="ver">
+  <nav><a class="nl" href="/"><img src="/assets/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ"></a><ul class="nr"><li><a href="/">Home</a></li><li><a href="/projects/">Work</a></li><li><a href="/services/">XYZ/Services</a></li><li><a href="/contact" class="cur">Contact</a></li></ul></nav>
+  <div class="body">
+    <div class="v8-studio">XYZSTUDIOS</div>
+    <p class="v8-note">We collaborate with directors, agencies, and production teams to translate ideas into visual storytelling. For new business enquiries, please reach out directly.</p>
+    <div class="v8-person">
+      <div class="v8-pname">Samry Yussuf</div>
+      <div class="v8-row"><a href="mailto:samry@xyzstudios.co">samry@xyzstudios.co</a> &nbsp;·&nbsp; <a href="tel:+15873405824">+1 587 340 5824</a> &nbsp;·&nbsp; Canada</div>
+    </div>
+    <div class="v8-person">
+      <div class="v8-pname">Dris Yousif</div>
+      <div class="v8-row"><a href="mailto:dris@xyzstudios.co">dris@xyzstudios.co</a> &nbsp;·&nbsp; <a href="tel:+97471015571">+974 7101 5571</a> &nbsp;·&nbsp; Qatar</div>
+    </div>
+    <div class="v8-general">
+      <a href="mailto:inquiries@xyzstudios.co" class="v8-gemail">inquiries@xyzstudios.co</a>
+      <a href="mailto:inquiries@xyzstudios.co" class="v8-gdeck">Request capabilities deck →</a>
+      <div class="v8-soc">
+        <a href="https://www.instagram.com/xyz__studios/" target="_blank">Instagram</a>
+        <a href="https://www.linkedin.com/company/xyzstudioss/" target="_blank">LinkedIn</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ V9 OFFSET RIGHT ══ -->
+<div id="v9" class="ver">
+  <nav><a class="nl" href="/"><img src="/assets/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ"></a><ul class="nr"><li><a href="/">Home</a></li><li><a href="/projects/">Work</a></li><li><a href="/services/">XYZ/Services</a></li><li><a href="/contact" class="cur">Contact</a></li></ul></nav>
+  <div class="body">
+    <div class="left-empty"><div class="tag v9-tag">[Contact]</div></div>
+    <div class="right-content">
+      <div class="v9-h">Let's work<br>together.</div>
+      <div class="v9-people">
+        <div>
+          <div class="v9-pname">Samry Yussuf</div>
+          <a href="mailto:samry@xyzstudios.co" class="v9-plink">samry@xyzstudios.co</a>
+          <a href="tel:+15873405824" class="v9-plink">+1 587 340 5824</a>
+          <div class="v9-loc">Canada</div>
+        </div>
+        <div>
+          <div class="v9-pname">Dris Yousif</div>
+          <a href="mailto:dris@xyzstudios.co" class="v9-plink">dris@xyzstudios.co</a>
+          <a href="tel:+97471015571" class="v9-plink">+974 7101 5571</a>
+          <div class="v9-loc">Qatar</div>
+        </div>
+      </div>
+      <div class="v9-bottom">
+        <a href="mailto:inquiries@xyzstudios.co" class="v9-email">inquiries@xyzstudios.co</a>
+        <div class="v9-links">
+          <a href="mailto:inquiries@xyzstudios.co">Capabilities deck</a>
+          <a href="https://www.instagram.com/xyz__studios/" target="_blank">Instagram</a>
+          <a href="https://www.linkedin.com/company/xyzstudioss/" target="_blank">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ V10 HERO STATEMENT ══ -->
+<div id="v10" class="ver">
+  <nav><a class="nl" href="/"><img src="/assets/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ"></a><ul class="nr"><li><a href="/">Home</a></li><li><a href="/projects/">Work</a></li><li><a href="/services/">XYZ/Services</a></li><li><a href="/contact" class="cur">Contact</a></li></ul></nav>
+  <div class="body">
+    <div class="v10-hero">
+      <div>
+        <div class="v10-phrase">Ready to work<br><span>with XYZ?</span></div>
+        <div class="v10-sub"><a href="mailto:inquiries@xyzstudios.co">inquiries@xyzstudios.co</a></div>
+      </div>
+      <div>
+        <div class="v10-phrase"><span>Post production,</span><br>done right.</div>
+      </div>
+    </div>
+    <div class="v10-grid">
+      <div>
+        <div class="v10-col-h">Samry Yussuf</div>
+        <span class="v10-col-val"><a href="mailto:samry@xyzstudios.co">samry@xyzstudios.co</a></span>
+        <span class="v10-col-val"><a href="tel:+15873405824">+1 587 340 5824</a></span>
+        <span class="v10-col-val dim" style="font-size:7px;letter-spacing:.16em;text-transform:uppercase;">Canada</span>
+      </div>
+      <div>
+        <div class="v10-col-h">Dris Yousif</div>
+        <span class="v10-col-val"><a href="mailto:dris@xyzstudios.co">dris@xyzstudios.co</a></span>
+        <span class="v10-col-val"><a href="tel:+97471015571">+974 7101 5571</a></span>
+        <span class="v10-col-val dim" style="font-size:7px;letter-spacing:.16em;text-transform:uppercase;">Qatar</span>
+      </div>
+      <div>
+        <div class="v10-col-h">Work with us</div>
+        <a href="mailto:inquiries@xyzstudios.co" class="v10-col-val">Capabilities deck</a>
+      </div>
+      <div>
+        <div class="v10-col-h">Follow</div>
+        <a href="https://www.instagram.com/xyz__studios/" target="_blank" class="v10-col-val">Instagram</a>
+        <a href="https://www.linkedin.com/company/xyzstudioss/" target="_blank" class="v10-col-val">LinkedIn</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ V11 CREDITS ══ -->
+<div id="v11" class="ver">
+  <nav><a class="nl" href="/"><img src="/assets/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ"></a><ul class="nr"><li><a href="/">Home</a></li><li><a href="/projects/">Work</a></li><li><a href="/services/">XYZ/Services</a></li><li><a href="/contact" class="cur">Contact</a></li></ul></nav>
+  <div class="body">
+    <div class="v11-studio">XYZSTUDIOS</div>
+    <div class="v11-person">
+      <div class="v11-pname">Samry Yussuf</div>
+      <a href="mailto:samry@xyzstudios.co" class="v11-detail">samry@xyzstudios.co</a>
+      <a href="tel:+15873405824" class="v11-detail">+1 587 340 5824</a>
+      <span class="v11-loc">Canada</span>
+    </div>
+    <div class="v11-person">
+      <div class="v11-pname">Dris Yousif</div>
+      <a href="mailto:dris@xyzstudios.co" class="v11-detail">dris@xyzstudios.co</a>
+      <a href="tel:+97471015571" class="v11-detail">+974 7101 5571</a>
+      <span class="v11-loc">Qatar</span>
+    </div>
+    <div class="v11-divspace"></div>
+    <a href="mailto:inquiries@xyzstudios.co" class="v11-email">inquiries@xyzstudios.co</a>
+    <div class="v11-soc">
+      <a href="mailto:inquiries@xyzstudios.co">Capabilities deck</a>
+      <a href="https://www.instagram.com/xyz__studios/" target="_blank">Instagram</a>
+      <a href="https://www.linkedin.com/company/xyzstudioss/" target="_blank">LinkedIn</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══ V12 TIGHT CLUSTER ══ -->
+<div id="v12" class="ver">
+  <nav><a class="nl" href="/"><img src="/assets/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ"></a><ul class="nr"><li><a href="/">Home</a></li><li><a href="/projects/">Work</a></li><li><a href="/services/">XYZ/Services</a></li><li><a href="/contact" class="cur">Contact</a></li></ul></nav>
+  <div class="body">
+    <div class="cluster">
+      <div class="tag v12-tag">[Contact]</div>
+      <div class="v12-sep"></div>
+      <div class="v12-block">
+        <div class="v12-pname">Samry Yussuf</div>
+        <a href="mailto:samry@xyzstudios.co" class="v12-row">samry@xyzstudios.co</a>
+        <a href="tel:+15873405824" class="v12-row">+1 587 340 5824</a>
+        <span class="v12-row" style="font-size:7px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.12);">Canada</span>
+      </div>
+      <div class="v12-block">
+        <div class="v12-pname">Dris Yousif</div>
+        <a href="mailto:dris@xyzstudios.co" class="v12-row">dris@xyzstudios.co</a>
+        <a href="tel:+97471015571" class="v12-row">+974 7101 5571</a>
+        <span class="v12-row" style="font-size:7px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.12);">Qatar</span>
+      </div>
+      <div class="v12-sep"></div>
+      <a href="mailto:inquiries@xyzstudios.co" class="v12-email">inquiries@xyzstudios.co</a>
+      <a href="mailto:inquiries@xyzstudios.co" class="v12-deck">Request capabilities deck →</a>
+      <div class="v12-soc">
+        <a href="https://www.instagram.com/xyz__studios/" target="_blank">Instagram</a>
+        <a href="https://www.linkedin.com/company/xyzstudioss/" target="_blank">LinkedIn</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ V13 NAME BACKGROUND ══ -->
+<div id="v13" class="ver">
+  <nav><a class="nl" href="/"><img src="/assets/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ"></a><ul class="nr"><li><a href="/">Home</a></li><li><a href="/projects/">Work</a></li><li><a href="/services/">XYZ/Services</a></li><li><a href="/contact" class="cur">Contact</a></li></ul></nav>
+  <div class="v13-bg">
+    <span class="v13-bg-line">SAMRY</span>
+    <span class="v13-bg-line">DRISYOUSIF</span>
+  </div>
+  <div class="body">
+    <div class="v13-top">
+      <div class="tag v13-tag">[Contact]</div>
+      <p class="v13-note">For new business enquiries, please reach out to either producer directly.</p>
+    </div>
+    <div class="v13-bottom">
+      <div>
+        <div class="v13-pname">Samry Yussuf</div>
+        <a href="mailto:samry@xyzstudios.co" class="v13-plink">samry@xyzstudios.co</a>
+        <a href="tel:+15873405824" class="v13-plink">+1 587 340 5824</a>
+        <div class="v13-loc">Canada</div>
+      </div>
+      <div>
+        <div class="v13-pname">Dris Yousif</div>
+        <a href="mailto:dris@xyzstudios.co" class="v13-plink">dris@xyzstudios.co</a>
+        <a href="tel:+97471015571" class="v13-plink">+974 7101 5571</a>
+        <div class="v13-loc">Qatar</div>
+      </div>
+      <div class="v13-right">
+        <a href="mailto:inquiries@xyzstudios.co" class="v13-email">inquiries@xyzstudios.co</a>
+        <div class="v13-links">
+          <a href="mailto:inquiries@xyzstudios.co">Capabilities deck</a>
+          <a href="https://www.instagram.com/xyz__studios/" target="_blank">Instagram</a>
+          <a href="https://www.linkedin.com/company/xyzstudioss/" target="_blank">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ V14 SIDE BY SIDE FORM ══ -->
+<div id="v14" class="ver">
+  <nav><a class="nl" href="/"><img src="/assets/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ"></a><ul class="nr"><li><a href="/">Home</a></li><li><a href="/projects/">Work</a></li><li><a href="/services/">XYZ/Services</a></li><li><a href="/contact" class="cur">Contact</a></li></ul></nav>
+  <div class="body">
+    <div class="left">
+      <div class="tag v14-tag">[Contact]</div>
+      <div style="height:36px;"></div>
+      <div class="v14-person">
+        <div class="v14-pname">Samry Yussuf</div>
+        <a href="mailto:samry@xyzstudios.co" class="v14-plink">samry@xyzstudios.co</a>
+        <a href="tel:+15873405824" class="v14-plink">+1 587 340 5824</a>
+        <div class="v14-loc">Canada</div>
+      </div>
+      <div class="v14-person">
+        <div class="v14-pname">Dris Yousif</div>
+        <a href="mailto:dris@xyzstudios.co" class="v14-plink">dris@xyzstudios.co</a>
+        <a href="tel:+97471015571" class="v14-plink">+974 7101 5571</a>
+        <div class="v14-loc">Qatar</div>
+      </div>
+      <div class="v14-foot">
+        <a href="https://www.instagram.com/xyz__studios/" target="_blank">Instagram</a>
+        <a href="https://www.linkedin.com/company/xyzstudioss/" target="_blank">LinkedIn</a>
+        <a href="mailto:inquiries@xyzstudios.co">Capabilities deck</a>
+      </div>
+    </div>
+    <div class="right">
+      <div class="v14-fhead">Start a project.</div>
+      <form action="mailto:inquiries@xyzstudios.co" method="post" enctype="text/plain">
+        <div class="v14-ff"><input type="text" name="name" placeholder="Name"></div>
+        <div class="v14-ff"><input type="email" name="email" placeholder="Email"></div>
+        <div class="v14-ff"><input type="text" name="company" placeholder="Company"></div>
+        <div class="v14-ff"><textarea name="message" placeholder="Tell us about your project."></textarea></div>
+        <button type="submit" class="v14-sub">Submit →</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ══ V15 MAGAZINE COLUMNS ══ -->
+<div id="v15" class="ver">
+  <nav><a class="nl" href="/"><img src="/assets/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ"></a><ul class="nr"><li><a href="/">Home</a></li><li><a href="/projects/">Work</a></li><li><a href="/services/">XYZ/Services</a></li><li><a href="/contact" class="cur">Contact</a></li></ul></nav>
+  <div class="body">
+    <div class="col-l">
+      <div class="v15-logo"><img src="/assets/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+      <div class="tag v15-tag">[Contact]</div>
+      <p class="v15-tagline">Independent post-production. Visual effects, sound, and AI production.</p>
+    </div>
+    <div class="col-m">
+      <div class="v15-person">
+        <div class="v15-pname">Samry Yussuf</div>
+        <a href="mailto:samry@xyzstudios.co" class="v15-plink">samry@xyzstudios.co</a>
+        <a href="tel:+15873405824" class="v15-plink">+1 587 340 5824</a>
+        <div class="v15-loc">Canada</div>
+      </div>
+      <div class="v15-person">
+        <div class="v15-pname">Dris Yousif</div>
+        <a href="mailto:dris@xyzstudios.co" class="v15-plink">dris@xyzstudios.co</a>
+        <a href="tel:+97471015571" class="v15-plink">+974 7101 5571</a>
+        <div class="v15-loc">Qatar</div>
+      </div>
+    </div>
+    <div class="col-r">
+      <a href="mailto:inquiries@xyzstudios.co" class="v15-email">inquiries@xyzstudios.co</a>
+      <div class="v15-gap"></div>
+      <a href="mailto:inquiries@xyzstudios.co" class="v15-link">Capabilities deck →</a>
+      <a href="https://www.instagram.com/xyz__studios/" target="_blank" class="v15-link">Instagram →</a>
+      <a href="https://www.linkedin.com/company/xyzstudioss/" target="_blank" class="v15-link">LinkedIn →</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  function show(id,btn){
+    document.querySelectorAll('.ver').forEach(el=>el.classList.remove('on'));
+    document.querySelectorAll('.sw-btn').forEach(el=>el.classList.remove('on'));
+    document.getElementById(id).classList.add('on');
+    btn.classList.add('on');
+  }
+  const vp=new URLSearchParams(location.search).get('v');
+  if(vp){const btn=document.querySelector('.sw-btn:nth-child('+(+vp-5)+')');if(btn)show('v'+vp,btn);}
+  document.addEventListener('keydown',e=>{
+    const active=document.querySelector('.sw-btn.on');
+    const btns=Array.from(document.querySelectorAll('.sw-btn'));
+    const idx=btns.indexOf(active);
+    if(e.key==='ArrowRight'&&idx<btns.length-1)btns[idx+1].click();
+    if(e.key==='ArrowLeft'&&idx>0)btns[idx-1].click();
+  });
+</script>
+</body>
+</html>

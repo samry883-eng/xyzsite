@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XYZ/Services — XYZ Studios</title>
+  <style>
+    @font-face {
+      font-family: 'Micross';
+      src: url('/assets/micross.ttf') format('truetype');
+      font-weight: 400; font-style: normal; font-display: swap;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --nav-h: 80px; }
+    html, body {
+      background: #000; color: #fff;
+      font-family: Micross, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1001;
+      height: var(--nav-h);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px;
+      background: transparent;
+    }
+    .nav-logo img { height: 29px; width: auto; display: block; }
+    .nav-links { display: flex; gap: 47px; list-style: none; }
+    .nav-links a {
+      text-decoration: none;
+      color: rgba(250,250,250,0.35);
+      font-family: Micross, Arial, sans-serif;
+      font-size: 10.64px; font-weight: 400;
+      letter-spacing: normal; text-transform: uppercase;
+      transition: color 0.2s ease;
+    }
+    .nav-links a.active,
+    .nav-links a:hover { color: rgb(250,250,250); }
+
+    /* ── PAGE ── */
+    .services-page {
+      min-height: 100vh;
+      padding: calc(var(--nav-h) + 80px) 48px 80px;
+    }
+    .services-label {
+      font: 400 8px/1 Micross, Arial, sans-serif;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgba(255,255,255,0.22);
+      margin-bottom: 24px;
+    }
+    .services-title {
+      font: 400 56px/1.04 Micross, Arial, sans-serif;
+      color: #fff; letter-spacing: -0.03em;
+      margin-bottom: 80px;
+      max-width: 720px;
+    }
+    .services-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+    .service-item {
+      padding: 36px 0 36px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .service-item:not(:nth-child(3n)) {
+      padding-right: 48px;
+    }
+    .service-num {
+      font: 400 8px/1 Micross, Arial, sans-serif;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+      margin-bottom: 20px;
+    }
+    .service-name {
+      font: 400 20px/1.2 Micross, Arial, sans-serif;
+      color: #fff; letter-spacing: -0.01em;
+      margin-bottom: 14px;
+    }
+    .service-desc {
+      font: 400 11px/1.7 Micross, Arial, sans-serif;
+      color: rgba(255,255,255,0.35);
+    }
+
+    /* ── ABOUT ── */
+    .sv-about {
+      border-top: 1px solid rgba(255,255,255,0.07);
+      margin-top: 80px;
+      padding-top: 48px;
+      margin-bottom: 72px;
+      opacity: 0;
+    }
+    .sv-about.revealed { animation: rise 0.8s cubic-bezier(0.16,1,0.3,1) both; }
+    .sv-about-label {
+      font: 400 8px/1 Micross, Arial, sans-serif;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgba(255,255,255,0.22);
+      margin-bottom: 32px;
+    }
+    .sv-about-cols {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
+    }
+    .sv-about-text {
+      font: 400 13px/1.85 Micross, Arial, sans-serif;
+      color: rgba(255,255,255,0.38);
+    }
+
+    /* ── JOIN US ── */
+    .sv-join {
+      border-top: 1px solid rgba(255,255,255,0.07);
+      padding-top: 48px;
+      padding-bottom: 20px;
+      opacity: 0;
+    }
+    .sv-join.revealed { animation: rise 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s both; }
+    .sv-join-label {
+      font: 400 8px/1 Micross, Arial, sans-serif;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgba(255,255,255,0.22);
+      margin-bottom: 32px;
+    }
+    .sv-join-body {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
+      align-items: end;
+    }
+    .sv-join-text {
+      font: 400 13px/1.85 Micross, Arial, sans-serif;
+      color: rgba(255,255,255,0.38);
+    }
+    .sv-join-link {
+      font: 400 11px/1 Micross, Arial, sans-serif;
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      transition: color 0.2s;
+    }
+    .sv-join-link:hover { color: #fff; }
+
+    /* ── STAGGER IN ── */
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .services-label { animation: rise 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s both; }
+    .services-title { animation: rise 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s both; }
+    .service-item { opacity: 0; }
+    .service-item.revealed { animation: rise 0.7s cubic-bezier(0.16,1,0.3,1) both; }
+  </style>
+</head>
+<body>
+
+<!-- XYZ Loader -->
+<style>
+#xyz-wl{position:fixed;inset:0;z-index:10001;background:#fff;will-change:transform;pointer-events:all}
+#xyz-wl-track{position:absolute;top:50%;left:44px;right:44px;height:3px;background:rgba(0,0,0,0.1);transform:translateY(-50%)}
+#xyz-wl-fill{position:absolute;top:50%;left:44px;right:44px;height:3px;background:#111;transform:translateY(-50%) scaleX(0);transform-origin:left center;will-change:transform}
+#xyz-wl-fill.go{animation:xyzBar 1.8s cubic-bezier(0.37,0,0.63,1) forwards}
+@keyframes xyzBar{from{transform:translateY(-50%) scaleX(0)}to{transform:translateY(-50%) scaleX(1)}}
+#xyz-wl-logo{position:absolute;bottom:36px;left:44px;width:72px;opacity:0;transition:opacity .3s ease;filter:invert(1)}
+</style>
+<div id="xyz-wl">
+  <div id="xyz-wl-track"></div>
+  <div id="xyz-wl-fill"></div>
+  <img id="xyz-wl-logo" src="/assets/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios">
+</div>
+<script>
+(function(){
+  var el=document.getElementById('xyz-wl');
+  var fill=document.getElementById('xyz-wl-fill');
+  var logo=document.getElementById('xyz-wl-logo');
+  document.body.style.overflow='hidden';
+  setTimeout(function(){ logo.style.opacity='1'; fill.classList.add('go'); }, 100);
+  setTimeout(function(){
+    document.body.style.overflow='';
+    el.style.transition='transform .65s cubic-bezier(0.76,0,0.24,1)';
+    el.style.transform='translateY(-100%)';
+    setTimeout(function(){ el.style.display='none'; revealItems(); }, 700);
+  }, 2000);
+})();
+</script>
+<!-- End XYZ Loader -->
+
+  <nav>
+    <a class="nav-logo" href="/">
+      <img src="/assets/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios">
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/projects/">Work</a></li>
+      <li><a href="/services/" class="active">XYZ/Services</a></li>
+      <li><a href="/contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="services-page">
+    <div class="services-label">What we do</div>
+    <div class="services-title">Craft at every layer — visual, sound, and motion.</div>
+
+    <div class="services-grid" id="services-grid">
+      <div class="service-item">
+        <div class="service-num">01</div>
+        <div class="service-name">Visual Effects</div>
+        <div class="service-desc">3D, compositing, and motion graphics built for the highest production standards.</div>
+      </div>
+      <div class="service-item">
+        <div class="service-num">02</div>
+        <div class="service-name">Sound Design</div>
+        <div class="service-desc">Original scores, sound effects, and audio post-production tailored to each project.</div>
+      </div>
+      <div class="service-item">
+        <div class="service-num">03</div>
+        <div class="service-name">AI Production</div>
+        <div class="service-desc">AI-assisted visuals and concept development integrated into traditional workflows.</div>
+      </div>
+      <div class="service-item">
+        <div class="service-num">04</div>
+        <div class="service-name">Direction</div>
+        <div class="service-desc">Full creative direction from concept through delivery for campaigns and branded content.</div>
+      </div>
+      <div class="service-item">
+        <div class="service-num">05</div>
+        <div class="service-name">Making Of</div>
+        <div class="service-desc">Behind-the-scenes documentation and editorial for productions of any scale.</div>
+      </div>
+      <div class="service-item">
+        <div class="service-num">06</div>
+        <div class="service-name">Production</div>
+        <div class="service-desc">End-to-end production management with a focus on quality and precision at every stage.</div>
+      </div>
+    </div>
+
+    <!-- About -->
+    <div class="sv-about" id="sv-about">
+      <div class="sv-about-label">XYZSTUDIOS</div>
+      <div class="sv-about-cols">
+        <div class="sv-about-text">Founded through the creative partnership of producers Dris and Samry, XYZ Studios is an independent post-production studio built on trust, craft, and a shared instinct for thoughtful execution. What began as a close collaboration has evolved into a unified team aligned by taste, precision, and a deep respect for the work.</div>
+        <div class="sv-about-text">Working across visual effects, CGI, editing, sound, and advanced production technology, we collaborate with directors, agencies, and production teams to translate ideas into visual storytelling — staying hands-on from concept through final delivery to ensure each project receives the attention to detail it deserves.</div>
+      </div>
+    </div>
+
+    <!-- Join Us -->
+    <div class="sv-join" id="sv-join">
+      <div class="sv-join-label">Join Us</div>
+      <div class="sv-join-body">
+        <div class="sv-join-text">Artists interested in working with us can submit their portfolio and a brief introduction for future collaboration opportunities. We work across VFX, CGI, 3D, animation, compositing, FX, lighting, match move, and clean-up.</div>
+        <a href="mailto:careers@xyzstudios.co" class="sv-join-link">careers@xyzstudios.co</a>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  function revealItems() {
+    document.querySelectorAll('.service-item').forEach((el, i) => {
+      el.style.animationDelay = (i * 0.08) + 's';
+      el.classList.add('revealed');
+    });
+    // About + Join Us reveal on scroll
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) { entry.target.classList.add('revealed'); obs.unobserve(entry.target); }
+      });
+    }, { threshold: 0.08 });
+    [document.getElementById('sv-about'), document.getElementById('sv-join')].forEach(el => { if (el) observer.observe(el); });
+  }
+  if (!document.getElementById('xyz-wl')) revealItems();
+</script>
+</body>
+</html>

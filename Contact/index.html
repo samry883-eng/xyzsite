@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — XYZ Studios</title>
+  <style>
+    @font-face {
+      font-family: 'Micross';
+      src: url('/assets/micross.ttf') format('truetype');
+      font-weight: 400; font-style: normal; font-display: swap;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --nav-h: 80px; --p: 48px; }
+
+    html, body {
+      background: #000; color: #fff;
+      font-family: Micross, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      height: 100%; overflow: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: var(--nav-h);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 var(--p);
+    }
+    .nav-logo img { height: 29px; width: auto; display: block; }
+    .nav-links { display: flex; gap: 47px; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: rgba(250,250,250,0.35);
+      font-size: 10.64px; text-transform: uppercase;
+      transition: color 0.2s ease;
+    }
+    .nav-links a.active, .nav-links a:hover { color: #fff; }
+
+    /* ── PAGE SHELL ── */
+    .ct-page {
+      position: relative; z-index: 1;
+      height: 100vh;
+      padding-top: var(--nav-h);
+      display: flex;
+      flex-direction: column;
+    }
+    .ct-main {
+      display: flex;
+      flex-direction: row;
+      flex: 1;
+      min-height: 0;
+    }
+
+    /* ── LEFT COLUMN ── */
+    .ct-left {
+      flex: 5;
+      display: flex;
+      flex-direction: column;
+      padding: 50px 52px 0 var(--p);
+      min-width: 0;
+    }
+
+    /* Hero */
+    .ct-hero { flex-shrink: 0; overflow: hidden; }
+    .ct-phrase {
+      font: 400 56px/1.08 Micross, Arial, sans-serif;
+      letter-spacing: -0.03em;
+      display: block;
+    }
+    .ct-phrase.hi { color: #fff; }
+    .ct-phrase.lo { color: rgba(255,255,255,0.38); }
+
+    /* Sections */
+    .ct-sections { flex-shrink: 0; margin-top: 50px; }
+    .ct-section { margin-bottom: 28px; }
+    .ct-section:last-child { margin-bottom: 0; }
+    .ct-section-label {
+      font: 700 8px/1 Micross, Arial, sans-serif;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: #fff; margin-bottom: 10px;
+    }
+    .ct-section-links { display: flex; flex-direction: column; gap: 14px; }
+    .ct-section-links a,
+    .ct-section-links span {
+      font: 400 13px/1.3 Micross, Arial, sans-serif;
+      color: rgba(255,255,255,0.32);
+      text-decoration: none; cursor: pointer;
+      transition: color 0.2s;
+    }
+    .ct-section-links a:hover,
+    .ct-section-links span:hover { color: #fff; }
+
+    /* Footer */
+    .ct-foot {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: row;
+      padding: 28px 0 36px 0;
+    }
+    .ct-foot-left {
+      flex: 5;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding-left: var(--p);
+      padding-right: 52px;
+      min-width: 0;
+    }
+    .ct-foot-right {
+      flex: 7;
+      padding-right: var(--p);
+      min-width: 0;
+    }
+    .ct-foot-label {
+      font: 700 7px/1 Micross, Arial, sans-serif;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: #fff; margin-bottom: 11px;
+    }
+    .ct-foot-info { display: flex; flex-direction: column; gap: 5px; }
+    .ct-foot-info a {
+      font: 400 10px/1 Micross, Arial, sans-serif;
+      color: rgba(255,255,255,0.28);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .ct-foot-info a:hover { color: #fff; }
+    .ct-foot-loc {
+      font: 400 7px/1 Micross, Arial, sans-serif;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: rgba(255,255,255,0.28); margin-top: 8px;
+    }
+
+    /* ── RIGHT COLUMN: form ── */
+    .ct-right {
+      flex: 7;
+      display: flex;
+      flex-direction: column;
+      padding: 221px var(--p) 0 0;
+      min-width: 0;
+    }
+
+    .ct-field {
+      position: relative;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 20px 0 11px; margin-bottom: 20px;
+      transition: border-color 0.2s;
+    }
+    .ct-field:focus-within { border-color: rgba(255,255,255,0.28); }
+    .ct-label {
+      position: absolute;
+      top: 20px; left: 0;
+      font: 400 9px/1 Micross, Arial, sans-serif;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(255,255,255,0.16);
+      transition: top 0.22s cubic-bezier(0.16,1,0.3,1),
+                  font-size 0.22s cubic-bezier(0.16,1,0.3,1),
+                  color 0.22s;
+      pointer-events: none;
+    }
+    .ct-field:focus-within .ct-label,
+    .ct-field.filled .ct-label { top: 2px; font-size: 7px; color: rgba(255,255,255,0.38); }
+    .ct-field input, .ct-field textarea {
+      background: none; border: none; outline: none; width: 100%;
+      font: 400 12px/1.5 Micross, Arial, sans-serif;
+      color: #fff; caret-color: rgba(255,255,255,0.5);
+    }
+    .ct-field input:-webkit-autofill,
+    .ct-field input:-webkit-autofill:hover,
+    .ct-field input:-webkit-autofill:focus {
+      -webkit-box-shadow: 0 0 0px 1000px #000 inset;
+      -webkit-text-fill-color: #fff;
+      transition: background-color 5000s ease-in-out 0s;
+    }
+    .ct-field textarea { resize: none; height: 56px; display: block; }
+    .ct-submit {
+      font: 700 8px/1 Micross, Arial, sans-serif;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(255,255,255,0.32);
+      background: none; border: none; cursor: pointer;
+      padding: 0; text-align: left; transition: color 0.2s;
+      margin-top: 8px;
+    }
+    .ct-submit:hover { color: #fff; }
+
+    /* ── CAPABILITIES MODAL ── */
+    #deck-modal {
+      display: none;
+      position: fixed; inset: 0; z-index: 9999;
+    }
+    #deck-backdrop {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0.72);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      backdrop-filter: blur(4px);
+    }
+    #deck-panel {
+      position: absolute; right: 0; top: 0; bottom: 0;
+      width: min(520px, 100vw);
+      background: #0a0a0a;
+      border-left: 1px solid rgba(255,255,255,0.07);
+      padding: 64px 52px 52px;
+      display: flex; flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.58s cubic-bezier(0.16,1,0.3,1);
+      overflow-y: auto;
+    }
+    #deck-panel.open { transform: translateX(0); }
+    .deck-close {
+      position: absolute; top: 28px; right: 28px;
+      background: none; border: none; color: rgba(255,255,255,0.25);
+      font-size: 22px; cursor: pointer; line-height: 1; padding: 4px;
+      transition: color 0.2s;
+    }
+    .deck-close:hover { color: #fff; }
+    .deck-eyebrow {
+      font: 400 8px/1 Micross, Arial, sans-serif;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgba(255,255,255,0.28); margin-bottom: 14px;
+    }
+    .deck-title {
+      font: 400 26px/1.1 Micross, Arial, sans-serif;
+      letter-spacing: -0.02em; color: #fff; margin-bottom: 10px;
+    }
+    .deck-sub {
+      font: 400 11px/1.65 Micross, Arial, sans-serif;
+      color: rgba(255,255,255,0.3); margin-bottom: 44px;
+    }
+    #deck-success {
+      display: none; flex-direction: column; justify-content: center; flex: 1;
+    }
+    #deck-success.visible { display: flex; }
+    .deck-success-title {
+      font: 400 24px/1.2 Micross, Arial, sans-serif;
+      letter-spacing: -0.01em; color: #fff; margin-bottom: 14px;
+    }
+    .deck-success-body {
+      font: 400 11px/1.7 Micross, Arial, sans-serif;
+      color: rgba(255,255,255,0.32);
+    }
+
+    /* ── STAGGER ANIMATION ── */
+    /* Each item clips inside its own overflow:hidden wrapper and slides up */
+    .anim-wrap { overflow: hidden; }
+    .anim-item {
+      opacity: 0;
+      transform: translateY(100%);
+      display: block;
+    }
+    .anim-item.up {
+      animation: slideUp 0.9s cubic-bezier(0.16,1,0.3,1) forwards;
+    }
+    /* For smaller elements (labels, links, fields) use a softer translateY */
+    .anim-item.soft {
+      transform: translateY(28px);
+    }
+    .anim-item.soft.up {
+      animation: slideUpSoft 0.8s cubic-bezier(0.16,1,0.3,1) forwards;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(100%); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideUpSoft {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- XYZ Loader -->
+<style>
+#xyz-wl{position:fixed;inset:0;z-index:10001;background:#fff;will-change:transform;pointer-events:all}
+#xyz-wl-track{position:absolute;top:50%;left:44px;right:44px;height:3px;background:rgba(0,0,0,0.1);transform:translateY(-50%)}
+#xyz-wl-fill{position:absolute;top:50%;left:44px;right:44px;height:3px;background:#111;transform:translateY(-50%) scaleX(0);transform-origin:left center;will-change:transform}
+#xyz-wl-fill.go{animation:xyzBar 1.8s cubic-bezier(0.37,0,0.63,1) forwards}
+@keyframes xyzBar{from{transform:translateY(-50%) scaleX(0)}to{transform:translateY(-50%) scaleX(1)}}
+#xyz-wl-logo{position:absolute;bottom:36px;left:44px;width:72px;opacity:0;transition:opacity .3s ease;filter:invert(1)}
+</style>
+<div id="xyz-wl">
+  <div id="xyz-wl-track"></div>
+  <div id="xyz-wl-fill"></div>
+  <img id="xyz-wl-logo" src="/assets/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios">
+</div>
+<script>
+(function(){
+  var el=document.getElementById('xyz-wl');
+  var fill=document.getElementById('xyz-wl-fill');
+  var logo=document.getElementById('xyz-wl-logo');
+  document.body.style.overflow='hidden';
+  setTimeout(function(){ logo.style.opacity='1'; fill.classList.add('go'); },80);
+  fill.addEventListener('animationend',function(){ setTimeout(exit,220); });
+  function exit(){
+    el.style.transition='transform .65s cubic-bezier(0.76,0,0.24,1)';
+    el.style.transform='translateY(-100%)';
+    document.body.style.overflow='';
+    setTimeout(function(){ el.style.display='none'; revealItems(); },700);
+  }
+})();
+</script>
+<!-- End XYZ Loader -->
+
+<nav>
+  <div class="anim-wrap"><a class="nav-logo anim-item soft" id="an-logo" href="/"><img src="/assets/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></a></div>
+  <ul class="nav-links">
+    <li><div class="anim-wrap"><a href="/" class="anim-item soft" id="an-n1">Home</a></div></li>
+    <li><div class="anim-wrap"><a href="/projects/" class="anim-item soft" id="an-n2">Work</a></div></li>
+    <li><div class="anim-wrap"><a href="/services/" class="anim-item soft" id="an-n3">XYZ/Services</a></div></li>
+    <li><div class="anim-wrap"><a href="/contact" class="active anim-item soft" id="an-n4">Contact</a></div></li>
+  </ul>
+</nav>
+
+<div class="ct-page">
+
+  <div class="ct-main">
+
+    <!-- LEFT COLUMN -->
+    <div class="ct-left">
+
+      <div class="ct-hero">
+        <div class="anim-wrap"><span class="ct-phrase hi anim-item" id="an-h1">Ready to work</span></div>
+        <div class="anim-wrap"><span class="ct-phrase lo anim-item" id="an-h2">with XYZ?</span></div>
+      </div>
+
+      <div class="ct-sections">
+        <div class="ct-section">
+          <div class="anim-wrap"><div class="ct-section-label anim-item soft" id="an-s1">Contact Us</div></div>
+          <div class="ct-section-links">
+            <div class="anim-wrap"><a href="mailto:inquiries@xyzstudios.co" class="anim-item soft" id="an-s2">inquiries@xyzstudios.co</a></div>
+            <div class="anim-wrap"><span onclick="openDeckModal()" class="anim-item soft" id="an-s3">Request capabilities deck &rarr;</span></div>
+          </div>
+        </div>
+        <div class="ct-section">
+          <div class="anim-wrap"><div class="ct-section-label anim-item soft" id="an-s4">Work With Us</div></div>
+          <div class="ct-section-links">
+            <div class="anim-wrap"><a href="mailto:careers@xyzstudios.co" class="anim-item soft" id="an-s5">careers@xyzstudios.co</a></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN: form -->
+    <div class="ct-right">
+      <form id="ct-form" action="mailto:inquiries@xyzstudios.co" method="post" enctype="text/plain">
+        <div class="anim-wrap"><div class="ct-field anim-item soft" id="an-f1">
+          <label class="ct-label" for="f-name">Name *</label>
+          <input type="text" name="name" id="f-name" autocomplete="off">
+        </div></div>
+        <div class="anim-wrap"><div class="ct-field anim-item soft" id="an-f2">
+          <label class="ct-label" for="f-email">Email *</label>
+          <input type="email" name="email" id="f-email" autocomplete="off">
+        </div></div>
+        <div class="anim-wrap"><div class="ct-field anim-item soft" id="an-f3">
+          <label class="ct-label" for="f-company">Company *</label>
+          <input type="text" name="company" id="f-company" autocomplete="off">
+        </div></div>
+        <div class="anim-wrap"><div class="ct-field anim-item soft" id="an-f4">
+          <label class="ct-label" for="f-message">Tell us about your project *</label>
+          <textarea name="message" id="f-message"></textarea>
+        </div></div>
+        <div class="anim-wrap"><button type="submit" class="ct-submit anim-item soft" id="an-f5">Submit &rarr;</button></div>
+      </form>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="ct-foot">
+    <div class="ct-foot-left">
+      <div>
+        <div class="anim-wrap"><div class="ct-foot-label anim-item soft" id="an-ft1">Samry Yussuf</div></div>
+        <div class="ct-foot-info">
+          <div class="anim-wrap"><a href="mailto:samry@xyzstudios.co" class="anim-item soft" id="an-ft2">samry@xyzstudios.co</a></div>
+          <div class="anim-wrap"><a href="tel:+15873405824" class="anim-item soft" id="an-ft3">+1 587 340 5824</a></div>
+        </div>
+        <div class="anim-wrap"><div class="ct-foot-loc anim-item soft" id="an-ft4">Canada</div></div>
+      </div>
+      <div>
+        <div class="anim-wrap"><div class="ct-foot-label anim-item soft" id="an-ft5">Dris Yousif</div></div>
+        <div class="ct-foot-info">
+          <div class="anim-wrap"><a href="mailto:dris@xyzstudios.co" class="anim-item soft" id="an-ft6">dris@xyzstudios.co</a></div>
+          <div class="anim-wrap"><a href="tel:+97471015571" class="anim-item soft" id="an-ft7">+974 7101 5571</a></div>
+        </div>
+        <div class="anim-wrap"><div class="ct-foot-loc anim-item soft" id="an-ft8">Qatar</div></div>
+      </div>
+    </div>
+    <div class="ct-foot-right">
+      <div class="anim-wrap"><div class="ct-foot-label anim-item soft" id="an-ft9">Follow Us</div></div>
+      <div class="ct-foot-info">
+        <div class="anim-wrap"><a href="https://www.instagram.com/xyz__studios/" target="_blank" rel="noopener" class="anim-item soft" id="an-ft10">Instagram</a></div>
+        <div class="anim-wrap"><a href="https://www.linkedin.com/company/xyzstudioss/" target="_blank" rel="noopener" class="anim-item soft" id="an-ft11">LinkedIn</a></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- CAPABILITIES REQUEST MODAL -->
+<div id="deck-modal">
+  <div id="deck-backdrop" onclick="closeDeckModal()"></div>
+  <div id="deck-panel">
+    <button class="deck-close" onclick="closeDeckModal()" aria-label="Close">&times;</button>
+
+    <div class="deck-eyebrow">XYZ Studios</div>
+    <div class="deck-title">Request Capabilities Deck</div>
+    <div class="deck-sub">Fill out the form below and we'll send you the deck directly.</div>
+
+    <form id="deck-form" style="display:flex;flex-direction:column;">
+      <div class="ct-field" id="dk-field-name">
+        <label class="ct-label" for="dk-name">Name *</label>
+        <input type="text" id="dk-name" name="name" required autocomplete="off">
+      </div>
+      <div class="ct-field" id="dk-field-company">
+        <label class="ct-label" for="dk-company">Company *</label>
+        <input type="text" id="dk-company" name="company" required autocomplete="off">
+      </div>
+      <div class="ct-field" id="dk-field-email">
+        <label class="ct-label" for="dk-email">Email *</label>
+        <input type="email" id="dk-email" name="email" required autocomplete="off">
+      </div>
+      <div class="ct-field" id="dk-field-role" style="margin-bottom:44px;">
+        <label class="ct-label" for="dk-role">Role / Title</label>
+        <input type="text" id="dk-role" name="role" autocomplete="off">
+      </div>
+      <button type="submit" class="ct-submit">Submit &rarr;</button>
+    </form>
+
+    <div id="deck-success">
+      <div class="deck-success-title">Request received.</div>
+      <div class="deck-success-body">We'll review your information and send the capabilities deck to your email shortly.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── CAPABILITIES MODAL ─────────────────────────────────
+  function openDeckModal() {
+    var modal = document.getElementById('deck-modal');
+    var backdrop = document.getElementById('deck-backdrop');
+    var panel = document.getElementById('deck-panel');
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(function() {
+      backdrop.style.opacity = '1';
+      panel.classList.add('open');
+    });
+  }
+
+  function closeDeckModal() {
+    var backdrop = document.getElementById('deck-backdrop');
+    var panel = document.getElementById('deck-panel');
+    backdrop.style.opacity = '0';
+    panel.classList.remove('open');
+    setTimeout(function() {
+      document.getElementById('deck-modal').style.display = 'none';
+      document.body.style.overflow = '';
+    }, 600);
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeDeckModal();
+  });
+
+  document.getElementById('deck-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var data = new FormData(this);
+    // Replace YOUR_FORM_ID with your Formspree form ID (formspree.io)
+    fetch('https://formspree.io/f/YOUR_FORM_ID', {
+      method: 'POST', body: data,
+      headers: { 'Accept': 'application/json' }
+    }).finally(function() {
+      document.getElementById('deck-form').style.display = 'none';
+      document.getElementById('deck-success').classList.add('visible');
+    });
+  });
+
+  // Float labels for modal fields
+  ['dk-name','dk-company','dk-email','dk-role'].forEach(function(id) {
+    var input = document.getElementById(id);
+    if (!input) return;
+    var field = input.closest('.ct-field');
+    function check() { field.classList.toggle('filled', input.value.length > 0); }
+    input.addEventListener('input', check);
+  });
+
+  // Float labels for main contact form
+  document.querySelectorAll('.ct-field input, .ct-field textarea').forEach(function(el) {
+    function check() { el.closest('.ct-field').classList.toggle('filled', el.value.length > 0); }
+    el.addEventListener('input', check);
+    check();
+  });
+
+  function revealItems() {
+    // [id, delay_ms]
+    var seq = [
+      // Nav
+      ['an-logo', 0],
+      ['an-n1',   40],
+      ['an-n2',   70],
+      ['an-n3',  100],
+      ['an-n4',  130],
+      // Hero — full slide-up, larger
+      ['an-h1',  80],
+      ['an-h2', 160],
+      // Left sections
+      ['an-s1', 220],
+      ['an-s2', 270],
+      ['an-s3', 310],
+      ['an-s4', 340],
+      ['an-s5', 380],
+      // Form fields
+      ['an-f1', 200],
+      ['an-f2', 260],
+      ['an-f3', 320],
+      ['an-f4', 380],
+      ['an-f5', 440],
+      // Footer
+      ['an-ft1', 480],
+      ['an-ft2', 510],
+      ['an-ft3', 530],
+      ['an-ft4', 550],
+      ['an-ft5', 480],
+      ['an-ft6', 510],
+      ['an-ft7', 530],
+      ['an-ft8', 550],
+      ['an-ft9', 480],
+      ['an-ft10',510],
+      ['an-ft11',540],
+    ];
+    seq.forEach(function(pair) {
+      var el = document.getElementById(pair[0]);
+      if (!el) return;
+      setTimeout(function() { el.classList.add('up'); }, pair[1]);
+    });
+  }
+
+  if (!document.getElementById('xyz-wl')) revealItems();
+</script>
+</body>
+</html>

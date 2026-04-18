@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — Design Versions</title>
+  <style>
+    @font-face {
+      font-family: 'Micross';
+      src: url('/assets/micross.ttf') format('truetype');
+      font-weight: 400; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Micross';
+      src: url('/assets/micross.ttf') format('truetype');
+      font-weight: 700; font-style: normal; font-display: swap;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --pad: 48px; --nav: 80px; }
+    html, body { background: #000; color: #fff; font-family: Micross, Arial, sans-serif; -webkit-font-smoothing: antialiased; height: 100%; overflow: hidden; }
+
+    /* ── SWITCHER ── */
+    .sw {
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 2px; z-index: 9999;
+      background: rgba(18,18,18,0.92); backdrop-filter: blur(12px);
+      padding: 8px 12px; border-radius: 100px;
+    }
+    .sw-btn {
+      font: 400 8px/1 Micross, Arial, sans-serif; letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.3); background: none; border: none;
+      cursor: pointer; padding: 5px 10px; border-radius: 100px;
+      transition: color 0.15s, background 0.15s;
+    }
+    .sw-btn.on { color: #000; background: #fff; }
+    .sw-btn:not(.on):hover { color: rgba(255,255,255,0.7); }
+
+    /* ── SHARED ── */
+    .ver { display: none; height: 100vh; overflow-y: auto; flex-direction: column; }
+    .ver.on { display: flex; }
+
+    nav {
+      height: var(--nav); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 var(--pad);
+    }
+    .nl img { height: 29px; display: block; }
+    .nr { display: flex; gap: 40px; list-style: none; }
+    .nr a {
+      font: 400 10px/1 Micross, Arial, sans-serif; text-transform: uppercase;
+      color: rgba(255,255,255,0.28); text-decoration: none; transition: color 0.2s;
+    }
+    .nr a.cur, .nr a:hover { color: #fff; }
+
+    .tag {
+      font: 400 8px/1 Micross, Arial, sans-serif;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+    }
+    a { transition: color 0.2s; }
+
+    /* ════════════════════════════════════════════════
+       V1 — GRAVITY
+       Content sinks to the bottom. Vast empty sky.
+    ════════════════════════════════════════════════ */
+    #v1 .body { flex: 1; display: flex; flex-direction: column; padding: 0 var(--pad); }
+    #v1 .body .tag { margin-bottom: auto; }
+    #v1 .grid {
+      display: grid;
+      grid-template-columns: 160px 1fr 1fr 1fr;
+      gap: 56px; align-items: end;
+      padding-bottom: 20px;
+    }
+    #v1 .grid .logo img { height: 22px; opacity: 0.35; display: block; }
+    #v1 .pname { font: 400 13px/1.5 Micross, Arial, sans-serif; color: #fff; margin-bottom: 8px; }
+    #v1 .plinks a, #v1 .plinks span {
+      display: block; font: 400 10px/2 Micross, Arial, sans-serif;
+      color: rgba(255,255,255,0.32); text-decoration: none;
+    }
+    #v1 .plinks a:hover { color: #fff; }
+    #v1 .ploc {
+      font: 400 7px/1 Micross, Arial, sans-serif; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.12); margin-top: 12px;
+    }
+    #v1 .wm {
+      font: 400 15vw/0.9 Micross, Arial, sans-serif; letter-spacing: -0.05em;
+      color: rgba(255,255,255,0.055); white-space: nowrap;
+      margin: 12px -48px 0; overflow: hidden;
+      pointer-events: none;
+    }
+
+    /* ════════════════════════════════════════════════
+       V2 — MACRO
+       The email IS the headline. Raw and loud.
+    ════════════════════════════════════════════════ */
+    #v2 .body { flex: 1; display: flex; flex-direction: column; padding: 0 var(--pad); }
+    #v2 .hero { padding-top: 64px; }
+    #v2 .big-email {
+      display: inline-block;
+      font: 400 4.8vw/1 Micross, Arial, sans-serif; letter-spacing: -0.04em;
+      color: #fff; text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 8px;
+      margin-bottom: 16px;
+    }
+    #v2 .big-email:hover { border-color: #fff; }
+    #v2 .deck {
+      font: 400 8px/1 Micross, Arial, sans-serif; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.22); text-decoration: none; display: block;
+    }
+    #v2 .deck:hover { color: #fff; }
+    #v2 .people {
+      margin-top: auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+      padding-bottom: 52px;
+    }
+    #v2 .v2name { font: 400 22px/1.2 Micross, Arial, sans-serif; color: #fff; letter-spacing: -0.01em; margin-bottom: 18px; }
+    #v2 .v2info a {
+      display: block; font: 400 10px/2.2 Micross, Arial, sans-serif;
+      color: rgba(255,255,255,0.32); text-decoration: none;
+    }
+    #v2 .v2info a:hover { color: #fff; }
+    #v2 .v2loc { font: 400 7px/1 Micross, Arial, sans-serif; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.12); margin-top: 12px; }
+    #v2 .v2soc { display: flex; gap: 22px; padding-top: 28px; }
+    #v2 .v2soc a {
+      font: 400 8px/1 Micross, Arial, sans-serif; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.22); text-decoration: none;
+    }
+    #v2 .v2soc a:hover { color: #fff; }
+
+    /* ════════════════════════════════════════════════
+       V3 — STRAY
+       People first. Bold names. No decoration.
+    ════════════════════════════════════════════════ */
+    #v3 .body { flex: 1; display: flex; flex-direction: column; padding: 0 var(--pad); }
+    #v3 .intro {
+      font: 400 11px/1.5 Micross, Arial, sans-serif; color: rgba(255,255,255,0.3);
+      margin-bottom: auto;
+    }
+    #v3 .people {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0 100px;
+      padding-bottom: 52px;
+    }
+    #v3 .v3name {
+      font: 700 30px/1.1 Micross, Arial, sans-serif; color: #fff; letter-spacing: -0.025em;
+      margin-bottom: 22px;
+    }
+    #v3 .v3phone {
+      font: 400 18px/1.4 Micross, Arial, sans-serif;
+      color: rgba(255,255,255,0.45); margin-bottom: 10px; display: block;
+      text-decoration: none;
+    }
+    #v3 .v3phone:hover { color: #fff; }
+    #v3 .v3email {
+      font: 400 11px/1 Micross, Arial, sans-serif;
+      color: rgba(255,255,255,0.3); text-decoration: underline;
+      text-underline-offset: 4px; display: block;
+    }
+    #v3 .v3email:hover { color: #fff; }
+    #v3 .v3loc { font: 400 7px/1 Micross, Arial, sans-serif; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.12); margin-top: 16px; }
+    #v3 .foot {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-bottom: 36px; padding-top: 36px;
+    }
+    #v3 .foot-l a {
+      font: 400 10px/1 Micross, Arial, sans-serif; color: rgba(255,255,255,0.28);
+      text-decoration: none;
+    }
+    #v3 .foot-l a:hover { color: #fff; }
+    #v3 .foot-r { display: flex; gap: 20px; }
+    #v3 .foot-r a {
+      font: 400 8px/1 Micross, Arial, sans-serif; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.22); text-decoration: none;
+    }
+    #v3 .foot-r a:hover { color: #fff; }
+
+    /* ════════════════════════════════════════════════
+       V4 — EDITORIAL
+       1080p-inspired quadrant layout. Logo featured.
+    ════════════════════════════════════════════════ */
+    #v4 { position: relative; }
+    #v4 nav { position: absolute; top: 0; left: 0; right: 0; }
+    #v4 .v4-bg {
+      position: absolute; bottom: 0; left: var(--pad);
+      font: 400 22vw/0.85 Micross, Arial, sans-serif; letter-spacing: -0.06em;
+      color: rgba(255,255,255,0.03); pointer-events: none;
+      white-space: nowrap;
+    }
+    #v4 .v4-tl {
+      position: absolute; top: 120px; left: var(--pad);
+    }
+    #v4 .v4-tl img { height: 24px; display: block; margin-bottom: 12px; opacity: 0.55; }
+    #v4 .v4-tr {
+      position: absolute; top: 120px; right: var(--pad); text-align: right;
+    }
+    #v4 .v4-svc {
+      font: 400 8px/2.2 Micross, Arial, sans-serif; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.16); display: block;
+    }
+    #v4 .v4-bl {
+      position: absolute; bottom: var(--pad); left: var(--pad);
+    }
+    #v4 .v4-bloc {
+      font: 400 7px/1 Micross, Arial, sans-serif; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.14); margin-bottom: 14px;
+    }
+    #v4 .v4-bname { font: 400 16px/1.3 Micross, Arial, sans-serif; color: #fff; margin-bottom: 10px; }
+    #v4 .v4-binfo a {
+      display: block; font: 400 10px/2 Micross, Arial, sans-serif;
+      color: rgba(255,255,255,0.3); text-decoration: none;
+    }
+    #v4 .v4-binfo a:hover { color: #fff; }
+    #v4 .v4-bc {
+      position: absolute; bottom: var(--pad);
+      left: 50%; transform: translateX(-50%);
+    }
+    #v4 .v4-bc .v4-bname { color: rgba(255,255,255,0.9); }
+    #v4 .v4-br {
+      position: absolute; bottom: var(--pad); right: var(--pad); text-align: right;
+    }
+    #v4 .v4-main-email {
+      font: 400 13px/1 Micross, Arial, sans-serif; letter-spacing: -0.01em;
+      color: rgba(255,255,255,0.6); text-decoration: none; display: block; margin-bottom: 14px;
+    }
+    #v4 .v4-main-email:hover { color: #fff; }
+    #v4 .v4-br-links { display: flex; gap: 16px; justify-content: flex-end; }
+    #v4 .v4-br-links a {
+      font: 400 8px/1 Micross, Arial, sans-serif; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.2); text-decoration: none;
+    }
+    #v4 .v4-br-links a:hover { color: #fff; }
+
+    /* ════════════════════════════════════════════════
+       V5 — FORM
+       Form takes center stage. People in small print.
+    ════════════════════════════════════════════════ */
+    #v5 .body { flex: 1; display: flex; flex-direction: column; padding: 0 var(--pad); }
+    #v5 .v5-head {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      padding-top: 40px; margin-bottom: 72px;
+    }
+    #v5 .v5-title {
+      font: 400 52px/1 Micross, Arial, sans-serif; color: #fff; letter-spacing: -0.03em;
+    }
+    #v5 .v5-right { text-align: right; }
+    #v5 .v5-remail {
+      display: block; font: 400 12px/1.5 Micross, Arial, sans-serif;
+      color: rgba(255,255,255,0.5); text-decoration: none; margin-bottom: 6px;
+    }
+    #v5 .v5-remail:hover { color: #fff; }
+    #v5 .v5-rdeck {
+      display: block; font: 400 8px/1 Micross, Arial, sans-serif;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: rgba(255,255,255,0.18); text-decoration: none;
+    }
+    #v5 .v5-rdeck:hover { color: #fff; }
+    #v5 .form {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0 72px;
+    }
+    #v5 .ff {
+      padding-bottom: 16px; margin-bottom: 44px;
+      border-bottom: 1px solid rgba(255,255,255,0.09);
+    }
+    #v5 .ff.full { grid-column: 1 / -1; }
+    #v5 .ff input, #v5 .ff textarea {
+      background: none; border: none; outline: none; width: 100%;
+      font: 400 14px/1.5 Micross, Arial, sans-serif; color: #fff;
+      caret-color: rgba(255,255,255,0.5);
+    }
+    #v5 .ff textarea { resize: none; height: 56px; display: block; }
+    #v5 .ff input::placeholder, #v5 .ff textarea::placeholder {
+      font: 400 8px/1 Micross, Arial, sans-serif;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(255,255,255,0.16);
+    }
+    #v5 .sub-row {
+      grid-column: 1 / -1; display: flex;
+      justify-content: space-between; align-items: center; padding-top: 4px;
+    }
+    #v5 .sub-terms {
+      font: 400 8px/1.6 Micross, Arial, sans-serif;
+      color: rgba(255,255,255,0.15); max-width: 300px;
+    }
+    #v5 .sub-btn {
+      font: 400 9px/1 Micross, Arial, sans-serif; letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(255,255,255,0.4); background: none; border: none; cursor: pointer; padding: 0;
+    }
+    #v5 .sub-btn:hover { color: #fff; }
+    #v5 .v5-foot {
+      margin-top: auto; padding: 36px 0 28px;
+      display: flex; justify-content: space-between; align-items: flex-end;
+    }
+    #v5 .v5-people { display: flex; gap: 56px; }
+    #v5 .v5-fn { font: 400 10px/1.5 Micross, Arial, sans-serif; color: rgba(255,255,255,0.4); }
+    #v5 .v5-fc {
+      font: 400 9px/1.8 Micross, Arial, sans-serif; color: rgba(255,255,255,0.2);
+    }
+    #v5 .v5-fc a { color: rgba(255,255,255,0.2); text-decoration: none; }
+    #v5 .v5-fc a:hover { color: #fff; }
+    #v5 .v5-fsoc { display: flex; gap: 16px; align-items: flex-end; }
+    #v5 .v5-fsoc a {
+      font: 400 8px/1 Micross, Arial, sans-serif; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.2); text-decoration: none;
+    }
+    #v5 .v5-fsoc a:hover { color: #fff; }
+  </style>
+</head>
+<body>
+
+<!-- ── SWITCHER ── -->
+<div class="sw">
+  <button class="sw-btn on" onclick="show('v1',this)">01</button>
+  <button class="sw-btn" onclick="show('v2',this)">02</button>
+  <button class="sw-btn" onclick="show('v3',this)">03</button>
+  <button class="sw-btn" onclick="show('v4',this)">04</button>
+  <button class="sw-btn" onclick="show('v5',this)">05</button>
+</div>
+
+<!-- ════════════════════════════
+     V1 — GRAVITY
+     Content sinks to bottom.
+════════════════════════════ -->
+<div id="v1" class="ver on">
+  <nav>
+    <a class="nl" href="/"><img src="/assets/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></a>
+    <ul class="nr">
+      <li><a href="/">Home</a></li>
+      <li><a href="/projects/">Work</a></li>
+      <li><a href="/services/">XYZ/Services</a></li>
+      <li><a href="/contact" class="cur">Contact</a></li>
+    </ul>
+  </nav>
+  <div class="body">
+    <div class="tag">[Contact]</div>
+    <div class="grid">
+      <div class="logo"><img src="/assets/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+      <div>
+        <div class="pname">Samry Yussuf</div>
+        <div class="plinks">
+          <a href="mailto:samry@xyzstudios.co">samry@xyzstudios.co</a>
+          <a href="tel:+15873405824">+1 587 340 5824</a>
+        </div>
+        <div class="ploc">Canada</div>
+      </div>
+      <div>
+        <div class="pname">Dris Yousif</div>
+        <div class="plinks">
+          <a href="mailto:dris@xyzstudios.co">dris@xyzstudios.co</a>
+          <a href="tel:+97471015571">+974 7101 5571</a>
+        </div>
+        <div class="ploc">Qatar</div>
+      </div>
+      <div>
+        <div class="plinks">
+          <a href="mailto:inquiries@xyzstudios.co">inquiries@xyzstudios.co</a>
+          <a href="mailto:inquiries@xyzstudios.co">Request capabilities deck</a>
+          <a href="https://www.instagram.com/xyz__studios/" target="_blank">Instagram</a>
+          <a href="https://www.linkedin.com/company/xyzstudioss/" target="_blank">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+    <div class="wm">XYZSTUDIOS</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════
+     V2 — MACRO
+     Giant email as headline.
+════════════════════════════ -->
+<div id="v2" class="ver">
+  <nav>
+    <a class="nl" href="/"><img src="/assets/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></a>
+    <ul class="nr">
+      <li><a href="/">Home</a></li>
+      <li><a href="/projects/">Work</a></li>
+      <li><a href="/services/">XYZ/Services</a></li>
+      <li><a href="/contact" class="cur">Contact</a></li>
+    </ul>
+  </nav>
+  <div class="body">
+    <div class="hero">
+      <div class="tag" style="margin-bottom:28px;">[Contact]</div>
+      <a href="mailto:inquiries@xyzstudios.co" class="big-email">inquiries@xyzstudios.co</a>
+      <a href="mailto:inquiries@xyzstudios.co" class="deck">Request capabilities deck →</a>
+    </div>
+    <div class="people">
+      <div>
+        <div class="v2name">Samry Yussuf</div>
+        <div class="v2info">
+          <a href="mailto:samry@xyzstudios.co">samry@xyzstudios.co</a>
+          <a href="tel:+15873405824">+1 587 340 5824</a>
+        </div>
+        <div class="v2loc">Canada</div>
+        <div class="v2soc">
+          <a href="https://www.instagram.com/xyz__studios/" target="_blank">Instagram</a>
+          <a href="https://www.linkedin.com/company/xyzstudioss/" target="_blank">LinkedIn</a>
+        </div>
+      </div>
+      <div>
+        <div class="v2name">Dris Yousif</div>
+        <div class="v2info">
+          <a href="mailto:dris@xyzstudios.co">dris@xyzstudios.co</a>
+          <a href="tel:+97471015571">+974 7101 5571</a>
+        </div>
+        <div class="v2loc">Qatar</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════
+     V3 — STRAY
+     Bold names, no role, sparse.
+════════════════════════════ -->
+<div id="v3" class="ver">
+  <nav>
+    <a class="nl" href="/"><img src="/assets/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></a>
+    <ul class="nr">
+      <li><a href="/">Home</a></li>
+      <li><a href="/projects/">Work</a></li>
+      <li><a href="/services/">XYZ/Services</a></li>
+      <li><a href="/contact" class="cur">Contact</a></li>
+    </ul>
+  </nav>
+  <div class="body">
+    <p class="intro">For new business enquiries, please contact.</p>
+    <div class="people">
+      <div>
+        <div class="v3name">Samry Yussuf</div>
+        <a href="tel:+15873405824" class="v3phone">+1 587 340 5824</a>
+        <a href="mailto:samry@xyzstudios.co" class="v3email">samry@xyzstudios.co</a>
+        <span class="v3loc">Canada</span>
+      </div>
+      <div>
+        <div class="v3name">Dris Yousif</div>
+        <a href="tel:+97471015571" class="v3phone">+974 7101 5571</a>
+        <a href="mailto:dris@xyzstudios.co" class="v3email">dris@xyzstudios.co</a>
+        <span class="v3loc">Qatar</span>
+      </div>
+    </div>
+    <div class="foot">
+      <div class="foot-l">
+        <a href="mailto:inquiries@xyzstudios.co">inquiries@xyzstudios.co</a>
+      </div>
+      <div class="foot-r">
+        <a href="mailto:inquiries@xyzstudios.co">Capabilities deck</a>
+        <a href="https://www.instagram.com/xyz__studios/" target="_blank">Instagram</a>
+        <a href="https://www.linkedin.com/company/xyzstudioss/" target="_blank">LinkedIn</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════
+     V4 — EDITORIAL
+     1080p quadrant layout. Logo.
+════════════════════════════ -->
+<div id="v4" class="ver">
+  <nav>
+    <a class="nl" href="/"><img src="/assets/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></a>
+    <ul class="nr">
+      <li><a href="/">Home</a></li>
+      <li><a href="/projects/">Work</a></li>
+      <li><a href="/services/">XYZ/Services</a></li>
+      <li><a href="/contact" class="cur">Contact</a></li>
+    </ul>
+  </nav>
+  <div class="v4-bg">XYZ</div>
+  <div class="v4-tl">
+    <img src="/assets/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios">
+    <div class="tag">[Contact]</div>
+  </div>
+  <div class="v4-tr">
+    <span class="v4-svc">Visual Effects</span>
+    <span class="v4-svc">Sound Design</span>
+    <span class="v4-svc">AI Production</span>
+    <span class="v4-svc">Making Of</span>
+  </div>
+  <div class="v4-bl">
+    <div class="v4-bloc">Canada</div>
+    <div class="v4-bname">Samry Yussuf</div>
+    <div class="v4-binfo">
+      <a href="mailto:samry@xyzstudios.co">samry@xyzstudios.co</a>
+      <a href="tel:+15873405824">+1 587 340 5824</a>
+    </div>
+  </div>
+  <div class="v4-bc">
+    <div class="v4-bloc">Qatar</div>
+    <div class="v4-bname">Dris Yousif</div>
+    <div class="v4-binfo">
+      <a href="mailto:dris@xyzstudios.co">dris@xyzstudios.co</a>
+      <a href="tel:+97471015571">+974 7101 5571</a>
+    </div>
+  </div>
+  <div class="v4-br">
+    <a href="mailto:inquiries@xyzstudios.co" class="v4-main-email">inquiries@xyzstudios.co</a>
+    <div class="v4-br-links">
+      <a href="mailto:inquiries@xyzstudios.co">Capabilities deck</a>
+      <a href="https://www.instagram.com/xyz__studios/" target="_blank">Instagram</a>
+      <a href="https://www.linkedin.com/company/xyzstudioss/" target="_blank">LinkedIn</a>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════
+     V5 — FORM
+     Form as the experience.
+════════════════════════════ -->
+<div id="v5" class="ver">
+  <nav>
+    <a class="nl" href="/"><img src="/assets/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></a>
+    <ul class="nr">
+      <li><a href="/">Home</a></li>
+      <li><a href="/projects/">Work</a></li>
+      <li><a href="/services/">XYZ/Services</a></li>
+      <li><a href="/contact" class="cur">Contact</a></li>
+    </ul>
+  </nav>
+  <div class="body">
+    <div class="v5-head">
+      <div class="v5-title">Start a project.</div>
+      <div class="v5-right">
+        <a href="mailto:inquiries@xyzstudios.co" class="v5-remail">inquiries@xyzstudios.co</a>
+        <a href="mailto:inquiries@xyzstudios.co" class="v5-rdeck">Request capabilities deck →</a>
+      </div>
+    </div>
+    <form class="form" action="mailto:inquiries@xyzstudios.co" method="post" enctype="text/plain">
+      <div class="ff"><input type="text" name="name" placeholder="Name"></div>
+      <div class="ff"><input type="text" name="company" placeholder="Company"></div>
+      <div class="ff"><input type="email" name="email" placeholder="Email"></div>
+      <div class="ff"><input type="tel" name="phone" placeholder="Phone"></div>
+      <div class="ff full"><textarea name="message" placeholder="Tell us about your project."></textarea></div>
+      <div class="sub-row">
+        <span class="sub-terms">By continuing, you agree to XYZSTUDIOS storing your info and being contacted by our team.</span>
+        <button type="submit" class="sub-btn">Submit →</button>
+      </div>
+    </form>
+    <div class="v5-foot">
+      <div class="v5-people">
+        <div>
+          <div class="v5-fn">Samry Yussuf</div>
+          <div class="v5-fc">
+            <a href="mailto:samry@xyzstudios.co">samry@xyzstudios.co</a><br>
+            <a href="tel:+15873405824">+1 587 340 5824</a><br>
+            Canada
+          </div>
+        </div>
+        <div>
+          <div class="v5-fn">Dris Yousif</div>
+          <div class="v5-fc">
+            <a href="mailto:dris@xyzstudios.co">dris@xyzstudios.co</a><br>
+            <a href="tel:+97471015571">+974 7101 5571</a><br>
+            Qatar
+          </div>
+        </div>
+      </div>
+      <div class="v5-fsoc">
+        <a href="https://www.instagram.com/xyz__studios/" target="_blank">Instagram</a>
+        <a href="https://www.linkedin.com/company/xyzstudioss/" target="_blank">LinkedIn</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function show(id, btn) {
+    document.querySelectorAll('.ver').forEach(el => el.classList.remove('on'));
+    document.querySelectorAll('.sw-btn').forEach(el => el.classList.remove('on'));
+    document.getElementById(id).classList.add('on');
+    btn.classList.add('on');
+  }
+  // URL param support: ?v=2
+  const vp = new URLSearchParams(location.search).get('v');
+  if (vp) {
+    const btn = document.querySelector('.sw-btn:nth-child(' + vp + ')');
+    if (btn) show('v' + vp, btn);
+  }
+  // Arrow keys to cycle versions
+  document.addEventListener('keydown', e => {
+    const active = document.querySelector('.sw-btn.on');
+    const btns = Array.from(document.querySelectorAll('.sw-btn'));
+    const idx = btns.indexOf(active);
+    if (e.key === 'ArrowRight' && idx < btns.length - 1) btns[idx + 1].click();
+    if (e.key === 'ArrowLeft' && idx > 0) btns[idx - 1].click();
+  });
+</script>
+</body>
+</html>

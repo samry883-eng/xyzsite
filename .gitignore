@@ -1,0 +1,20 @@
+# Local screen recordings / scratch
+Recording*.mp4
+
+node_modules/
+temporary screenshots/
+Capabilities/screenshots/
+*.png
+*.jpg
+*.jpeg
+*.avif
+*.webp
+pdf-capture.js
+pdf-capture.mjs
+screenshot-slide.js
+fix-scroll.mjs
+fix-snap.mjs
+fix-snap-v2.mjs
+fix-snap-v3.mjs
+reorder-layout.mjs
+revert-layout.mjs

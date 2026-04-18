@@ -1,0 +1,1 @@
+.w-webflow-badge { /* "Snip" the element into a 0x0 pixel circle */ clip-path: circle(0) !important; /* Optional backup: make it unclickable just in case */ pointer-events: none !important; }

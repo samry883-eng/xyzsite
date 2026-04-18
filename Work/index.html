@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>Work — XYZ Studios</title>
+  <style>
+    @font-face {
+      font-family: 'Micross';
+      src: url('/assets/micross.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --nav-h:    clamp(52px, 9vh, 80px);
+      --row-gap:  clamp(4px, min(1.4vh, 2.5vw), 52px);
+      --card-gap: clamp(20px, 3.5vw, 48px);
+      --col-pad:  24px;
+      /* Reserve space for title row under each thumbnail (must match .wc-header) */
+      --wc-label-h: clamp(24px, 3.6vh, 46px);
+    }
+
+    html, body {
+      background: #000; color: #fff;
+      font-family: Micross, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      overflow-y: hidden;
+      height: 100%;
+    }
+
+    /* ── NAV ──────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1001;
+      height: var(--nav-h);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 clamp(16px, 4vw, 48px);
+      background: transparent !important;
+    }
+    .nav-logo img { height: 29px; width: auto; display: block; }
+    .nav-links { display: flex; gap: 47px; list-style: none; }
+    .nav-links a {
+      text-decoration: none;
+      color: rgba(250,250,250,0.35);
+      font-family: Micross, Arial, sans-serif;
+      font-size: 10.64px; font-weight: 400;
+      letter-spacing: normal; text-transform: uppercase;
+      transition: color 0.2s ease;
+    }
+    .nav-links a.active,
+    .nav-links a:hover { color: rgb(250,250,250); }
+
+    /* ── SHOWCASE — 4 rows always fit in viewport (no vertical page scroll) ─ */
+    .work-showcase {
+      position: fixed;
+      top: var(--nav-h);
+      left: 0;
+      right: 0;
+      height: calc(100vh - var(--nav-h));
+      height: calc(100dvh - var(--nav-h));
+      max-height: calc(100dvh - var(--nav-h));
+      display: flex;
+      flex-direction: column;
+      gap: var(--row-gap);
+      padding: clamp(6px, 1.2vh, 28px) clamp(16px, 4vw, 48px) clamp(4px, 0.8vh, 20px);
+      overflow-x: hidden;
+      overflow-y: hidden;
+      background: #000;
+      z-index: 1;
+    }
+
+    /* ── ROW HEADER ─────────────────────────────────────── */
+    .work-row-header {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding-bottom: clamp(2px, 0.4vh, 6px);
+    }
+    .work-row-cat {
+      font-family: Micross, Arial, sans-serif;
+      font-size: 8px; font-weight: 400;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+      flex-shrink: 0;
+    }
+    .work-row-line {
+      display: none;
+    }
+
+    .work-row {
+      flex: 1 1 0;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(2px, 0.45vh, 6px);
+    }
+
+    /* ── TOP GRADIENT OVERLAY (behind nav, over thumbnails) ─ */
+    .work-fade-top {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 100px;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.72) 0%, transparent 100%);
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    /* ── TEXT FADE — thin strip at top of showcase ──────── */
+    .work-fade-text {
+      position: fixed;
+      top: var(--nav-h); left: 0; right: 0;
+      height: 28px;
+      background: linear-gradient(to bottom, #000 0%, transparent 100%);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* ── RIGHT FADE OVERLAY ──────────────────────────────── */
+    .work-fade-right {
+      position: fixed;
+      top: 0; right: 0; bottom: 0;
+      width: 120px;
+      background: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 50%, #000 100%);
+      pointer-events: none;
+      z-index: 500;
+    }
+
+    .work-row-cards {
+      container-type: size;
+      container-name: work-row-strip;
+      flex: 1 1 0;
+      min-height: 0;
+      display: flex;
+      align-items: stretch;
+      gap: var(--card-gap);
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding-top: clamp(2px, 0.5vh, 14px);
+      margin-top: clamp(-6px, -0.45vh, -14px);
+      padding-bottom: 2px;
+      padding-right: clamp(16px, 4vw, 48px);
+      scrollbar-width: none;
+    }
+    .work-row-cards::-webkit-scrollbar { display: none; }
+
+    /* ── ROW HEADER REVEAL ──────────────────────────────── */
+    .work-row-header {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .work-row-header.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── CARD WRAP — height from row strip; width = 16:9 of thumb area ─ */
+    .work-card-wrap {
+      flex: 0 0 auto;
+      height: 100cqh;
+      max-height: 100%;
+      width: calc((100cqh - var(--wc-label-h)) * 16 / 9);
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .work-card-wrap.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── CARD HEADER ── */
+    .wc-header {
+      flex: 0 0 var(--wc-label-h);
+      padding-top: clamp(2px, 0.4vh, 8px);
+      font-family: Micross, Arial, sans-serif;
+      min-width: 0;
+      min-height: 0;
+      text-align: center;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+    }
+    .wc-label {
+      font-size: 8px; font-weight: 400; letter-spacing: 0.04em; line-height: 1.3;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      text-transform: uppercase;
+      display: block;
+    }
+    .wc-label-client { color: rgba(255,255,255,0.35); }
+    .wc-label-sep    { color: rgba(255,255,255,0.2); }
+    .wc-label-title  { color: rgba(255,255,255,0.9); }
+
+    /* ── CARD THUMBNAIL ─────────────────────────────────── */
+    .wc-tilt {
+      flex: 1 1 0;
+      min-height: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @supports not (container-type: size) {
+      .work-card-wrap {
+        height: 100%;
+        width: min(185px, 26vw);
+      }
+    }
+    .work-card {
+      flex: 1 1 0;
+      min-height: 0;
+      width: 100%;
+      overflow: hidden;
+      background: #111;
+      position: relative;
+    }
+    .work-card img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+      position: relative; z-index: 1;
+    }
+    .work-card::before {
+      content: ''; position: absolute; inset: 0;
+      background: #111; z-index: 0;
+    }
+    .work-card.loaded::before { display: none; }
+
+    /* Hover overlay */
+    .work-card::after {
+      content: ''; position: absolute; inset: 0; z-index: 2;
+      background: rgba(0,0,0,0);
+      transition: background 0.3s ease;
+    }
+    .work-card-wrap:hover .work-card::after {
+      background: rgba(0,0,0,0.18);
+    }
+  </style>
+</head>
+<body>
+<!-- Page transition overlay -->
+<div id="page-out" style="position:fixed;inset:0;z-index:9999;background:#fff;pointer-events:none;transform:translateY(0);"></div>
+<!-- XYZ Loader -->
+<style>
+#xyz-wl{position:fixed;inset:0;z-index:10001;background:#fff;will-change:transform;pointer-events:all}
+#xyz-wl-track{position:absolute;top:50%;left:44px;right:44px;height:3px;background:rgba(0,0,0,0.1);transform:translateY(-50%)}
+#xyz-wl-fill{position:absolute;top:50%;left:44px;right:44px;height:3px;background:#111;transform:translateY(-50%) scaleX(0);transform-origin:left center;will-change:transform}
+#xyz-wl-fill.go{animation:xyzBar 1.8s cubic-bezier(0.37,0,0.63,1) forwards}
+@keyframes xyzBar{from{transform:translateY(-50%) scaleX(0)}to{transform:translateY(-50%) scaleX(1)}}
+#xyz-wl-logo{position:absolute;bottom:36px;left:44px;width:72px;opacity:0;transition:opacity .3s ease;filter:invert(1)}
+</style>
+<div id="xyz-wl">
+  <div id="xyz-wl-track"></div>
+  <div id="xyz-wl-fill"></div>
+  <img id="xyz-wl-logo" src="/assets/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios">
+</div>
+<script>
+(function(){
+  var wf=document.querySelector('.loading_container');
+  if(wf)wf.style.display='none';
+  var el=document.getElementById('xyz-wl');
+  var fill=document.getElementById('xyz-wl-fill');
+  var logo=document.getElementById('xyz-wl-logo');
+  document.body.style.overflow='hidden';
+  setTimeout(function(){
+    logo.style.opacity='1';
+    fill.classList.add('go');
+  },80);
+  fill.addEventListener('animationend',function(){
+    setTimeout(exit,220);
+  });
+  function exit(){
+    el.style.transition='transform .65s cubic-bezier(0.76,0,0.24,1)';
+    el.style.transform='translateY(-100%)';
+    document.body.style.overflow='';
+    document.dispatchEvent(new CustomEvent('xyz-exiting'));
+    setTimeout(function(){el.style.display='none';},700);
+  }
+})();
+</script>
+<!-- End XYZ Loader -->
+
+  <div class="work-fade-top"></div>
+
+  <nav>
+    <a class="nav-logo" href="/">
+      <img src="/assets/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios">
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/projects/" class="active">Work</a></li>
+      <li><a href="/services/">XYZ/Services</a></li>
+      <li><a href="/contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="work-fade-text"></div>
+
+  <section class="work-showcase" id="showcase">
+    <div class="work-fade-right"></div>
+  </section>
+
+<script>
+  const VF = 'https://r2.vidzflow.com/source/';
+  const SB = 'https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/';
+
+  const ROWS = [
+    {
+      label: 'Visual Effects',
+      cards: [
+        { video: VF  + 'cbf82991-c743-4045-8898-b6ee78efd9b4.mp4',         client: 'Atomic',         title: 'Into the Void',                date: 'NOV 15' },
+        { video: VF  + 'ef1dc602-5a95-4973-a0ea-82794726bc4a.mp4',         client: 'Salomon',        title: 'Speedcross 3',                 date: 'OCT 25' },
+        { video: SB  + 'PcB8hb2-uO/original',                              client: 'Salomon',        title: 's/lab Manifesto',              date: 'FEB 26' },
+        { video: SB  + '9O7xsj76Lw/original',                              client: 'Toyota',         title: 'Road to Palisades',            date: 'FEB 26' },
+        { video: SB  + '85D_It6HUS/original',                               client: 'RBC',            title: 'Canadian Open',                date: 'MAR 9'  },
+        { video: SB  + 'JchEHAr96O/original',                               client: 'JennAir',        title: 'The Flip',                     date: 'JAN 10' },
+        { video: SB  + '0yJ5A9ii2H/original',                               client: 'Fanatics',       title: 'NBA Store',                    date: 'DEC 20' },
+        { video: SB  + 'mu8ewXP3uH/original',                               client: 'Fanatics',       title: 'NHL Store',                    date: 'DEC 15' },
+        { video: VF  + 'c5bfdb30-f5d1-4f1d-a96f-b736b4ab1fcf.mp4',         client: 'Celsius',        title: 'Spritez Vibez',                date: 'MAY 20' },
+        { video: VF  + 'edac671a-7d48-4eb1-b1ea-c2556b330ee4.mp4',         client: 'Chino Pacas',    title: 'Modo Capone',                  date: 'SEP 12' },
+        { video: VF  + 'e07f965d-dc13-45bc-a958-08fd1baa3793.mp4',         client: 'Marc Jacobs',    title: 'The Essentials',               date: 'OCT 24' },
+        { video: VF  + 'b383d525-8d02-4f4b-b2fa-0d9c29a71d91.mp4',         client: 'Fuerza Regida',  title: 'Tu Sancho',                    date: 'AUG 3'  },
+        { video: VF  + 'daf3f8d1-9b55-438d-9259-922de5fb7c8f.mp4',         client: 'Fuerza Regida',  title: 'Secreto Victoria',             date: 'JUL 18' },
+        { video: VF  + '15e90e12-e3b1-420a-9b11-db60a7b199b0.mp4',         client: 'Tokischa',       title: 'De Maravisha',                 date: 'JUN 5'  },
+      ]
+    },
+    {
+      label: 'Sound',
+      cards: [
+        { video: VF  + '214a3ae2-01ca-4593-8949-98a7191f6548.mp4',         client: 'Louis Vuitton',  title: 'SS26 Teaser',                  date: 'APR 14' },
+        { video: VF  + '17e77d71-3bca-4d42-8275-71deb05724d1.mp4',         client: 'Beats',          title: 'Open',                         date: 'OCT 10' },
+        { video: VF  + '24fed0b9-4d02-45b3-895b-437c3ab89f38.mp4',         client: "Arc'teryx",      title: 'Precision Without Limits',     date: 'FEB 28' },
+        { video: VF  + '6c66aad7-7df3-4809-a8d7-1f92a377fa5e.mp4',         client: 'Lucid',          title: 'Compromise Nothing',           date: 'DEC 5'  },
+        { video: VF  + 'fb5e495e-8460-4277-a7aa-08accd388af0.mp4',         client: 'Prime Video',    title: 'Good Sports',                  date: 'NOV 21' },
+        { video: VF  + '0f5dc170-f1e8-4b0b-a0bd-d9e6486a91e7.mp4',         client: 'Samsung',        title: 'Galaxy AI',                    date: 'MAY 28' },
+        { video: VF  + '4f593e77-d9ea-4992-8dc1-f8520895f0e9.mp4',         client: 'Ford',           title: 'Join the Search',              date: 'JAN 16' },
+        { video: VF  + '996ba39f-1c06-4887-8dc3-52c21a4089b1.mp4',         client: 'Apple Music',    title: "Don't Forget to Take a Break", date: 'DEC 23' },
+        { video: VF  + '5b0d552d-9e53-4967-9d5b-15a5deb86100.mp4',         client: 'New Era',        title: 'F1',                           date: 'NOV 4'  },
+        { video: VF  + 'a1bc0884-b2b7-42a3-aac5-a490571499f5.mp4',         client: 'Burna Boy',      title: 'Tatata ft. Travis Scott',      date: 'SEP 12' },
+        { video: VF  + '0e01d94b-2f38-4e6c-8874-14fc6e98dfeb.mp4',         client: 'Nike',           title: 'Hard Is Home',                 date: 'SEP 2'  },
+        { video: VF  + '00c390f8-2185-4729-be87-dcc17552bc0b.mp4',         client: 'Foot Locker',    title: 'Stay in Rotation',             date: 'AUG 15' },
+        { video: VF  + 'ad2de35b-a84f-4468-8ea1-704e79fc1d6e.mp4',         client: 'Ram Truck',      title: 'The Hunt',                     date: 'JUL 7'  },
+        { video: VF  + '392708ea-1d8c-4872-a6cd-65f4a5e947ba.mp4',         client: 'SNIPES',         title: 'Style Is In Session',          date: 'SEP 3'  },
+        { video: VF  + '68eb0d30-28c6-4074-a239-6ff8a10dbbf1.mp4',         client: 'Hongqi',         title: 'Hongqi',                       date: 'AUG 19' },
+      ]
+    },
+    {
+      label: 'AI',
+      cards: [
+        { video: SB  + 'I_J-Bii5Ql/original',                              client: 'BMW',            title: 'Concept RR',                   date: 'MAR 14' },
+        { video: SB  + 'Clp65xDTmS/original',                              client: 'Nike',           title: 'AI',                           date: 'FEB 8',  slug: 'ai-nike'    },
+        { video: SB  + 'h-VCHXYcwA/original',                              client: 'Ducati',         title: 'AI',                           date: 'JAN 22', slug: 'ai-ducati'  },
+        { video: SB  + 'V0a7Q0zaqq/original',                              client: 'Ferrari',        title: 'AI',                           date: 'DEC 11', slug: 'ai-ferrari' },
+        { video: SB  + 'LWep2Duvk-/original',                              client: 'Mercedes-Benz',  title: 'A Cold Wall',                  date: 'NOV 30' },
+      ]
+    },
+    {
+      label: 'Making Of',
+      cards: [
+        { video: SB  + 'gekxSgtk7e/original',                              client: 'MLS',            title: 'Rating Reloaded',              date: 'JAN 5'  },
+        { video: SB  + 'YRUPuIBrjQ/original',                              client: 'Toyota',         title: 'Road to Palisades',            date: 'DEC 18' },
+        { video: SB  + 'Bl0RrW0k4E/original',                              client: 'Concacaf',       title: 'Gold Cup',                     date: 'NOV 12' },
+        { video: SB  + '1JIMnyZZIW/original',                              client: 'RBC',            title: 'Canadian Open',                date: 'OCT 4'  },
+        { video: VF  + '8c451a49-eb58-4534-becf-87f4ca6f51dd.mp4',         client: 'Doritos',        title: 'Stranger Things',              date: 'SEP 28' },
+        { video: SB  + 'S16jMx0Mpo/original',                              client: 'Pura',           title: 'Hands On',                     date: 'AUG 14' },
+        { video: VF  + 'a9e377b3-727b-4129-adc4-f1c018d7f001.mp4',         client: 'Chris Brown',    title: 'City of Dreams',               date: 'JUL 2'  },
+        { video: SB  + 'tlCbP796Kw/original',                              client: 'Square',         title: 'Released',                     date: 'JUN 9'  },
+        { video: SB  + 'C9qMrM-8bD/original',                              client: 'Jasmin Savoy',   title: 'August',                       date: 'MAY 17' },
+        { video: SB  + 'hREydGGtah/original',                              client: 'Barskih',        title: 'Someone New',                  date: 'APR 3'  },
+        { video: SB  + 'wXBUhN3tQI/original',                              client: 'Max Barskh',     title: 'Mine',                         date: 'MAR 1'  },
+      ]
+    }
+  ];
+
+  const CDN = 'https://cdn.prod.website-files.com/69174740184591f142f019c1/';
+  const THUMBNAILS = {
+    // ── Visual Effects ─────────────────────────────────────────────────────
+    "into the void|atomic":             CDN + "69c0bbd38bf9e9ecfb7c293b_final%20test1.mp4_snapshot_00.27.567.jpg",
+    "speedcross 3|salomon":             CDN + "69c1bf43294738d67f86e3fd_salomon_speedcross_6_2160p.mp4_snapshot_00.04.796.jpg",
+    "canadian open|rbc":                CDN + "69c0c7c957a69405e8a00817_original%20(2).mp4_snapshot_00.00.000.jpg",
+    "s/lab manifesto|salomon":          CDN + "69c0bd3537dcd96b5f0fbd99_original%20(1).mp4_snapshot_00.17.054.jpg",
+    "road to palisades|toyota":         CDN + "69c0babb3eeeb38dec9e84a6_original.mp4_snapshot_00.54.027.jpg",
+    "nhl store|fanatics":               CDN + "6983f4429ddf0f1817061bef_NHL%20Store.avif",
+    "nba store|fanatics":               CDN + "6983f49d3e2baf7fbfa333cd_nba%20store.avif",
+    "the flip|jennair":                 CDN + "6983f7b1aa7c8344aa96cd3f_Jenair6.avif",
+    "the essentials|marc jacobs":       CDN + "698632e07d024cbdc50976fa_Marc%20Jacobs.avif",
+    "modo capone|chino pacas":          CDN + "6986330ccc8c7a06461fdc31_drake%203.avif",
+    "tu sancho|fuerza regida":          CDN + "69863392ec9c14012747b8de_drake%202.avif",
+    "secreto victoria|fuerza regida":   CDN + "698633cf9aa1fa498d7e8cac_Fuerza%20Secreto%202.avif",
+    "de maravisha|tokischa":            CDN + "698b9b4e9009c8f8fd33f65b_tokischa%201.avif",
+    // ── Sound ──────────────────────────────────────────────────────────────
+    "ss26 teaser|louis vuitton":        CDN + "69c0b94d0ebe8f3b86741b7a_214a3ae2-01ca-4593-8949-98a7191f6548.mp4_snapshot_00.12.156.jpg",
+    "open|beats":                       CDN + "69c0c86dee76a67f51f3ccbb_17e77d71-3bca-4d42-8275-71deb05724d1.mp4_snapshot_00.11.787.jpg",
+    "precision without limits|arcteryx":CDN + "69c0c72384ea4c6ef187a17b_24fed0b9-4d02-45b3-895b-437c3ab89f38.mp4_snapshot_00.03.788.jpg",
+    "compromise nothing|lucid":         CDN + "69c0bed5350817015931b808_6c66aad7-7df3-4809-a8d7-1f92a377fa5e.mp4_snapshot_00.15.452.jpg",
+    "galaxy ai|samsung":                CDN + "69c0c672692c99cfff1b169a_0f5dc170-f1e8-4b0b-a0bd-d9e6486a91e7.mp4_snapshot_00.26.923.jpg",
+    "join the search|ford":             CDN + "69c0c920150477178735f0d8_4f593e77-d9ea-4992-8dc1-f8520895f0e9.mp4_snapshot_00.28.669.jpg",
+    "dont forget to take a break|apple music": CDN + "6986462e994790c13bd54007_apple%202.avif",
+    "f1|new era":                       CDN + "69864751fdf4446e3aa6a4f3_F1%201.avif",
+    "tatata ft. travis scott|burna boy":CDN + "698649875dfcf9d28b750377_Tata%201.avif",
+    "hongqi|hongqi":                    CDN + "698649da32089d59e9cbd451_Hongqi%201.avif",
+    "loop|izi":                         CDN + "69864b6235cc5f24480ba839_Izi%204.avif",
+    "sekiro trailer|kai cenat":         CDN + "69879087c8b0d9f5474c03fa_kai%203.avif",
+    // ── AI ─────────────────────────────────────────────────────────────────
+    "concept rr|bmw":                   CDN + "6983f254ccb964933dda7ef8_Bmw2.avif",
+    "ai|nike":                          CDN + "6983eea79630e3e88e1faeac_nike2.avif",
+    "ai|ducati":                        CDN + "6983ee69415b04b87b4162d5_Ducati%202.avif",
+    "ai|ferrari":                       CDN + "6983ed3bc1fbfdbc32392499_Ferrari%203.avif",
+    "a cold wall|mercedes-benz":        CDN + "6983eefa0636bab507bca7c9_Mercedes3.avif",
+    "sous la lune|chanel":              CDN + "6983f5143e88d686965c096c_Chanel4.avif",
+    // ── Making Of ──────────────────────────────────────────────────────────
+    "rating reloaded|mls":              CDN + "6983f01f6277b7b09ea475a7_mls.avif",
+    "released|square":                  CDN + "6983f092d623c02afa6f543c_square.avif",
+  };
+
+  function decodeHTML(str) {
+    return str.replace(/&amp;/g, '&')
+      .replace(/&#x27;|&apos;/g, "'")
+      .replace(/&quot;/g, '"');
+  }
+
+  function normalizeKey(title, client) {
+    const clean = s => decodeHTML(s || '')
+      .trim()
+      .toLowerCase()
+      .replace(/[''`]/g, '')
+      .replace(/[""]/g, '"')
+      .replace(/\s+/g, ' ')
+      .replace(/\s*\/\s*/g, '/');
+    return `${clean(title)}|${clean(client)}`;
+  }
+
+  function getPoster(title, client) {
+    return THUMBNAILS[normalizeKey(title, client)];
+  }
+
+  // ── URL slug helpers (must match generate-projects.mjs) ──
+  function slugify(s) {
+    return s.toLowerCase()
+      .replace(/[''`']/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '');
+  }
+  function projectURL(card, catLabel) {
+    const catSlug  = slugify(catLabel);
+    const projSlug = card.slug || slugify(card.title);
+    return `/work/${catSlug}/${projSlug}/`;
+  }
+
+  // Fallback: VidzFlow CDN thumbnail from video URL
+  function getVFThumb(videoUrl) {
+    const m = videoUrl.match(/vidzflow\.com\/source\/([\w-]+)\.mp4/);
+    return m ? `https://r2.vidzflow.com/thumbnails/${m[1]}.jpg` : null;
+  }
+
+  // Fallback: Streamable CDN thumbnail
+  function getSBThumb(videoUrl) {
+    const m = videoUrl.match(/streamable\.com\/([A-Za-z0-9_-]+)/);
+    return m ? `https://cdn.streamable.com/image/${m[1]}.jpg` : null;
+  }
+
+  // ── BUILD DOM ──────────────────────────────────────────
+  const showcase = document.getElementById('showcase');
+
+  const DEFAULT_POSTER = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%23111%22/%3E%3C/svg%3E';
+
+  const CAT_LABELS = {
+    'Visual Effects': 'VISUAL',
+    'Sound': 'SOUND',
+    'AI': 'AI',
+    'Making Of': 'MAKING OF',
+  };
+
+  ROWS.forEach((rowData) => {
+    const row = document.createElement('div');
+    row.className = 'work-row';
+    row.dataset.label = rowData.label;
+
+    const rowHeader = document.createElement('div');
+    rowHeader.className = 'work-row-header';
+    rowHeader.innerHTML = `
+      <span class="work-row-cat">${CAT_LABELS[rowData.label] || rowData.label.toUpperCase()}</span>
+      <div class="work-row-line"></div>
+    `;
+
+    const rowCards = document.createElement('div');
+    rowCards.className = 'work-row-cards';
+
+    rowData.cards.forEach((card, cardIdx) => {
+      const numStr = String(cardIdx + 1).padStart(2, '0');
+
+      const wrap = document.createElement('div');
+      wrap.className = 'work-card-wrap';
+      wrap.dataset.rowLabel = rowData.label;
+
+      const header = document.createElement('div');
+      header.className = 'wc-header';
+      header.innerHTML = `<span class="wc-label"><span class="wc-label-client">${card.client}</span><span class="wc-label-sep"> — </span><span class="wc-label-title">${card.title}</span></span>`;
+
+      const div = document.createElement('div');
+      div.className = 'work-card';
+
+      const img = document.createElement('img');
+      const poster = getPoster(card.title, card.client) || getVFThumb(card.video) || getSBThumb(card.video) || DEFAULT_POSTER;
+      img.src = poster;
+      img.alt = `${card.client} — ${card.title}`;
+      img.addEventListener('load', () => div.classList.add('loaded'));
+      img.addEventListener('error', () => { img.src = DEFAULT_POSTER; div.classList.add('loaded'); });
+
+      div.appendChild(img);
+
+      const tiltWrap = document.createElement('div');
+      tiltWrap.className = 'wc-tilt';
+      tiltWrap.appendChild(div);
+      tiltWrap.appendChild(header);
+      wrap.appendChild(tiltWrap);
+
+      // Navigate to project page on click
+      wrap.addEventListener('click', () => {
+        navigateTo(projectURL(card, rowData.label), poster);
+      });
+
+      rowCards.appendChild(wrap);
+    });
+
+    row.appendChild(rowHeader);
+    row.appendChild(rowCards);
+    showcase.appendChild(row);
+  });
+
+  // ── HORIZONTAL ROWS — smooth lerp scroll ─────────────────────
+  document.querySelectorAll('.work-row-cards').forEach(rowCards => {
+    const originals = Array.from(rowCards.querySelectorAll('.work-card-wrap'));
+    if (!originals.length) return;
+
+    originals.forEach(orig => {
+      const c = orig.cloneNode(true); c.dataset.clone='1'; rowCards.appendChild(c);
+    });
+    [...originals].reverse().forEach(orig => {
+      const c = orig.cloneNode(true); c.dataset.clone='1';
+      rowCards.insertBefore(c, rowCards.firstChild);
+    });
+
+    rowCards.querySelectorAll('[data-clone]').forEach(c => {
+      c.style.transition = 'none';
+      c.style.opacity = '1';
+      c.style.transform = 'none';
+    });
+
+    // Re-attach click on clones
+    rowCards.querySelectorAll('[data-clone] .work-card-wrap, [data-clone].work-card-wrap').forEach(cloneWrap => {
+      const cloneClient = cloneWrap.querySelector('.wc-client')?.textContent.trim();
+      const cloneTitle  = cloneWrap.querySelector('.wc-title')?.textContent.trim();
+      const cloneCat    = cloneWrap.dataset.rowLabel || '';
+      cloneWrap.style.cursor = 'pointer';
+      cloneWrap.addEventListener('click', () => {
+        const row  = ROWS.find(r => r.label === cloneCat);
+        const card = row?.cards.find(c => c.client === cloneClient && c.title === cloneTitle);
+        if (card) navigateTo(projectURL(card, cloneCat));
+      });
+    });
+
+    let loopW = 0, pos = 0, target = 0, animFrom = 0, animStart = 0, raf = null, locked = false;
+    const DURATION = 900;
+
+    function easeInOut(t) { return 1 - Math.pow(1 - t, 4); }
+    function wrapPos() {
+      if (pos < loopW * 0.1) { pos += loopW; target += loopW; animFrom += loopW; }
+      if (pos > loopW * 1.9) { pos -= loopW; target -= loopW; animFrom -= loopW; }
+    }
+    function snapTick() {
+      const t = Math.min((performance.now() - animStart) / DURATION, 1);
+      pos = animFrom + (target - animFrom) * easeInOut(t);
+      wrapPos(); rowCards.scrollLeft = pos;
+      if (t < 1) { raf = requestAnimationFrame(snapTick); }
+      else { pos = target; wrapPos(); rowCards.scrollLeft = pos; raf = null; setTimeout(() => { locked = false; }, 500); }
+    }
+    function startSnap(dir) {
+      if (locked) return; locked = true;
+      const cardEl = rowCards.querySelector('.work-card-wrap');
+      const cardW = cardEl ? cardEl.offsetWidth + 16 : 260;
+      animFrom = pos; animStart = performance.now(); target = pos + dir * cardW * 2;
+      if (raf) cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(snapTick);
+    }
+
+    rowCards.addEventListener('wheel', e => { if (!e.target.closest('.work-card-wrap')) return; e.preventDefault(); e.stopPropagation(); startSnap(e.deltaY > 0 ? 1 : -1); }, { passive: false });
+
+    let tx0 = 0, tx1 = 0;
+    rowCards.addEventListener('touchstart', e => { tx0 = tx1 = e.touches[0].clientX; }, { passive: true });
+    rowCards.addEventListener('touchmove', e => { const dx = tx1 - e.touches[0].clientX; tx1 = e.touches[0].clientX; pos += dx; wrapPos(); rowCards.scrollLeft = pos; }, { passive: true });
+    rowCards.addEventListener('touchend', e => { const dx = tx0 - e.changedTouches[0].clientX; if (Math.abs(dx) > 30) startSnap(dx > 0 ? 1 : -1); }, { passive: true });
+
+    requestAnimationFrame(() => {
+      loopW = rowCards.scrollWidth / 3;
+      pos = loopW; target = loopW; animFrom = loopW;
+      rowCards.scrollLeft = pos;
+    });
+  });
+
+  // ── 3D TILT ──────────────────────────────────────────────────
+  const SPRING = 'transform 1.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 1.3s cubic-bezier(0.25,0.46,0.45,0.94)';
+  const ENTER  = 'transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94), box-shadow 0.5s ease';
+  document.querySelectorAll('.wc-tilt').forEach(tilt => {
+    let entering = false, enterTimer;
+    tilt.addEventListener('mouseenter', () => {
+      entering = true;
+      tilt.style.transition = ENTER;
+      clearTimeout(enterTimer);
+      enterTimer = setTimeout(() => { entering = false; }, 500);
+    });
+    tilt.addEventListener('mousemove', e => {
+      const r  = tilt.getBoundingClientRect();
+      const x  = e.clientX - r.left;
+      const y  = e.clientY - r.top;
+      const cx = r.width  / 2;
+      const cy = r.height / 2;
+      const tiltX = ((y - cy) / cy) * -6;
+      const tiltY = ((x - cx) / cx) *  6;
+      const sBlur = 20 + (Math.abs(tiltX) + Math.abs(tiltY)) * 0.5;
+      if (!entering) tilt.style.transition = 'none';
+      tilt.style.transform = `perspective(900px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+      tilt.style.boxShadow = `${tiltY * 0.4}px ${-tiltX * 0.4}px ${sBlur}px rgba(0,0,0,0.45)`;
+    });
+    tilt.addEventListener('mouseleave', () => {
+      entering = false;
+      clearTimeout(enterTimer);
+      tilt.style.transition = SPRING;
+      tilt.style.transform  = '';
+      tilt.style.boxShadow  = '';
+    });
+  });
+
+  // ── CARD REVEAL ──────────────────────────────────────────────
+  function startCardReveal() {
+    // baseDelay: wait for the loader slide-out to fully finish (700ms)
+    const BASE = 700;
+    document.querySelectorAll('.work-row').forEach((row, rowIdx) => {
+      const header   = row.querySelector('.work-row-header');
+      const rowCards = row.querySelector('.work-row-cards');
+      if (!rowCards) return;
+
+      // Row header staggers in first, before its cards
+      const headerDelay = BASE + rowIdx * 260;
+      if (header) setTimeout(() => header.classList.add('revealed'), headerDelay);
+
+      // Cards stagger in after their row header
+      rowCards.querySelectorAll('.work-card-wrap:not([data-clone])').forEach((wrap, cardIdx) => {
+        const delay = headerDelay + 80 + cardIdx * 110;
+        setTimeout(() => wrap.classList.add('revealed'), delay);
+      });
+    });
+  }
+
+  if (document.getElementById('xyz-wl')) {
+    document.addEventListener('xyz-exiting', startCardReveal, { once: true });
+  } else {
+    startCardReveal();
+  }
+
+  // ── TOP FADE (no vertical scroll on work grid; stays hidden) ─
+  const fadeTop = document.querySelector('.work-fade-top');
+  if (fadeTop) fadeTop.style.opacity = '0';
+
+  // ── PAGE TRANSITION ───────────────────────────────────────────
+  const pageOut = document.getElementById('page-out');
+
+  function slideAwayPanel() {
+    pageOut.style.transition = 'none';
+    pageOut.style.transform = 'translateY(0)';
+    pageOut.style.pointerEvents = 'none';
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        pageOut.style.transition = 'transform 0.58s cubic-bezier(0.76,0,0.24,1)';
+        pageOut.style.transform = 'translateY(-100%)';
+      });
+    });
+  }
+
+  // On fresh load or bfcache restore: slide panel up to reveal
+  slideAwayPanel();
+  window.addEventListener('pageshow', (e) => { if (e.persisted) slideAwayPanel(); });
+
+  function navigateTo(url, poster) {
+    const dest = poster ? url + '?poster=' + encodeURIComponent(poster) : url;
+    pageOut.style.transition = 'none';
+    pageOut.style.transform = 'translateY(100%)';
+    pageOut.style.pointerEvents = 'all';
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        pageOut.style.transition = 'transform 0.48s cubic-bezier(0.76,0,0.24,1)';
+        pageOut.style.transform = 'translateY(0)';
+      });
+    });
+    setTimeout(() => { window.location.href = dest; }, 540);
+  }
+</script>
+</body>
+</html>
