@@ -495,15 +495,16 @@
     if (e.key === 'Escape') closeDeckModal();
   });
 
+  var CONTACT_WEB3FORMS_ACCESS_KEY = 'f77d3594-3449-447d-8e43-483375d675cd';
   /* Capabilities deck → Web3Forms “Capabilities Deck” form. If key is removed, FormSubmit fallback is used instead. */
-  var WEB3FORMS_ACCESS_KEY = 'd8aee030-0698-4909-8496-a1b61cb4a567';
+  var DECK_WEB3FORMS_ACCESS_KEY = 'd8aee030-0698-4909-8496-a1b61cb4a567';
   var DECK_NOTIFY_EMAIL = 'inquiries@xyzstudios.co';
   var FORMSUBMIT_AJAX_URL = 'https://formsubmit.co/ajax/' + encodeURIComponent(DECK_NOTIFY_EMAIL);
 
   // ── MAIN CONTACT FORM → Web3Forms ────────────────────────
   (function () {
     var form = document.getElementById('ct-form');
-    if (!form || !WEB3FORMS_ACCESS_KEY) return;
+    if (!form || !CONTACT_WEB3FORMS_ACCESS_KEY) return;
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -528,7 +529,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify({
-          access_key: WEB3FORMS_ACCESS_KEY,
+          access_key: CONTACT_WEB3FORMS_ACCESS_KEY,
           subject: 'WEBSITE: Contact form',
           name: name,
           email: email,
@@ -593,12 +594,12 @@
       if (btn) { btn.disabled = false; btn.style.opacity = ''; }
     }
 
-    if (WEB3FORMS_ACCESS_KEY) {
+    if (DECK_WEB3FORMS_ACCESS_KEY) {
       fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify({
-          access_key: WEB3FORMS_ACCESS_KEY,
+          access_key: DECK_WEB3FORMS_ACCESS_KEY,
           subject: 'WEBSITE: Capabilities deck request',
           name: name,
           email: email,
