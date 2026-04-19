@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Access capabilities deck — XYZ Studios</title>
+  <title>Login — XYZ Studios</title>
   <meta name="robots" content="noindex, nofollow" />
   <style>
     @font-face {
@@ -62,15 +62,6 @@
       justify-content: center;
       padding: clamp(80px, 12vh, 120px) var(--deck-pad-x);
     }
-    .cover-head-row {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(9rem, 14rem);
-      align-items: end;
-      gap: clamp(16px, 3vw, 40px);
-    }
-    .cover-title-col {
-      min-width: 0;
-    }
     .cover-title {
       margin: 0;
       font-size: clamp(36px, 5.2vw, 72px);
@@ -78,35 +69,6 @@
       line-height: 0.88;
       letter-spacing: -0.035em;
       color: #fff;
-    }
-    .cover-contact {
-      text-align: right;
-      justify-self: end;
-      max-width: 15rem;
-    }
-    .cover-contact strong {
-      display: block;
-      font-weight: 600;
-      font-size: 12px;
-      line-height: 1.4;
-      color: #fff;
-      margin-bottom: 8px;
-      letter-spacing: 0.04em;
-    }
-    .cover-contact-email {
-      display: block;
-      font-size: 10.5px;
-      line-height: 1.65;
-      font-weight: 400;
-      color: rgba(255, 255, 255, 0.5);
-      margin-bottom: 6px;
-    }
-    .cover-contact-meta {
-      display: block;
-      font-size: 10px;
-      line-height: 1.55;
-      font-weight: 400;
-      color: rgba(255, 255, 255, 0.42);
     }
     .cover-sub {
       font-size: clamp(11px, 1.1vw, 13px);
@@ -137,13 +99,6 @@
       margin: 0 auto;
     }
     /* Request modal typography (Contact/index.html) */
-    .deck-eyebrow {
-      font: 400 8px/1 Micross, Arial, sans-serif;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.28);
-      margin-bottom: 14px;
-    }
     .deck-title {
       font: 400 26px/1.1 Micross, Arial, sans-serif;
       letter-spacing: -0.02em;
@@ -245,16 +200,6 @@
         justify-content: flex-end;
         padding-bottom: clamp(32px, 6vh, 48px);
       }
-      .cover-head-row {
-        grid-template-columns: 1fr;
-        align-items: start;
-      }
-      .cover-contact {
-        text-align: left;
-        justify-self: start;
-        max-width: none;
-        margin-top: 8px;
-      }
     }
   </style>
 </head>
@@ -263,16 +208,7 @@
     <aside class="split-left" aria-label="Capabilities deck">
       <div class="wordmark">XYZSTUDIOS</div>
       <div class="cover-zone">
-        <div class="cover-head-row">
-          <div class="cover-title-col">
-            <h1 class="cover-title">Capabilities<br />Deck</h1>
-          </div>
-          <div class="cover-contact">
-            <strong>XYZStudios</strong>
-            <span class="cover-contact-email">Inquiries@xyzstudios.co</span>
-            <span class="cover-contact-meta">International Post-Production Studio | Founded in 2024</span>
-          </div>
-        </div>
+        <h1 class="cover-title">Capabilities<br />Deck</h1>
         <p class="cover-sub">This isn't work for hire. It's a partnership.</p>
         <p class="foot-inline">© XYZStudios · Capabilities</p>
       </div>
@@ -280,9 +216,8 @@
 
     <main class="split-right">
       <div class="login-shell">
-        <div class="deck-eyebrow">XYZ Studios</div>
-        <div class="deck-title">Access capabilities deck</div>
-        <div class="deck-sub">Use the same email you used when you requested access.</div>
+        <div class="deck-title">Login</div>
+        <div class="deck-sub">Enter the email you used to request access.</div>
 
         <form id="f" autocomplete="on" novalidate>
           <div class="ct-field ct-field--last" id="email-field">
