@@ -5,6 +5,22 @@
   "installCommand": "npm install",
   "rewrites": [
     {
+      "source": "/projects",
+      "destination": "/projects/index.html"
+    },
+    {
+      "source": "/projects/",
+      "destination": "/projects/index.html"
+    },
+    {
+      "source": "/work",
+      "destination": "/work/index.html"
+    },
+    {
+      "source": "/work/",
+      "destination": "/work/index.html"
+    },
+    {
       "source": "/capabilities/login",
       "destination": "/capabilities/login.html"
     },
