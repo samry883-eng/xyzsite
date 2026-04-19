@@ -27,6 +27,14 @@
     {
       "source": "/admin/",
       "destination": "/capabilities/admin.html"
+    },
+    {
+      "source": "/capabilities",
+      "destination": "/capabilities/index.html"
+    },
+    {
+      "source": "/capabilities/",
+      "destination": "/capabilities/index.html"
     }
   ]
 }
