@@ -11,62 +11,189 @@
       --black: #0b0b0b;
       --white: #ffffff;
       --dim: rgba(255, 255, 255, 0.42);
-      --line: rgba(255, 255, 255, 0.1);
+      --line: rgba(255, 255, 255, 0.12);
+      --deck-pad-x: clamp(24px, 4vw, 64px);
       --ease: cubic-bezier(0.76, 0, 0.24, 1);
     }
     html, body {
       min-height: 100%;
+      height: 100%;
       background: var(--black);
       color: var(--white);
       font-family: "Microsoft Sans Serif", "Segoe UI", Tahoma, Geneva, sans-serif;
       -webkit-font-smoothing: antialiased;
     }
-    .gate {
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       min-height: 100vh;
+      min-height: 100dvh;
+    }
+
+    /* ── Left: same content structure as slide 1 cover (deck index) ── */
+    .split-left {
+      position: relative;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 56px 28px 80px;
+      background: #000;
+      border-right: 1px solid rgba(255, 255, 255, 0.06);
+      overflow: hidden;
     }
-    /* Deck-style wordmark (see capabilities slide chrome) */
-    .wordmark {
+    .split-left .wordmark {
+      position: absolute;
+      top: clamp(20px, 3vh, 36px);
+      left: var(--deck-pad-x);
+      z-index: 2;
       font-size: 11px;
       font-weight: 500;
       letter-spacing: 0.13em;
       text-transform: uppercase;
-      margin-bottom: 56px;
     }
-    .headline {
-      font-size: clamp(32px, 6.5vw, 52px);
+    .cover-year-bg {
+      position: absolute;
+      left: 8%;
+      top: 42%;
+      transform: translateY(-50%);
+      font-size: clamp(72px, 14vw, 200px);
       font-weight: 400;
-      letter-spacing: -0.03em;
-      line-height: 1.05;
-      text-align: center;
-      margin-bottom: 16px;
+      line-height: 1;
+      letter-spacing: -0.07em;
+      color: rgba(255, 255, 255, 0.055);
+      pointer-events: none;
+      user-select: none;
+      z-index: 0;
     }
-    .headline span {
+    .cover-zone {
+      position: relative;
+      z-index: 1;
+      flex: 1 1 0;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: clamp(72px, 10vh, 100px) var(--deck-pad-x) clamp(24px, 4vh, 40px);
+    }
+    .cover-head-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(9rem, 14rem);
+      align-items: end;
+      gap: clamp(16px, 3vw, 40px);
+    }
+    .cover-title-col {
+      min-width: 0;
+    }
+    .cover-title {
+      margin: 0;
+      font-size: clamp(36px, 5.2vw, 72px);
+      font-weight: 700;
+      line-height: 0.88;
+      letter-spacing: -0.035em;
+      color: #fff;
+    }
+    .cover-contact {
+      text-align: right;
+      justify-self: end;
+      max-width: 15rem;
+    }
+    .cover-contact strong {
+      display: block;
+      font-weight: 600;
+      font-size: 12px;
+      line-height: 1.4;
+      color: #fff;
+      margin-bottom: 8px;
+      letter-spacing: 0.04em;
+    }
+    .cover-contact-email {
+      display: block;
+      font-size: 10.5px;
+      line-height: 1.65;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 6px;
+    }
+    .cover-contact-meta {
+      display: block;
+      font-size: 10px;
+      line-height: 1.55;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.42);
+    }
+    .cover-sub {
+      font-size: clamp(11px, 1.1vw, 13px);
+      color: rgba(255, 255, 255, 0.92);
+      margin-top: clamp(12px, 2vh, 20px);
+      font-weight: 400;
+      line-height: 1.45;
+      max-width: 28em;
+    }
+    .cover-photo-strip {
+      flex: 0 0 clamp(120px, 28vh, 240px);
+      min-height: 120px;
+      position: relative;
+      background: #050505;
+      overflow: hidden;
+    }
+    .cover-photo-strip img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 58% 42%;
       display: block;
     }
-    .sub {
+    .foot-inline {
+      margin-top: clamp(20px, 3vh, 32px);
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.28);
+      letter-spacing: 0.02em;
+    }
+
+    /* ── Right: login (underline field + circular CTA) ── */
+    .split-right {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(32px, 6vh, 64px) clamp(28px, 5vw, 56px) 160px;
+      background: #000;
+    }
+    .login-shell {
+      width: 100%;
+      max-width: 380px;
+      margin: 0 auto;
+    }
+    .login-shell h2 {
+      font-size: clamp(32px, 4.5vw, 44px);
+      font-weight: 400;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .login-lead {
       font-size: 14px;
-      line-height: 1.55;
+      line-height: 1.5;
       color: var(--dim);
       text-align: center;
-      max-width: 22em;
-      margin-bottom: 40px;
+      margin-bottom: 36px;
       font-weight: 400;
     }
-    form {
-      width: 100%;
-      max-width: 340px;
+    .field-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.45);
+      margin-bottom: 10px;
     }
     .field {
       margin-bottom: 8px;
     }
     .field input {
       width: 100%;
-      padding: 16px 0 14px;
+      padding: 12px 0 14px;
       background: transparent;
       border: none;
       border-bottom: 1px solid var(--line);
@@ -87,77 +214,125 @@
       line-height: 1.45;
       color: rgba(255, 130, 120, 0.92);
       text-align: center;
-      margin: 20px 0 0;
+      margin-top: 20px;
       min-height: 1.35em;
     }
-    .row-actions {
-      display: flex;
-      justify-content: flex-end;
-      margin-top: 28px;
-    }
-    button[type="submit"] {
+
+    /* Circular SIGN IN — bottom-right of right panel (reference) */
+    .cta-circle {
+      position: absolute;
+      right: clamp(24px, 4vw, 48px);
+      bottom: clamp(24px, 4vw, 48px);
+      width: clamp(100px, 22vw, 132px);
+      height: clamp(100px, 22vw, 132px);
+      border-radius: 50%;
       background: var(--white);
       color: var(--black);
       border: none;
       font-family: inherit;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      padding: 14px 28px;
       cursor: pointer;
-      transition: opacity 0.25s var(--ease);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.25s var(--ease), opacity 0.25s var(--ease);
     }
-    button[type="submit"]:hover:not(:disabled) {
-      opacity: 0.88;
+    .cta-circle:hover:not(:disabled) {
+      transform: scale(1.03);
+      opacity: 0.92;
     }
-    button[type="submit"]:disabled {
+    .cta-circle:disabled {
       opacity: 0.35;
       cursor: not-allowed;
     }
-    /* Slide footer line — matches deck chrome */
-    .rule {
-      position: fixed;
-      bottom: calc(56px + 22px);
-      left: 28px;
-      right: 28px;
-      height: 1px;
-      background: var(--line);
-      max-width: min(100% - 56px, 90rem);
-      margin: 0 auto;
-      pointer-events: none;
-    }
-    @media (max-width: 520px) {
-      .wordmark { margin-bottom: 44px; }
-      .rule { bottom: 40px; left: 20px; right: 20px; }
+
+    @media (max-width: 900px) {
+      .split {
+        grid-template-columns: 1fr;
+      }
+      .split-left {
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        min-height: auto;
+      }
+      .cover-head-row {
+        grid-template-columns: 1fr;
+        align-items: start;
+      }
+      .cover-contact {
+        text-align: left;
+        justify-self: start;
+        max-width: none;
+        margin-top: 8px;
+      }
+      .cover-year-bg {
+        left: 3%;
+        font-size: clamp(56px, 22vw, 120px);
+      }
+      .split-right {
+        padding-bottom: 140px;
+        min-height: 50vh;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="gate">
-    <div class="wordmark">XYZSTUDIOS</div>
-    <h1 class="headline"><span>Capabilities</span></h1>
-    <p class="sub">Enter the email you used to request access.</p>
-    <form id="f" autocomplete="on" novalidate>
-      <div class="field">
-        <input
-          id="email"
-          name="email"
-          type="email"
-          inputmode="email"
-          autocomplete="email"
-          placeholder="Email"
-          required
-          aria-label="Email"
+  <div class="split">
+    <aside class="split-left" aria-label="Capabilities deck">
+      <div class="wordmark">XYZSTUDIOS</div>
+      <div class="cover-year-bg" aria-hidden="true">2026</div>
+      <div class="cover-zone">
+        <div class="cover-head-row">
+          <div class="cover-title-col">
+            <h1 class="cover-title">Capabilities<br />Deck</h1>
+          </div>
+          <div class="cover-contact">
+            <strong>XYZStudios</strong>
+            <span class="cover-contact-email">Inquiries@xyzstudios.co</span>
+            <span class="cover-contact-meta">International Post-Production Studio | Founded in 2024</span>
+          </div>
+        </div>
+        <p class="cover-sub">This isn't work for hire. It's a partnership.</p>
+        <p class="foot-inline">© XYZStudios · Capabilities</p>
+      </div>
+      <div class="cover-photo-strip">
+        <img
+          src="/capabilities/assets/cover-hero.png"
+          width="1920"
+          height="1080"
+          alt=""
+          decoding="async"
         />
       </div>
-      <div class="err" id="err" aria-live="polite"></div>
-      <div class="row-actions">
-        <button type="submit" id="btn">Continue</button>
+    </aside>
+
+    <main class="split-right">
+      <div class="login-shell">
+        <h2>Login</h2>
+        <p class="login-lead">Enter the email you used to request access.</p>
+        <form id="f" autocomplete="on" novalidate>
+          <label class="field-label" for="email">Email</label>
+          <div class="field">
+            <input
+              id="email"
+              name="email"
+              type="email"
+              inputmode="email"
+              autocomplete="email"
+              placeholder="you@company.com"
+              required
+            />
+          </div>
+          <div class="err" id="err" aria-live="polite"></div>
+        </form>
       </div>
-    </form>
+      <button type="submit" class="cta-circle" id="btn" form="f">Sign in</button>
+    </main>
   </div>
-  <div class="rule" aria-hidden="true"></div>
+
   <script>
     (function () {
       var params = new URLSearchParams(window.location.search);
