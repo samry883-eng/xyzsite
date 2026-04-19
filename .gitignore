@@ -4,6 +4,7 @@ Capabilities/Page 3 video.mp4
 
 # Exceeds GitHub 100MB limit — keep locally only
 Work/making-of/gold-cup/breakdown 1.mp4
+Capabilities/assets/video/
 
 dist/
 
@@ -18,6 +19,9 @@ Capabilities/screenshots/
 # Allow shipped capabilities deck assets (overrides patterns above)
 !Capabilities/assets/
 !Capabilities/assets/**
+!Capabilities/assets/**/*.png
+!Capabilities/assets/**/*.mp4
+!Capabilities/assets/**/*.avif
 pdf-capture.js
 pdf-capture.mjs
 screenshot-slide.js
@@ -27,3 +31,5 @@ fix-snap-v2.mjs
 fix-snap-v3.mjs
 reorder-layout.mjs
 revert-layout.mjs
+extract-pdf-text.mjs
+render-pdf.mjs

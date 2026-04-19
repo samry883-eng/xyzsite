@@ -12,6 +12,7 @@ const MIME = {
   '.svg': 'image/svg+xml', '.ico': 'image/x-icon', '.webp': 'image/webp',
   '.mp4': 'video/mp4', '.woff2': 'font/woff2', '.woff': 'font/woff',
   '.ttf': 'font/ttf', '.json': 'application/json', '.avif': 'image/avif',
+  '.pdf': 'application/pdf',
 };
 
 const HOME    = path.join(__dirname, 'Home');
@@ -41,6 +42,24 @@ http.createServer((req, res) => {
   } else if (/^\/capabilities\/assets\//i.test(urlPath)) {
     const sub = urlPath.replace(/^\/capabilities\/assets\//i, '');
     filePath = path.join(__dirname, 'Capabilities', 'assets', sub);
+  } else if (
+    urlPath === '/capabilities/legacy' ||
+    urlPath === '/capabilities/legacy/' ||
+    urlPath === '/capabilities/legacy.html'
+  ) {
+    filePath = path.join(__dirname, 'Capabilities', 'deck-legacy.html');
+  } else if (
+    urlPath === '/capabilities/pitch' ||
+    urlPath === '/capabilities/pitch/' ||
+    urlPath === '/capabilities/pitch.html'
+  ) {
+    filePath = path.join(__dirname, 'Capabilities', 'pitch.html');
+  } else if (
+    urlPath === '/capabilities/deck' ||
+    urlPath === '/capabilities/deck/' ||
+    urlPath === '/capabilities/deck.html'
+  ) {
+    filePath = path.join(__dirname, 'Capabilities', 'deck-legacy.html');
   } else if (urlPath === '/capabilities' || urlPath === '/capabilities/' || urlPath === '/Capabilities' || urlPath === '/Capabilities/') {
     filePath = path.join(__dirname, 'Capabilities', 'index.html');
   } else if (urlPath === '/project' || urlPath === '/project/') {
@@ -55,12 +74,15 @@ http.createServer((req, res) => {
   }
 
   const ext = path.extname(filePath).toLowerCase();
+  const isPitchEmbedAsset =
+    ext === '' && /[/\\]pitch-embed[/\\]/i.test(filePath);
 
   fs.readFile(filePath, (err, data) => {
     if (err) {
       res.writeHead(404); res.end('Not found');
     } else {
-      res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream' });
+      const type = MIME[ext] || (isPitchEmbedAsset ? 'image/avif' : 'application/octet-stream');
+      res.writeHead(200, { 'Content-Type': type });
       res.end(data);
     }
   });

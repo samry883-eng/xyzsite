@@ -1,0 +1,637 @@
+{
+  "embedUrl": "https://pitch.com/embed-link/iyby7f",
+  "slug": "iyby7f",
+  "fetchedAt": "2026-04-19T04:07:07.423Z",
+  "assets": [
+    {
+      "url": "https://pitch.com/static/platform/asset/eina01-regular.KcphlQec_-a9Vwvp9OQ47g.woff2",
+      "local": "pitch-embed/iyby7f/001_pitch_eina01-regular.KcphlQec_-a9Vwvp9OQ47g.woff2.woff2",
+      "bytes": 28852,
+      "contentType": "font/woff2"
+    },
+    {
+      "url": "https://pitch.com/static/platform/asset/eina01-bold.Tkh4uKm2Xra_pJDLPzAPMQ.woff2",
+      "local": "pitch-embed/iyby7f/002_pitch_eina01-bold.Tkh4uKm2Xra_pJDLPzAPMQ.woff2.woff2",
+      "bytes": 28552,
+      "contentType": "font/woff2"
+    },
+    {
+      "url": "https://pitch.com/static/platform/asset/lato-bold._Uz_88BaL5EvE5kIXXeuBQ.woff2",
+      "local": "pitch-embed/iyby7f/003_pitch_lato-bold._Uz_88BaL5EvE5kIXXeuBQ.woff2.woff2",
+      "bytes": 29996,
+      "contentType": "font/woff2"
+    },
+    {
+      "url": "https://pitch.com/static/platform/asset/lato-regular.1eW9jf9QG7ksLteKT1DLyA.woff2",
+      "local": "pitch-embed/iyby7f/004_pitch_lato-regular.1eW9jf9QG7ksLteKT1DLyA.woff2.woff2",
+      "bytes": 30088,
+      "contentType": "font/woff2"
+    },
+    {
+      "url": "https://pitch.com/static/platform/asset/markpro-heavy.vSV1-7c4sdeFL_L5eMxC_g.woff2",
+      "local": "pitch-embed/iyby7f/005_pitch_markpro-heavy.vSV1-7c4sdeFL_L5eMxC_g.woff2.woff2",
+      "bytes": 42628,
+      "contentType": "font/woff2"
+    },
+    {
+      "url": "https://pitch.com/static/platform/asset/markpro-bold.gQ_dlunh5mvD9G1ZNWjzcw.woff2",
+      "local": "pitch-embed/iyby7f/006_pitch_markpro-bold.gQ_dlunh5mvD9G1ZNWjzcw.woff2.woff2",
+      "bytes": 42836,
+      "contentType": "font/woff2"
+    },
+    {
+      "url": "https://pitch.com/static/platform/asset/favicon2.qc9UXxdYrYtT63GtiwiLrg.ico",
+      "local": "pitch-embed/iyby7f/007_pitch_favicon2.qc9UXxdYrYtT63GtiwiLrg.ico.ico",
+      "bytes": 16958,
+      "contentType": "image/vnd.microsoft.icon"
+    },
+    {
+      "url": "https://assets.services.pitch.com/fonts/2cbd3b1d-1682-453f-a8ac-3cdda34bff3c.woff",
+      "local": "pitch-embed/iyby7f/008_assets_2cbd3b1d-1682-453f-a8ac-3cdda34bff3c.woff.woff",
+      "bytes": 30296,
+      "contentType": "font/woff"
+    },
+    {
+      "url": "https://assets.services.pitch.com/fonts/e2d0e4fe-70be-486d-9603-8c09c54a74e0.woff",
+      "local": "pitch-embed/iyby7f/009_assets_e2d0e4fe-70be-486d-9603-8c09c54a74e0.woff.woff",
+      "bytes": 471848,
+      "contentType": "font/woff"
+    },
+    {
+      "url": "https://assets.services.pitch.com/fonts/1732df32-176e-484b-a88c-93e2a191690b.woff",
+      "local": "pitch-embed/iyby7f/010_assets_1732df32-176e-484b-a88c-93e2a191690b.woff.woff",
+      "bytes": 152336,
+      "contentType": "font/woff"
+    },
+    {
+      "url": "https://assets.services.pitch.com/fonts/c676c1b3-d6f9-4bc2-ad92-a344447eded3.woff2",
+      "local": "pitch-embed/iyby7f/011_assets_c676c1b3-d6f9-4bc2-ad92-a344447eded3.woff2.woff2",
+      "bytes": 99500,
+      "contentType": "font/woff2"
+    },
+    {
+      "url": "https://assets.services.pitch.com/fonts/2afe8c10-451d-409c-ba0f-10c9f2e7979c.woff2",
+      "local": "pitch-embed/iyby7f/012_assets_2afe8c10-451d-409c-ba0f-10c9f2e7979c.woff2.woff2",
+      "bytes": 104376,
+      "contentType": "font/woff2"
+    },
+    {
+      "url": "https://assets.services.pitch.com/fonts/1dae083a-0de1-46fd-a7a8-941cb731fbf9.woff2",
+      "local": "pitch-embed/iyby7f/013_assets_1dae083a-0de1-46fd-a7a8-941cb731fbf9.woff2.woff2",
+      "bytes": 104472,
+      "contentType": "font/woff2"
+    },
+    {
+      "url": "https://assets.services.pitch.com/fonts/32c8b2fb-0186-4351-8b9c-8ad350f96b05.woff2",
+      "local": "pitch-embed/iyby7f/014_assets_32c8b2fb-0186-4351-8b9c-8ad350f96b05.woff2.woff2",
+      "bytes": 46288,
+      "contentType": "font/woff2"
+    },
+    {
+      "url": "https://assets.services.pitch.com/fonts/29531235-f291-4516-954f-97a040899d4f.woff2",
+      "local": "pitch-embed/iyby7f/015_assets_29531235-f291-4516-954f-97a040899d4f.woff2.woff2",
+      "bytes": 51412,
+      "contentType": "font/woff2"
+    },
+    {
+      "url": "https://assets.services.pitch.com/fonts/8688e1a9-81c6-4d13-8fef-0f2ea33a8378.woff2",
+      "local": "pitch-embed/iyby7f/016_assets_8688e1a9-81c6-4d13-8fef-0f2ea33a8378.woff2.woff2",
+      "bytes": 46260,
+      "contentType": "font/woff2"
+    },
+    {
+      "url": "https://assets.services.pitch.com/fonts/e2f56804-2f6c-4481-83b5-e1de5c9ed21a.woff2",
+      "local": "pitch-embed/iyby7f/017_assets_e2f56804-2f6c-4481-83b5-e1de5c9ed21a.woff2.woff2",
+      "bytes": 63264,
+      "contentType": "font/woff2"
+    },
+    {
+      "url": "https://assets.services.pitch.com/fonts/5762d80e-11cd-4d75-9f44-1ee9b115b49b.woff2",
+      "local": "pitch-embed/iyby7f/018_assets_5762d80e-11cd-4d75-9f44-1ee9b115b49b.woff2.woff2",
+      "bytes": 50472,
+      "contentType": "font/woff2"
+    },
+    {
+      "url": "https://assets.services.pitch.com/fonts/6ad47db9-ca38-4b33-96ee-a1a9d7499a8a.woff2",
+      "local": "pitch-embed/iyby7f/019_assets_6ad47db9-ca38-4b33-96ee-a1a9d7499a8a.woff2.woff2",
+      "bytes": 106088,
+      "contentType": "font/woff2"
+    },
+    {
+      "url": "https://assets.services.pitch.com/fonts/3933e1a5-d5a4-4529-b734-fcb988220fdb.woff2",
+      "local": "pitch-embed/iyby7f/020_assets_3933e1a5-d5a4-4529-b734-fcb988220fdb.woff2.woff2",
+      "bytes": 105788,
+      "contentType": "font/woff2"
+    },
+    {
+      "url": "https://assets.services.pitch.com/fonts/b6debc8e-bdff-495d-a55d-f4e07102792d.woff2",
+      "local": "pitch-embed/iyby7f/021_assets_b6debc8e-bdff-495d-a55d-f4e07102792d.woff2.woff2",
+      "bytes": 98864,
+      "contentType": "font/woff2"
+    },
+    {
+      "url": "https://assets.services.pitch.com/fonts/c072f3d8-9dad-4806-9a87-cfab883863de.woff2",
+      "local": "pitch-embed/iyby7f/022_assets_c072f3d8-9dad-4806-9a87-cfab883863de.woff2.woff2",
+      "bytes": 106208,
+      "contentType": "font/woff2"
+    },
+    {
+      "url": "https://assets.services.pitch.com/fonts/cd86fadf-4100-47a0-aaaf-59d9707ffd74.woff2",
+      "local": "pitch-embed/iyby7f/023_assets_cd86fadf-4100-47a0-aaaf-59d9707ffd74.woff2.woff2",
+      "bytes": 106008,
+      "contentType": "font/woff2"
+    },
+    {
+      "url": "https://assets.services.pitch.com/fonts/416f1511-e63f-441b-ba6d-208fa18e4afc.woff2",
+      "local": "pitch-embed/iyby7f/024_assets_416f1511-e63f-441b-ba6d-208fa18e4afc.woff2.woff2",
+      "bytes": 103120,
+      "contentType": "font/woff2"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2666/h:1500/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/31ad852b-da1f-408a-8dfa-7376b45a492e",
+      "local": "pitch-embed/iyby7f/025_imgproxy_31ad852b-da1f-408a-8dfa-7376b45a492e",
+      "bytes": 718123,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:666/h:375/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/31ad852b-da1f-408a-8dfa-7376b45a492e",
+      "local": "pitch-embed/iyby7f/026_imgproxy_31ad852b-da1f-408a-8dfa-7376b45a492e",
+      "bytes": 7258,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:756/h:330/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/99f9fe5d-d964-4cdf-8955-1969361de05e",
+      "local": "pitch-embed/iyby7f/027_imgproxy_99f9fe5d-d964-4cdf-8955-1969361de05e",
+      "bytes": 22018,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:3026/h:1321/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/99f9fe5d-d964-4cdf-8955-1969361de05e",
+      "local": "pitch-embed/iyby7f/028_imgproxy_99f9fe5d-d964-4cdf-8955-1969361de05e",
+      "bytes": 30954,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2666/h:1500/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/668150ad-7d5c-48cf-a72c-d22f478991df",
+      "local": "pitch-embed/iyby7f/029_imgproxy_668150ad-7d5c-48cf-a72c-d22f478991df",
+      "bytes": 26298,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:666/h:375/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/668150ad-7d5c-48cf-a72c-d22f478991df",
+      "local": "pitch-embed/iyby7f/030_imgproxy_668150ad-7d5c-48cf-a72c-d22f478991df",
+      "bytes": 3697,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2666/h:1500/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/617340c3-e48f-42f2-8e12-ba9067921e05",
+      "local": "pitch-embed/iyby7f/031_imgproxy_617340c3-e48f-42f2-8e12-ba9067921e05",
+      "bytes": 9608,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2666/h:1500/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/6ca4a17b-94cd-46b5-a9a2-d8626c95b90f",
+      "local": "pitch-embed/iyby7f/032_imgproxy_6ca4a17b-94cd-46b5-a9a2-d8626c95b90f",
+      "bytes": 74121,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:666/h:375/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/617340c3-e48f-42f2-8e12-ba9067921e05",
+      "local": "pitch-embed/iyby7f/033_imgproxy_617340c3-e48f-42f2-8e12-ba9067921e05",
+      "bytes": 1462,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:666/h:375/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/6ca4a17b-94cd-46b5-a9a2-d8626c95b90f",
+      "local": "pitch-embed/iyby7f/034_imgproxy_6ca4a17b-94cd-46b5-a9a2-d8626c95b90f",
+      "bytes": 9416,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://pitch.com/static/platform/asset/apple-touch-icon.UeBvsb0qiGZDMXieVCpFMg.png",
+      "local": "pitch-embed/iyby7f/035_pitch_apple-touch-icon.UeBvsb0qiGZDMXieVCpFMg.png.png",
+      "bytes": 25688,
+      "contentType": "image/png"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:666/h:375/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/cccd4af5-095d-4858-ba39-90b66e59d74f",
+      "local": "pitch-embed/iyby7f/036_imgproxy_cccd4af5-095d-4858-ba39-90b66e59d74f",
+      "bytes": 7794,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2666/h:1500/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/cccd4af5-095d-4858-ba39-90b66e59d74f",
+      "local": "pitch-embed/iyby7f/037_imgproxy_cccd4af5-095d-4858-ba39-90b66e59d74f",
+      "bytes": 286993,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2817/h:1419/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/337c0099-44b9-4df0-9bd4-311f7ad9285c",
+      "local": "pitch-embed/iyby7f/038_imgproxy_337c0099-44b9-4df0-9bd4-311f7ad9285c",
+      "bytes": 337226,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:704/h:354/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/337c0099-44b9-4df0-9bd4-311f7ad9285c",
+      "local": "pitch-embed/iyby7f/039_imgproxy_337c0099-44b9-4df0-9bd4-311f7ad9285c",
+      "bytes": 31358,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:666/h:375/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/f4eccf42-291b-4037-ab6c-f5a5744129af",
+      "local": "pitch-embed/iyby7f/040_imgproxy_f4eccf42-291b-4037-ab6c-f5a5744129af",
+      "bytes": 9596,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2666/h:1500/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/f4eccf42-291b-4037-ab6c-f5a5744129af",
+      "local": "pitch-embed/iyby7f/041_imgproxy_f4eccf42-291b-4037-ab6c-f5a5744129af",
+      "bytes": 197080,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:1934/h:2067/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/f12515ee-bffd-4200-a034-1fd0a1a59354",
+      "local": "pitch-embed/iyby7f/042_imgproxy_f12515ee-bffd-4200-a034-1fd0a1a59354",
+      "bytes": 108394,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:483/h:516/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/f12515ee-bffd-4200-a034-1fd0a1a59354",
+      "local": "pitch-embed/iyby7f/043_imgproxy_f12515ee-bffd-4200-a034-1fd0a1a59354",
+      "bytes": 31191,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2666/h:1500/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/3c0fb32e-73ed-44ae-930b-34b4c508569b",
+      "local": "pitch-embed/iyby7f/044_imgproxy_3c0fb32e-73ed-44ae-930b-34b4c508569b",
+      "bytes": 463077,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:666/h:375/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/3c0fb32e-73ed-44ae-930b-34b4c508569b",
+      "local": "pitch-embed/iyby7f/045_imgproxy_3c0fb32e-73ed-44ae-930b-34b4c508569b",
+      "bytes": 27881,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2665/h:1500/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/b4150895-2cb6-4d13-b8fa-427cb6d2c82b",
+      "local": "pitch-embed/iyby7f/046_imgproxy_b4150895-2cb6-4d13-b8fa-427cb6d2c82b",
+      "bytes": 95476,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:666/h:375/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/b4150895-2cb6-4d13-b8fa-427cb6d2c82b",
+      "local": "pitch-embed/iyby7f/047_imgproxy_b4150895-2cb6-4d13-b8fa-427cb6d2c82b",
+      "bytes": 23117,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2667/h:1499/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/5a17948d-b4ef-4b81-9413-4b466ccef871",
+      "local": "pitch-embed/iyby7f/048_imgproxy_5a17948d-b4ef-4b81-9413-4b466ccef871",
+      "bytes": 28355,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2666/h:1499/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/c5050b41-b43c-4559-9453-a98189e2d04d",
+      "local": "pitch-embed/iyby7f/049_imgproxy_c5050b41-b43c-4559-9453-a98189e2d04d",
+      "bytes": 890572,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:666/h:374/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/5a17948d-b4ef-4b81-9413-4b466ccef871",
+      "local": "pitch-embed/iyby7f/050_imgproxy_5a17948d-b4ef-4b81-9413-4b466ccef871",
+      "bytes": 11541,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:666/h:374/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/c5050b41-b43c-4559-9453-a98189e2d04d",
+      "local": "pitch-embed/iyby7f/051_imgproxy_c5050b41-b43c-4559-9453-a98189e2d04d",
+      "bytes": 43178,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2450/h:1632/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/db43bae3-e362-4f3b-8efa-67bf8707a25c",
+      "local": "pitch-embed/iyby7f/052_imgproxy_db43bae3-e362-4f3b-8efa-67bf8707a25c",
+      "bytes": 418678,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2913/h:1372/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/b9a96078-1f13-431d-8c7b-864263d5a52a",
+      "local": "pitch-embed/iyby7f/053_imgproxy_b9a96078-1f13-431d-8c7b-864263d5a52a",
+      "bytes": 113439,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:612/h:408/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/db43bae3-e362-4f3b-8efa-67bf8707a25c",
+      "local": "pitch-embed/iyby7f/054_imgproxy_db43bae3-e362-4f3b-8efa-67bf8707a25c",
+      "bytes": 28985,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:728/h:343/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/b9a96078-1f13-431d-8c7b-864263d5a52a",
+      "local": "pitch-embed/iyby7f/055_imgproxy_b9a96078-1f13-431d-8c7b-864263d5a52a",
+      "bytes": 19362,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:691/h:361/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/c771389e-24dc-41ba-8fb7-6285a8fde56b",
+      "local": "pitch-embed/iyby7f/056_imgproxy_c771389e-24dc-41ba-8fb7-6285a8fde56b",
+      "bytes": 35164,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2764/h:1446/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/c771389e-24dc-41ba-8fb7-6285a8fde56b",
+      "local": "pitch-embed/iyby7f/057_imgproxy_c771389e-24dc-41ba-8fb7-6285a8fde56b",
+      "bytes": 138631,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:612/h:408/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/3d3c82fe-4910-4141-8307-1b4f6cf2e7c3",
+      "local": "pitch-embed/iyby7f/058_imgproxy_3d3c82fe-4910-4141-8307-1b4f6cf2e7c3",
+      "bytes": 20437,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2448/h:1633/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/3d3c82fe-4910-4141-8307-1b4f6cf2e7c3",
+      "local": "pitch-embed/iyby7f/059_imgproxy_3d3c82fe-4910-4141-8307-1b4f6cf2e7c3",
+      "bytes": 454125,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:569/h:439/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/9cb0bfa6-5fe8-4de3-ba66-73e137d4a0b4",
+      "local": "pitch-embed/iyby7f/060_imgproxy_9cb0bfa6-5fe8-4de3-ba66-73e137d4a0b4",
+      "bytes": 10473,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:612/h:408/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/e5e0db3e-deee-4973-8da9-da6079a68aea",
+      "local": "pitch-embed/iyby7f/061_imgproxy_e5e0db3e-deee-4973-8da9-da6079a68aea",
+      "bytes": 18434,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:729/h:342/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/c9efca35-b1f1-420e-9bc2-ca2b413ba3e3",
+      "local": "pitch-embed/iyby7f/062_imgproxy_c9efca35-b1f1-420e-9bc2-ca2b413ba3e3",
+      "bytes": 17188,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2277/h:1756/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/9cb0bfa6-5fe8-4de3-ba66-73e137d4a0b4",
+      "local": "pitch-embed/iyby7f/063_imgproxy_9cb0bfa6-5fe8-4de3-ba66-73e137d4a0b4",
+      "bytes": 44694,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:612/h:408/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/d1ad1c6e-1aa9-44fc-8b2f-f3f62e0bcc48",
+      "local": "pitch-embed/iyby7f/064_imgproxy_d1ad1c6e-1aa9-44fc-8b2f-f3f62e0bcc48",
+      "bytes": 6841,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2448/h:1633/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/e5e0db3e-deee-4973-8da9-da6079a68aea",
+      "local": "pitch-embed/iyby7f/065_imgproxy_e5e0db3e-deee-4973-8da9-da6079a68aea",
+      "bytes": 621363,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:603/h:413/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/8fa3ec95-3ae8-4a2e-a6ff-21148bd8c041",
+      "local": "pitch-embed/iyby7f/066_imgproxy_8fa3ec95-3ae8-4a2e-a6ff-21148bd8c041",
+      "bytes": 14402,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:680/h:367/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/1d4ee0e3-f5ba-41cb-ba52-2594aeb60d27",
+      "local": "pitch-embed/iyby7f/067_imgproxy_1d4ee0e3-f5ba-41cb-ba52-2594aeb60d27",
+      "bytes": 7003,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2919/h:1370/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/c9efca35-b1f1-420e-9bc2-ca2b413ba3e3",
+      "local": "pitch-embed/iyby7f/068_imgproxy_c9efca35-b1f1-420e-9bc2-ca2b413ba3e3",
+      "bytes": 180364,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2448/h:1633/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/d1ad1c6e-1aa9-44fc-8b2f-f3f62e0bcc48",
+      "local": "pitch-embed/iyby7f/069_imgproxy_d1ad1c6e-1aa9-44fc-8b2f-f3f62e0bcc48",
+      "bytes": 71428,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2415/h:1655/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/8fa3ec95-3ae8-4a2e-a6ff-21148bd8c041",
+      "local": "pitch-embed/iyby7f/070_imgproxy_8fa3ec95-3ae8-4a2e-a6ff-21148bd8c041",
+      "bytes": 177768,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2721/h:1469/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/1d4ee0e3-f5ba-41cb-ba52-2594aeb60d27",
+      "local": "pitch-embed/iyby7f/071_imgproxy_1d4ee0e3-f5ba-41cb-ba52-2594aeb60d27",
+      "bytes": 29436,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:666/h:375/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/26c02cbb-1cd8-4aea-b55f-928adab5b571",
+      "local": "pitch-embed/iyby7f/072_imgproxy_26c02cbb-1cd8-4aea-b55f-928adab5b571",
+      "bytes": 2150,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2666/h:1500/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/26c02cbb-1cd8-4aea-b55f-928adab5b571",
+      "local": "pitch-embed/iyby7f/073_imgproxy_26c02cbb-1cd8-4aea-b55f-928adab5b571",
+      "bytes": 22615,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:666/h:375/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/c2ae0025-89a1-4616-b1b8-09de33df715f",
+      "local": "pitch-embed/iyby7f/074_imgproxy_c2ae0025-89a1-4616-b1b8-09de33df715f",
+      "bytes": 6832,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2666/h:1500/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/c2ae0025-89a1-4616-b1b8-09de33df715f",
+      "local": "pitch-embed/iyby7f/075_imgproxy_c2ae0025-89a1-4616-b1b8-09de33df715f",
+      "bytes": 39261,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:666/h:375/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/2d01a1f5-7d1b-4fdc-812c-fa9047fa586c",
+      "local": "pitch-embed/iyby7f/076_imgproxy_2d01a1f5-7d1b-4fdc-812c-fa9047fa586c",
+      "bytes": 14901,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:666/h:375/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/3d7b8e65-1c00-40b5-9e9e-b8d6d6a7b940",
+      "local": "pitch-embed/iyby7f/077_imgproxy_3d7b8e65-1c00-40b5-9e9e-b8d6d6a7b940",
+      "bytes": 7350,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:666/h:375/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/164d6914-5f0f-44cf-961d-2e111bda11d5",
+      "local": "pitch-embed/iyby7f/078_imgproxy_164d6914-5f0f-44cf-961d-2e111bda11d5",
+      "bytes": 11927,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2666/h:1500/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/2d01a1f5-7d1b-4fdc-812c-fa9047fa586c",
+      "local": "pitch-embed/iyby7f/079_imgproxy_2d01a1f5-7d1b-4fdc-812c-fa9047fa586c",
+      "bytes": 555191,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:666/h:375/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/855ce750-76b1-41a8-96fc-6fcc140e85a2",
+      "local": "pitch-embed/iyby7f/080_imgproxy_855ce750-76b1-41a8-96fc-6fcc140e85a2",
+      "bytes": 14159,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:666/h:375/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/4b3a6eee-07a1-449e-90a7-542c9f33eaf4",
+      "local": "pitch-embed/iyby7f/081_imgproxy_4b3a6eee-07a1-449e-90a7-542c9f33eaf4",
+      "bytes": 10602,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:666/h:375/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/69c5950b-27a9-4695-a2a0-2155512196c2",
+      "local": "pitch-embed/iyby7f/082_imgproxy_69c5950b-27a9-4695-a2a0-2155512196c2",
+      "bytes": 8252,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:666/h:375/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/21b79e8f-bc2c-452f-ab34-afca3281fedd",
+      "local": "pitch-embed/iyby7f/083_imgproxy_21b79e8f-bc2c-452f-ab34-afca3281fedd",
+      "bytes": 2656,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2666/h:1500/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/3d7b8e65-1c00-40b5-9e9e-b8d6d6a7b940",
+      "local": "pitch-embed/iyby7f/084_imgproxy_3d7b8e65-1c00-40b5-9e9e-b8d6d6a7b940",
+      "bytes": 48312,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:666/h:375/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/e6b83cb7-6d72-40de-8a26-535a9766c3bd",
+      "local": "pitch-embed/iyby7f/085_imgproxy_e6b83cb7-6d72-40de-8a26-535a9766c3bd",
+      "bytes": 5370,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2666/h:1500/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/855ce750-76b1-41a8-96fc-6fcc140e85a2",
+      "local": "pitch-embed/iyby7f/086_imgproxy_855ce750-76b1-41a8-96fc-6fcc140e85a2",
+      "bytes": 83540,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2666/h:1500/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/4b3a6eee-07a1-449e-90a7-542c9f33eaf4",
+      "local": "pitch-embed/iyby7f/087_imgproxy_4b3a6eee-07a1-449e-90a7-542c9f33eaf4",
+      "bytes": 64744,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:666/h:375/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/9e39eda3-7e3b-488e-8658-87bd3267dd4e",
+      "local": "pitch-embed/iyby7f/088_imgproxy_9e39eda3-7e3b-488e-8658-87bd3267dd4e",
+      "bytes": 13391,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2666/h:1500/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/164d6914-5f0f-44cf-961d-2e111bda11d5",
+      "local": "pitch-embed/iyby7f/089_imgproxy_164d6914-5f0f-44cf-961d-2e111bda11d5",
+      "bytes": 96665,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2666/h:1500/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/69c5950b-27a9-4695-a2a0-2155512196c2",
+      "local": "pitch-embed/iyby7f/090_imgproxy_69c5950b-27a9-4695-a2a0-2155512196c2",
+      "bytes": 60277,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2666/h:1500/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/21b79e8f-bc2c-452f-ab34-afca3281fedd",
+      "local": "pitch-embed/iyby7f/091_imgproxy_21b79e8f-bc2c-452f-ab34-afca3281fedd",
+      "bytes": 16176,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2666/h:1500/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/e6b83cb7-6d72-40de-8a26-535a9766c3bd",
+      "local": "pitch-embed/iyby7f/092_imgproxy_e6b83cb7-6d72-40de-8a26-535a9766c3bd",
+      "bytes": 33177,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2666/h:1500/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/9e39eda3-7e3b-488e-8658-87bd3267dd4e",
+      "local": "pitch-embed/iyby7f/093_imgproxy_9e39eda3-7e3b-488e-8658-87bd3267dd4e",
+      "bytes": 81884,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2304/h:1735/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/c2916cda-be0f-48a6-b703-96610713de1b",
+      "local": "pitch-embed/iyby7f/094_imgproxy_c2916cda-be0f-48a6-b703-96610713de1b",
+      "bytes": 75669,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:1732/h:2309/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/42cc8f91-b80f-4f96-bf84-408b320ee0ce",
+      "local": "pitch-embed/iyby7f/095_imgproxy_42cc8f91-b80f-4f96-bf84-408b320ee0ce",
+      "bytes": 114523,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:1732/h:2309/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/765d108b-2c45-449a-9316-a8d6d1d6ed70",
+      "local": "pitch-embed/iyby7f/096_imgproxy_765d108b-2c45-449a-9316-a8d6d1d6ed70",
+      "bytes": 271828,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:433/h:577/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/765d108b-2c45-449a-9316-a8d6d1d6ed70",
+      "local": "pitch-embed/iyby7f/097_imgproxy_765d108b-2c45-449a-9316-a8d6d1d6ed70",
+      "bytes": 8214,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2314/h:1728/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/5bb81208-b7c8-457a-a346-ec92442d0c2b",
+      "local": "pitch-embed/iyby7f/098_imgproxy_5bb81208-b7c8-457a-a346-ec92442d0c2b",
+      "bytes": 4782,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2313/h:1728/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/a5d1eb9d-0ce3-465d-bbec-579f87a2127e",
+      "local": "pitch-embed/iyby7f/099_imgproxy_a5d1eb9d-0ce3-465d-bbec-579f87a2127e",
+      "bytes": 518375,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:578/h:432/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/5bb81208-b7c8-457a-a346-ec92442d0c2b",
+      "local": "pitch-embed/iyby7f/100_imgproxy_5bb81208-b7c8-457a-a346-ec92442d0c2b",
+      "bytes": 2079,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:578/h:432/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/a5d1eb9d-0ce3-465d-bbec-579f87a2127e",
+      "local": "pitch-embed/iyby7f/101_imgproxy_a5d1eb9d-0ce3-465d-bbec-579f87a2127e",
+      "bytes": 11407,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2666/h:1500/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/a9f53a1b-d228-42f2-8879-780579939f8c",
+      "local": "pitch-embed/iyby7f/102_imgproxy_a9f53a1b-d228-42f2-8879-780579939f8c",
+      "bytes": 249148,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:2370/h:1687/resizing_type:fit/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/d21c5794-83f2-4595-8436-10599db59b8d",
+      "local": "pitch-embed/iyby7f/103_imgproxy_d21c5794-83f2-4595-8436-10599db59b8d",
+      "bytes": 63204,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:666/h:375/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/a9f53a1b-d228-42f2-8879-780579939f8c",
+      "local": "pitch-embed/iyby7f/104_imgproxy_a9f53a1b-d228-42f2-8879-780579939f8c",
+      "bytes": 16635,
+      "contentType": "image/avif"
+    },
+    {
+      "url": "https://imgproxy.services.pitch.com/_/w:592/h:421/resizing_type:fit/q:50/page:0/disable_animation:1/format:avif/plain/pitch-assets-ccb95893-de3f-4266-973c-20049231b248/d21c5794-83f2-4595-8436-10599db59b8d",
+      "local": "pitch-embed/iyby7f/105_imgproxy_d21c5794-83f2-4595-8436-10599db59b8d",
+      "bytes": 19795,
+      "contentType": "image/avif"
+    }
+  ]
+}
