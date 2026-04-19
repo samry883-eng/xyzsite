@@ -1111,7 +1111,7 @@
     <div class="xyz-logo">XYZSTUDIOS</div>
     <div class="slide-inner">
       <div class="about-img">
-        <div class="ph"><video src="/capabilities/Page%203%20video.mp4" autoplay muted loop playsinline></video></div>
+        <div class="ph"><video src="https://r2.vidzflow.com/source/cbf82991-c743-4045-8898-b6ee78efd9b4.mp4" autoplay muted loop playsinline preload="metadata" data-clip-start="22" data-clip-end="33"></video></div>
       </div>
       <div class="about-text">
         <div class="about-heading">a post-production studio built through close creative collaboration.</div>
@@ -1561,7 +1561,7 @@
        16 · PROJECT — CELSIUS / SPRITZ VIBE
   ═══════════════════════════════ -->
   <div class="slide slide-project has-video" data-index="15" data-deck-year="2025">
-    <video class="proj-video-bg" autoplay muted loop playsinline src="/capabilities/assets/video/celsius-spritz-vibe.mp4"></video>
+    <video class="proj-video-bg" autoplay muted loop playsinline src="https://r2.vidzflow.com/source/c5bfdb30-f5d1-4f1d-a96f-b736b4ab1fcf.mp4"></video>
     <div class="proj-gradient"></div>
     <div class="xyz-logo">XYZSTUDIOS</div>
     <div class="slide-inner">
@@ -1679,7 +1679,7 @@
        20 · PROJECT — TOYOTA / ROAD TO PALISADES
   ═══════════════════════════════ -->
   <div class="slide slide-project has-video" data-index="19">
-    <video class="proj-video-bg" autoplay muted loop playsinline src="/capabilities/assets/video/toyota-road-to-palisades.mp4"></video>
+    <video class="proj-video-bg" autoplay muted loop playsinline src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/9O7xsj76Lw/original"></video>
     <div class="proj-gradient"></div>
     <div class="xyz-logo">XYZSTUDIOS</div>
     <div class="slide-inner">
@@ -1724,7 +1724,7 @@
        21 · PROJECT — CONCACAF / GOLD CUP
   ═══════════════════════════════ -->
   <div class="slide slide-project has-video" data-index="20" data-deck-year="2025">
-    <video class="proj-video-bg" autoplay muted loop playsinline src="/capabilities/assets/video/concacaf-gold-cup.mp4"></video>
+    <video class="proj-video-bg" autoplay muted loop playsinline src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/Bl0RrW0k4E/original"></video>
     <div class="proj-gradient"></div>
     <div class="xyz-logo">XYZSTUDIOS</div>
     <div class="slide-inner">
@@ -1768,7 +1768,7 @@
        22 · PROJECT — DORITOS X STRANGER THINGS
   ═══════════════════════════════ -->
   <div class="slide slide-project has-video" data-index="21">
-    <video class="proj-video-bg" autoplay muted loop playsinline src="/capabilities/assets/video/doritos-stranger-things.mp4"></video>
+    <video class="proj-video-bg" autoplay muted loop playsinline src="https://r2.vidzflow.com/source/8c451a49-eb58-4534-becf-87f4ca6f51dd.mp4"></video>
     <div class="proj-gradient"></div>
     <div class="xyz-logo">XYZSTUDIOS</div>
     <div class="slide-inner">
@@ -2199,7 +2199,7 @@
       vid.currentTime = start;
     });
   }
-  document.querySelectorAll('.proj-video-bg[data-clip-start][data-clip-end]').forEach(bindProjVideoClipRange);
+  document.querySelectorAll('video[data-clip-start][data-clip-end]').forEach(bindProjVideoClipRange);
 
   function goTo(idx) {
     if (animating || idx === current || idx < 0 || idx >= total) return;
@@ -2223,12 +2223,15 @@
       to.style.transform   = 'translateY(0%)';
       from.style.transform = dir > 0 ? 'translateY(-100%)' : 'translateY(100%)';
 
-      // Unmute incoming video after transition starts
+      // Seek clipped segment (About, Atomic, etc.); unmute project full-bleed videos only
+      const toClip = to.querySelector('video[data-clip-start][data-clip-end]');
+      if (toClip) projVideoClipSeekStart(toClip);
       const toVid = slideVideo(to);
       if (toVid) {
-        projVideoClipSeekStart(toVid);
         toVid.muted = false;
         toVid.play();
+      } else if (toClip) {
+        toClip.play().catch(function () {});
       }
 
       setTimeout(() => {

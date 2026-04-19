@@ -20,12 +20,8 @@ Capabilities/screenshots/
 !Capabilities/assets/**
 !Capabilities/assets/**/*.png
 !Capabilities/assets/**/*.avif
-# Capabilities loop videos: ignore folder except shipped files (GitHub limits large MP4s)
-Capabilities/assets/video/*
-!Capabilities/assets/video/celsius-spritz-vibe.mp4
-!Capabilities/assets/video/concacaf-gold-cup.mp4
-!Capabilities/assets/video/doritos-stranger-things.mp4
-!Capabilities/assets/video/toyota-road-to-palisades.mp4
+# Deck videos stream from r2.vidzflow.com / Supabase (see Work/index.html); keep builds small
+Capabilities/assets/video/
 !Capabilities/Case Studies/
 !Capabilities/Case Studies/**
 !Capabilities/Case Studies/**/*.png
