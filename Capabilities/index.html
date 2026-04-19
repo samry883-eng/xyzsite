@@ -671,34 +671,12 @@
       color: #F5F5F5;
       --sb-rule: #2A2A2A;
       --sb-text-2: #9A9A9A;
-    }
-    /* "Case study" sits below #slide-counter (top ~32px) with breathing room */
-    .sb-case-wrap {
-      position: absolute;
-      top: 48px;
-      right: 64px;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      text-align: right;
-    }
-    .sb-case-label {
-      font-size: 14px;
-      font-weight: 400;
-      line-height: 1.1;
-      color: #F5F5F5;
-      text-transform: none;
-    }
-    .sb-case-line {
-      width: 70px;
-      height: 1px;
-      margin-top: 10px;
-      background: var(--sb-rule);
-      flex-shrink: 0;
+      /* Match --deck-pad-x (64px) for parity with other case-study slides */
+      --sb-inset: 64px;
     }
     .sb-title {
       position: absolute;
-      left: 48px;
+      left: var(--sb-inset);
       top: 63px;
       width: 448px;
       font-size: 78px;
@@ -720,23 +698,23 @@
     .sb-body {
       position: absolute;
       left: auto;
-      right: 48px;
+      right: var(--sb-inset);
       top: 81px;
       width: 688px;
       font-size: 15px;
       font-weight: 400;
       line-height: 1.5;
       color: var(--sb-text-2);
-      text-align: right;
+      text-align: left;
     }
     .sb-body p + p {
       margin-top: 0.75em;
     }
     .sb-media-left {
       position: absolute;
-      left: 48px;
+      left: var(--sb-inset);
       top: 324px;
-      width: 848px;
+      width: 820px;
       height: 405px;
       background: #080808;
       overflow: hidden;
@@ -751,9 +729,9 @@
     .sb-media-right {
       position: absolute;
       left: auto;
-      right: 48px;
+      right: var(--sb-inset);
       top: 324px;
-      width: 560px;
+      width: 628px;
       height: 405px;
       background: #000;
       overflow: hidden;
@@ -1400,14 +1378,12 @@
   <!-- ═══════════════════════════════
        11 · CASE STUDY — STORYBOARD (fixed 1600×900 artboard, scales uniformly)
   ═══════════════════════════════ -->
-  <div class="slide slide-case slide-case--storyboard" data-index="10" data-deck-chrome="none" data-deck-year="2026">
+  <div class="slide slide-case slide-case--storyboard" data-index="10" data-deck-year="2026">
+    <div class="xyz-logo">XYZSTUDIOS</div>
+    <div class="slide-tag">Case study</div>
     <div class="slide-inner">
       <div class="sb-scale-root">
         <div class="sb-artboard" aria-hidden="false">
-          <div class="sb-case-wrap">
-            <div class="sb-case-label">Case study</div>
-            <div class="sb-case-line" aria-hidden="true"></div>
-          </div>
           <div class="sb-title">Storyboard</div>
           <div class="sb-meta">Rory McIlroy<br>RBC Canadian Open</div>
           <div class="sb-body">
@@ -1423,6 +1399,9 @@
         </div>
       </div>
     </div>
+    <div class="slide-footer-line"></div>
+    <div class="slide-year">2026</div>
+    <div class="slide-logo-mark"><img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
