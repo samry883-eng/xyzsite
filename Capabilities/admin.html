@@ -42,13 +42,6 @@
       flex-direction: column;
       align-items: center;
     }
-    #login-panel,
-    #admin-panel {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
     .ct-field {
       position: relative;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -92,199 +85,45 @@
       max-width: 360px;
       text-align: center;
     }
-    .hidden { display: none !important; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font: 400 12px/1.5 Micross, Arial, sans-serif;
-      margin: 0 auto 24px;
-    }
-    th, td {
-      text-align: center;
-      padding: 12px 8px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    }
-    th {
-      font: 700 7px/1 Micross, Arial, sans-serif;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.3);
-    }
-    .row-actions button {
-      font: 400 18px/1 Micross, Arial, sans-serif;
-      color: rgba(255, 255, 255, 0.35);
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 0 4px;
-      line-height: 1;
-    }
-    .row-actions button:hover { color: #fff; }
-    .toolbar {
-      margin: 0 auto 24px;
-      display: flex;
-      justify-content: center;
-    }
   </style>
 </head>
 <body>
   <div class="page">
-    <div id="login-panel">
-      <div class="ct-field" id="f-admin-pass">
-        <input type="password" id="admin-pass" autocomplete="current-password" required aria-label="Password" />
-      </div>
-      <div class="err" id="login-err" aria-live="polite"></div>
-      <button type="button" class="ct-submit" id="btn-login">Sign in &rarr;</button>
+    <div class="ct-field">
+      <input type="password" id="admin-pass" autocomplete="current-password" required aria-label="Password" />
     </div>
-
-    <div id="admin-panel" class="hidden">
-      <div class="toolbar">
-        <button type="button" class="ct-submit" id="btn-logout">Sign out</button>
-      </div>
-
-      <div class="err" id="list-err" aria-live="polite"></div>
-      <table>
-        <thead>
-          <tr><th>Email</th><th>Added</th><th></th></tr>
-        </thead>
-        <tbody id="grant-rows"></tbody>
-      </table>
-
-      <div class="ct-field" id="f-new-email">
-        <input type="email" id="new-email" autocomplete="off" aria-label="Email" />
-      </div>
-      <div class="err" id="add-err" aria-live="polite"></div>
-      <button type="button" class="ct-submit" id="btn-add">Add &rarr;</button>
-    </div>
+    <div class="err" id="login-err" aria-live="polite"></div>
+    <button type="button" class="ct-submit" id="btn-login">Sign in &rarr;</button>
   </div>
 
   <script>
     (function () {
-      var loginPanel = document.getElementById('login-panel');
-      var adminPanel = document.getElementById('admin-panel');
       var loginErr = document.getElementById('login-err');
-      var listErr = document.getElementById('list-err');
-      var addErr = document.getElementById('add-err');
-      var grantRows = document.getElementById('grant-rows');
-
-      function api(path, opts) {
-        opts = opts || {};
-        opts.credentials = 'include';
-        opts.headers = opts.headers || {};
-        if (opts.body && typeof opts.body === 'object' && !(opts.body instanceof FormData)) {
-          opts.headers['Content-Type'] = 'application/json';
-          opts.body = JSON.stringify(opts.body);
-        }
-        return fetch(path, opts).then(function (r) {
-          return r.json().then(function (data) {
-            return { ok: r.ok, status: r.status, data: data };
-          });
-        });
-      }
-
-      function renderRows(grants) {
-        grantRows.innerHTML = '';
-        (grants || []).forEach(function (g) {
-          var tr = document.createElement('tr');
-          var td1 = document.createElement('td');
-          td1.textContent = g.email;
-          var td2 = document.createElement('td');
-          td2.textContent = g.createdAt ? new Date(g.createdAt).toLocaleString() : '—';
-          var td3 = document.createElement('td');
-          td3.className = 'row-actions';
-          var btn = document.createElement('button');
-          btn.type = 'button';
-          btn.setAttribute('aria-label', 'Remove');
-          btn.innerHTML = '&times;';
-          btn.addEventListener('click', function () {
-            api('/api/capabilities/admin/revoke', {
-              method: 'POST',
-              body: { email: g.email },
-            }).then(function (x) {
-              if (!x.ok) {
-                listErr.textContent = (x.data && x.data.error) || 'Could not remove';
-                return;
-              }
-              listErr.textContent = '';
-              refreshList();
-            });
-          });
-          td3.appendChild(btn);
-          tr.appendChild(td1);
-          tr.appendChild(td2);
-          tr.appendChild(td3);
-          grantRows.appendChild(tr);
-        });
-      }
-
-      function refreshList() {
-        listErr.textContent = '';
-        return api('/api/capabilities/admin/list').then(function (x) {
-          if (x.status === 401) {
-            loginPanel.classList.remove('hidden');
-            adminPanel.classList.add('hidden');
-            return;
-          }
-          if (!x.ok) {
-            listErr.textContent = (x.data && x.data.error) || 'Could not load list';
-            return;
-          }
-          renderRows(x.data.grants);
-        });
-      }
-
-      function showAdmin() {
-        loginPanel.classList.add('hidden');
-        adminPanel.classList.remove('hidden');
-        return refreshList();
-      }
 
       document.getElementById('btn-login').addEventListener('click', function () {
         loginErr.textContent = '';
         var password = document.getElementById('admin-pass').value;
-        api('/api/capabilities/admin/login', {
+        fetch('/api/capabilities/admin/login', {
           method: 'POST',
-          body: { password: password },
-        }).then(function (x) {
-          if (!x.ok) {
-            loginErr.textContent = (x.data && x.data.error) || 'Sign in failed';
-            return;
-          }
-          document.getElementById('admin-pass').value = '';
-          showAdmin();
-        });
-      });
-
-      document.getElementById('btn-logout').addEventListener('click', function () {
-        api('/api/capabilities/admin/logout', { method: 'POST' }).then(function () {
-          loginPanel.classList.remove('hidden');
-          adminPanel.classList.add('hidden');
-        });
-      });
-
-      document.getElementById('btn-add').addEventListener('click', function () {
-        addErr.textContent = '';
-        var email = document.getElementById('new-email').value.trim();
-        api('/api/capabilities/admin/grant', {
-          method: 'POST',
-          body: { email: email },
-        }).then(function (x) {
-          if (!x.ok) {
-            addErr.textContent = (x.data && x.data.error) || 'Could not add';
-            return;
-          }
-          document.getElementById('new-email').value = '';
-          refreshList();
-        });
-      });
-
-      api('/api/capabilities/admin/list').then(function (x) {
-        if (x.status === 401) return;
-        if (x.ok && x.data && x.data.grants) {
-          loginPanel.classList.add('hidden');
-          adminPanel.classList.remove('hidden');
-          renderRows(x.data.grants);
-        }
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: password }),
+        })
+          .then(function (r) {
+            return r.json().then(function (data) {
+              return { ok: r.ok, data: data };
+            });
+          })
+          .then(function (x) {
+            if (!x.ok) {
+              loginErr.textContent = (x.data && x.data.error) || 'Sign in failed';
+              return;
+            }
+            window.location.href = '/capabilities/';
+          })
+          .catch(function () {
+            loginErr.textContent = 'Network error.';
+          });
       });
     })();
   </script>

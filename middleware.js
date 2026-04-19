@@ -1,7 +1,12 @@
 import { next } from '@vercel/edge';
-import { verifySessionEdge, getCookieValue } from './lib/session-edge.mjs';
+import {
+  verifySessionEdge,
+  verifyAdminSessionEdge,
+  getCookieValue,
+} from './lib/session-edge.mjs';
 
 const COOKIE = 'xyz_capabilities';
+const ADMIN_COOKIE = 'xyz_capabilities_admin';
 
 export const config = {
   matcher: ['/capabilities', '/capabilities/:path*'],
@@ -32,6 +37,9 @@ export default async function middleware(request) {
   const token = getCookieValue(cookieHeader, COOKIE);
   const email = await verifySessionEdge(token, secret);
   if (email) return next();
+
+  const adminTok = getCookieValue(cookieHeader, ADMIN_COOKIE);
+  if (await verifyAdminSessionEdge(adminTok, secret)) return next();
 
   const login = new URL('/capabilities/login', request.url);
   login.searchParams.set('next', url.pathname + url.search);
