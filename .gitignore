@@ -26,9 +26,9 @@ Capabilities/assets/video/*
 !Capabilities/assets/video/concacaf-gold-cup.mp4
 !Capabilities/assets/video/doritos-stranger-things.mp4
 !Capabilities/assets/video/toyota-road-to-palisades.mp4
-!Capabilities/casestudies/
-!Capabilities/casestudies/**
-!Capabilities/casestudies/**/*.png
+!Capabilities/Case Studies/
+!Capabilities/Case Studies/**
+!Capabilities/Case Studies/**/*.png
 pdf-capture.js
 pdf-capture.mjs
 screenshot-slide.js
