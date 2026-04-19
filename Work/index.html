@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <title>Work — XYZ Studios</title>
   <link rel="preconnect" href="https://cdn.prod.website-files.com" crossorigin>
   <link rel="preconnect" href="https://r2.vidzflow.com" crossorigin>
@@ -61,18 +60,7 @@
       "someone new|barskih":             d.CDN + "6983f092d623c02afa6f543c_square.avif",
       "mine|max barskh":                 d.CDN + "6983f01f6277b7b09ea475a7_mls.avif",
     };
-    var seen = {};
-    for (var k in d.THUMBNAILS) {
-      if (!Object.prototype.hasOwnProperty.call(d.THUMBNAILS, k)) continue;
-      var href = d.THUMBNAILS[k];
-      if (seen[href]) continue;
-      seen[href] = 1;
-      var l = document.createElement('link');
-      l.rel = 'preload';
-      l.as = 'image';
-      l.href = href;
-      document.head.appendChild(l);
-    }
+    /* Thumbnails load with <img loading="lazy"> — do not preload every poster in <head> (was ~40+ parallel requests and major jank). */
   })(window.__WORK_DATA);
   </script>
   <style>
@@ -560,7 +548,8 @@
     img.className = 'wc-card-poster';
     img.src = posterSrc;
     img.alt = `${card.client} — ${card.title}`;
-    img.loading = 'eager';
+    img.loading = opts.loading === 'eager' ? 'eager' : 'lazy';
+    img.decoding = 'async';
     if (opts.fetchPriority) img.fetchPriority = opts.fetchPriority;
     img.addEventListener('error', () => { img.src = FALLBACK_IMG; }, { once: true });
     div.appendChild(video);
@@ -642,7 +631,12 @@
 
     rowData.cards.forEach((card, cardIdx) => {
       const numStr = String(cardIdx + 1).padStart(2, '0');
-      const fetchPriority = rowIdx === 0 && cardIdx < 14 ? 'high' : 'low';
+      /* Only the first row’s first tiles are above the fold — load those eagerly; rest lazy to cut initial bytes & decode work. */
+      const priority = rowIdx === 0 && cardIdx < 8;
+      const mediaOpts = {
+        fetchPriority: priority ? 'high' : 'low',
+        loading: priority ? 'eager' : 'lazy',
+      };
 
       const wrap = document.createElement('div');
       wrap.className = 'work-card-wrap';

@@ -3,6 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "start": "node serve.mjs",
+    "dev": "node serve.mjs",
     "build": "node scripts/prepare-github-pages.mjs"
   },
   "engines": {

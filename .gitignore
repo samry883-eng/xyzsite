@@ -1,5 +1,6 @@
 # Local screen recordings / scratch
 Recording*.mp4
+Capabilities/Page 3 video.mp4
 
 # Exceeds GitHub 100MB limit — keep locally only
 Work/making-of/gold-cup/breakdown 1.mp4
@@ -14,6 +15,9 @@ Capabilities/screenshots/
 *.jpeg
 *.avif
 *.webp
+# Allow shipped capabilities deck assets (overrides patterns above)
+!Capabilities/assets/
+!Capabilities/assets/**
 pdf-capture.js
 pdf-capture.mjs
 screenshot-slide.js

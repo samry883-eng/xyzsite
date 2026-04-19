@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="deck-protect">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>XYZStudios — Capabilities Deck 2026</title>
   <meta name="robots" content="noindex, nofollow" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -27,8 +25,36 @@
       overflow: hidden;
       background: var(--black);
       color: var(--white);
-      font-family: 'Inter', sans-serif;
+      /* Match deck PDF / site: Microsoft Sans Serif (system on Windows) */
+      font-family: "Microsoft Sans Serif", "Segoe UI", Tahoma, Geneva, sans-serif;
       -webkit-font-smoothing: antialiased;
+    }
+
+    /* Viewer lock: not DRM — deters casual zoom / drag-save / copy / print */
+    html.deck-protect,
+    html.deck-protect body {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+      touch-action: manipulation;
+      -webkit-touch-callout: none;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+    html.deck-protect img,
+    html.deck-protect video {
+      -webkit-user-drag: none;
+      user-select: none;
+      pointer-events: auto;
+    }
+    html.deck-protect a {
+      -webkit-user-drag: none;
+    }
+    @media print {
+      html.deck-protect body {
+        display: none !important;
+      }
     }
 
     /* ── DECK ── */
@@ -95,50 +121,177 @@
     }
 
     /* ════════════════════════════════
-       SLIDE 1 — COVER
+       SLIDE 1 — COVER (top: title + contact; bottom: hero flush to viewport)
     ════════════════════════════════ */
-    .slide-cover { background: var(--black); }
+    .slide-cover {
+      background: #000;
+      font-family: "Microsoft Sans Serif", "Segoe UI", Tahoma, Geneva, sans-serif;
+      /* Ref: equal L/R gutters ~5–7% of viewport width */
+      --cover-gutter: clamp(24px, 6vw, 88px);
+    }
+    .slide-cover .xyz-logo { display: none; }
+
     .slide-cover .slide-inner {
-      display: flex; flex-direction: row; height: 100%;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: 0;
     }
-    .cover-top {
-      flex: 0 0 58%;
-      padding: clamp(90px, 22vh, 180px) var(--p) 0;
-      display: flex; align-items: flex-start;
-      position: relative; overflow: hidden;
-    }
-    .cover-tag {
-      position: absolute; top: var(--pt); right: var(--p);
-      font-size: 12px; font-weight: 500; z-index: 10;
+
+    /* Ref: ~60% black / ~40% photo; title block vertically centered in black */
+    .cover-top-band {
+      flex: 0 0 60%;
+      min-height: 0;
+      position: relative;
+      overflow: hidden;
+      background: #000;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
     }
     .cover-year-bg {
       position: absolute;
-      right: -20px; bottom: 22%;
-      font-size: clamp(140px, 20vw, 280px);
-      font-weight: 700; line-height: 1;
-      letter-spacing: -0.04em;
-      color: #9b5a22;
-      opacity: 0.6;
+      left: calc(var(--cover-gutter) + 2%);
+      top: 50%;
+      transform: translate(0, -46%);
+      font-size: clamp(120px, 22vw, 260px);
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -0.07em;
+      color: rgba(255, 255, 255, 0.055);
       pointer-events: none;
       user-select: none;
+      z-index: 0;
+    }
+    .cover-top-row {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(11.5rem, 20rem);
+      align-items: center;
+      gap: clamp(20px, 4vw, 64px);
+      padding: 0 var(--cover-gutter);
+      box-sizing: border-box;
+    }
+    .cover-title-col {
+      min-width: 0;
+      max-width: min(46rem, 58vw);
+      padding-right: 8px;
     }
     .cover-title {
-      font-size: clamp(56px, 6.5vw, 92px);
-      font-weight: 700; line-height: 0.94;
-      letter-spacing: -0.025em;
-      position: relative; z-index: 1;
+      margin: 0;
+      font-size: clamp(52px, 7vw, 108px);
+      font-weight: 700;
+      line-height: 0.88;
+      letter-spacing: -0.035em;
+      color: #fff;
     }
     .cover-sub {
-      font-size: 13px; color: var(--dim);
-      margin-top: 18px; font-weight: 300;
+      font-size: clamp(11px, 1.15vw, 13px);
+      color: rgba(255, 255, 255, 0.92);
+      margin-top: clamp(10px, 1.5vh, 16px);
+      font-weight: 400;
+      line-height: 1.45;
+      max-width: 26em;
     }
-    .cover-title-wrap { display: flex; flex-direction: column; }
-    .cover-image {
-      flex: 0 0 42%;
-      position: relative; overflow: hidden;
-      background: #111;
+    /* Ref: R column — name white; email smaller grey; meta smallest grey */
+    .cover-contact {
+      text-align: right;
+      align-self: center;
+      justify-self: end;
+      max-width: 19rem;
     }
-    .cover-image .ph { background: linear-gradient(180deg, #0f0f0f 0%, #1a1a1a 100%); }
+    .cover-contact strong {
+      display: block;
+      font-weight: 600;
+      font-size: 12px;
+      line-height: 1.4;
+      color: #fff;
+      margin-bottom: 8px;
+      letter-spacing: 0.04em;
+    }
+    .cover-contact-email {
+      display: block;
+      font-size: 10.5px;
+      line-height: 1.65;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 6px;
+    }
+    .cover-contact-meta {
+      display: block;
+      font-size: 10px;
+      line-height: 1.55;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.42);
+    }
+
+    /* Ref: ~40% hero, flush to bottom of viewport */
+    .cover-photo-band {
+      flex: 1 1 0;
+      min-height: 0;
+      position: relative;
+      background: #050505;
+      overflow: hidden;
+    }
+    .cover-photo-band img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 58% 42%;
+      display: block;
+    }
+    /* Ref: logo + slide index on one baseline, bottom-right of hero */
+    .cover-photo-footer {
+      position: absolute;
+      bottom: clamp(12px, 2vh, 22px);
+      right: var(--cover-gutter);
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: clamp(12px, 2vw, 20px);
+    }
+    .cover-photo-footer .cover-photo-logo-img {
+      height: clamp(22px, 3.2vh, 30px);
+      width: auto;
+      display: block;
+      opacity: 0.95;
+    }
+    .cover-slide-idx {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: rgba(255, 255, 255, 0.45);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .slide-cover .slide-footer-line {
+      display: none;
+    }
+    .slide-cover .slide-year { display: none; }
+    .slide-cover .slide-logo-mark {
+      display: none;
+    }
+
+    @media (max-width: 780px) {
+      .cover-top-row {
+        grid-template-columns: 1fr;
+        align-items: start;
+        padding-left: clamp(20px, 5vw, 32px);
+        padding-right: clamp(20px, 5vw, 32px);
+        gap: 24px;
+      }
+      .cover-contact {
+        text-align: left;
+        max-width: none;
+        justify-self: start;
+      }
+      .cover-year-bg {
+        left: 3%;
+        font-size: clamp(68px, 18vw, 180px);
+      }
+      .cover-top-band { flex-basis: 54%; max-height: none; }
+    }
 
     /* ════════════════════════════════
        SLIDE 2 — TABLE OF CONTENTS
@@ -443,11 +596,6 @@
       padding: 80px var(--p) 80px 52px;
       display: flex; flex-direction: column; justify-content: center;
     }
-    .hww-title {
-      font-size: clamp(36px, 4.5vw, 56px);
-      font-weight: 300; letter-spacing: -0.02em;
-      margin-bottom: 24px; line-height: 1.05;
-    }
     .hww-body { font-size: 12px; color: var(--dim); line-height: 1.75; font-weight: 300; max-width: 400px; }
     .hww-body p + p { margin-top: 16px; }
 
@@ -459,32 +607,57 @@
     .contact-left {
       padding: 80px var(--p) 80px;
       display: flex; flex-direction: column;
+      height: 100%;
+      min-height: 0;
     }
     .contact-title {
       font-size: clamp(64px, 10vw, 120px);
       font-weight: 700; text-transform: uppercase;
       letter-spacing: -0.02em; line-height: 0.88;
-      margin-bottom: 44px;
+      margin-top: auto;
+      padding-top: 36px;
     }
-    .contact-team { display: flex; gap: 44px; margin-bottom: 36px; }
+    .contact-team { display: flex; gap: 44px; margin-bottom: 0; margin-top: 28px; }
     .cp-name { font-size: 13px; font-weight: 500; }
     .cp-role { font-size: 11px; color: var(--dim); margin-top: 2px; font-weight: 300; }
     .contact-block { margin-bottom: 24px; }
     .contact-block .cb-label { font-size: 11px; color: var(--dim2); margin-bottom: 3px; }
     .contact-block .cb-value { font-size: 13px; }
     .contact-block a { color: var(--white); text-decoration: underline; text-underline-offset: 3px; }
-    .contact-socials { display: flex; gap: 0; margin-bottom: 36px; }
+    .contact-socials { display: flex; gap: 0; margin-bottom: 0; }
     .contact-socials a { font-size: 12px; color: var(--dim); text-decoration: underline; text-underline-offset: 3px; margin-right: 24px; }
-    .client-logos {
-      display: flex; flex-wrap: wrap; gap: 16px 28px;
-      align-items: center; margin-top: auto;
-    }
-    .client-logo-item {
-      font-size: 9.5px; font-weight: 600;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      color: rgba(255,255,255,0.28);
-    }
     .contact-right { background: #111; overflow: hidden; }
+
+    /* ════════════════════════════════
+       DIRECTOR (full-bleed credit)
+    ════════════════════════════════ */
+    .slide-director { background: var(--black); }
+    .slide-director .slide-inner {
+      height: 100%; display: flex; align-items: center; justify-content: center;
+    }
+    .director-stack { text-align: center; }
+    .director-stack .director-label {
+      font-size: 11px; font-weight: 500; letter-spacing: 0.22em;
+      color: var(--dim2); margin-bottom: clamp(12px, 2vh, 20px);
+    }
+    .director-stack .director-name {
+      font-size: clamp(40px, 9vw, 88px); font-weight: 300;
+      letter-spacing: -0.02em; line-height: 1.05;
+    }
+
+    /* ════════════════════════════════
+       YEAR SPLASH (transition)
+    ════════════════════════════════ */
+    .slide-year-splash { background: var(--black); }
+    .slide-year-splash .slide-inner {
+      height: 100%; display: flex; align-items: center; justify-content: center;
+    }
+    .year-splash-num {
+      font-size: clamp(100px, 28vw, 280px); font-weight: 700;
+      letter-spacing: -0.04em; line-height: 1;
+      color: rgba(255,255,255,0.08);
+      user-select: none;
+    }
     .contact-right .ph { background: linear-gradient(160deg, #141414, #1c1c1c); }
 
     /* ════════════════════════════════
@@ -512,6 +685,11 @@
       letter-spacing: 0.1em; z-index: 200;
       font-variant-numeric: tabular-nums;
     }
+    /* Cover shows index next to logo — hide duplicate counter */
+    body.is-cover-active #slide-counter {
+      visibility: hidden;
+      pointer-events: none;
+    }
     #hint {
       position: fixed; bottom: 72px; left: 50%;
       transform: translateX(-50%);
@@ -534,28 +712,52 @@
     }
   </style>
 </head>
-<body>
+<body class="is-cover-active">
 <div id="deck">
 
   <!-- ═══════════════════════════════
        01 · COVER
   ═══════════════════════════════ -->
   <div class="slide slide-cover active" data-index="0">
-    <div class="xyz-logo">XYZSTUDIOS</div>
     <div class="slide-inner">
-      <div class="cover-top">
-        <div class="cover-tag">XYZStudios</div>
-        <div class="cover-year-bg">2026</div>
-        <div class="cover-title-wrap">
-          <div class="cover-title">Capabilities<br>Deck</div>
-          <div class="cover-sub">This isn't work for hire. It's a partnership.</div>
+      <section class="cover-top-band" aria-label="Cover">
+        <div class="cover-year-bg" aria-hidden="true">2026</div>
+        <div class="cover-top-row">
+          <div class="cover-title-col">
+            <h1 class="cover-title">Capabilities<br>Deck</h1>
+            <p class="cover-sub">This isn't work for hire. It's a partnership.</p>
+          </div>
+          <div class="cover-contact">
+            <strong>XYZStudios</strong>
+            <span class="cover-contact-email">Inquiries@XYZStudios.co</span>
+            <span class="cover-contact-meta">International Post-Production Studio | Founded in 2026</span>
+          </div>
         </div>
-      </div>
-      <div class="cover-image"><div class="ph"><img src="../Work/visual-effects/into-the-void/2.png" alt=""></div></div>
+      </section>
+      <section class="cover-photo-band" aria-label="Cover photograph">
+        <img
+          src="/capabilities/assets/cover-hero.png"
+          width="1920"
+          height="1080"
+          alt=""
+          decoding="async"
+          fetchpriority="high"
+        />
+        <div class="cover-photo-footer">
+          <img
+            class="cover-photo-logo-img"
+            src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png"
+            width="120"
+            height="40"
+            alt="XYZ Studios"
+          />
+          <span id="cover-slide-idx" class="cover-slide-idx">01 / 34</span>
+        </div>
+      </section>
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -572,9 +774,9 @@
       <div class="toc-list">
         <div class="toc-row"><span class="toc-num">01</span><span class="toc-name">About</span></div>
         <div class="toc-row"><span class="toc-num">02</span><span class="toc-name">Highlighted Work</span></div>
-        <div class="toc-row"><span class="toc-num">03</span><span class="toc-name">What We do</span></div>
+        <div class="toc-row"><span class="toc-num">03</span><span class="toc-name">What We Do</span></div>
         <div class="toc-row"><span class="toc-num">04</span><span class="toc-name">Full Production</span></div>
-        <div class="toc-row"><span class="toc-num">05</span><span class="toc-name">Case Study</span></div>
+        <div class="toc-row"><span class="toc-num">05</span><span class="toc-name">Case Studies</span></div>
         <div class="toc-row"><span class="toc-num">06</span><span class="toc-name">Selected Work</span></div>
         <div class="toc-row"><span class="toc-num">07</span><span class="toc-name">Craft</span></div>
         <div class="toc-row"><span class="toc-num">08</span><span class="toc-name">Our Focus</span></div>
@@ -583,7 +785,7 @@
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -603,7 +805,7 @@
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -622,7 +824,7 @@
       <div class="wg-cell"><div class="ph"><img src="../Work/making-of/gold-cup/454545454.png" alt=""></div></div>
     </div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -635,35 +837,35 @@
       <div class="services-grid">
         <div class="svc">
           <h3>Creative Direction</h3>
-          <p>We translate the client's vision into a clear VFX approach that fits the brand, the brief, and the level of realism the project needs. We help set the art style early so every shot stays consistent from concept through final delivery.</p>
-        </div>
-        <div class="svc">
-          <h3>Full-Shot Execution</h3>
-          <p>We take ownership from matchmove and layout through asset build, simulation, and CG integration, keeping the work consistent across the full sequence. We keep shots organized, versioned, and review-ready so feedback moves fast.</p>
-        </div>
-        <div class="svc">
-          <h3>Beauty + Cleanup</h3>
-          <p>We handle beauty work and cleanup at the final stage, refining details that distract from the frame. Roto, paint, polish, and continuity fixes are treated with the same care as the main VFX so the shot feels finished, not touched.</p>
+          <p>We translate the client’s vision into a clear VFX approach that fits the brand, the brief, and the level of realism the project needs. We help set the art style early so every shot stays consistent from concept through final delivery.</p>
         </div>
         <div class="svc">
           <h3>Research + Look Development</h3>
           <p>We explore references, test techniques, and build early look development to lock the visual direction. The goal is clarity before cameras roll, so the team stays aligned and production moves fast.</p>
         </div>
         <div class="svc">
-          <h3>Environments, Set Extensions + Simulation</h3>
-          <p>We build digital environments and extensions, paired with simulations that add scale, realism, and physical detail where it matters. Every element is built to match camera, lighting, and the real-world plate.</p>
-        </div>
-        <div class="svc">
-          <h3>AI-Assisted Workflows</h3>
-          <p>We integrate AI where it improves speed and iteration, while keeping realism and control intact. It supports VFX tasks like cleanup, detail work, and versioning, without compromising the final look.</p>
-        </div>
-        <div class="svc">
           <h3>Technical Planning</h3>
           <p>We align with production on on-set capture needs and shot requirements, prepping the team with shot notes, tracking and lens data, and the right reference for lighting and integration. It keeps post clean and controlled.</p>
         </div>
         <div class="svc">
+          <h3>Full-Shot Execution</h3>
+          <p>We take ownership from matchmove and layout through asset build, simulation, and CG integration, keeping the work consistent across the full sequence. We keep shots organized, versioned, and review-ready so feedback moves fast.</p>
+        </div>
+        <div class="svc">
+          <h3>Environments, Set Extensions + Simulation</h3>
+          <p>We build digital environments and extensions, paired with simulations that add scale, realism, and physical detail where it matters. Every element is built to match camera, lighting, and the real-world plate.</p>
+        </div>
+        <div class="svc">
           <h3>Compositing + Paint</h3>
           <p>We bring every element together through compositing, cleanup, beauty, roto and paint, balancing light, texture, and continuity for a seamless final frame. Final frames are dialed for realism, clarity, and consistency shot-to-shot.</p>
+        </div>
+        <div class="svc">
+          <h3>Beauty + Cleanup</h3>
+          <p>We handle beauty work and cleanup at the final stage, refining details that distract from the frame. Roto, paint, polish, and continuity fixes are treated with the same care as the main VFX so the shot feels finished, not touched.</p>
+        </div>
+        <div class="svc">
+          <h3>AI-Assisted Workflows</h3>
+          <p>We integrate AI where it improves speed and iteration, while keeping realism and control intact. It supports VFX tasks like cleanup, detail work, and versioning, without compromising the final look.</p>
         </div>
         <div class="svc">
           <h3>Sound</h3>
@@ -673,7 +875,7 @@
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -685,7 +887,7 @@
     <div class="slide-inner"><div class="div-word">Full Production</div></div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -733,7 +935,7 @@
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -760,9 +962,9 @@
         </ul>
         <div class="proj-label">BUILD</div>
         <ul class="proj-list">
-          <li>1 Environment</li>
+          <li>1 Enviroment</li>
           <li>92% CG</li>
-          <li>8% AI</li>
+          <li>8% Ai</li>
         </ul>
         <div class="proj-label">OUTPUT</div>
         <ul class="proj-list">
@@ -775,60 +977,28 @@
         </div>
       </div>
       <div class="proj-main">
-        <div class="proj-client-tag"><div class="ct-name">CONCEPT</div><div class="ct-lbl">PIECE</div></div>
+        <div class="proj-client-tag"><div class="ct-name">CONCEPT</div><div class="ct-lbl">PEICE</div></div>
       </div>
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
-       09 · PROJECT — RORY McILROY / RBC CANADIAN OPEN
+       09 · DIRECTOR — SAMRY YUSSUF (PDF p.8)
   ═══════════════════════════════ -->
-  <div class="slide slide-project has-video" data-index="8">
-    <video class="proj-video-bg" autoplay muted loop playsinline src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/85D_It6HUS/original"></video>
-    <div class="proj-gradient"></div>
+  <div class="slide slide-director" data-index="8">
     <div class="xyz-logo">XYZSTUDIOS</div>
     <div class="slide-inner">
-      <div class="proj-sidebar">
-        <div class="proj-header"><span class="proj-client">Rory McIlroy</span><span class="proj-year">2026</span></div>
-        <div class="proj-name">RBC CANADIAN OPEN</div>
-        <div class="proj-label">SCOPE</div>
-        <ul class="proj-list">
-          <li>Concept to Final Delivery</li>
-          <li>Creative Direction</li>
-          <li>Production</li>
-          <li>VFX</li>
-          <li>CG</li>
-          <li>Compositing</li>
-          <li>Editing</li>
-          <li>Sound Design &amp; Mix</li>
-        </ul>
-        <div class="proj-label">BUILD</div>
-        <ul class="proj-list">
-          <li>4 Environments</li>
-          <li>72% CG</li>
-          <li>20% Motion Graphics</li>
-          <li>7% Live Action</li>
-        </ul>
-        <div class="proj-label">OUTPUT</div>
-        <ul class="proj-list">
-          <li>1009 Final Frames</li>
-          <li>8 Hero Shots</li>
-        </ul>
-        <div class="proj-footer">
-          <div class="proj-director">SAMRY YUSSUF</div>
-          <div class="proj-director-label">DIRECTOR</div>
-        </div>
-      </div>
-      <div class="proj-main">
-        <div class="proj-client-tag"><div class="ct-name">RORY McILROY</div><div class="ct-lbl">CLIENT</div></div>
+      <div class="director-stack">
+        <div class="director-label">DIRECTOR</div>
+        <div class="director-name">SAMRY YUSSUF</div>
       </div>
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -840,7 +1010,7 @@
     <div class="slide-inner"><div class="div-word">Case<br>Studies</div></div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -857,8 +1027,7 @@
         </div>
         <div class="case-right">
           <div class="case-body">
-            <p>With no live shoot possible, the client asked us to develop the creative direction and bring the concept to life. We crafted a stylized 3D hype reel, taking the project from concept art through to final execution.</p>
-            <p>Throughout the process, the client remained closely involved, providing notes and feedback as we shaped the visuals to capture Rory's momentum and the anticipation around the tournament.</p>
+            <p>With no live shoot possible, the client asked us to develop the creative direction and bring the concept to life. We crafted a stylized 3D hype reel, taking the project from concept art through to final execution. Throughout the process, the client remained closely involved, providing notes and feedback as we shaped the visuals to capture Rory’s momentum and the anticipation around the tournament.</p>
           </div>
         </div>
       </div>
@@ -879,7 +1048,7 @@
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -911,7 +1080,7 @@
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -944,7 +1113,7 @@
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -976,7 +1145,7 @@
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -1009,7 +1178,7 @@
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -1055,7 +1224,7 @@
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2025</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -1087,7 +1256,7 @@
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2025</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -1115,7 +1284,7 @@
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2025</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -1127,7 +1296,7 @@
     <div class="slide-inner"><div class="div-word">Selected Work</div></div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -1140,7 +1309,7 @@
     <div class="slide-inner">
       <div class="proj-sidebar">
         <div class="proj-header"><span class="proj-client">TOYOTA</span><span class="proj-year">2026</span></div>
-        <div class="proj-name">ROAD TO PALISADES</div>
+        <div class="proj-name">ROAD TO<br>PALISADES</div>
         <div class="proj-label">SCOPE</div>
         <ul class="proj-list">
           <li>Creative Direction</li>
@@ -1172,7 +1341,7 @@
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -1189,7 +1358,7 @@
         <div class="proj-label">SCOPE</div>
         <ul class="proj-list">
           <li>CGI</li>
-          <li>Crowd Simulation / Integration</li>
+          <li>Crowd Simulation/ Intergration</li>
           <li>Compositing</li>
           <li>FX Simulation</li>
           <li>Clean Up</li>
@@ -1216,7 +1385,7 @@
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2025</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -1257,19 +1426,20 @@
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
-       23 · DIVIDER — CRAFT
+       23 · YEAR SPLASH (PDF p.22)
   ═══════════════════════════════ -->
-  <div class="slide slide-divider" data-index="22">
-    <div class="div-bg"><div class="ph"><img src="../Work/visual-effects/the-flip/1.png" alt=""></div></div>
+  <div class="slide slide-year-splash" data-index="22">
     <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-inner"><div class="div-word">CRAFT</div></div>
+    <div class="slide-inner">
+      <div class="year-splash-num">2026</div>
+    </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -1296,7 +1466,7 @@
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -1306,7 +1476,7 @@
     <div class="xyz-logo">XYZSTUDIOS</div>
     <div class="slide-tag">Craft</div>
     <div class="slide-inner">
-      <div class="craft-title">CG Integration</div>
+      <div class="craft-title">CG Intergration</div>
       <div class="craft-body">CG elements are embedded into live-action plates using accurate camera tracking, lens calibration, and scene lighting. Surface interaction, shadow behavior, and material response are refined to ensure consistency across motion, grading, and final delivery.</div>
       <div class="craft-images cols-3">
         <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/into-the-void/3.png" alt=""></div></div>
@@ -1316,7 +1486,7 @@
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -1327,7 +1497,7 @@
     <div class="slide-tag">Craft</div>
     <div class="slide-inner">
       <div class="craft-title">CG Environments</div>
-      <div class="craft-body">At any scale, from full digital builds to set extensions and enhancements. We recreate real locations or design new spaces to match the project's tone, with careful attention to scale, lighting, perspective, and atmosphere. Every environment is built for seamless integration across the sequence.</div>
+      <div class="craft-body">at any scale, from full digital builds to set extensions and enhancements. We recreate real locations or design new spaces to match the project’s tone, with careful attention to scale, lighting, perspective, and atmosphere. Every environment is built for seamless integration across the sequence.</div>
       <div class="craft-images cols-3">
         <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/canadian-open/Golf Final (4) (0-00-36-15).png" alt=""></div></div>
         <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/road-to-palisades/1.jpg" alt=""></div></div>
@@ -1336,7 +1506,7 @@
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -1358,7 +1528,7 @@
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -1380,7 +1550,7 @@
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -1403,7 +1573,7 @@
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -1425,7 +1595,7 @@
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -1445,7 +1615,7 @@
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -1483,7 +1653,7 @@
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -1494,7 +1664,6 @@
     <div class="slide-inner">
       <div class="hww-img"><div class="ph"><img src="../Work/visual-effects/nhl-store/1.png" alt=""></div></div>
       <div class="hww-text">
-        <div class="hww-title">How We Work</div>
         <div class="hww-body">
           <p>Each collaboration begins with alignment and develops through shared intent and consistent execution.</p>
           <p>Our involvement adapts to the needs of each project.</p>
@@ -1504,7 +1673,7 @@
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -1514,17 +1683,6 @@
     <div class="xyz-logo">XYZSTUDIOS</div>
     <div class="slide-inner">
       <div class="contact-left">
-        <div class="contact-title">CONTACT</div>
-        <div class="contact-team">
-          <div>
-            <div class="cp-name">Samry Yussuf</div>
-            <div class="cp-role">Post Producer, Co-Founder</div>
-          </div>
-          <div>
-            <div class="cp-name">Dris Yousif</div>
-            <div class="cp-role">Post Producer, Co-Founder</div>
-          </div>
-        </div>
         <div class="contact-block">
           <div class="cb-label">Email</div>
           <div class="cb-value"><a href="mailto:Inquiries@xyzstudios.co">Inquiries@xyzstudios.co</a></div>
@@ -1535,26 +1693,25 @@
         </div>
         <div class="contact-socials">
           <a href="https://www.instagram.com/xyz__studios/" target="_blank">Instagram</a>
-          <a href="https://www.linkedin.com/company/xyzstudioss/" target="_blank">LinkedIn</a>
+          <a href="https://www.linkedin.com/company/xyzstudioss/" target="_blank">Linked In</a>
         </div>
-        <div class="client-logos">
-          <span class="client-logo-item">MARC JACOBS</span>
-          <span class="client-logo-item">SALOMON</span>
-          <span class="client-logo-item">BALMAIN</span>
-          <span class="client-logo-item">LOUIS VUITTON</span>
-          <span class="client-logo-item">ARC'TE</span>
-          <span class="client-logo-item">EA SPORTS</span>
-          <span class="client-logo-item">MLS</span>
-          <span class="client-logo-item">RBC CANADIAN OPEN</span>
-          <span class="client-logo-item">CELSIUS</span>
-          <span class="client-logo-item">JORDAN</span>
+        <div class="contact-team">
+          <div>
+            <div class="cp-name">Samry Yussuf</div>
+            <div class="cp-role">Post Producer, Co-Founder</div>
+          </div>
+          <div>
+            <div class="cp-name">Dris Yousif</div>
+            <div class="cp-role">Post Producer, Co-Founder</div>
+          </div>
         </div>
+        <div class="contact-title">CONTACT</div>
       </div>
       <div class="contact-right"><div class="ph"><img src="../Work/visual-effects/road-to-palisades/1.jpg" alt=""></div></div>
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="../Homehttps://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
+    <div class="slide-logo-mark"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
 </div><!-- /deck -->
@@ -1566,6 +1723,26 @@
 <div id="hint">scroll or use arrow keys</div>
 
 <script>
+  /* Deck surface lock (best-effort; screenshots / devtools still possible) */
+  (function () {
+    function block(e) {
+      e.preventDefault();
+    }
+    document.addEventListener('contextmenu', block, true);
+    document.addEventListener('selectstart', block, true);
+    document.addEventListener('dragstart', function (e) {
+      if (e.target && (e.target.closest && e.target.closest('img, video'))) block(e);
+    }, true);
+    document.addEventListener('copy', block, true);
+    document.addEventListener('cut', block, true);
+    document.addEventListener('keydown', function (e) {
+      if (!e.ctrlKey && !e.metaKey) return;
+      const k = e.key.toLowerCase();
+      if (k === 's' || k === 'p' || k === 'u') block(e);
+    }, true);
+    window.addEventListener('beforeprint', block);
+  })();
+
   const slides  = document.querySelectorAll('.slide');
   const total   = slides.length;
   let current   = 0;
@@ -1582,13 +1759,17 @@
 
   const dots    = document.querySelectorAll('.dot');
   const counter = document.getElementById('slide-counter');
+  const coverIdxEl = document.getElementById('cover-slide-idx');
   const prog    = document.getElementById('progress');
   const hint    = document.getElementById('hint');
   let hintShown = false;
 
   function updateUI() {
     dots.forEach((d, i) => d.classList.toggle('active', i === current));
-    counter.textContent = String(current + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+    const countStr = String(current + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+    counter.textContent = countStr;
+    if (coverIdxEl) coverIdxEl.textContent = countStr;
+    document.body.classList.toggle('is-cover-active', current === 0);
     prog.style.width = ((current + 1) / total * 100) + '%';
   }
 

@@ -4,7 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const PORT = 2001;
+const PORT = Number(process.env.PORT) || 2001;
 
 const MIME = {
   '.html': 'text/html', '.css': 'text/css', '.js': 'application/javascript',
@@ -38,6 +38,9 @@ http.createServer((req, res) => {
     filePath = path.join(CONTACT, 'index.html');
   } else if (urlPath === '/services' || urlPath === '/services/') {
     filePath = path.join(__dirname, 'Services', 'index.html');
+  } else if (/^\/capabilities\/assets\//i.test(urlPath)) {
+    const sub = urlPath.replace(/^\/capabilities\/assets\//i, '');
+    filePath = path.join(__dirname, 'Capabilities', 'assets', sub);
   } else if (urlPath === '/capabilities' || urlPath === '/capabilities/' || urlPath === '/Capabilities' || urlPath === '/Capabilities/') {
     filePath = path.join(__dirname, 'Capabilities', 'index.html');
   } else if (urlPath === '/project' || urlPath === '/project/') {
