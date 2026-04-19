@@ -1,3 +1,4 @@
+import './load-env-local.mjs';
 import http from 'http';
 import fs from 'fs';
 import path from 'path';

@@ -48,4 +48,6 @@ render-pdf.mjs
 .vercel/
 .vercel-secret-tmp
 
-.vercel
+# Local secrets (admin password, etc.)
+.env.local
+.env
