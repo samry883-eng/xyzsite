@@ -3,148 +3,201 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Capabilities deck — sign in</title>
+  <title>XYZStudios — Capabilities</title>
   <meta name="robots" content="noindex, nofollow" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --black: #0b0b0b;
       --white: #ffffff;
-      --dim: rgba(255,255,255,0.55);
-      --err: #ff6b6b;
-      --border: rgba(255,255,255,0.14);
+      --dim: rgba(255, 255, 255, 0.42);
+      --line: rgba(255, 255, 255, 0.1);
+      --ease: cubic-bezier(0.76, 0, 0.24, 1);
     }
     html, body {
       min-height: 100%;
       background: var(--black);
       color: var(--white);
-      font-family: "Segoe UI", Tahoma, Geneva, sans-serif;
+      font-family: "Microsoft Sans Serif", "Segoe UI", Tahoma, Geneva, sans-serif;
       -webkit-font-smoothing: antialiased;
     }
-    body {
+    .gate {
+      min-height: 100vh;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 32px 20px;
+      padding: 56px 28px 80px;
     }
-    .panel {
-      width: 100%;
-      max-width: 400px;
-      border: 1px solid var(--border);
-      padding: 32px 28px 28px;
-      border-radius: 2px;
-    }
-    h1 {
-      font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-    p.lead {
-      font-size: 14px;
-      color: var(--dim);
-      line-height: 1.5;
-      margin-bottom: 24px;
-    }
-    label {
-      display: block;
+    /* Deck-style wordmark (see capabilities slide chrome) */
+    .wordmark {
       font-size: 11px;
-      letter-spacing: 0.06em;
+      font-weight: 500;
+      letter-spacing: 0.13em;
       text-transform: uppercase;
+      margin-bottom: 56px;
+    }
+    .headline {
+      font-size: clamp(32px, 6.5vw, 52px);
+      font-weight: 400;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .headline span {
+      display: block;
+    }
+    .sub {
+      font-size: 14px;
+      line-height: 1.55;
       color: var(--dim);
+      text-align: center;
+      max-width: 22em;
+      margin-bottom: 40px;
+      font-weight: 400;
+    }
+    form {
+      width: 100%;
+      max-width: 340px;
+    }
+    .field {
       margin-bottom: 8px;
     }
-    input {
+    .field input {
       width: 100%;
-      padding: 12px 14px;
-      margin-bottom: 18px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
+      padding: 16px 0 14px;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--line);
       color: var(--white);
       font-size: 15px;
-      border-radius: 2px;
-    }
-    input:focus {
+      font-family: inherit;
       outline: none;
-      border-color: rgba(255,255,255,0.35);
+      transition: border-color 0.35s var(--ease);
     }
-    button {
-      width: 100%;
-      padding: 14px 16px;
-      margin-top: 6px;
-      background: var(--white);
-      color: var(--black);
-      border: none;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      cursor: pointer;
-      border-radius: 2px;
+    .field input::placeholder {
+      color: rgba(255, 255, 255, 0.22);
     }
-    button:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
+    .field input:focus {
+      border-bottom-color: rgba(255, 255, 255, 0.38);
     }
     .err {
       font-size: 13px;
-      color: var(--err);
-      margin-bottom: 16px;
-      min-height: 1.2em;
+      line-height: 1.45;
+      color: rgba(255, 130, 120, 0.92);
+      text-align: center;
+      margin: 20px 0 0;
+      min-height: 1.35em;
+    }
+    .row-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 28px;
+    }
+    button[type="submit"] {
+      background: var(--white);
+      color: var(--black);
+      border: none;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 14px 28px;
+      cursor: pointer;
+      transition: opacity 0.25s var(--ease);
+    }
+    button[type="submit"]:hover:not(:disabled) {
+      opacity: 0.88;
+    }
+    button[type="submit"]:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+    /* Slide footer line — matches deck chrome */
+    .rule {
+      position: fixed;
+      bottom: calc(56px + 22px);
+      left: 28px;
+      right: 28px;
+      height: 1px;
+      background: var(--line);
+      max-width: min(100% - 56px, 90rem);
+      margin: 0 auto;
+      pointer-events: none;
+    }
+    @media (max-width: 520px) {
+      .wordmark { margin-bottom: 44px; }
+      .rule { bottom: 40px; left: 20px; right: 20px; }
     }
   </style>
 </head>
 <body>
-  <div class="panel">
-    <h1>Capabilities deck</h1>
-    <p class="lead">Use the email you requested access with and the password you were given.</p>
-    <div class="err" id="err" aria-live="polite"></div>
-    <form id="f" autocomplete="on">
-      <label for="email">Email</label>
-      <input id="email" name="email" type="email" autocomplete="email" required />
-      <label for="password">Password</label>
-      <input id="password" name="password" type="password" autocomplete="current-password" required />
-      <button type="submit" id="btn">Continue</button>
+  <div class="gate">
+    <div class="wordmark">XYZSTUDIOS</div>
+    <h1 class="headline"><span>Capabilities</span></h1>
+    <p class="sub">Enter the email you used to request access.</p>
+    <form id="f" autocomplete="on" novalidate>
+      <div class="field">
+        <input
+          id="email"
+          name="email"
+          type="email"
+          inputmode="email"
+          autocomplete="email"
+          placeholder="Email"
+          required
+          aria-label="Email"
+        />
+      </div>
+      <div class="err" id="err" aria-live="polite"></div>
+      <div class="row-actions">
+        <button type="submit" id="btn">Continue</button>
+      </div>
     </form>
   </div>
+  <div class="rule" aria-hidden="true"></div>
   <script>
     (function () {
-      const params = new URLSearchParams(window.location.search);
-      const next = params.get('next') || '/capabilities/';
+      var params = new URLSearchParams(window.location.search);
+      var next = params.get('next') || '/capabilities/';
       function safeNext(n) {
-        if (!n || !n.startsWith('/capabilities') || n.includes('//')) return '/capabilities/';
+        if (!n || !n.startsWith('/capabilities') || n.indexOf('//') !== -1) return '/capabilities/';
         return n;
       }
-      const target = safeNext(next);
+      var target = safeNext(next);
+      var err = document.getElementById('err');
+      var btn = document.getElementById('btn');
+      var form = document.getElementById('f');
 
-      const err = document.getElementById('err');
-      const btn = document.getElementById('btn');
-      const form = document.getElementById('f');
-
-      form.addEventListener('submit', async function (e) {
+      form.addEventListener('submit', function (e) {
         e.preventDefault();
         err.textContent = '';
         btn.disabled = true;
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value;
-        try {
-          const r = await fetch('/api/capabilities/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password }),
-          });
-          const data = await r.json().catch(function () { return {}; });
-          if (!r.ok || !data.ok) {
-            err.textContent = data.error || 'Could not sign in';
+        var email = document.getElementById('email').value.trim();
+        fetch('/api/capabilities/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email }),
+        })
+          .then(function (r) {
+            return r.json().then(function (data) {
+              return { ok: r.ok, data: data };
+            });
+          })
+          .then(function (x) {
+            if (!x.ok || !x.data.ok) {
+              err.textContent = x.data.error || 'Something went wrong.';
+              btn.disabled = false;
+              return;
+            }
+            window.location.href = target;
+          })
+          .catch(function () {
+            err.textContent = 'Network error.';
             btn.disabled = false;
-            return;
-          }
-          window.location.href = target;
-        } catch {
-          err.textContent = 'Network error';
-          btn.disabled = false;
-        }
+          });
       });
     })();
   </script>

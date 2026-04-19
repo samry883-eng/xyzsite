@@ -117,9 +117,9 @@ async function handleCapabilitiesApi(req, res, urlPath) {
     }
     const email = body.email;
     const password = body.password;
-    if (!email || !password) return json(res, 400, { ok: false, error: 'Email and password required' });
+    if (!email) return json(res, 400, { ok: false, error: 'Email required' });
     const ok = await verifyLogin(email, password);
-    if (!ok) return json(res, 401, { ok: false, error: 'Invalid email or password' });
+    if (!ok) return json(res, 401, { ok: false, error: 'Unable to open the deck with that email.' });
     const token = createSession(normalizeEmail(email), sec);
     res.writeHead(200, {
       'Content-Type': 'application/json; charset=utf-8',

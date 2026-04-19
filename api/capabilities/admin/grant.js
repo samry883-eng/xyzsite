@@ -38,7 +38,7 @@ export default async function handler(req, res) {
     return;
   }
   try {
-    await grantUpsert(body.email, body.password);
+    await grantUpsert(body.email, body.password || undefined);
     sendJson(res, 200, { ok: true });
   } catch (e) {
     sendJson(res, 400, { ok: false, error: e.message || 'Grant failed' });

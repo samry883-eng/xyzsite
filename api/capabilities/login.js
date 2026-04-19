@@ -39,13 +39,13 @@ export default async function handler(req, res) {
     return;
   }
   const { email, password } = body;
-  if (!email || !password) {
-    sendJson(res, 400, { ok: false, error: 'Email and password required' });
+  if (!email) {
+    sendJson(res, 400, { ok: false, error: 'Email required' });
     return;
   }
   const ok = await verifyLogin(email, password);
   if (!ok) {
-    sendJson(res, 401, { ok: false, error: 'Invalid email or password' });
+    sendJson(res, 401, { ok: false, error: 'Unable to open the deck with that email.' });
     return;
   }
   const token = createSession(normalizeEmail(email), sessionSecret());
