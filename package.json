@@ -10,7 +10,8 @@
     "build:pitch-deck": "node scripts/build-pitch-deck-data.mjs && node scripts/render-pitch-deck.mjs",
     "merge:capabilities": "node scripts/merge-capabilities-deck.mjs",
     "capabilities:grant": "node scripts/capabilities-grant.mjs",
-    "capabilities:print-env": "node scripts/capabilities-print-env.mjs"
+    "capabilities:print-env": "node scripts/capabilities-print-env.mjs",
+    "capabilities:grant-and-print": "node scripts/capabilities-grant-and-print.mjs"
   },
   "engines": {
     "node": ">=20"
