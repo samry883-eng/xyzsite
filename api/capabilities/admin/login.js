@@ -2,6 +2,7 @@ import {
   createAdminSession,
   validateAdminPassword,
   adminSessionCookieHeader,
+  getAdminSecretFromEnv,
 } from '../../../lib/capabilities-auth.mjs';
 import { readJsonBody } from '../../../lib/vercel-node-api.mjs';
 
@@ -30,8 +31,7 @@ export default async function handler(req, res) {
     sendJson(res, 405, { ok: false, error: 'Method not allowed' });
     return;
   }
-  const adm = process.env.CAPABILITIES_ADMIN_SECRET || '';
-  if (!adm) {
+  if (!getAdminSecretFromEnv()) {
     sendJson(res, 503, { ok: false, error: 'CAPABILITIES_ADMIN_SECRET is not set' });
     return;
   }

@@ -17,6 +17,7 @@ import {
   adminSessionCookieHeader,
   clearAdminSessionCookieHeader,
   validateAdminPassword,
+  getAdminSecretFromEnv,
 } from './lib/capabilities-auth.mjs';
 import { isAdminAuthorized } from './lib/capabilities-admin-guard.mjs';
 
@@ -63,10 +64,6 @@ function sessionSecret() {
   return process.env.CAPABILITIES_SESSION_SECRET || 'dev-capabilities-session-secret';
 }
 
-function adminSecret() {
-  return process.env.CAPABILITIES_ADMIN_SECRET || '';
-}
-
 function secureCookies() {
   return process.env.CAPABILITIES_SECURE_COOKIES === '1' || process.env.NODE_ENV === 'production';
 }
@@ -111,7 +108,7 @@ function json(res, code, obj) {
 
 async function handleCapabilitiesApi(req, res, urlPath) {
   const sec = sessionSecret();
-  const adm = adminSecret();
+  const adm = getAdminSecretFromEnv();
   const sc = secureCookies();
 
   if (urlPath === '/api/capabilities/login' && req.method === 'POST') {
@@ -171,14 +168,14 @@ async function handleCapabilitiesApi(req, res, urlPath) {
 
   if (urlPath === '/api/capabilities/admin/list' && req.method === 'GET') {
     if (!adm) return json(res, 503, { ok: false, error: 'CAPABILITIES_ADMIN_SECRET is not set' });
-    if (!isAdminAuthorized(req, adm, sec)) return json(res, 401, { ok: false, error: 'Unauthorized' });
+    if (!isAdminAuthorized(req, null, sec)) return json(res, 401, { ok: false, error: 'Unauthorized' });
     const grants = await grantList();
     return json(res, 200, { ok: true, grants });
   }
 
   if (urlPath === '/api/capabilities/admin/grant' && req.method === 'POST') {
     if (!adm) return json(res, 503, { ok: false, error: 'CAPABILITIES_ADMIN_SECRET is not set' });
-    if (!isAdminAuthorized(req, adm, sec)) return json(res, 401, { ok: false, error: 'Unauthorized' });
+    if (!isAdminAuthorized(req, null, sec)) return json(res, 401, { ok: false, error: 'Unauthorized' });
     let body;
     try {
       body = JSON.parse((await readBody(req)).toString('utf8') || '{}');
@@ -195,7 +192,7 @@ async function handleCapabilitiesApi(req, res, urlPath) {
 
   if (urlPath === '/api/capabilities/admin/revoke' && req.method === 'POST') {
     if (!adm) return json(res, 503, { ok: false, error: 'CAPABILITIES_ADMIN_SECRET is not set' });
-    if (!isAdminAuthorized(req, adm, sec)) return json(res, 401, { ok: false, error: 'Unauthorized' });
+    if (!isAdminAuthorized(req, null, sec)) return json(res, 401, { ok: false, error: 'Unauthorized' });
     let body;
     try {
       body = JSON.parse((await readBody(req)).toString('utf8') || '{}');

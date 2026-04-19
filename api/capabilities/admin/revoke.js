@@ -1,4 +1,4 @@
-import { grantRevoke } from '../../../lib/capabilities-auth.mjs';
+import { grantRevoke, getAdminSecretFromEnv } from '../../../lib/capabilities-auth.mjs';
 import { readJsonBody } from '../../../lib/vercel-node-api.mjs';
 import { isAdminAuthorized } from '../../../lib/capabilities-admin-guard.mjs';
 
@@ -13,13 +13,12 @@ export default async function handler(req, res) {
     sendJson(res, 405, { ok: false, error: 'Method not allowed' });
     return;
   }
-  const adm = process.env.CAPABILITIES_ADMIN_SECRET || '';
   const sec = process.env.CAPABILITIES_SESSION_SECRET || 'dev-capabilities-session-secret';
-  if (!adm) {
+  if (!getAdminSecretFromEnv()) {
     sendJson(res, 503, { ok: false, error: 'CAPABILITIES_ADMIN_SECRET is not set' });
     return;
   }
-  if (!isAdminAuthorized(req, adm, sec)) {
+  if (!isAdminAuthorized(req, null, sec)) {
     sendJson(res, 401, { ok: false, error: 'Unauthorized' });
     return;
   }
