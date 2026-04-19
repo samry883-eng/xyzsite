@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Capabilities access — Admin</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <style>
+    @font-face {
+      font-family: 'Micross';
+      src: url('/assets/micross.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      min-height: 100%;
+      background: #000;
+      color: #fff;
+      font-family: Micross, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrap {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 48px 28px 80px;
+    }
+    h1 {
+      font: 400 clamp(22px, 4vw, 28px)/1.15 Micross, Arial, sans-serif;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+    .hint {
+      font: 400 11px/1.6 Micross, Arial, sans-serif;
+      color: rgba(255, 255, 255, 0.32);
+      margin-bottom: 36px;
+    }
+    .panel {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 28px 24px 32px;
+      margin-bottom: 28px;
+    }
+    .panel h2 {
+      font: 700 8px/1 Micross, Arial, sans-serif;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.45);
+      margin-bottom: 20px;
+    }
+    .ct-field {
+      position: relative;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 20px 0 11px;
+      margin-bottom: 18px;
+      transition: border-color 0.2s;
+    }
+    .ct-field:focus-within { border-color: rgba(255, 255, 255, 0.28); }
+    .ct-label {
+      position: absolute;
+      top: 20px;
+      left: 0;
+      font: 400 9px/1 Micross, Arial, sans-serif;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.16);
+      transition: top 0.22s cubic-bezier(0.16, 1, 0.3, 1), font-size 0.22s, color 0.22s;
+      pointer-events: none;
+    }
+    .ct-field:focus-within .ct-label,
+    .ct-field.filled .ct-label {
+      top: 2px;
+      font-size: 7px;
+      color: rgba(255, 255, 255, 0.38);
+    }
+    .ct-field input {
+      background: none;
+      border: none;
+      outline: none;
+      width: 100%;
+      font: 400 12px/1.5 Micross, Arial, sans-serif;
+      color: #fff;
+    }
+    .ct-submit {
+      font: 700 8px/1 Micross, Arial, sans-serif;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.32);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      margin-top: 8px;
+      transition: color 0.2s;
+    }
+    .ct-submit:hover { color: #fff; }
+    .err {
+      font: 400 11px/1.5 Micross, Arial, sans-serif;
+      color: rgba(255, 140, 130, 0.95);
+      margin: 12px 0 0;
+      min-height: 1.2em;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font: 400 12px/1.5 Micross, Arial, sans-serif;
+    }
+    th, td {
+      text-align: left;
+      padding: 12px 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    th {
+      font: 700 7px/1 Micross, Arial, sans-serif;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.35);
+    }
+    .row-actions button {
+      font: 700 8px/1 Micross, Arial, sans-serif;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.4);
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .row-actions button:hover { color: #fff; }
+    .hidden { display: none !important; }
+    .toolbar {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    a.back {
+      font: 400 11px/1 Micross, Arial, sans-serif;
+      color: rgba(255, 255, 255, 0.35);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    a.back:hover { color: #fff; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="/capabilities/login">← Deck login</a>
+    <h1>Capabilities access</h1>
+    <p class="hint">
+      Protected by <code style="color:rgba(255,255,255,0.45)">CAPABILITIES_ADMIN_SECRET</code> (your admin password).
+      Optional: set <code style="color:rgba(255,255,255,0.45)">CAPABILITIES_ADMIN_EMAILS</code> (comma-separated) so only those addresses may sign in here.
+      On Vercel, add the Upstash Redis integration so add/remove persists (
+      <code style="color:rgba(255,255,255,0.45)">UPSTASH_REDIS_REST_URL</code> / <code style="color:rgba(255,255,255,0.45)">UPSTASH_REDIS_REST_TOKEN</code>
+      ).
+    </p>
+
+    <div id="login-panel" class="panel">
+      <h2>Admin sign in</h2>
+      <div class="ct-field" id="f-admin-email">
+        <label class="ct-label" for="admin-email">Your email (if allowlist enabled)</label>
+        <input type="email" id="admin-email" autocomplete="username" />
+      </div>
+      <div class="ct-field" id="f-admin-pass">
+        <label class="ct-label" for="admin-pass">Admin password *</label>
+        <input type="password" id="admin-pass" autocomplete="current-password" required />
+      </div>
+      <div class="err" id="login-err" aria-live="polite"></div>
+      <button type="button" class="ct-submit" id="btn-login">Sign in &rarr;</button>
+    </div>
+
+    <div id="admin-panel" class="hidden">
+      <div class="toolbar">
+        <button type="button" class="ct-submit" id="btn-logout">Sign out</button>
+      </div>
+
+      <div class="panel">
+        <h2>Allowed emails (deck access)</h2>
+        <div class="err" id="list-err" aria-live="polite"></div>
+        <table>
+          <thead>
+            <tr><th>Email</th><th>Added</th><th></th></tr>
+          </thead>
+          <tbody id="grant-rows"></tbody>
+        </table>
+      </div>
+
+      <div class="panel">
+        <h2>Add email</h2>
+        <div class="ct-field" id="f-new-email">
+          <label class="ct-label" for="new-email">Email *</label>
+          <input type="email" id="new-email" autocomplete="off" />
+        </div>
+        <div class="err" id="add-err" aria-live="polite"></div>
+        <button type="button" class="ct-submit" id="btn-add">Add &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var loginPanel = document.getElementById('login-panel');
+      var adminPanel = document.getElementById('admin-panel');
+      var loginErr = document.getElementById('login-err');
+      var listErr = document.getElementById('list-err');
+      var addErr = document.getElementById('add-err');
+      var grantRows = document.getElementById('grant-rows');
+
+      function floatLabels(ids) {
+        ids.forEach(function (id) {
+          var input = document.getElementById(id);
+          if (!input) return;
+          var field = input.closest('.ct-field');
+          function check() {
+            field.classList.toggle('filled', (input.value || '').length > 0);
+          }
+          input.addEventListener('input', check);
+          check();
+        });
+      }
+      floatLabels(['admin-email', 'admin-pass', 'new-email']);
+
+      function api(path, opts) {
+        opts = opts || {};
+        opts.credentials = 'include';
+        opts.headers = opts.headers || {};
+        if (opts.body && typeof opts.body === 'object' && !(opts.body instanceof FormData)) {
+          opts.headers['Content-Type'] = 'application/json';
+          opts.body = JSON.stringify(opts.body);
+        }
+        return fetch(path, opts).then(function (r) {
+          return r.json().then(function (data) {
+            return { ok: r.ok, status: r.status, data: data };
+          });
+        });
+      }
+
+      function renderRows(grants) {
+        grantRows.innerHTML = '';
+        (grants || []).forEach(function (g) {
+          var tr = document.createElement('tr');
+          var td1 = document.createElement('td');
+          td1.textContent = g.email;
+          var td2 = document.createElement('td');
+          td2.textContent = g.createdAt ? new Date(g.createdAt).toLocaleString() : '—';
+          var td3 = document.createElement('td');
+          td3.className = 'row-actions';
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.textContent = 'Remove';
+          btn.addEventListener('click', function () {
+            api('/api/capabilities/admin/revoke', {
+              method: 'POST',
+              body: { email: g.email },
+            }).then(function (x) {
+              if (!x.ok) {
+                listErr.textContent = (x.data && x.data.error) || 'Could not remove';
+                return;
+              }
+              listErr.textContent = '';
+              refreshList();
+            });
+          });
+          td3.appendChild(btn);
+          tr.appendChild(td1);
+          tr.appendChild(td2);
+          tr.appendChild(td3);
+          grantRows.appendChild(tr);
+        });
+      }
+
+      function refreshList() {
+        listErr.textContent = '';
+        return api('/api/capabilities/admin/list').then(function (x) {
+          if (x.status === 401) {
+            loginPanel.classList.remove('hidden');
+            adminPanel.classList.add('hidden');
+            return;
+          }
+          if (!x.ok) {
+            listErr.textContent = (x.data && x.data.error) || 'Could not load list';
+            return;
+          }
+          renderRows(x.data.grants);
+        });
+      }
+
+      function showAdmin() {
+        loginPanel.classList.add('hidden');
+        adminPanel.classList.remove('hidden');
+        return refreshList();
+      }
+
+      document.getElementById('btn-login').addEventListener('click', function () {
+        loginErr.textContent = '';
+        var email = document.getElementById('admin-email').value.trim();
+        var password = document.getElementById('admin-pass').value;
+        api('/api/capabilities/admin/login', {
+          method: 'POST',
+          body: { email: email || undefined, password: password },
+        }).then(function (x) {
+          if (!x.ok) {
+            loginErr.textContent = (x.data && x.data.error) || 'Sign in failed';
+            return;
+          }
+          document.getElementById('admin-pass').value = '';
+          showAdmin();
+        });
+      });
+
+      document.getElementById('btn-logout').addEventListener('click', function () {
+        api('/api/capabilities/admin/logout', { method: 'POST' }).then(function () {
+          loginPanel.classList.remove('hidden');
+          adminPanel.classList.add('hidden');
+        });
+      });
+
+      document.getElementById('btn-add').addEventListener('click', function () {
+        addErr.textContent = '';
+        var email = document.getElementById('new-email').value.trim();
+        api('/api/capabilities/admin/grant', {
+          method: 'POST',
+          body: { email: email },
+        }).then(function (x) {
+          if (!x.ok) {
+            addErr.textContent = (x.data && x.data.error) || 'Could not add';
+            return;
+          }
+          document.getElementById('new-email').value = '';
+          document.getElementById('f-new-email').classList.remove('filled');
+          refreshList();
+        });
+      });
+
+      api('/api/capabilities/admin/list').then(function (x) {
+        if (x.status === 401) return;
+        if (x.ok && x.data && x.data.grants) {
+          loginPanel.classList.add('hidden');
+          adminPanel.classList.remove('hidden');
+          renderRows(x.data.grants);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

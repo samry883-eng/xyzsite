@@ -18,7 +18,10 @@ export default async function middleware(request) {
   if (
     p === '/capabilities/login' ||
     p === '/capabilities/login/' ||
-    p === '/capabilities/login.html'
+    p === '/capabilities/login.html' ||
+    p === '/capabilities/admin' ||
+    p === '/capabilities/admin/' ||
+    p === '/capabilities/admin.html'
   ) {
     return next();
   }

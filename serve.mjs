@@ -13,7 +13,12 @@ import {
   clearSessionCookieHeader,
   getCookieName,
   normalizeEmail,
+  createAdminSession,
+  adminSessionCookieHeader,
+  clearAdminSessionCookieHeader,
+  validateAdminCredentials,
 } from './lib/capabilities-auth.mjs';
+import { isAdminAuthorized } from './lib/capabilities-admin-guard.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = Number(process.env.PORT) || 2001;
@@ -70,6 +75,7 @@ function requiresCapabilitiesGate(urlPath) {
   const p = urlPath.toLowerCase();
   if (!p.startsWith('/capabilities')) return false;
   if (p === '/capabilities/login' || p === '/capabilities/login/' || p === '/capabilities/login.html') return false;
+  if (p === '/capabilities/admin' || p === '/capabilities/admin/' || p === '/capabilities/admin.html') return false;
   return true;
 }
 
@@ -136,17 +142,43 @@ async function handleCapabilitiesApi(req, res, urlPath) {
     return res.end(JSON.stringify({ ok: true }));
   }
 
+  if (urlPath === '/api/capabilities/admin/login' && req.method === 'POST') {
+    if (!adm) return json(res, 503, { ok: false, error: 'CAPABILITIES_ADMIN_SECRET is not set' });
+    let body;
+    try {
+      body = JSON.parse((await readBody(req)).toString('utf8') || '{}');
+    } catch {
+      return json(res, 400, { ok: false, error: 'Invalid JSON' });
+    }
+    if (!validateAdminCredentials(body.email, body.password)) {
+      return json(res, 401, { ok: false, error: 'Unauthorized' });
+    }
+    const token = createAdminSession(sec);
+    res.writeHead(200, {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Set-Cookie': adminSessionCookieHeader(token, sc),
+    });
+    return res.end(JSON.stringify({ ok: true }));
+  }
+
+  if (urlPath === '/api/capabilities/admin/logout' && req.method === 'POST') {
+    res.writeHead(200, {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Set-Cookie': clearAdminSessionCookieHeader(sc),
+    });
+    return res.end(JSON.stringify({ ok: true }));
+  }
+
   if (urlPath === '/api/capabilities/admin/list' && req.method === 'GET') {
     if (!adm) return json(res, 503, { ok: false, error: 'CAPABILITIES_ADMIN_SECRET is not set' });
-    const h = req.headers['x-capabilities-admin-secret'];
-    if (h !== adm) return json(res, 401, { ok: false, error: 'Unauthorized' });
-    return json(res, 200, { ok: true, grants: grantList() });
+    if (!isAdminAuthorized(req, adm, sec)) return json(res, 401, { ok: false, error: 'Unauthorized' });
+    const grants = await grantList();
+    return json(res, 200, { ok: true, grants });
   }
 
   if (urlPath === '/api/capabilities/admin/grant' && req.method === 'POST') {
     if (!adm) return json(res, 503, { ok: false, error: 'CAPABILITIES_ADMIN_SECRET is not set' });
-    const h = req.headers['x-capabilities-admin-secret'];
-    if (h !== adm) return json(res, 401, { ok: false, error: 'Unauthorized' });
+    if (!isAdminAuthorized(req, adm, sec)) return json(res, 401, { ok: false, error: 'Unauthorized' });
     let body;
     try {
       body = JSON.parse((await readBody(req)).toString('utf8') || '{}');
@@ -163,8 +195,7 @@ async function handleCapabilitiesApi(req, res, urlPath) {
 
   if (urlPath === '/api/capabilities/admin/revoke' && req.method === 'POST') {
     if (!adm) return json(res, 503, { ok: false, error: 'CAPABILITIES_ADMIN_SECRET is not set' });
-    const h = req.headers['x-capabilities-admin-secret'];
-    if (h !== adm) return json(res, 401, { ok: false, error: 'Unauthorized' });
+    if (!isAdminAuthorized(req, adm, sec)) return json(res, 401, { ok: false, error: 'Unauthorized' });
     let body;
     try {
       body = JSON.parse((await readBody(req)).toString('utf8') || '{}');
@@ -172,8 +203,12 @@ async function handleCapabilitiesApi(req, res, urlPath) {
       return json(res, 400, { ok: false, error: 'Invalid JSON' });
     }
     if (!body.email) return json(res, 400, { ok: false, error: 'email required' });
-    grantRevoke(body.email);
-    return json(res, 200, { ok: true });
+    try {
+      await grantRevoke(body.email);
+      return json(res, 200, { ok: true });
+    } catch (e) {
+      return json(res, 400, { ok: false, error: e.message || 'Revoke failed' });
+    }
   }
 
   res.writeHead(404, { 'Content-Type': 'text/plain' });
@@ -222,6 +257,8 @@ function getStaticFilePath(urlPath) {
     filePath = path.join(__dirname, 'Capabilities', 'deck-legacy.html');
   } else if (p === '/capabilities/login' || p === '/capabilities/login/' || p === '/capabilities/login.html') {
     filePath = path.join(__dirname, 'Capabilities', 'login.html');
+  } else if (p === '/capabilities/admin' || p === '/capabilities/admin/' || p === '/capabilities/admin.html') {
+    filePath = path.join(__dirname, 'Capabilities', 'admin.html');
   } else if (p === '/capabilities' || p === '/capabilities/' || p === '/Capabilities' || p === '/Capabilities/') {
     filePath = path.join(__dirname, 'Capabilities', 'index.html');
   } else if (p === '/project' || p === '/project/') {

@@ -24,6 +24,7 @@
     "puppeteer-core": "^24.41.0"
   },
   "dependencies": {
+    "@upstash/redis": "^1.37.0",
     "@vercel/edge": "^1.2.2"
   }
 }

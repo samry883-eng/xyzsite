@@ -11,6 +11,14 @@
     {
       "source": "/capabilities/login/",
       "destination": "/capabilities/login.html"
+    },
+    {
+      "source": "/capabilities/admin",
+      "destination": "/capabilities/admin.html"
+    },
+    {
+      "source": "/capabilities/admin/",
+      "destination": "/capabilities/admin.html"
     }
   ]
 }

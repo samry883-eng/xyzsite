@@ -1,5 +1,6 @@
 import { grantRevoke } from '../../../lib/capabilities-auth.mjs';
 import { readJsonBody } from '../../../lib/vercel-node-api.mjs';
+import { isAdminAuthorized } from '../../../lib/capabilities-admin-guard.mjs';
 
 function sendJson(res, code, obj) {
   res.statusCode = code;
@@ -13,21 +14,13 @@ export default async function handler(req, res) {
     return;
   }
   const adm = process.env.CAPABILITIES_ADMIN_SECRET || '';
+  const sec = process.env.CAPABILITIES_SESSION_SECRET || 'dev-capabilities-session-secret';
   if (!adm) {
     sendJson(res, 503, { ok: false, error: 'CAPABILITIES_ADMIN_SECRET is not set' });
     return;
   }
-  const h = req.headers['x-capabilities-admin-secret'];
-  if (h !== adm) {
+  if (!isAdminAuthorized(req, adm, sec)) {
     sendJson(res, 401, { ok: false, error: 'Unauthorized' });
-    return;
-  }
-  if (process.env.VERCEL) {
-    sendJson(res, 501, {
-      ok: false,
-      error:
-        'Cannot revoke on Vercel from this API. Edit CAPABILITIES_GRANTS_JSON in the Vercel project (remove the email) and redeploy.',
-    });
     return;
   }
   let body;
@@ -41,6 +34,10 @@ export default async function handler(req, res) {
     sendJson(res, 400, { ok: false, error: 'email required' });
     return;
   }
-  grantRevoke(body.email);
-  sendJson(res, 200, { ok: true });
+  try {
+    await grantRevoke(body.email);
+    sendJson(res, 200, { ok: true });
+  } catch (e) {
+    sendJson(res, 400, { ok: false, error: e.message || 'Revoke failed' });
+  }
 }
