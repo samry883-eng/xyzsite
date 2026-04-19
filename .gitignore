@@ -10,6 +10,11 @@ dist/
 # Capabilities deck access list (email + scrypt hashes) — do not commit
 data/capabilities-grants.json
 
+.c.txt
+.t.json
+.curl-cookies.txt
+.tmp-login.json
+
 node_modules/
 temporary screenshots/
 Capabilities/screenshots/
