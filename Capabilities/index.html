@@ -644,7 +644,7 @@
     .ci.span2 { grid-column: span 2; }
     .ci.span2r { grid-row: span 2; }
 
-    /* Case study — Storyboard (video left w/ About-style crop; composite sheet right) */
+    /* Case study — Storyboard (Pitch: composite sheet left, 16:9 video right) */
     .slide-case--storyboard .slide-inner {
       padding-top: calc(var(--deck-pad-y) + 44px);
     }
@@ -692,46 +692,12 @@
       flex: 1;
       min-height: 0;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr);
-      gap: clamp(12px, 2vw, 22px);
+      /* Pitch: storyboard sheet left, hero video right (wide 16:9, uncropped) */
+      grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
+      gap: clamp(16px, 2.2vw, 28px);
       align-items: stretch;
     }
-    /* Storyboard slide — video left: same rectangular crop feel as slide 3 (About) */
-    .case-video-col--p3 {
-      background: #0a0a0a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 0;
-      padding: var(--media-frame-pad-y) clamp(8px, 1.2vw, 20px) calc(var(--media-frame-pad-y) + 6px) var(--media-frame-pad-x);
-      box-sizing: border-box;
-    }
-    .case-video-crop--p3 {
-      width: 100%;
-      max-width: min(100%, 30rem);
-      flex: 1;
-      min-height: 0;
-      max-height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-    .case-video-crop--p3 .ph {
-      flex: 1;
-      min-height: 0;
-      width: 100%;
-      border-radius: 1px;
-      overflow: hidden;
-      clip-path: inset(8% 0 5% 0);
-      background: #161616;
-    }
-    .case-video-crop--p3 .ph video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center;
-      display: block;
-    }
-    /* Right: full storyboard sheet (composite) */
+    /* Storyboard sheet — left column */
     .case-sb-sheet {
       min-height: 0;
       height: 100%;
@@ -739,8 +705,44 @@
       align-items: center;
       justify-content: center;
       background: #0a0a0a;
+      padding: var(--media-frame-pad-y) clamp(8px, 1.5vw, 16px) var(--media-frame-pad-y) var(--media-frame-pad-x);
+      box-sizing: border-box;
+      order: 0;
+    }
+    /* RBC reel — right column: 16:9 frame, no About-style clip-path */
+    .case-video-col--sb {
+      background: #0a0a0a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
       padding: var(--media-frame-pad-y) var(--media-frame-pad-x) var(--media-frame-pad-y) 0;
       box-sizing: border-box;
+      order: 1;
+    }
+    .case-video-crop--sb {
+      width: 100%;
+      max-width: 100%;
+      aspect-ratio: 16 / 9;
+      flex-shrink: 0;
+      border-radius: 1px;
+      overflow: hidden;
+      background: #000;
+    }
+    .case-video-crop--sb .ph {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      border-radius: 0;
+      overflow: hidden;
+    }
+    .case-video-crop--sb .ph video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      display: block;
+      background: #000;
     }
     .case-sb-sheet .ph {
       flex: 1;
@@ -1421,16 +1423,16 @@
         <div class="case-client case-client--center">Rory McIlroy<br>RBC Canadian Open</div>
       </div>
       <div class="case-main-sb">
-        <div class="case-video-col case-video-col--p3">
-          <div class="case-video-crop case-video-crop--p3">
-            <div class="ph">
-              <video autoplay muted loop playsinline src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/85D_It6HUS/original"></video>
-            </div>
-          </div>
-        </div>
         <div class="case-sb-sheet" aria-label="Storyboard sheet">
           <div class="ph">
             <img src="/capabilities/Case%20Studies/Storyboard%20left%20side.png" alt="">
+          </div>
+        </div>
+        <div class="case-video-col case-video-col--sb">
+          <div class="case-video-crop case-video-crop--sb">
+            <div class="ph">
+              <video autoplay muted loop playsinline preload="auto" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/85D_It6HUS/original"></video>
+            </div>
           </div>
         </div>
       </div>
