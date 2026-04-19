@@ -191,6 +191,10 @@
       font-size: 11px; color: var(--dim);
       border-bottom: 1px solid var(--dim); padding-bottom: 2px; z-index: 10;
     }
+    /* Storyboard: sit below #slide-counter so labels don’t overlap page numbers */
+    .slide-case--storyboard .slide-tag {
+      top: calc(var(--pt) + 28px);
+    }
 
     /* ph = placeholder image block */
     .ph {
