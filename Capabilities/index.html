@@ -413,7 +413,7 @@
     }
     .about-img .ph {
       flex: 1;
-      min-height: 0;
+      min-height: min(58vh, 720px);
       width: 100%;
       border-radius: 1px;
       overflow: hidden;
@@ -995,7 +995,20 @@
       }
       .slide-about .slide-inner, .slide-hww .slide-inner,
       .slide-contact .slide-inner { grid-template-columns: 1fr; }
-      .about-img, .hww-img, .contact-right { display: none; }
+      /* Keep About video visible — was incorrectly hidden with .about-img */
+      .slide-about .slide-inner {
+        grid-template-rows: auto minmax(0, 1fr);
+      }
+      .slide-about .about-img {
+        display: flex;
+        min-height: 38vh;
+        max-height: 52vh;
+        padding-bottom: 12px;
+      }
+      .slide-about .about-img .ph {
+        min-height: min(42vh, 480px);
+      }
+      .hww-img, .contact-right { display: none; }
       .slide-project .slide-inner { grid-template-columns: 1fr; }
       .proj-sidebar { border-right: none; border-bottom: 1px solid var(--divider); flex: 0 0 auto; }
       .toc-heading { min-width: auto; font-size: 36px; }
@@ -1111,7 +1124,7 @@
     <div class="xyz-logo">XYZSTUDIOS</div>
     <div class="slide-inner">
       <div class="about-img">
-        <div class="ph"><video src="https://r2.vidzflow.com/source/cbf82991-c743-4045-8898-b6ee78efd9b4.mp4" autoplay muted loop playsinline preload="metadata" data-clip-start="22" data-clip-end="33"></video></div>
+        <div class="ph"><video src="https://r2.vidzflow.com/source/cbf82991-c743-4045-8898-b6ee78efd9b4.mp4" autoplay muted loop playsinline preload="auto" data-clip-start="22" data-clip-end="33"></video></div>
       </div>
       <div class="about-text">
         <div class="about-heading">a post-production studio built through close creative collaboration.</div>
@@ -2178,6 +2191,17 @@
     document.body.classList.toggle('is-cover-active', current === 0);
     prog.style.width = ((current + 1) / total * 100) + '%';
     syncDeckStaticChrome();
+    const abSlide = slides[current];
+    if (abSlide && abSlide.classList.contains('slide-about')) {
+      const av = abSlide.querySelector('.about-img video');
+      if (av) {
+        whenVideoMeta(av, function () {
+          projVideoClipSeekStart(av);
+          av.muted = true;
+          if (av.paused) av.play().catch(function () {});
+        });
+      }
+    }
   }
 
   function slideVideo(slide) { return slide && slide.querySelector('.proj-video-bg'); }
@@ -2186,6 +2210,11 @@
     if (!vid || vid.dataset.clipStart === undefined) return;
     const s = parseFloat(vid.dataset.clipStart, 10);
     if (!Number.isNaN(s)) vid.currentTime = s;
+  }
+
+  function whenVideoMeta(v, fn) {
+    if (v.readyState >= 1) fn();
+    else v.addEventListener('loadedmetadata', fn, { once: true });
   }
 
   function bindProjVideoClipRange(vid) {
@@ -2223,15 +2252,17 @@
       to.style.transform   = 'translateY(0%)';
       from.style.transform = dir > 0 ? 'translateY(-100%)' : 'translateY(100%)';
 
-      // Seek clipped segment (About, Atomic, etc.); unmute project full-bleed videos only
       const toClip = to.querySelector('video[data-clip-start][data-clip-end]');
-      if (toClip) projVideoClipSeekStart(toClip);
       const toVid = slideVideo(to);
-      if (toVid) {
+      if (toClip) {
+        whenVideoMeta(toClip, function () {
+          projVideoClipSeekStart(toClip);
+          toClip.muted = !(toVid && toClip === toVid);
+          toClip.play().catch(function () {});
+        });
+      } else if (toVid) {
         toVid.muted = false;
-        toVid.play();
-      } else if (toClip) {
-        toClip.play().catch(function () {});
+        toVid.play().catch(function () {});
       }
 
       setTimeout(() => {
