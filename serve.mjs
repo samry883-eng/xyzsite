@@ -4,8 +4,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import {
   verifySession,
-  verifyAdminSession,
-  getAdminCookieName,
   createSession,
   verifyLogin,
   grantUpsert,
@@ -315,11 +313,8 @@ http.createServer((req, res) => {
       if (!authDisabled() && requiresCapabilitiesGate(urlPath)) {
         const cookies = parseCookies(req.headers.cookie);
         const token = cookies[COOKIE];
-        const sec = sessionSecret();
-        const email = verifySession(token, sec);
-        const adminOk =
-          !email && verifyAdminSession(cookies[getAdminCookieName()], sec);
-        if (!email && !adminOk) {
+        const email = verifySession(token, sessionSecret());
+        if (!email) {
           if (req.method === 'GET' || req.method === 'HEAD') {
             const next = encodeURIComponent(urlPath);
             res.writeHead(302, { Location: `/capabilities/login?next=${next}` });
