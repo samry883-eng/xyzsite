@@ -644,6 +644,91 @@
     .ci.span2 { grid-column: span 2; }
     .ci.span2r { grid-row: span 2; }
 
+    /* Case study — Storyboard (video left/center, grid right) */
+    .slide-case--storyboard .slide-inner {
+      padding-top: calc(var(--deck-pad-y) + 44px);
+    }
+    .slide-case--storyboard .xyz-logo {
+      top: calc(var(--pt) + 26px);
+    }
+    .slide-case--storyboard .slide-tag {
+      top: calc(var(--pt) + 26px);
+    }
+    .case-head-sb {
+      flex-shrink: 0;
+      margin-bottom: clamp(14px, 2vh, 26px);
+    }
+    .case-head-sb__row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px 48px;
+      align-items: start;
+      margin-bottom: clamp(14px, 1.8vh, 22px);
+    }
+    .case-left--sb .case-title {
+      margin: 0;
+    }
+    .case-right--sb {
+      padding-top: 0;
+      justify-self: end;
+      width: 100%;
+      max-width: 34rem;
+    }
+    .case-body--storyboard {
+      max-width: none;
+      text-align: right;
+    }
+    .case-body--storyboard p {
+      text-align: right;
+    }
+    .case-client--center {
+      text-align: center;
+      font-size: 12px;
+      color: var(--dim);
+      font-weight: 300;
+      line-height: 1.5;
+    }
+    .case-main-sb {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.14fr);
+      gap: clamp(12px, 2vw, 22px);
+      align-items: stretch;
+    }
+    .case-video-col {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
+    }
+    .case-video-crop {
+      width: 100%;
+      max-width: min(100%, 26rem);
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      background: #161616;
+      border-radius: 1px;
+    }
+    .case-video-crop video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+    .case-sb-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      gap: 3px;
+      min-height: 0;
+      height: 100%;
+    }
+    .case-sb-grid .ph {
+      min-height: 0;
+    }
+
     /* ════════════════════════════════
        CRAFT SLIDE
     ════════════════════════════════ */
@@ -889,6 +974,14 @@
       .toc-list { max-width: none; }
       .services-grid { grid-template-columns: 1fr 1fr; }
       .case-top { grid-template-columns: 1fr; }
+      .case-head-sb__row { grid-template-columns: 1fr; }
+      .case-right--sb { justify-self: stretch; max-width: none; }
+      .case-body--storyboard,
+      .case-body--storyboard p { text-align: left; }
+      .slide-case--storyboard .case-main-sb {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto minmax(200px, 1fr);
+      }
     }
 
     /* Slide 1 — Pitch / PDF cover export (full-bleed) */
@@ -1144,7 +1237,7 @@
        08 · PROJECT — ATOMIC / INTO THE VOID
   ═══════════════════════════════ -->
   <div class="slide slide-project has-video" data-index="7">
-    <video class="proj-video-bg" autoplay muted loop playsinline src="https://r2.vidzflow.com/source/cbf82991-c743-4045-8898-b6ee78efd9b4.mp4"></video>
+    <video class="proj-video-bg" autoplay muted loop playsinline preload="metadata" data-clip-start="24" data-clip-end="33" src="https://r2.vidzflow.com/source/cbf82991-c743-4045-8898-b6ee78efd9b4.mp4"></video>
     <div class="proj-gradient"></div>
     <div class="proj-overlay">
       <div class="proj-content-col">
@@ -1267,36 +1360,51 @@
        11 · CASE STUDY — STORYBOARD
        Group: Case Studies / Storyboard
   ═══════════════════════════════ -->
-  <div class="slide slide-case" data-index="10">
+  <div class="slide slide-case slide-case--storyboard" data-index="10">
     <div class="xyz-logo">XYZSTUDIOS</div>
     <div class="slide-tag">Case study</div>
     <div class="slide-inner">
-      <div class="case-top">
-        <div class="case-left">
-          <div class="case-title">Storyboard</div>
-          <div class="case-client">Rory McIlroy<br>RBC Canadian Open</div>
-        </div>
-        <div class="case-right">
-          <div class="case-body">
-            <p>With no live shoot possible, the client asked us to develop the creative direction and bring the concept to life. We crafted a stylized 3D hype reel, taking the project from concept art through to final execution. Throughout the process, the client remained closely involved, providing notes and feedback as we shaped the visuals to capture Rory’s momentum and the anticipation around the tournament.</p>
+      <div class="case-head-sb">
+        <div class="case-head-sb__row">
+          <div class="case-left case-left--sb">
+            <div class="case-title">Storyboard</div>
+          </div>
+          <div class="case-right case-right--sb">
+            <div class="case-body case-body--storyboard">
+              <p>With no live shoot possible, the client asked us to develop the creative direction and bring the concept to life. We crafted a stylized 3D hype reel, taking the project from concept art through to final execution. Throughout the process, the client remained closely involved, providing notes and feedback as we shaped the visuals to capture Rory’s momentum and the anticipation around the tournament.</p>
+            </div>
           </div>
         </div>
+        <div class="case-client case-client--center">Rory McIlroy<br>RBC Canadian Open</div>
       </div>
-      <div class="case-images" style="grid-template-columns: repeat(3, 1fr) 1.7fr; grid-template-rows: repeat(4, 1fr);">
-        <div class="ci"><div class="ph"><img src="/capabilities/assets/storyboard/sb-3.png" alt=""></div></div>
-        <div class="ci"><div class="ph"><img src="/capabilities/assets/storyboard/sb-2.png" alt=""></div></div>
-        <div class="ci"><div class="ph"><img src="/capabilities/assets/storyboard/sb-3.png" alt=""></div></div>
-        <div class="ci" style="grid-row: span 4; grid-column: 4; overflow: hidden;">
-          <video autoplay muted loop playsinline src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/85D_It6HUS/original" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+      <div class="case-main-sb">
+        <div class="case-video-col">
+          <div class="case-video-crop">
+            <video autoplay muted loop playsinline src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/85D_It6HUS/original"></video>
+          </div>
         </div>
-        <div class="ci"><div class="ph"><img src="/capabilities/assets/storyboard/sb-2.png" alt=""></div></div>
-        <div class="ci"><div class="ph"><img src="/capabilities/assets/storyboard/sb-4.png" alt=""></div></div>
-        <div class="ci"><div class="ph"><img src="/capabilities/assets/storyboard/sb-3.png" alt=""></div></div>
-        <div class="ci"><div class="ph"><img src="/capabilities/assets/storyboard/sb-2.png" alt=""></div></div>
-        <div class="ci"><div class="ph"><img src="/capabilities/assets/storyboard/sb-4.png" alt=""></div></div>
-        <div class="ci"><div class="ph"><img src="/capabilities/assets/storyboard/sb-3.png" alt=""></div></div>
-        <div class="ci"><div class="ph"><img src="/capabilities/assets/storyboard/sb-2.png" alt=""></div></div>
-        <div class="ci"><div class="ph"><img src="/capabilities/assets/storyboard/sb-1.png" alt=""></div></div>
+        <div class="case-sb-grid" aria-label="Storyboard frames">
+          <div class="ci"><div class="ph"><img src="/capabilities/casestudies/storyboard/sb-1.png" alt=""></div></div>
+          <div class="ci"><div class="ph"><img src="/capabilities/casestudies/storyboard/sb-2.png" alt=""></div></div>
+          <div class="ci"><div class="ph"><img src="/capabilities/casestudies/storyboard/sb-3.png" alt=""></div></div>
+          <div class="ci"><div class="ph"><img src="/capabilities/casestudies/storyboard/sb-4.png" alt=""></div></div>
+          <div class="ci"><div class="ph"><img src="/capabilities/casestudies/storyboard/sb-1.png" alt=""></div></div>
+          <div class="ci"><div class="ph"><img src="/capabilities/casestudies/storyboard/sb-2.png" alt=""></div></div>
+          <div class="ci"><div class="ph"><img src="/capabilities/casestudies/storyboard/sb-3.png" alt=""></div></div>
+          <div class="ci"><div class="ph"><img src="/capabilities/casestudies/storyboard/sb-4.png" alt=""></div></div>
+          <div class="ci"><div class="ph"><img src="/capabilities/casestudies/storyboard/sb-1.png" alt=""></div></div>
+          <div class="ci"><div class="ph"><img src="/capabilities/casestudies/storyboard/sb-2.png" alt=""></div></div>
+          <div class="ci"><div class="ph"><img src="/capabilities/casestudies/storyboard/sb-3.png" alt=""></div></div>
+          <div class="ci"><div class="ph"><img src="/capabilities/casestudies/storyboard/sb-4.png" alt=""></div></div>
+          <div class="ci"><div class="ph"><img src="/capabilities/casestudies/storyboard/sb-1.png" alt=""></div></div>
+          <div class="ci"><div class="ph"><img src="/capabilities/casestudies/storyboard/sb-2.png" alt=""></div></div>
+          <div class="ci"><div class="ph"><img src="/capabilities/casestudies/storyboard/sb-3.png" alt=""></div></div>
+          <div class="ci"><div class="ph"><img src="/capabilities/casestudies/storyboard/sb-4.png" alt=""></div></div>
+          <div class="ci"><div class="ph"><img src="/capabilities/casestudies/storyboard/sb-1.png" alt=""></div></div>
+          <div class="ci"><div class="ph"><img src="/capabilities/casestudies/storyboard/sb-2.png" alt=""></div></div>
+          <div class="ci"><div class="ph"><img src="/capabilities/casestudies/storyboard/sb-3.png" alt=""></div></div>
+          <div class="ci"><div class="ph"><img src="/capabilities/casestudies/storyboard/sb-4.png" alt=""></div></div>
+        </div>
       </div>
     </div>
     <div class="slide-footer-line"></div>
@@ -2059,6 +2167,25 @@
 
   function slideVideo(slide) { return slide && slide.querySelector('.proj-video-bg'); }
 
+  function projVideoClipSeekStart(vid) {
+    if (!vid || vid.dataset.clipStart === undefined) return;
+    const s = parseFloat(vid.dataset.clipStart, 10);
+    if (!Number.isNaN(s)) vid.currentTime = s;
+  }
+
+  function bindProjVideoClipRange(vid) {
+    const end = parseFloat(vid.dataset.clipEnd, 10);
+    const start = parseFloat(vid.dataset.clipStart, 10);
+    if (Number.isNaN(end) || Number.isNaN(start)) return;
+    vid.addEventListener('timeupdate', function () {
+      if (vid.currentTime >= end) vid.currentTime = start;
+    });
+    vid.addEventListener('loadedmetadata', function () {
+      vid.currentTime = start;
+    });
+  }
+  document.querySelectorAll('.proj-video-bg[data-clip-start][data-clip-end]').forEach(bindProjVideoClipRange);
+
   function goTo(idx) {
     if (animating || idx === current || idx < 0 || idx >= total) return;
     animating = true;
@@ -2083,7 +2210,11 @@
 
       // Unmute incoming video after transition starts
       const toVid = slideVideo(to);
-      if (toVid) { toVid.muted = false; toVid.play(); }
+      if (toVid) {
+        projVideoClipSeekStart(toVid);
+        toVid.muted = false;
+        toVid.play();
+      }
 
       setTimeout(() => {
         from.classList.remove('active');

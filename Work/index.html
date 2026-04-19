@@ -388,7 +388,7 @@
     {
       label: 'Visual Effects',
       cards: [
-        { video: VF  + 'cbf82991-c743-4045-8898-b6ee78efd9b4.mp4',         client: 'Atomic',         title: 'Into the Void',                date: 'NOV 15' },
+        { video: VF  + 'cbf82991-c743-4045-8898-b6ee78efd9b4.mp4',         client: 'Atomic',         title: 'Into the Void',                date: 'NOV 15', clipStart: 24, clipEnd: 33 },
         { video: VF  + 'ef1dc602-5a95-4973-a0ea-82794726bc4a.mp4',         client: 'Salomon',        title: 'Speedcross 3',                 date: 'OCT 25' },
         { video: SB  + 'PcB8hb2-uO/original',                              client: 'Salomon',        title: 's/lab Manifesto',              date: 'FEB 26' },
         { video: SB  + '9O7xsj76Lw/original',                              client: 'Toyota',         title: 'Road to Palisades',            date: 'FEB 26' },
@@ -492,6 +492,24 @@
   const FALLBACK_IMG = CDN + '69c0bbd38bf9e9ecfb7c293b_final%20test1.mp4_snapshot_00.27.567.jpg';
 
   const showcase = document.getElementById('showcase');
+  /** Loop only a time range on hover video (e.g. Atomic / Into the Void 24s–33s). */
+  if (showcase) {
+    showcase.addEventListener('loadedmetadata', function (e) {
+      const v = e.target;
+      if (!v.classList || !v.classList.contains('wc-hover-video')) return;
+      const s = parseFloat(v.dataset.clipStart, 10);
+      if (Number.isNaN(s)) return;
+      v.currentTime = s;
+    }, true);
+    showcase.addEventListener('timeupdate', function (e) {
+      const v = e.target;
+      if (!v.classList || !v.classList.contains('wc-hover-video')) return;
+      const s = parseFloat(v.dataset.clipStart, 10);
+      const end = parseFloat(v.dataset.clipEnd, 10);
+      if (Number.isNaN(s) || Number.isNaN(end)) return;
+      if (v.currentTime >= end) v.currentTime = s;
+    }, true);
+  }
   /** Keep in sync with :root --wc-hover-max (gentler zoom than reference portfolios). */
   var WC_HOVER_SCALE_MAX = 1.25;
 
@@ -543,6 +561,10 @@
     video.setAttribute('playsinline', '');
     video.setAttribute('muted', '');
     video.preload = 'metadata';
+    if (card.clipStart != null && card.clipEnd != null) {
+      video.dataset.clipStart = String(card.clipStart);
+      video.dataset.clipEnd = String(card.clipEnd);
+    }
 
     const img = document.createElement('img');
     img.className = 'wc-card-poster';
@@ -589,6 +611,8 @@
         wrap.classList.add('wc-hover-active');
         applyPeerRadialPush(wrap, s);
         video.muted = true;
+        const clipS = parseFloat(video.dataset.clipStart, 10);
+        if (!Number.isNaN(clipS)) video.currentTime = clipS;
         video.play().catch(function () {});
         if (img) img.style.opacity = '0';
       });
@@ -599,7 +623,8 @@
         card.style.transformOrigin = '';
         if (header) header.style.transform = '';
         video.pause();
-        video.currentTime = 0;
+        const clipS = parseFloat(video.dataset.clipStart, 10);
+        video.currentTime = Number.isNaN(clipS) ? 0 : clipS;
         if (img) img.style.opacity = '';
       });
     });

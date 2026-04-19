@@ -4,7 +4,6 @@ Capabilities/Page 3 video.mp4
 
 # Exceeds GitHub 100MB limit — keep locally only
 Work/making-of/gold-cup/breakdown 1.mp4
-Capabilities/assets/video/
 
 dist/
 
@@ -20,8 +19,16 @@ Capabilities/screenshots/
 !Capabilities/assets/
 !Capabilities/assets/**
 !Capabilities/assets/**/*.png
-!Capabilities/assets/**/*.mp4
 !Capabilities/assets/**/*.avif
+# Capabilities loop videos: ignore folder except shipped files (GitHub limits large MP4s)
+Capabilities/assets/video/*
+!Capabilities/assets/video/celsius-spritz-vibe.mp4
+!Capabilities/assets/video/concacaf-gold-cup.mp4
+!Capabilities/assets/video/doritos-stranger-things.mp4
+!Capabilities/assets/video/toyota-road-to-palisades.mp4
+!Capabilities/casestudies/
+!Capabilities/casestudies/**
+!Capabilities/casestudies/**/*.png
 pdf-capture.js
 pdf-capture.mjs
 screenshot-slide.js

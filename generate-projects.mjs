@@ -28,7 +28,7 @@ const ROWS = [
   {
     label: 'Visual Effects',
     cards: [
-      { video: VF  + 'cbf82991-c743-4045-8898-b6ee78efd9b4.mp4',         client: 'Atomic',         title: 'Into the Void',                date: 'NOV 15' },
+      { video: VF  + 'cbf82991-c743-4045-8898-b6ee78efd9b4.mp4',         client: 'Atomic',         title: 'Into the Void',                date: 'NOV 15', clipStart: 24, clipEnd: 33 },
       { video: VF  + 'ef1dc602-5a95-4973-a0ea-82794726bc4a.mp4',         client: 'Salomon',        title: 'Speedcross 3',                 date: 'OCT 25' },
       { video: SB  + 'PcB8hb2-uO/original',                              client: 'Salomon',        title: 's/lab Manifesto',              date: 'FEB 26' },
       { video: SB  + '9O7xsj76Lw/original',                              client: 'Toyota',         title: 'Road to Palisades',            date: 'FEB 26' },
