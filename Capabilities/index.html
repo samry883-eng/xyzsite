@@ -644,49 +644,23 @@
     .ci.span2 { grid-column: span 2; }
     .ci.span2r { grid-row: span 2; }
 
-    /* Case study — Storyboard (Pitch: composite sheet left, 16:9 video right) */
-    .slide-case--storyboard .slide-inner {
-      padding-top: calc(var(--deck-pad-y) + 44px);
-    }
-    .slide-case--storyboard .xyz-logo {
-      top: calc(var(--pt) + 26px);
-    }
-    .slide-case--storyboard .slide-tag {
-      top: calc(var(--pt) + 26px);
-    }
-    .case-head-sb {
-      flex-shrink: 0;
-      margin-bottom: clamp(14px, 2vh, 26px);
-    }
-    .case-head-sb__row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px 48px;
+    /* Case study — Storyboard (same header grid as other case slides; sheet + 16:9 video) */
+    .slide-case--storyboard .case-top {
       align-items: start;
-      margin-bottom: clamp(14px, 1.8vh, 22px);
     }
-    .case-left--sb .case-title {
-      margin: 0;
+    .slide-case--storyboard .case-left {
+      border-left: 1px solid rgba(255, 255, 255, 0.14);
+      padding-left: clamp(16px, 1.8vw, 24px);
+      box-sizing: border-box;
     }
-    .case-right--sb {
-      padding-top: 0;
-      justify-self: end;
+    .slide-case--storyboard .case-title-divider {
+      height: 1px;
+      background: rgba(255, 255, 255, 0.28);
+      margin-top: 14px;
       width: 100%;
-      max-width: 34rem;
     }
-    .case-body--storyboard {
-      max-width: none;
-      text-align: right;
-    }
-    .case-body--storyboard p {
-      text-align: right;
-    }
-    .case-client--center {
-      text-align: center;
-      font-size: 12px;
-      color: var(--dim);
-      font-weight: 300;
-      line-height: 1.5;
+    .slide-case--storyboard .case-left .case-client {
+      margin-top: 12px;
     }
     .case-main-sb {
       flex: 1;
@@ -1019,10 +993,10 @@
       .toc-list { max-width: none; }
       .services-grid { grid-template-columns: 1fr 1fr; }
       .case-top { grid-template-columns: 1fr; }
-      .case-head-sb__row { grid-template-columns: 1fr; }
-      .case-right--sb { justify-self: stretch; max-width: none; }
-      .case-body--storyboard,
-      .case-body--storyboard p { text-align: left; }
+      .slide-case--storyboard .case-left {
+        border-left: none;
+        padding-left: 0;
+      }
       .slide-case--storyboard .case-main-sb {
         grid-template-columns: 1fr;
         grid-template-rows: auto minmax(200px, 1fr);
@@ -1409,18 +1383,17 @@
     <div class="xyz-logo">XYZSTUDIOS</div>
     <div class="slide-tag">Case study</div>
     <div class="slide-inner">
-      <div class="case-head-sb">
-        <div class="case-head-sb__row">
-          <div class="case-left case-left--sb">
-            <div class="case-title">Storyboard</div>
-          </div>
-          <div class="case-right case-right--sb">
-            <div class="case-body case-body--storyboard">
-              <p>With no live shoot possible, the client asked us to develop the creative direction and bring the concept to life. We crafted a stylized 3D hype reel, taking the project from concept art through to final execution. Throughout the process, the client remained closely involved, providing notes and feedback as we shaped the visuals to capture Rory’s momentum and the anticipation around the tournament.</p>
-            </div>
+      <div class="case-top">
+        <div class="case-left">
+          <div class="case-title">Storyboard</div>
+          <div class="case-title-divider" aria-hidden="true"></div>
+          <div class="case-client">Rory McIlroy<br>RBC Canadian Open</div>
+        </div>
+        <div class="case-right">
+          <div class="case-body">
+            <p>With no live shoot possible, the client asked us to develop the creative direction and bring the concept to life. We crafted a stylized 3D hype reel, taking the project from concept art through to final execution. Throughout the process, the client remained closely involved, providing notes and feedback as we shaped the visuals to capture Rory’s momentum and the anticipation around the tournament.</p>
           </div>
         </div>
-        <div class="case-client case-client--center">Rory McIlroy<br>RBC Canadian Open</div>
       </div>
       <div class="case-main-sb">
         <div class="case-sb-sheet" aria-label="Storyboard sheet">
@@ -1578,44 +1551,45 @@
   <div class="slide slide-project has-video" data-index="15" data-deck-year="2025">
     <video class="proj-video-bg" autoplay muted loop playsinline src="https://r2.vidzflow.com/source/c5bfdb30-f5d1-4f1d-a96f-b736b4ab1fcf.mp4"></video>
     <div class="proj-gradient"></div>
-    <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-inner">
-      <div class="proj-sidebar">
-        <div class="proj-header"><span class="proj-client">CELSIUS</span><span class="proj-year">2025</span></div>
-        <div class="proj-name">SPRITZ VIBE</div>
-        <div class="proj-label">SCOPE</div>
-        <ul class="proj-list">
-          <li>Pre-Production</li>
-          <li>VFX</li>
-          <li>CG</li>
-          <li>Simulation</li>
-          <li>Clean Up</li>
-          <li>Compositing</li>
-          <li>Sound Design &amp; Mix</li>
-        </ul>
-        <div class="proj-label">BUILD</div>
-        <ul class="proj-list">
-          <li>1 Environment</li>
-          <li>40% CG</li>
-          <li>60% Live Action</li>
-        </ul>
-        <div class="proj-label">OUTPUT</div>
-        <ul class="proj-list">
-          <li>992 Final Frames</li>
-          <li>8 Hero Shots</li>
-        </ul>
-        <div class="proj-footer">
-          <div class="proj-director">&nbsp;</div>
-          <div class="proj-director-label">&nbsp;</div>
+    <div class="proj-overlay">
+      <div class="proj-content-col">
+        <div class="proj-header-block">
+          <div class="proj-eyebrow">
+            <span class="proj-client">CELSIUS</span>
+            <span class="proj-year">2025</span>
+          </div>
+          <div class="proj-title">SPRITZ VIBE</div>
+          <div class="proj-header-divider"></div>
+        </div>
+        <div class="proj-info-block">
+          <div class="proj-info-label">SCOPE</div>
+          <div class="proj-info-body">
+            Pre-Production<br>
+            VFX<br>
+            CG<br>
+            Simulation<br>
+            Clean Up<br>
+            Compositing<br>
+            Sound Design &amp; Mix
+          </div>
+        </div>
+        <div class="proj-info-block">
+          <div class="proj-info-label">BUILD</div>
+          <div class="proj-info-body">
+            1 Environment<br>
+            40% CG<br>
+            60% Live Action
+          </div>
+        </div>
+        <div class="proj-info-block">
+          <div class="proj-info-label">OUTPUT</div>
+          <div class="proj-info-body">
+            992 Final Frames<br>
+            8 Hero Shots
+          </div>
         </div>
       </div>
-      <div class="proj-main">
-        <div class="proj-client-tag"><div class="ct-name">CELSIUS</div><div class="ct-lbl">CLIENT</div></div>
-      </div>
     </div>
-    <div class="slide-footer-line"></div>
-    <div class="slide-year">2025</div>
-    <div class="slide-logo-mark"><img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -1691,139 +1665,220 @@
   </div>
 
   <!-- ═══════════════════════════════
-       20 · PROJECT — TOYOTA / ROAD TO PALISADES
+       20 · PROJECT — MAXMARA / LE PARFUM
   ═══════════════════════════════ -->
-  <div class="slide slide-project has-video" data-index="19">
+  <div class="slide slide-project has-video" data-index="19" data-deck-year="2025">
+    <video class="proj-video-bg" autoplay muted loop playsinline src="https://r2.vidzflow.com/source/e07f965d-dc13-45bc-a958-08fd1baa3793.mp4"></video>
+    <div class="proj-gradient"></div>
+    <div class="proj-overlay">
+      <div class="proj-content-col">
+        <div class="proj-header-block">
+          <div class="proj-eyebrow">
+            <span class="proj-client">MAXMARA</span>
+            <span class="proj-year">2025</span>
+          </div>
+          <div class="proj-title">LE PARFUM</div>
+          <div class="proj-header-divider"></div>
+        </div>
+        <div class="proj-info-block">
+          <div class="proj-info-label">SCOPE</div>
+          <div class="proj-info-body">
+            Creative Direction<br>
+            VFX<br>
+            CG<br>
+            Animation<br>
+            Clean Up<br>
+            Compositing
+          </div>
+        </div>
+        <div class="proj-info-block">
+          <div class="proj-info-label">BUILD</div>
+          <div class="proj-info-body">
+            90% Live Action<br>
+            33% AI<br>
+            7% CGI
+          </div>
+        </div>
+        <div class="proj-info-block">
+          <div class="proj-info-label">OUTPUT</div>
+          <div class="proj-info-body">
+            214 Final Frames<br>
+            5 Hero Shots
+          </div>
+        </div>
+      </div>
+      <div class="proj-credit-bl">
+        <div class="proj-credit-name">LENN ANTON</div>
+        <div class="proj-credit-role">DIRECTOR</div>
+      </div>
+      <div class="proj-credit-br">
+        <div class="proj-credit-name">SHISEIDO</div>
+        <div class="proj-credit-role">CLIENT</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════
+       21 · PROJECT — TOYOTA / ROAD TO PALISADES
+  ═══════════════════════════════ -->
+  <div class="slide slide-project has-video" data-index="20" data-deck-year="2026">
     <video class="proj-video-bg" autoplay muted loop playsinline src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/9O7xsj76Lw/original"></video>
     <div class="proj-gradient"></div>
-    <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-inner">
-      <div class="proj-sidebar">
-        <div class="proj-header"><span class="proj-client">TOYOTA</span><span class="proj-year">2026</span></div>
-        <div class="proj-name">ROAD TO<br>PALISADES</div>
-        <div class="proj-label">SCOPE</div>
-        <ul class="proj-list">
-          <li>Creative Direction</li>
-          <li>VFX</li>
-          <li>CG</li>
-          <li>Animation</li>
-          <li>Clean Up</li>
-          <li>Compositing</li>
-        </ul>
-        <div class="proj-label">BUILD</div>
-        <ul class="proj-list">
-          <li>90% Live Action</li>
-          <li>33% AI</li>
-          <li>7% CGI</li>
-        </ul>
-        <div class="proj-label">OUTPUT</div>
-        <ul class="proj-list">
-          <li>214 Final Frames</li>
-          <li>5 Hero Shots</li>
-        </ul>
-        <div class="proj-footer">
-          <div class="proj-director">JACK BOTTI</div>
-          <div class="proj-director-label">DIRECTOR</div>
+    <div class="proj-overlay">
+      <div class="proj-content-col">
+        <div class="proj-header-block">
+          <div class="proj-eyebrow">
+            <span class="proj-client">TOYOTA</span>
+            <span class="proj-year">2026</span>
+          </div>
+          <div class="proj-title">ROAD TO PALISADES</div>
+          <div class="proj-header-divider"></div>
+        </div>
+        <div class="proj-info-block">
+          <div class="proj-info-label">SCOPE</div>
+          <div class="proj-info-body">
+            Creative Direction<br>
+            VFX<br>
+            CG<br>
+            Animation<br>
+            Clean Up<br>
+            Compositing
+          </div>
+        </div>
+        <div class="proj-info-block">
+          <div class="proj-info-label">BUILD</div>
+          <div class="proj-info-body">
+            90% Live Action<br>
+            33% AI<br>
+            7% CGI
+          </div>
+        </div>
+        <div class="proj-info-block">
+          <div class="proj-info-label">OUTPUT</div>
+          <div class="proj-info-body">
+            214 Final Frames<br>
+            5 Hero Shots
+          </div>
         </div>
       </div>
-      <div class="proj-main">
-        <div class="proj-client-tag"><div class="ct-name">TOYOTA</div><div class="ct-lbl">CLIENT</div></div>
+      <div class="proj-credit-bl">
+        <div class="proj-credit-name">JACK BOTTI</div>
+        <div class="proj-credit-role">DIRECTOR</div>
+      </div>
+      <div class="proj-credit-br">
+        <div class="proj-credit-name">TOYOTA</div>
+        <div class="proj-credit-role">CLIENT</div>
       </div>
     </div>
-    <div class="slide-footer-line"></div>
-    <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
-       21 · PROJECT — CONCACAF / GOLD CUP
+       22 · PROJECT — CONCACAF / GOLD CUP
   ═══════════════════════════════ -->
-  <div class="slide slide-project has-video" data-index="20" data-deck-year="2025">
+  <div class="slide slide-project has-video" data-index="21" data-deck-year="2025">
     <video class="proj-video-bg" autoplay muted loop playsinline src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/Bl0RrW0k4E/original"></video>
     <div class="proj-gradient"></div>
-    <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-inner">
-      <div class="proj-sidebar">
-        <div class="proj-header"><span class="proj-client">CONCACAF</span><span class="proj-year">2025</span></div>
-        <div class="proj-name">GOLD CUP</div>
-        <div class="proj-label">SCOPE</div>
-        <ul class="proj-list">
-          <li>CGI</li>
-          <li>Crowd Simulation/ Intergration</li>
-          <li>Compositing</li>
-          <li>FX Simulation</li>
-          <li>Clean Up</li>
-        </ul>
-        <div class="proj-label">BUILD</div>
-        <ul class="proj-list">
-          <li>10% CG</li>
-          <li>10% Motion Graphics</li>
-          <li>80% Live Action</li>
-        </ul>
-        <div class="proj-label">OUTPUT</div>
-        <ul class="proj-list">
-          <li>730 Final Frames</li>
-          <li>12 Hero Shots</li>
-        </ul>
-        <div class="proj-footer">
-          <div class="proj-director">TOBY PREYER</div>
-          <div class="proj-director-label">DIRECTOR</div>
+    <div class="proj-overlay">
+      <div class="proj-content-col">
+        <div class="proj-header-block">
+          <div class="proj-eyebrow">
+            <span class="proj-client">CONCACAF</span>
+            <span class="proj-year">2025</span>
+          </div>
+          <div class="proj-title">GOLD CUP</div>
+          <div class="proj-header-divider"></div>
+        </div>
+        <div class="proj-info-block">
+          <div class="proj-info-label">SCOPE</div>
+          <div class="proj-info-body">
+            CGI<br>
+            Crowd Simulation/ Integration<br>
+            Compositing<br>
+            FX Simulation<br>
+            Clean Up
+          </div>
+        </div>
+        <div class="proj-info-block">
+          <div class="proj-info-label">BUILD</div>
+          <div class="proj-info-body">
+            10% CG<br>
+            10% Motion Graphics<br>
+            80% Live Action
+          </div>
+        </div>
+        <div class="proj-info-block">
+          <div class="proj-info-label">OUTPUT</div>
+          <div class="proj-info-body">
+            730 Final Frames<br>
+            12 Hero Shots
+          </div>
         </div>
       </div>
-      <div class="proj-main">
-        <div class="proj-client-tag"><div class="ct-name">CONCACAF</div><div class="ct-lbl">CLIENT</div></div>
+      <div class="proj-credit-bl">
+        <div class="proj-credit-name">TOBY PREYER</div>
+        <div class="proj-credit-role">DIRECTOR</div>
+      </div>
+      <div class="proj-credit-br">
+        <div class="proj-credit-name">CONCACAF</div>
+        <div class="proj-credit-role">CLIENT</div>
       </div>
     </div>
-    <div class="slide-footer-line"></div>
-    <div class="slide-year">2025</div>
-    <div class="slide-logo-mark"><img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
-       22 · PROJECT — DORITOS X STRANGER THINGS
+       23 · PROJECT — DORITOS X STRANGER THINGS
   ═══════════════════════════════ -->
-  <div class="slide slide-project has-video" data-index="21">
+  <div class="slide slide-project has-video" data-index="22" data-deck-year="2025">
     <video class="proj-video-bg" autoplay muted loop playsinline src="https://r2.vidzflow.com/source/8c451a49-eb58-4534-becf-87f4ca6f51dd.mp4"></video>
     <div class="proj-gradient"></div>
-    <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-inner">
-      <div class="proj-sidebar">
-        <div class="proj-header"><span class="proj-client">DORITOS</span><span class="proj-year">2026</span></div>
-        <div class="proj-name">DORITOS × <span style="color:#e8320a;">STRANGER THINGS</span></div>
-        <div class="proj-label">SCOPE</div>
-        <ul class="proj-list">
-          <li>Character Rigging</li>
-          <li>Animation</li>
-          <li>Texture</li>
-          <li>CG</li>
-        </ul>
-        <div class="proj-label">BUILD</div>
-        <ul class="proj-list">
-          <li>100% CG</li>
-        </ul>
-        <div class="proj-label">OUTPUT</div>
-        <ul class="proj-list">
-          <li>214 Final Frames</li>
-          <li>5 Hero Shots</li>
-        </ul>
-        <div class="proj-footer">
-          <div class="proj-director">DYLAN BRADSHAW</div>
-          <div class="proj-director-label">DIRECTOR</div>
+    <div class="proj-overlay">
+      <div class="proj-content-col">
+        <div class="proj-header-block">
+          <div class="proj-eyebrow">
+            <span class="proj-client">DORITOS X</span>
+            <span class="proj-year">2025</span>
+          </div>
+          <div class="proj-title">STRANGER THINGS</div>
+          <div class="proj-header-divider"></div>
+        </div>
+        <div class="proj-info-block">
+          <div class="proj-info-label">SCOPE</div>
+          <div class="proj-info-body">
+            CHARACTER RIGGING<br>
+            ANIMATION<br>
+            TEXTURE<br>
+            CG
+          </div>
+        </div>
+        <div class="proj-info-block">
+          <div class="proj-info-label">BUILD</div>
+          <div class="proj-info-body">
+            100% CG
+          </div>
+        </div>
+        <div class="proj-info-block">
+          <div class="proj-info-label">OUTPUT</div>
+          <div class="proj-info-body">
+            214 FINAL FRAMES<br>
+            5 HERO SHOTS
+          </div>
         </div>
       </div>
-      <div class="proj-main">
-        <div class="proj-client-tag"><div class="ct-name">DORITOS</div><div class="ct-lbl">CLIENT</div></div>
+      <div class="proj-credit-bl">
+        <div class="proj-credit-name">DYLAN BRADSHAW</div>
+        <div class="proj-credit-role">DIRECTOR</div>
+      </div>
+      <div class="proj-credit-br">
+        <div class="proj-credit-name">DORITOS</div>
+        <div class="proj-credit-role">CLIENT</div>
       </div>
     </div>
-    <div class="slide-footer-line"></div>
-    <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
        23 · YEAR SPLASH (PDF p.22)
   ═══════════════════════════════ -->
-  <div class="slide slide-year-splash" data-index="22">
+  <div class="slide slide-year-splash" data-index="23">
     <div class="xyz-logo">XYZSTUDIOS</div>
     <div class="slide-inner">
       <div class="year-splash-num">2026</div>
@@ -1836,7 +1891,7 @@
   <!-- ═══════════════════════════════
        24 · CRAFT — CREATIVE DEVELOPMENT
   ═══════════════════════════════ -->
-  <div class="slide slide-craft" data-index="23">
+  <div class="slide slide-craft" data-index="24">
     <div class="xyz-logo">XYZSTUDIOS</div>
     <div class="slide-tag">Craft</div>
     <div class="slide-inner">
@@ -1863,7 +1918,7 @@
   <!-- ═══════════════════════════════
        25 · CRAFT — CG INTEGRATION
   ═══════════════════════════════ -->
-  <div class="slide slide-craft" data-index="24">
+  <div class="slide slide-craft" data-index="25">
     <div class="xyz-logo">XYZSTUDIOS</div>
     <div class="slide-tag">Craft</div>
     <div class="slide-inner">
@@ -1883,7 +1938,7 @@
   <!-- ═══════════════════════════════
        26 · CRAFT — CG ENVIRONMENTS
   ═══════════════════════════════ -->
-  <div class="slide slide-craft" data-index="25">
+  <div class="slide slide-craft" data-index="26">
     <div class="xyz-logo">XYZSTUDIOS</div>
     <div class="slide-tag">Craft</div>
     <div class="slide-inner">
@@ -1903,7 +1958,7 @@
   <!-- ═══════════════════════════════
        27 · CRAFT — SIMULATION AND FX
   ═══════════════════════════════ -->
-  <div class="slide slide-craft" data-index="26">
+  <div class="slide slide-craft" data-index="27">
     <div class="xyz-logo">XYZSTUDIOS</div>
     <div class="slide-tag">Craft</div>
     <div class="slide-inner">
@@ -1925,7 +1980,7 @@
   <!-- ═══════════════════════════════
        28 · CRAFT — COMPOSITING
   ═══════════════════════════════ -->
-  <div class="slide slide-craft" data-index="27">
+  <div class="slide slide-craft" data-index="28">
     <div class="xyz-logo">XYZSTUDIOS</div>
     <div class="slide-tag">Craft</div>
     <div class="slide-inner">
@@ -1947,7 +2002,7 @@
   <!-- ═══════════════════════════════
        29 · CRAFT — POLISH
   ═══════════════════════════════ -->
-  <div class="slide slide-craft" data-index="28">
+  <div class="slide slide-craft" data-index="29">
     <div class="xyz-logo">XYZSTUDIOS</div>
     <div class="slide-tag">Craft</div>
     <div class="slide-inner">
@@ -1970,7 +2025,7 @@
   <!-- ═══════════════════════════════
        30 · CRAFT — SOUND
   ═══════════════════════════════ -->
-  <div class="slide slide-craft" data-index="29">
+  <div class="slide slide-craft" data-index="30">
     <div class="xyz-logo">XYZSTUDIOS</div>
     <div class="slide-tag">Craft</div>
     <div class="slide-inner">
@@ -1992,7 +2047,7 @@
   <!-- ═══════════════════════════════
        31 · CRAFT — AI-ASSISTED WORKFLOW
   ═══════════════════════════════ -->
-  <div class="slide slide-craft" data-index="30">
+  <div class="slide slide-craft" data-index="31">
     <div class="xyz-logo">XYZSTUDIOS</div>
     <div class="slide-tag">Craft</div>
     <div class="slide-inner">
@@ -2012,7 +2067,7 @@
   <!-- ═══════════════════════════════
        32 · OUR FOCUS
   ═══════════════════════════════ -->
-  <div class="slide slide-focus" data-index="31">
+  <div class="slide slide-focus" data-index="32">
     <div class="xyz-logo">XYZSTUDIOS</div>
     <div class="slide-inner">
       <div class="focus-heading">Our Focus</div>
@@ -2050,7 +2105,7 @@
   <!-- ═══════════════════════════════
        33 · HOW WE WORK
   ═══════════════════════════════ -->
-  <div class="slide slide-hww" data-index="32">
+  <div class="slide slide-hww" data-index="33">
     <div class="xyz-logo">XYZSTUDIOS</div>
     <div class="slide-inner">
       <div class="hww-img"><div class="ph"><img src="../Work/visual-effects/nhl-store/1.png" alt=""></div></div>
@@ -2070,7 +2125,7 @@
   <!-- ═══════════════════════════════
        34 · CONTACT
   ═══════════════════════════════ -->
-  <div class="slide slide-contact" data-index="33">
+  <div class="slide slide-contact" data-index="34">
     <div class="xyz-logo">XYZSTUDIOS</div>
     <div class="slide-inner">
       <div class="contact-left">
@@ -2120,7 +2175,7 @@
 <!-- NAV CHROME -->
 <div id="nav-dots"></div>
 <div id="progress"></div>
-<div id="slide-counter">01 / 34</div>
+<div id="slide-counter">01 / 35</div>
 <div id="hint">scroll or use arrow keys</div>
 
 </div><!-- /deck-stage -->
