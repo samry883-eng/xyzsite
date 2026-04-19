@@ -320,16 +320,29 @@
       display: block;
       pointer-events: none;
     }
-    .work-card .wc-hover-video { z-index: 1; }
+    .work-card .wc-hover-video {
+      z-index: 1;
+      opacity: 0;
+      transition: opacity 0.45s ease;
+    }
     .work-card .wc-card-poster {
       z-index: 2;
-      transition: opacity 0.5s ease;
+      opacity: 0;
+      transition: opacity 0.55s cubic-bezier(0.33, 1, 0.68, 1);
+    }
+    /* Fade posters in after the white page-out is gone (see work-page-open + wc-media-in) */
+    body.work-page-open .work-card.wc-media-in .wc-card-poster {
+      opacity: 1;
+    }
+    .work-card-wrap.wc-hover-active .wc-hover-video {
+      opacity: 1;
     }
     .work-card::before {
       content: ''; position: absolute; inset: 0;
       background: #000; z-index: 0;
     }
-    .work-card.loaded::before { display: none; }
+    /* Drop the black mask only when the poster fade-in runs (after page-out), not merely when <img> has loaded */
+    .work-card.wc-media-in::before { display: none; }
 
     /* Hover overlay */
     .work-card::after {
@@ -510,6 +523,103 @@
       if (v.currentTime >= end) v.currentTime = s;
     }, true);
   }
+
+  const pageOut = document.getElementById('page-out');
+
+  function markWorkPageOpen() {
+    document.body.classList.add('work-page-open');
+    document.querySelectorAll('.work-card[data-wc-pending]').forEach(function (el) {
+      el.removeAttribute('data-wc-pending');
+      el.classList.add('wc-media-in');
+    });
+  }
+
+  function tryRevealCardMedia(div) {
+    if (document.body.classList.contains('work-page-open')) {
+      div.classList.add('wc-media-in');
+    } else {
+      div.setAttribute('data-wc-pending', '1');
+    }
+  }
+
+  function isReloadNavigation() {
+    const nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    if (nav && nav.type) return nav.type === 'reload';
+    try {
+      return !!(performance.navigation && performance.navigation.type === 1);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /** Slide the white entry panel away (must run even if grid build throws). */
+  function slideAwayPanel(fromCacheRestore) {
+    if (!pageOut) {
+      markWorkPageOpen();
+      return;
+    }
+    const dur = (!fromCacheRestore && isReloadNavigation()) ? '1.06s' : '0.58s';
+    pageOut.style.transition = 'none';
+    pageOut.style.transform = 'translateY(0)';
+    pageOut.style.pointerEvents = 'none';
+    var opened = false;
+    function finishOpen() {
+      if (opened) return;
+      opened = true;
+      pageOut.removeEventListener('transitionend', onPageOutEnd);
+      clearTimeout(fallbackTimer);
+      markWorkPageOpen();
+    }
+    function onPageOutEnd(e) {
+      if (e.target !== pageOut || e.propertyName !== 'transform') return;
+      finishOpen();
+    }
+    pageOut.addEventListener('transitionend', onPageOutEnd);
+    var fallbackTimer = setTimeout(finishOpen, parseFloat(dur) * 1000 + 120);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        pageOut.style.transition = 'transform ' + dur + ' cubic-bezier(0.76,0,0.24,1)';
+        pageOut.style.transform = 'translateY(-100%)';
+      });
+    });
+  }
+
+  window.addEventListener('pageshow', (e) => { if (e.persisted) slideAwayPanel(true); });
+
+  function navigateTo(url, poster) {
+    const dest = poster ? url + '?poster=' + encodeURIComponent(poster) : url;
+    if (!pageOut) {
+      window.location.href = dest;
+      return;
+    }
+    pageOut.style.transition = 'none';
+    pageOut.style.transform = 'translateY(100%)';
+    pageOut.style.pointerEvents = 'all';
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        let done = false;
+        function finish() {
+          if (done) return;
+          done = true;
+          window.location.href = dest;
+        }
+        function onEnd(e) {
+          if (e.target !== pageOut || e.propertyName !== 'transform') return;
+          pageOut.removeEventListener('transitionend', onEnd);
+          clearTimeout(fallback);
+          finish();
+        }
+        const fallback = setTimeout(() => {
+          pageOut.removeEventListener('transitionend', onEnd);
+          finish();
+        }, 750);
+        pageOut.addEventListener('transitionend', onEnd);
+        pageOut.style.transition = 'transform 0.48s cubic-bezier(0.76,0,0.24,1)';
+        pageOut.style.transform = 'translateY(0)';
+      });
+    });
+  }
+
   /** Keep in sync with :root --wc-hover-max (gentler zoom than reference portfolios). */
   var WC_HOVER_SCALE_MAX = 1.25;
 
@@ -550,7 +660,6 @@
   function appendCardMedia(div, card, opts) {
     opts = opts || {};
     const posterSrc = getPoster(card.title, card.client) || FALLBACK_IMG;
-    div.classList.add('loaded');
 
     const video = document.createElement('video');
     video.className = 'wc-hover-video';
@@ -573,9 +682,25 @@
     img.loading = opts.loading === 'eager' ? 'eager' : 'lazy';
     img.decoding = 'async';
     if (opts.fetchPriority) img.fetchPriority = opts.fetchPriority;
-    img.addEventListener('error', () => { img.src = FALLBACK_IMG; }, { once: true });
+
+    var posterDone = false;
+    function onPosterReady() {
+      if (posterDone) return;
+      posterDone = true;
+      tryRevealCardMedia(div);
+    }
+    img.addEventListener('load', onPosterReady, { once: true });
+    img.addEventListener('error', function () {
+      img.addEventListener('load', onPosterReady, { once: true });
+      img.src = FALLBACK_IMG;
+    }, { once: true });
+
     div.appendChild(video);
     div.appendChild(img);
+
+    if (img.complete && img.naturalWidth > 0) {
+      onPosterReady();
+    }
   }
 
   function bindWorkCardHover() {
@@ -632,6 +757,8 @@
 
   // ── BUILD DOM ──────────────────────────────────────────
 
+  try {
+
   const CAT_LABELS = {
     'Visual Effects': 'VISUAL',
     'Sound': 'SOUND',
@@ -639,6 +766,10 @@
     'Making Of': 'MAKING OF',
   };
 
+  if (!showcase) {
+    console.error('[work] #showcase missing');
+  }
+  if (showcase) {
   ROWS.forEach((rowData, rowIdx) => {
     const row = document.createElement('div');
     row.className = 'work-row';
@@ -674,7 +805,7 @@
       const div = document.createElement('div');
       div.className = 'work-card';
 
-      appendCardMedia(div, card, { fetchPriority });
+      appendCardMedia(div, card, mediaOpts);
 
       const tiltWrap = document.createElement('div');
       tiltWrap.className = 'wc-tilt';
@@ -694,6 +825,7 @@
     row.appendChild(rowCards);
     showcase.appendChild(row);
   });
+  }
 
   // ── HORIZONTAL ROWS — smooth lerp scroll ─────────────────────
   document.querySelectorAll('.work-row-cards').forEach(rowCards => {
@@ -723,13 +855,15 @@
 
     // Re-attach click on clones
     rowCards.querySelectorAll('.work-card-wrap[data-clone]').forEach(cloneWrap => {
-      const cloneClient = cloneWrap.querySelector('.wc-label-client')?.textContent.trim();
-      const cloneTitle  = cloneWrap.querySelector('.wc-label-title')?.textContent.trim();
-      const cloneCat    = cloneWrap.dataset.rowLabel || '';
+      const ec = cloneWrap.querySelector('.wc-label-client');
+      const et = cloneWrap.querySelector('.wc-label-title');
+      const cloneClient = ec && ec.textContent ? ec.textContent.trim() : '';
+      const cloneTitle = et && et.textContent ? et.textContent.trim() : '';
+      const cloneCat = cloneWrap.dataset.rowLabel || '';
       cloneWrap.style.cursor = 'pointer';
       cloneWrap.addEventListener('click', () => {
-        const row  = ROWS.find(r => r.label === cloneCat);
-        const card = row?.cards.find(c => c.client === cloneClient && c.title === cloneTitle);
+        const row = ROWS.find(r => r.label === cloneCat);
+        const card = row && row.cards ? row.cards.find(c => c.client === cloneClient && c.title === cloneTitle) : null;
         if (card) navigateTo(projectURL(card, cloneCat), getPoster(card.title, card.client) || undefined);
       });
     });
@@ -778,65 +912,8 @@
   const fadeTop = document.querySelector('.work-fade-top');
   if (fadeTop) fadeTop.style.opacity = '0';
 
-  // ── PAGE TRANSITION ───────────────────────────────────────────
-  const pageOut = document.getElementById('page-out');
-
-  function isReloadNavigation() {
-    const nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
-    if (nav && nav.type) return nav.type === 'reload';
-    try {
-      return !!(performance.navigation && performance.navigation.type === 1);
-    } catch (e) {
-      return false;
-    }
-  }
-
-  // Animation 2 — Work, Services, Contact, and non-home routes (snappier than Home)
-  function slideAwayPanel(fromCacheRestore) {
-    const dur = (!fromCacheRestore && isReloadNavigation()) ? '1.06s' : '0.58s';
-    pageOut.style.transition = 'none';
-    pageOut.style.transform = 'translateY(0)';
-    pageOut.style.pointerEvents = 'none';
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        pageOut.style.transition = 'transform ' + dur + ' cubic-bezier(0.76,0,0.24,1)';
-        pageOut.style.transform = 'translateY(-100%)';
-      });
-    });
-  }
-
-  // On fresh load or bfcache restore: slide panel up to reveal
-  slideAwayPanel();
-  window.addEventListener('pageshow', (e) => { if (e.persisted) slideAwayPanel(true); });
-
-  function navigateTo(url, poster) {
-    const dest = poster ? url + '?poster=' + encodeURIComponent(poster) : url;
-    pageOut.style.transition = 'none';
-    pageOut.style.transform = 'translateY(100%)';
-    pageOut.style.pointerEvents = 'all';
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        let done = false;
-        function finish() {
-          if (done) return;
-          done = true;
-          window.location.href = dest;
-        }
-        function onEnd(e) {
-          if (e.target !== pageOut || e.propertyName !== 'transform') return;
-          pageOut.removeEventListener('transitionend', onEnd);
-          clearTimeout(fallback);
-          finish();
-        }
-        const fallback = setTimeout(() => {
-          pageOut.removeEventListener('transitionend', onEnd);
-          finish();
-        }, 750);
-        pageOut.addEventListener('transitionend', onEnd);
-        pageOut.style.transition = 'transform 0.48s cubic-bezier(0.76,0,0.24,1)';
-        pageOut.style.transform = 'translateY(0)';
-      });
-    });
+  } finally {
+    slideAwayPanel();
   }
 
   document.addEventListener('click', (e) => {

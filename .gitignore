@@ -45,4 +45,7 @@ revert-layout.mjs
 extract-pdf-text.mjs
 render-pdf.mjs
 
+.vercel/
+.vercel-secret-tmp
+
 .vercel
