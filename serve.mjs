@@ -2,6 +2,18 @@ import http from 'http';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import {
+  verifySession,
+  createSession,
+  verifyLogin,
+  grantUpsert,
+  grantRevoke,
+  grantList,
+  sessionCookieHeader,
+  clearSessionCookieHeader,
+  getCookieName,
+  normalizeEmail,
+} from './lib/capabilities-auth.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = Number(process.env.PORT) || 2001;
@@ -15,75 +27,293 @@ const MIME = {
   '.pdf': 'application/pdf',
 };
 
-const HOME    = path.join(__dirname, 'Home');
-const WORK    = path.join(__dirname, 'Work');
+const HOME = path.join(__dirname, 'Home');
+const WORK = path.join(__dirname, 'Work');
 const CONTACT = path.join(__dirname, 'Contact');
 
-http.createServer((req, res) => {
-  let urlPath = decodeURIComponent(req.url.split('?')[0]);
-  if (urlPath === '/') urlPath = '/index.html';
+const COOKIE = getCookieName();
 
-  // Route to correct folder
+function parseCookies(header) {
+  const out = {};
+  if (!header) return out;
+  for (const part of header.split(';')) {
+    const i = part.indexOf('=');
+    if (i === -1) continue;
+    const k = part.slice(0, i).trim();
+    const v = part.slice(i + 1).trim();
+    try {
+      out[k] = decodeURIComponent(v);
+    } catch {
+      out[k] = v;
+    }
+  }
+  return out;
+}
+
+function authDisabled() {
+  return ['1', 'true', 'yes'].includes(String(process.env.CAPABILITIES_AUTH_DISABLED || '').toLowerCase());
+}
+
+function sessionSecret() {
+  return process.env.CAPABILITIES_SESSION_SECRET || 'dev-capabilities-session-secret';
+}
+
+function adminSecret() {
+  return process.env.CAPABILITIES_ADMIN_SECRET || '';
+}
+
+function secureCookies() {
+  return process.env.CAPABILITIES_SECURE_COOKIES === '1' || process.env.NODE_ENV === 'production';
+}
+
+function requiresCapabilitiesGate(urlPath) {
+  const p = urlPath.toLowerCase();
+  if (!p.startsWith('/capabilities')) return false;
+  if (p === '/capabilities/login' || p === '/capabilities/login/' || p === '/capabilities/login.html') return false;
+  return true;
+}
+
+function safeNext(nextRaw) {
+  if (!nextRaw || typeof nextRaw !== 'string') return '/capabilities/';
+  const n = nextRaw.trim();
+  if (!n.startsWith('/capabilities') || n.includes('//') || n.includes('\\')) return '/capabilities/';
+  return n;
+}
+
+function readBody(req, limit = 65536) {
+  return new Promise((resolve, reject) => {
+    let size = 0;
+    const chunks = [];
+    req.on('data', (c) => {
+      size += c.length;
+      if (size > limit) {
+        reject(new Error('body too large'));
+        req.destroy();
+        return;
+      }
+      chunks.push(c);
+    });
+    req.on('end', () => resolve(Buffer.concat(chunks)));
+    req.on('error', reject);
+  });
+}
+
+function json(res, code, obj) {
+  res.writeHead(code, { 'Content-Type': 'application/json; charset=utf-8' });
+  res.end(JSON.stringify(obj));
+}
+
+async function handleCapabilitiesApi(req, res, urlPath) {
+  const sec = sessionSecret();
+  const adm = adminSecret();
+  const sc = secureCookies();
+
+  if (urlPath === '/api/capabilities/login' && req.method === 'POST') {
+    let body;
+    try {
+      body = JSON.parse((await readBody(req)).toString('utf8') || '{}');
+    } catch {
+      return json(res, 400, { ok: false, error: 'Invalid JSON' });
+    }
+    const email = body.email;
+    const password = body.password;
+    if (!email || !password) return json(res, 400, { ok: false, error: 'Email and password required' });
+    const ok = await verifyLogin(email, password);
+    if (!ok) return json(res, 401, { ok: false, error: 'Invalid email or password' });
+    const token = createSession(normalizeEmail(email), sec);
+    res.writeHead(200, {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Set-Cookie': sessionCookieHeader(token, sc),
+    });
+    return res.end(JSON.stringify({ ok: true }));
+  }
+
+  if (urlPath === '/api/capabilities/logout' && req.method === 'POST') {
+    res.writeHead(200, {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Set-Cookie': clearSessionCookieHeader(sc),
+    });
+    return res.end(JSON.stringify({ ok: true }));
+  }
+
+  if (urlPath === '/api/capabilities/admin/list' && req.method === 'GET') {
+    if (!adm) return json(res, 503, { ok: false, error: 'CAPABILITIES_ADMIN_SECRET is not set' });
+    const h = req.headers['x-capabilities-admin-secret'];
+    if (h !== adm) return json(res, 401, { ok: false, error: 'Unauthorized' });
+    return json(res, 200, { ok: true, grants: grantList() });
+  }
+
+  if (urlPath === '/api/capabilities/admin/grant' && req.method === 'POST') {
+    if (!adm) return json(res, 503, { ok: false, error: 'CAPABILITIES_ADMIN_SECRET is not set' });
+    const h = req.headers['x-capabilities-admin-secret'];
+    if (h !== adm) return json(res, 401, { ok: false, error: 'Unauthorized' });
+    let body;
+    try {
+      body = JSON.parse((await readBody(req)).toString('utf8') || '{}');
+    } catch {
+      return json(res, 400, { ok: false, error: 'Invalid JSON' });
+    }
+    try {
+      await grantUpsert(body.email, body.password);
+      return json(res, 200, { ok: true });
+    } catch (e) {
+      return json(res, 400, { ok: false, error: e.message || 'Grant failed' });
+    }
+  }
+
+  if (urlPath === '/api/capabilities/admin/revoke' && req.method === 'POST') {
+    if (!adm) return json(res, 503, { ok: false, error: 'CAPABILITIES_ADMIN_SECRET is not set' });
+    const h = req.headers['x-capabilities-admin-secret'];
+    if (h !== adm) return json(res, 401, { ok: false, error: 'Unauthorized' });
+    let body;
+    try {
+      body = JSON.parse((await readBody(req)).toString('utf8') || '{}');
+    } catch {
+      return json(res, 400, { ok: false, error: 'Invalid JSON' });
+    }
+    if (!body.email) return json(res, 400, { ok: false, error: 'email required' });
+    grantRevoke(body.email);
+    return json(res, 200, { ok: true });
+  }
+
+  res.writeHead(404, { 'Content-Type': 'text/plain' });
+  res.end('Not found');
+}
+
+function getStaticFilePath(urlPath) {
+  let p = urlPath;
+  if (p === '/') p = '/index.html';
+
   let filePath;
-  if (urlPath === '/index.html') {
+  if (p === '/index.html') {
     filePath = path.join(HOME, 'index.html');
-  } else if (urlPath.startsWith('/assets/')) {
-    filePath = path.join(HOME, urlPath);
-  } else if (urlPath === '/work.html' || urlPath === '/work' || urlPath === '/work/' || urlPath === '/projects' || urlPath === '/projects/') {
+  } else if (p.startsWith('/assets/')) {
+    filePath = path.join(HOME, p);
+  } else if (p === '/work.html' || p === '/work' || p === '/work/' || p === '/projects' || p === '/projects/') {
     filePath = path.join(WORK, 'index.html');
-  } else if (urlPath === '/contact-versions' || urlPath === '/contact-versions/') {
+  } else if (p === '/contact-versions' || p === '/contact-versions/') {
     filePath = path.join(CONTACT, 'versions.html');
-  } else if (urlPath === '/contact-versions-2' || urlPath === '/contact-versions-2/') {
+  } else if (p === '/contact-versions-2' || p === '/contact-versions-2/') {
     filePath = path.join(CONTACT, 'versions2.html');
-  } else if (urlPath === '/contact' || urlPath === '/contact/' || urlPath === '/contact.html') {
+  } else if (p === '/contact' || p === '/contact/' || p === '/contact.html') {
     filePath = path.join(CONTACT, 'index.html');
-  } else if (urlPath === '/services' || urlPath === '/services/') {
+  } else if (p === '/services' || p === '/services/') {
     filePath = path.join(__dirname, 'Services', 'index.html');
-  } else if (/^\/capabilities\/assets\//i.test(urlPath)) {
-    const sub = urlPath.replace(/^\/capabilities\/assets\//i, '');
+  } else if (/^\/capabilities\/assets\//i.test(p)) {
+    const sub = p.replace(/^\/capabilities\/assets\//i, '');
     filePath = path.join(__dirname, 'Capabilities', 'assets', sub);
   } else if (
-    urlPath === '/capabilities/legacy' ||
-    urlPath === '/capabilities/legacy/' ||
-    urlPath === '/capabilities/legacy.html'
+    p === '/capabilities/legacy' ||
+    p === '/capabilities/legacy/' ||
+    p === '/capabilities/legacy.html'
   ) {
     filePath = path.join(__dirname, 'Capabilities', 'deck-legacy.html');
   } else if (
-    urlPath === '/capabilities/pitch' ||
-    urlPath === '/capabilities/pitch/' ||
-    urlPath === '/capabilities/pitch.html'
+    p === '/capabilities/pitch' ||
+    p === '/capabilities/pitch/' ||
+    p === '/capabilities/pitch.html'
   ) {
     filePath = path.join(__dirname, 'Capabilities', 'pitch.html');
   } else if (
-    urlPath === '/capabilities/deck' ||
-    urlPath === '/capabilities/deck/' ||
-    urlPath === '/capabilities/deck.html'
+    p === '/capabilities/deck' ||
+    p === '/capabilities/deck/' ||
+    p === '/capabilities/deck.html'
   ) {
     filePath = path.join(__dirname, 'Capabilities', 'deck-legacy.html');
-  } else if (urlPath === '/capabilities' || urlPath === '/capabilities/' || urlPath === '/Capabilities' || urlPath === '/Capabilities/') {
+  } else if (p === '/capabilities/login' || p === '/capabilities/login/' || p === '/capabilities/login.html') {
+    filePath = path.join(__dirname, 'Capabilities', 'login.html');
+  } else if (p === '/capabilities' || p === '/capabilities/' || p === '/Capabilities' || p === '/Capabilities/') {
     filePath = path.join(__dirname, 'Capabilities', 'index.html');
-  } else if (urlPath === '/project' || urlPath === '/project/') {
+  } else if (p === '/project' || p === '/project/') {
     filePath = path.join(WORK, 'project', 'index.html');
-  } else if (urlPath.startsWith('/work/') && urlPath.length > '/work/'.length) {
-    // Category/project sub-pages, e.g. /work/visual-effects/into-the-void/
-    const sub = urlPath.slice('/work/'.length);
+  } else if (p.startsWith('/work/') && p.length > '/work/'.length) {
+    const sub = p.slice('/work/'.length);
     filePath = path.join(WORK, sub);
     if (!path.extname(filePath)) filePath = path.join(filePath, 'index.html');
   } else {
-    filePath = path.join(__dirname, urlPath);
+    filePath = path.join(__dirname, p);
   }
 
   const ext = path.extname(filePath).toLowerCase();
-  const isPitchEmbedAsset =
-    ext === '' && /[/\\]pitch-embed[/\\]/i.test(filePath);
+  const isPitchEmbedAsset = ext === '' && /[/\\]pitch-embed[/\\]/i.test(filePath);
+  return { filePath, ext, isPitchEmbedAsset };
+}
 
+function sendFile(res, { filePath, ext, isPitchEmbedAsset }) {
   fs.readFile(filePath, (err, data) => {
     if (err) {
-      res.writeHead(404); res.end('Not found');
+      res.writeHead(404);
+      res.end('Not found');
     } else {
       const type = MIME[ext] || (isPitchEmbedAsset ? 'image/avif' : 'application/octet-stream');
       res.writeHead(200, { 'Content-Type': type });
       res.end(data);
     }
   });
+}
+
+http.createServer((req, res) => {
+  (async () => {
+    try {
+      const rawUrl = req.url.split('?')[0];
+      const urlPath = decodeURIComponent(rawUrl);
+
+      if (!process.env.CAPABILITIES_SESSION_SECRET) {
+        // once per process
+        if (!globalThis.__capWarn) {
+          globalThis.__capWarn = true;
+          console.warn('[capabilities] Set CAPABILITIES_SESSION_SECRET for production sessions');
+        }
+      }
+
+      if (urlPath.startsWith('/api/capabilities/')) {
+        await handleCapabilitiesApi(req, res, urlPath);
+        return;
+      }
+
+      if (!authDisabled() && requiresCapabilitiesGate(urlPath)) {
+        const cookies = parseCookies(req.headers.cookie);
+        const token = cookies[COOKIE];
+        const email = verifySession(token, sessionSecret());
+        if (!email) {
+          if (req.method === 'GET' || req.method === 'HEAD') {
+            const next = encodeURIComponent(urlPath);
+            res.writeHead(302, { Location: `/capabilities/login?next=${next}` });
+            res.end();
+            return;
+          }
+          res.writeHead(401, { 'Content-Type': 'text/plain; charset=utf-8' });
+          res.end('Unauthorized');
+          return;
+        }
+      }
+
+      if (req.method !== 'GET' && req.method !== 'HEAD') {
+        res.writeHead(405, { 'Content-Type': 'text/plain' });
+        res.end('Method not allowed');
+        return;
+      }
+
+      const spec = getStaticFilePath(urlPath);
+      if (req.method === 'HEAD') {
+        fs.stat(spec.filePath, (err) => {
+          if (err) {
+            res.writeHead(404);
+            res.end();
+            return;
+          }
+          const type = MIME[spec.ext] || (spec.isPitchEmbedAsset ? 'image/avif' : 'application/octet-stream');
+          res.writeHead(200, { 'Content-Type': type });
+          res.end();
+        });
+        return;
+      }
+
+      sendFile(res, spec);
+    } catch (e) {
+      console.error(e);
+      res.writeHead(500, { 'Content-Type': 'text/plain' });
+      res.end('Server error');
+    }
+  })();
 }).listen(PORT, () => console.log(`Serving http://localhost:${PORT}`));

@@ -7,6 +7,9 @@ Work/making-of/gold-cup/breakdown 1.mp4
 
 dist/
 
+# Capabilities deck access list (email + scrypt hashes) — do not commit
+data/capabilities-grants.json
+
 node_modules/
 temporary screenshots/
 Capabilities/screenshots/

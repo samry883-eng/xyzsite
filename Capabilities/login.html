@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Capabilities deck — sign in</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black: #0b0b0b;
+      --white: #ffffff;
+      --dim: rgba(255,255,255,0.55);
+      --err: #ff6b6b;
+      --border: rgba(255,255,255,0.14);
+    }
+    html, body {
+      min-height: 100%;
+      background: var(--black);
+      color: var(--white);
+      font-family: "Segoe UI", Tahoma, Geneva, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 20px;
+    }
+    .panel {
+      width: 100%;
+      max-width: 400px;
+      border: 1px solid var(--border);
+      padding: 32px 28px 28px;
+      border-radius: 2px;
+    }
+    h1 {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    p.lead {
+      font-size: 14px;
+      color: var(--dim);
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+    label {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 8px;
+    }
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      margin-bottom: 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      color: var(--white);
+      font-size: 15px;
+      border-radius: 2px;
+    }
+    input:focus {
+      outline: none;
+      border-color: rgba(255,255,255,0.35);
+    }
+    button {
+      width: 100%;
+      padding: 14px 16px;
+      margin-top: 6px;
+      background: var(--white);
+      color: var(--black);
+      border: none;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 2px;
+    }
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+    .err {
+      font-size: 13px;
+      color: var(--err);
+      margin-bottom: 16px;
+      min-height: 1.2em;
+    }
+  </style>
+</head>
+<body>
+  <div class="panel">
+    <h1>Capabilities deck</h1>
+    <p class="lead">Use the email you requested access with and the password you were given.</p>
+    <div class="err" id="err" aria-live="polite"></div>
+    <form id="f" autocomplete="on">
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" autocomplete="email" required />
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" required />
+      <button type="submit" id="btn">Continue</button>
+    </form>
+  </div>
+  <script>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const next = params.get('next') || '/capabilities/';
+      function safeNext(n) {
+        if (!n || !n.startsWith('/capabilities') || n.includes('//')) return '/capabilities/';
+        return n;
+      }
+      const target = safeNext(next);
+
+      const err = document.getElementById('err');
+      const btn = document.getElementById('btn');
+      const form = document.getElementById('f');
+
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        err.textContent = '';
+        btn.disabled = true;
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        try {
+          const r = await fetch('/api/capabilities/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password }),
+          });
+          const data = await r.json().catch(function () { return {}; });
+          if (!r.ok || !data.ok) {
+            err.textContent = data.error || 'Could not sign in';
+            btn.disabled = false;
+            return;
+          }
+          window.location.href = target;
+        } catch {
+          err.textContent = 'Network error';
+          btn.disabled = false;
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
