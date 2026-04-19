@@ -149,42 +149,23 @@
     .services-title { animation: rise 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s both; }
     .service-item { opacity: 0; }
     .service-item.revealed { animation: rise 0.7s cubic-bezier(0.16,1,0.3,1) both; }
+
+    /* Animation 2 (page-out): match intro loader logo placement */
+    #page-out {
+      overflow: visible;
+    }
+    #page-out-logo {
+      position: absolute; bottom: 36px; left: 44px; width: 72px;
+      display: block; filter: invert(1); pointer-events: none;
+      opacity: 1;
+      transition: none;
+      transform: translateZ(0);
+    }
   </style>
+  <link rel="prefetch" href="/projects">
 </head>
 <body>
-<div id="page-out" style="position:fixed;inset:0;z-index:9999;background:#fff;pointer-events:none;transform:translateY(0);"></div>
-
-<!-- XYZ Loader -->
-<style>
-#xyz-wl{position:fixed;inset:0;z-index:10001;background:#fff;will-change:transform;pointer-events:all}
-#xyz-wl-track{position:absolute;top:50%;left:44px;right:44px;height:3px;background:rgba(0,0,0,0.1);transform:translateY(-50%)}
-#xyz-wl-fill{position:absolute;top:50%;left:44px;right:44px;height:3px;background:#111;transform:translateY(-50%) scaleX(0);transform-origin:left center;will-change:transform}
-#xyz-wl-fill.go{animation:xyzBar 1.8s cubic-bezier(0.37,0,0.63,1) forwards}
-@keyframes xyzBar{from{transform:translateY(-50%) scaleX(0)}to{transform:translateY(-50%) scaleX(1)}}
-#xyz-wl-logo{position:absolute;bottom:36px;left:44px;width:72px;opacity:0;transition:opacity .3s ease;filter:invert(1)}
-</style>
-<div id="xyz-wl">
-  <div id="xyz-wl-track"></div>
-  <div id="xyz-wl-fill"></div>
-  <img id="xyz-wl-logo" src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios">
-</div>
-<script>
-(function(){
-  var el=document.getElementById('xyz-wl');
-  var fill=document.getElementById('xyz-wl-fill');
-  var logo=document.getElementById('xyz-wl-logo');
-  document.body.style.overflow='hidden';
-  setTimeout(function(){ logo.style.opacity='1'; fill.classList.add('go'); }, 80);
-  fill.addEventListener('animationend', function(){ setTimeout(exit, 220); });
-  function exit(){
-    el.style.transition='transform .65s cubic-bezier(0.76,0,0.24,1)';
-    el.style.transform='translateY(-100%)';
-    document.body.style.overflow='';
-    setTimeout(function(){ el.style.display='none'; revealItems(); }, 700);
-  }
-})();
-</script>
-<!-- End XYZ Loader -->
+<div id="page-out" style="position:fixed;inset:0;z-index:9999;background:#fff;pointer-events:none;transform:translateY(0);"><img id="page-out-logo" src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt=""></div>
 
   <nav>
     <a class="nav-logo" href="/">
@@ -269,36 +250,55 @@
     }, { threshold: 0.08 });
     [document.getElementById('sv-about'), document.getElementById('sv-join')].forEach(el => { if (el) observer.observe(el); });
   }
-  if (!document.getElementById('xyz-wl')) revealItems();
+  revealItems();
 </script>
 <script>
 (function(){
   var pageOut=document.getElementById('page-out');
   if(!pageOut)return;
-  function slideAwayPanel(){
+  function isReloadNavigation(){
+    var nav=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0];
+    if(nav&&nav.type)return nav.type==='reload';
+    try{return !!(performance.navigation&&performance.navigation.type===1);}catch(e){return false;}
+  }
+  // Animation 2 — same timing as Work (not Home)
+  function slideAwayPanel(fromCacheRestore){
+    var dur=(!fromCacheRestore&&isReloadNavigation())?'1.06s':'0.58s';
     pageOut.style.transition='none';
     pageOut.style.transform='translateY(0)';
     pageOut.style.pointerEvents='none';
     requestAnimationFrame(function(){
       requestAnimationFrame(function(){
-        pageOut.style.transition='transform 0.58s cubic-bezier(0.76,0,0.24,1)';
+        pageOut.style.transition='transform '+dur+' cubic-bezier(0.76,0,0.24,1)';
         pageOut.style.transform='translateY(-100%)';
       });
     });
   }
   slideAwayPanel();
-  window.addEventListener('pageshow',function(e){if(e.persisted)slideAwayPanel();});
+  window.addEventListener('pageshow',function(e){if(e.persisted)slideAwayPanel(true);});
   function navigateTo(url){
     pageOut.style.transition='none';
     pageOut.style.transform='translateY(100%)';
     pageOut.style.pointerEvents='all';
     requestAnimationFrame(function(){
       requestAnimationFrame(function(){
+        var done=false;
+        function finish(){if(done)return;done=true;window.location.href=url;}
+        function onEnd(e){
+          if(e.target!==pageOut||e.propertyName!=='transform')return;
+          pageOut.removeEventListener('transitionend',onEnd);
+          clearTimeout(fallback);
+          finish();
+        }
+        var fallback=setTimeout(function(){
+          pageOut.removeEventListener('transitionend',onEnd);
+          finish();
+        },750);
+        pageOut.addEventListener('transitionend',onEnd);
         pageOut.style.transition='transform 0.48s cubic-bezier(0.76,0,0.24,1)';
         pageOut.style.transform='translateY(0)';
       });
     });
-    setTimeout(function(){window.location.href=url;},540);
   }
   document.addEventListener('click',function(e){
     var a=e.target.closest('a[href]');

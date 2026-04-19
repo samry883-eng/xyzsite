@@ -109,32 +109,106 @@ function makeHTML(card, catLabel, framesHTML = '') {
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --pad: 48px;    /* side padding on video */
-      --ctrl: 62px;   /* controls bar height   */
-      --nav: 80px;    /* nav bar height        */
+      --pad: 48px;    /* align with .pj-nav — player spans logo ↔ Back */
+      --nav: 80px;    /* fixed header band (logo / Back) */
+      --video-top: 64px; /* offset before player (under fixed nav) */
+      --ctrl: 50px;   /* scrubber + control row */
+      --pj-scroll-h: 36px; /* scroll hint — match .pj-scroll-hint */
+      /* Max player height: landscape 16:9 box must fit above bottom dock */
+      --pj-video-slot-h: calc(100vh - var(--video-top) - var(--ctrl) - var(--pj-scroll-h));
+      --pj-video-slot-h: calc(100svh - var(--video-top) - var(--ctrl) - var(--pj-scroll-h));
     }
     html, body { background: #000; color: #fff; font-family: Micross, Arial, sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
 
-    /* ── STAGE: exactly 100vh ────────────────────────────── */
+    /* ── STAGE: min first screen; flex pushes controls + hint below a larger video ─ */
     .pj-stage {
       position: relative;
-      width: 100%; height: 100vh;
+      width: 100%;
+      min-height: 100vh;
+      min-height: 100svh;
       background: #000;
-      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
     }
 
-    /* ── VIDEO: starts below nav, inset sides, above controls */
+    /* Fills viewport between header and dock; player centered like the reference */
+    .pj-video-area {
+      flex: 1 1 auto;
+      width: 100%;
+      min-height: 0;
+      padding: var(--video-top) var(--pad) 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+    }
+
+    .pj-bottom-dock {
+      flex-shrink: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /*
+      Wrapper fixes layout: <video> uses intrinsic dimensions otherwise.
+      Reference: large 16:9 cinematic frame, full width between nav gutters.
+    */
+    .pj-video-frame {
+      position: relative;
+      box-sizing: border-box;
+      width: min(100%, calc(100vw - 2 * var(--pad)), calc(var(--pj-video-slot-h) * 16 / 9));
+      max-width: 100%;
+      max-height: var(--pj-video-slot-h);
+      aspect-ratio: 16 / 9;
+      height: auto;
+      background: #000;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
     #pj-video {
       position: absolute;
-      top: var(--nav);
-      left: var(--pad); right: var(--pad);
-      bottom: var(--ctrl);
-      width: calc(100% - var(--pad) * 2);
-      height: calc(100% - var(--ctrl) - var(--nav));
-      object-fit: contain;
+      inset: 0;
+      width: 100%;
+      height: 100%;
       display: block;
+      object-fit: cover;
+      object-position: center center;
       cursor: none;
-      background: #000;
+    }
+
+    /* Scroll arrow — row height matches --pj-scroll-h */
+    .pj-scroll-hint {
+      flex-shrink: 0;
+      width: 100%;
+      height: var(--pj-scroll-h);
+      margin: 0;
+      padding: 0;
+      border: none;
+      background: transparent;
+      color: rgba(255,255,255,0.42);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s ease;
+      box-sizing: border-box;
+    }
+    .pj-scroll-hint:hover { color: rgba(255,255,255,0.75); }
+    .pj-scroll-hint.is-hidden {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+    @keyframes pj-scroll-nudge {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(5px); }
+    }
+    .pj-scroll-hint svg {
+      display: block;
+      width: 20px; height: 20px;
+      animation: pj-scroll-nudge 2.2s ease-in-out infinite;
     }
 
     /* ── CUSTOM VIDEO CURSOR ──────────────────────────────── */
@@ -145,6 +219,10 @@ function makeHTML(card, catLabel, framesHTML = '') {
       transform: translate(-50%, -50%);
       opacity: 0;
       transition: opacity 0.18s ease;
+      flex: none;
+      width: 0;
+      height: 0;
+      overflow: visible;
     }
     #pj-cursor.visible { opacity: 1; }
     #pj-cursor svg { display: block; }
@@ -155,6 +233,10 @@ function makeHTML(card, catLabel, framesHTML = '') {
       top: 0; left: 0; right: 0;
       z-index: 200;
       pointer-events: none;
+      flex: none;
+      width: 100%;
+      height: 0;
+      overflow: visible;
     }
 
     /* Dark gradient fade at top */
@@ -193,15 +275,16 @@ function makeHTML(card, catLabel, framesHTML = '') {
     }
     #pj-back-btn:hover { color: #fff; }
 
-    /* ── CONTROLS BAR: fixed at stage bottom, always visible */
+    /* ── CONTROLS BAR: stack below video area */
     .pj-ctrl-bar {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
+      flex-shrink: 0;
+      width: 100%;
       height: var(--ctrl);
+      box-sizing: border-box;
       background: #000;
-      padding: 0 var(--pad);
+      padding: 3px var(--pad) 5px;
       display: flex; flex-direction: column; justify-content: center;
-      gap: 14px;
+      gap: 5px;
     }
 
     /* Progress track */
@@ -226,15 +309,25 @@ function makeHTML(card, catLabel, framesHTML = '') {
     }
     .pj-track:hover #pj-handle { opacity: 1; }
 
-    /* Controls row */
+    /* Controls row — play/time | title — client | sound/fullscreen */
     .pj-ctrl-row {
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
+      width: 100%;
+      gap: 12px;
     }
-    .pj-ctrl-l { display: flex; align-items: center; gap: 18px; }
-    .pj-ctrl-m { display: flex; align-items: baseline; gap: 8px; justify-content: center; white-space: nowrap; }
-    .pj-ctrl-r { display: flex; align-items: center; gap: 22px; justify-content: flex-end; }
+    .pj-ctrl-l { display: flex; align-items: center; gap: 18px; min-width: 0; }
+    .pj-ctrl-m {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 8px;
+      white-space: nowrap;
+      min-width: 0;
+      text-align: center;
+    }
+    .pj-ctrl-r { display: flex; align-items: center; gap: 22px; justify-content: flex-end; min-width: 0; }
 
     #pj-play-btn { color: rgba(255,255,255,0.55); background: none; border: none; cursor: pointer; padding: 0; transition: color 0.2s; }
     #pj-play-btn:hover { color: #fff; }
@@ -252,12 +345,36 @@ function makeHTML(card, catLabel, framesHTML = '') {
     #pj-mute-btn:hover, #pj-fs-btn:hover { color: #fff; }
 
     /* ── FULLSCREEN: video fills entire screen ────────────── */
+    .pj-stage.is-fullscreen .pj-video-area {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      padding: 0;
+      flex: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .pj-stage.is-fullscreen .pj-video-frame {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      max-height: none;
+      aspect-ratio: unset;
+    }
     .pj-stage.is-fullscreen #pj-video {
-      top: 0; left: 0; right: 0; bottom: 0;
-      width: 100%; height: 100%;
       object-fit: cover;
     }
+    .pj-stage.is-fullscreen .pj-scroll-hint { display: none; }
+    .pj-stage.is-fullscreen .pj-bottom-dock {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      z-index: 50;
+    }
     .pj-stage.is-fullscreen .pj-ctrl-bar {
+      position: relative;
       background: transparent;
       border-top: none;
     }
@@ -314,13 +431,10 @@ function makeHTML(card, catLabel, framesHTML = '') {
   <!-- Page transition overlay -->
   <div id="page-in" style="position:fixed;inset:0;z-index:9998;background:#000;opacity:1;pointer-events:none;transition:opacity 0.6s cubic-bezier(0,0,0.3,1);"></div>
 
-  <!-- STAGE: 100vh — video + controls all in one screen -->
+  <!-- STAGE: hero + controls + scroll hint; video scales to largest 9:16 in the slot -->
   <div class="pj-stage" id="pj-stage">
 
-    <!-- Video: inset sides, stops above controls bar -->
-    <video id="pj-video" src="${esc(card.video)}" playsinline preload="auto"></video>
-
-    <!-- NAV: always visible, never fades -->
+    <!-- NAV: fixed — first in DOM so flex order stays video → spacer → dock -->
     <div class="pj-nav-bar">
       <div class="pj-fade"></div>
       <div class="pj-nav">
@@ -331,40 +445,51 @@ function makeHTML(card, catLabel, framesHTML = '') {
       </div>
     </div>
 
-    <!-- Custom cursor -->
     <div id="pj-cursor">
       <svg id="pj-cursor-svg" width="18" height="18" viewBox="0 0 24 24" fill="white">
         <path id="pj-cursor-path" d="M8 5v14l11-7z"/>
       </svg>
     </div>
 
-    <!-- Controls bar: always visible at bottom -->
-    <div class="pj-ctrl-bar">
-      <div class="pj-track" id="pj-track">
-        <div id="pj-progress"></div>
-        <div id="pj-handle"></div>
+    <div class="pj-video-area">
+      <div class="pj-video-frame">
+        <video id="pj-video" src="${esc(card.video)}" playsinline preload="auto"></video>
       </div>
-      <div class="pj-ctrl-row">
-        <div class="pj-ctrl-l">
-          <button class="lbl" id="pj-play-btn">Play</button>
-          <span class="lbl" id="pj-time">0:00 \u2014 0:00</span>
+    </div>
+
+    <div class="pj-bottom-dock">
+      <div class="pj-ctrl-bar">
+        <div class="pj-track" id="pj-track">
+          <div id="pj-progress"></div>
+          <div id="pj-handle"></div>
         </div>
-        <div class="pj-ctrl-m">
-          <span class="lbl" id="pj-title-span">${esc(card.title)}</span>
-          <span class="lbl" id="pj-sep-span">\u2014</span>
-          <span class="lbl" id="pj-client-span">${esc(card.client)}</span>
-        </div>
-        <div class="pj-ctrl-r">
-          <button id="pj-mute-btn">Sound:On</button>
-          <button id="pj-fs-btn">Full Screen</button>
+        <div class="pj-ctrl-row">
+          <div class="pj-ctrl-l">
+            <button class="lbl" id="pj-play-btn">Play</button>
+            <span class="lbl" id="pj-time">0:00 \u2014 0:00</span>
+          </div>
+          <div class="pj-ctrl-m">
+            <span class="lbl" id="pj-title-span">${esc(card.title)}</span>
+            <span class="lbl" id="pj-sep-span">\u2014</span>
+            <span class="lbl" id="pj-client-span">${esc(card.client)}</span>
+          </div>
+          <div class="pj-ctrl-r">
+            <button id="pj-mute-btn">Sound:On</button>
+            <button id="pj-fs-btn">Full Screen</button>
+          </div>
         </div>
       </div>
+      <button type="button" class="pj-scroll-hint" id="pj-scroll-hint" aria-label="Scroll to project details">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 9l6 6 6-6"/>
+        </svg>
+      </button>
     </div>
 
   </div>
 
   <!-- CREDITS: tight directly after stage -->
-  <div class="pj-credits">
+  <div class="pj-credits" id="pj-credits">
     <div class="pj-cr-title">${esc(card.title)}</div>
     <div class="pj-cr-sub">${esc(card.client)}</div>
 
@@ -491,8 +616,17 @@ function makeHTML(card, catLabel, framesHTML = '') {
 
   updatePlay(); updateMute(); updateCursorIcon();
 
+  // Scroll hint → credits
+  const credits = document.getElementById('pj-credits');
+  const scrollHint = document.getElementById('pj-scroll-hint');
+  scrollHint.addEventListener('click', () => {
+    credits.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  new IntersectionObserver((entries) => {
+    scrollHint.classList.toggle('is-hidden', entries[0].isIntersecting);
+  }, { threshold: 0.04, rootMargin: '0px 0px -8% 0px' }).observe(credits);
+
   // Credits stagger — trigger when scrolled into view
-  const credits = document.querySelector('.pj-credits');
   new IntersectionObserver((entries, obs) => {
     if (entries[0].isIntersecting) { credits.classList.add('revealed'); obs.disconnect(); }
   }, { threshold: 0.05 }).observe(credits);

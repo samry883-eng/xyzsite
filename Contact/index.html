@@ -87,8 +87,10 @@
       text-decoration: none; cursor: pointer;
       transition: color 0.2s;
     }
-    .ct-section-links a:hover,
-    .ct-section-links span:hover { color: #fff; }
+    .ct-section-links span { cursor: default; }
+    .ct-section-links a:hover { color: #fff; }
+    .ct-section-links .ct-action { cursor: pointer; }
+    .ct-section-links .ct-action:hover { color: #fff; }
 
     /* Footer */
     .ct-foot {
@@ -180,7 +182,7 @@
     }
     .ct-submit:hover { color: #fff; }
 
-    /* ── CONTACT FORM → SUCCESS (in-column fade) ── */
+    /* ── CONTACT FORM → SUCCESS (in-column fade, centered in form area) ── */
     .ct-form-stage {
       position: relative;
       width: 100%;
@@ -194,9 +196,14 @@
     }
     #ct-form-success {
       position: absolute;
-      left: 0;
-      right: 0;
-      top: 0;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      padding: 0 clamp(0px, 2vw, 12px);
+      text-align: center;
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
@@ -213,11 +220,12 @@
       letter-spacing: -0.01em;
       color: #fff;
       margin-bottom: 14px;
+      max-width: min(20em, 100%);
     }
     .ct-success-body {
       font: 400 11px/1.7 Micross, Arial, sans-serif;
       color: rgba(255,255,255,0.32);
-      max-width: 36em;
+      max-width: min(32em, 100%);
     }
 
     /* ── CAPABILITIES MODAL ── */
@@ -329,42 +337,23 @@
       from { opacity: 0; transform: translateY(28px); }
       to   { opacity: 1; transform: translateY(0); }
     }
+
+    /* Animation 2 (page-out): match intro loader logo placement */
+    #page-out {
+      overflow: visible;
+    }
+    #page-out-logo {
+      position: absolute; bottom: 36px; left: 44px; width: 72px;
+      display: block; filter: invert(1); pointer-events: none;
+      opacity: 1;
+      transition: none;
+      transform: translateZ(0);
+    }
   </style>
+  <link rel="prefetch" href="/projects">
 </head>
 <body>
-<div id="page-out" style="position:fixed;inset:0;z-index:9999;background:#fff;pointer-events:none;transform:translateY(0);"></div>
-
-<!-- XYZ Loader -->
-<style>
-#xyz-wl{position:fixed;inset:0;z-index:10001;background:#fff;will-change:transform;pointer-events:all}
-#xyz-wl-track{position:absolute;top:50%;left:44px;right:44px;height:3px;background:rgba(0,0,0,0.1);transform:translateY(-50%)}
-#xyz-wl-fill{position:absolute;top:50%;left:44px;right:44px;height:3px;background:#111;transform:translateY(-50%) scaleX(0);transform-origin:left center;will-change:transform}
-#xyz-wl-fill.go{animation:xyzBar 1.8s cubic-bezier(0.37,0,0.63,1) forwards}
-@keyframes xyzBar{from{transform:translateY(-50%) scaleX(0)}to{transform:translateY(-50%) scaleX(1)}}
-#xyz-wl-logo{position:absolute;bottom:36px;left:44px;width:72px;opacity:0;transition:opacity .3s ease;filter:invert(1)}
-</style>
-<div id="xyz-wl">
-  <div id="xyz-wl-track"></div>
-  <div id="xyz-wl-fill"></div>
-  <img id="xyz-wl-logo" src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios">
-</div>
-<script>
-(function(){
-  var el=document.getElementById('xyz-wl');
-  var fill=document.getElementById('xyz-wl-fill');
-  var logo=document.getElementById('xyz-wl-logo');
-  document.body.style.overflow='hidden';
-  setTimeout(function(){ logo.style.opacity='1'; fill.classList.add('go'); },80);
-  fill.addEventListener('animationend',function(){ setTimeout(exit,220); });
-  function exit(){
-    el.style.transition='transform .65s cubic-bezier(0.76,0,0.24,1)';
-    el.style.transform='translateY(-100%)';
-    document.body.style.overflow='';
-    setTimeout(function(){ el.style.display='none'; revealItems(); },700);
-  }
-})();
-</script>
-<!-- End XYZ Loader -->
+<div id="page-out" style="position:fixed;inset:0;z-index:9999;background:#fff;pointer-events:none;transform:translateY(0);"><img id="page-out-logo" src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt=""></div>
 
 <nav>
   <div class="anim-wrap"><a class="nav-logo anim-item soft" id="an-logo" href="/"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></a></div>
@@ -393,14 +382,14 @@
           <div class="anim-wrap"><div class="ct-section-label anim-item soft" id="an-s1">Contact Us</div></div>
           <div class="ct-section-links">
             <div class="anim-wrap"><a href="mailto:inquiries@xyzstudios.co" class="anim-item soft" id="an-s2">inquiries@xyzstudios.co</a></div>
-            <div class="anim-wrap"><span onclick="openDeckModal()" class="anim-item soft" id="an-s3">Request capabilities deck &rarr;</span></div>
+            <div class="anim-wrap"><span onclick="openDeckModal()" class="anim-item soft ct-action" id="an-s3">Request capabilities deck &rarr;</span></div>
           </div>
         </div>
         <div class="ct-section">
-          <div class="anim-wrap"><div class="ct-section-label anim-item soft" id="an-s4">Join Us!</div></div>
+          <div class="anim-wrap"><div class="ct-section-label anim-item soft" id="an-s4">Join Us</div></div>
           <div class="ct-section-links">
-            <div class="anim-wrap"><a href="mailto:careers@xyzstudios.co" class="anim-item soft" id="an-s5">careers@xyzstudios.co</a></div>
-            <div class="anim-wrap"><span class="anim-item soft" id="an-s6">Artists interested in working with us can submit their portfolio and a brief introduction for future collaboration opportunities.</span></div>
+            <div class="anim-wrap"><span class="anim-item soft" id="an-s5">Artists interested in working with us can submit their portfolio<br>and a brief introduction for future collaboration opportunities.</span></div>
+            <div class="anim-wrap"><a href="mailto:careers@xyzstudios.co" class="anim-item soft" id="an-s6">careers@xyzstudios.co</a></div>
           </div>
         </div>
       </div>
@@ -416,19 +405,19 @@
             <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;">
             <div class="anim-wrap"><div class="ct-field anim-item soft" id="an-f1">
               <label class="ct-label" for="f-name">Name *</label>
-              <input type="text" name="name" id="f-name" autocomplete="name">
+              <input type="text" name="name" id="f-name" autocomplete="name" required>
             </div></div>
             <div class="anim-wrap"><div class="ct-field anim-item soft" id="an-f2">
               <label class="ct-label" for="f-email">Email *</label>
-              <input type="email" name="email" id="f-email" autocomplete="email">
+              <input type="email" name="email" id="f-email" autocomplete="email" required>
             </div></div>
             <div class="anim-wrap"><div class="ct-field anim-item soft" id="an-f3">
               <label class="ct-label" for="f-company">Company *</label>
-              <input type="text" name="company" id="f-company" autocomplete="organization">
+              <input type="text" name="company" id="f-company" autocomplete="organization" required>
             </div></div>
             <div class="anim-wrap"><div class="ct-field anim-item soft" id="an-f4">
               <label class="ct-label" for="f-message">Tell us about your project *</label>
-              <textarea name="message" id="f-message"></textarea>
+              <textarea name="message" id="f-message" required></textarea>
             </div></div>
             <div class="anim-wrap"><button type="submit" class="ct-submit anim-item soft" id="an-f5">Submit &rarr;</button></div>
           </form>
@@ -570,6 +559,20 @@
     if (e.key === 'Escape') closeDeckModal();
   });
 
+  (function openDeckFromUrlHash() {
+    function tryOpen() {
+      if (location.hash !== '#deck') return;
+      setTimeout(function() {
+        if (typeof openDeckModal === 'function') openDeckModal();
+        try {
+          history.replaceState(null, '', location.pathname + location.search);
+        } catch (err) {}
+      }, 700);
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tryOpen);
+    else tryOpen();
+  })();
+
   var CONTACT_WEB3FORMS_ACCESS_KEY = 'f77d3594-3449-447d-8e43-483375d675cd';
   /* Capabilities deck → Web3Forms “Capabilities Deck” form. If key is removed, FormSubmit fallback is used instead. */
   var DECK_WEB3FORMS_ACCESS_KEY = 'd8aee030-0698-4909-8496-a1b61cb4a567';
@@ -583,6 +586,22 @@
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
+      var fName = document.getElementById('f-name');
+      var fEmail = document.getElementById('f-email');
+      var fCompany = document.getElementById('f-company');
+      var fMessage = document.getElementById('f-message');
+      [fName, fEmail, fCompany, fMessage].forEach(function (el) {
+        if (!el) return;
+        el.setCustomValidity('');
+      });
+      if (fName && !String(fName.value || '').trim()) fName.setCustomValidity('Please enter your name.');
+      if (fEmail && !String(fEmail.value || '').trim()) fEmail.setCustomValidity('Please enter your email.');
+      if (fCompany && !String(fCompany.value || '').trim()) fCompany.setCustomValidity('Please enter your company.');
+      if (fMessage && !String(fMessage.value || '').trim()) fMessage.setCustomValidity('Please tell us about your project.');
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
 
       var data = new FormData(form);
       var name = (data.get('name') || '').toString().trim();
@@ -652,6 +671,20 @@
   document.getElementById('deck-form').addEventListener('submit', function(e) {
     e.preventDefault();
     var form = this;
+    var dkName = document.getElementById('dk-name');
+    var dkCompany = document.getElementById('dk-company');
+    var dkEmail = document.getElementById('dk-email');
+    [dkName, dkCompany, dkEmail].forEach(function (el) {
+      if (!el) return;
+      el.setCustomValidity('');
+    });
+    if (dkName && !String(dkName.value || '').trim()) dkName.setCustomValidity('Please enter your name.');
+    if (dkCompany && !String(dkCompany.value || '').trim()) dkCompany.setCustomValidity('Please enter your company.');
+    if (dkEmail && !String(dkEmail.value || '').trim()) dkEmail.setCustomValidity('Please enter your email.');
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
     var data = new FormData(form);
     var payload = {};
     data.forEach(function(v, k) { payload[k] = v; });
@@ -768,6 +801,7 @@
       ['an-s3', 310],
       ['an-s4', 340],
       ['an-s5', 380],
+      ['an-s6', 420],
       // Form fields
       ['an-f1', 200],
       ['an-f2', 260],
@@ -794,36 +828,55 @@
     });
   }
 
-  if (!document.getElementById('xyz-wl')) revealItems();
+  revealItems();
 </script>
 <script>
 (function(){
   var pageOut=document.getElementById('page-out');
   if(!pageOut)return;
-  function slideAwayPanel(){
+  function isReloadNavigation(){
+    var nav=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0];
+    if(nav&&nav.type)return nav.type==='reload';
+    try{return !!(performance.navigation&&performance.navigation.type===1);}catch(e){return false;}
+  }
+  // Animation 2 — same timing as Work (not Home)
+  function slideAwayPanel(fromCacheRestore){
+    var dur=(!fromCacheRestore&&isReloadNavigation())?'1.06s':'0.58s';
     pageOut.style.transition='none';
     pageOut.style.transform='translateY(0)';
     pageOut.style.pointerEvents='none';
     requestAnimationFrame(function(){
       requestAnimationFrame(function(){
-        pageOut.style.transition='transform 0.58s cubic-bezier(0.76,0,0.24,1)';
+        pageOut.style.transition='transform '+dur+' cubic-bezier(0.76,0,0.24,1)';
         pageOut.style.transform='translateY(-100%)';
       });
     });
   }
   slideAwayPanel();
-  window.addEventListener('pageshow',function(e){if(e.persisted)slideAwayPanel();});
+  window.addEventListener('pageshow',function(e){if(e.persisted)slideAwayPanel(true);});
   function navigateTo(url){
     pageOut.style.transition='none';
     pageOut.style.transform='translateY(100%)';
     pageOut.style.pointerEvents='all';
     requestAnimationFrame(function(){
       requestAnimationFrame(function(){
+        var done=false;
+        function finish(){if(done)return;done=true;window.location.href=url;}
+        function onEnd(e){
+          if(e.target!==pageOut||e.propertyName!=='transform')return;
+          pageOut.removeEventListener('transitionend',onEnd);
+          clearTimeout(fallback);
+          finish();
+        }
+        var fallback=setTimeout(function(){
+          pageOut.removeEventListener('transitionend',onEnd);
+          finish();
+        },750);
+        pageOut.addEventListener('transitionend',onEnd);
         pageOut.style.transition='transform 0.48s cubic-bezier(0.76,0,0.24,1)';
         pageOut.style.transform='translateY(0)';
       });
     });
-    setTimeout(function(){window.location.href=url;},540);
   }
   document.addEventListener('click',function(e){
     var a=e.target.closest('a[href]');

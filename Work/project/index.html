@@ -15,7 +15,13 @@
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root { --nav-h: 80px; }
+    :root {
+      --nav-h: 80px;
+      --pj-pad: 44px;
+      /* room for scrubber + bottom controls above full-bleed edge */
+      --pj-bottom-reserve: 140px;
+      --pj-stage-h: calc(100vh - var(--nav-h) - var(--pj-bottom-reserve));
+    }
 
     html, body {
       background: #000; color: #fff;
@@ -53,10 +59,29 @@
       background: #000;
     }
     #pj-video {
-      position: absolute; inset: 0;
-      width: 100%; height: 100%;
-      object-fit: cover; display: block;
+      position: absolute;
+      top: calc(var(--nav-h) + var(--pj-stage-h) / 2);
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(calc(100% - 2 * var(--pj-pad)), calc(var(--pj-stage-h) * 9 / 16));
+      aspect-ratio: 9 / 16;
+      height: auto;
+      max-height: var(--pj-stage-h);
+      object-fit: contain;
+      display: block;
       cursor: pointer;
+      background: #000;
+    }
+
+    .pj-video-wrap:fullscreen #pj-video,
+    .pj-video-wrap:-webkit-full-screen #pj-video {
+      top: 0; left: 0; right: 0; bottom: 0;
+      width: 100%; height: 100%;
+      max-width: none;
+      max-height: none;
+      transform: none;
+      aspect-ratio: unset;
+      object-fit: cover;
     }
 
     /* UI overlay */
@@ -192,7 +217,10 @@
     .pj-credits { }
 
     /* ── ENTRANCE ANIMATIONS ───────────────────── */
-    @keyframes pj-fade-up { from { opacity:0; transform:translateY(40px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes pj-fade-up {
+      from { opacity: 0; transform: translate(-50%, calc(-50% + 40px)); }
+      to   { opacity: 1; transform: translate(-50%, -50%); }
+    }
     @keyframes pj-fade-dn { from { opacity:0; transform:translateY(-12px); } to { opacity:1; transform:translateY(0); } }
     @keyframes pj-fade-in { from { opacity:0; } to { opacity:1; } }
     body.pj-entering #pj-video    { animation: pj-fade-up 1.1s cubic-bezier(0.16,1,0.3,1) 0.2s both; }
@@ -460,7 +488,7 @@
       const tiltX = ((e.clientY - r.top  - r.height / 2) / (r.height / 2)) * -TILT_MAX;
       const tiltY = ((e.clientX - r.left - r.width  / 2) / (r.width  / 2)) *  TILT_MAX;
       if (!entering) vid.style.transition = "none";
-      vid.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+      vid.style.transform = `translate(-50%, -50%) perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
     });
     vid.addEventListener("mouseleave", () => {
       entering = false;
