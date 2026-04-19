@@ -672,30 +672,11 @@
       --sb-rule: #2A2A2A;
       --sb-text-2: #9A9A9A;
     }
-    .sb-marker-v {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 1px;
-      height: 198px;
-      background: var(--sb-rule);
-      pointer-events: none;
-    }
-    .sb-brand {
-      position: absolute;
-      left: 48px;
-      top: 0;
-      font-size: 14px;
-      font-weight: 500;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
-      color: #F5F5F5;
-      line-height: 1;
-    }
+    /* "Case study" sits below #slide-counter (top ~32px) with breathing room */
     .sb-case-wrap {
       position: absolute;
-      top: 0;
-      right: 80px;
+      top: 48px;
+      right: 64px;
       display: flex;
       flex-direction: column;
       align-items: flex-end;
@@ -738,7 +719,8 @@
     }
     .sb-body {
       position: absolute;
-      left: 832px;
+      left: auto;
+      right: 48px;
       top: 81px;
       width: 688px;
       font-size: 15px;
@@ -752,7 +734,7 @@
     }
     .sb-media-left {
       position: absolute;
-      left: 88px;
+      left: 48px;
       top: 324px;
       width: 848px;
       height: 405px;
@@ -768,7 +750,8 @@
     }
     .sb-media-right {
       position: absolute;
-      left: 952px;
+      left: auto;
+      right: 48px;
       top: 324px;
       width: 560px;
       height: 405px;
@@ -782,36 +765,6 @@
       object-position: center;
       display: block;
     }
-    .sb-bottom-rule {
-      position: absolute;
-      left: 0;
-      top: 792px;
-      width: 1600px;
-      height: 1px;
-      background: var(--sb-rule);
-    }
-    .sb-footer-year {
-      position: absolute;
-      left: 48px;
-      top: 819px;
-      font-size: 13px;
-      font-weight: 400;
-      color: #F5F5F5;
-      line-height: 1;
-    }
-    .sb-footer-logo {
-      position: absolute;
-      right: 48px;
-      top: 810px;
-      text-align: right;
-    }
-    .sb-footer-logo img {
-      height: 30px;
-      width: auto;
-      display: inline-block;
-      opacity: 0.9;
-    }
-
     /* ════════════════════════════════
        CRAFT SLIDE
     ════════════════════════════════ */
@@ -1451,8 +1404,6 @@
     <div class="slide-inner">
       <div class="sb-scale-root">
         <div class="sb-artboard" aria-hidden="false">
-          <div class="sb-marker-v" aria-hidden="true"></div>
-          <div class="sb-brand">XYZSTUDIOS</div>
           <div class="sb-case-wrap">
             <div class="sb-case-label">Case study</div>
             <div class="sb-case-line" aria-hidden="true"></div>
@@ -1468,11 +1419,6 @@
           </div>
           <div class="sb-media-right">
             <video class="sb-video" autoplay muted loop playsinline preload="auto" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/85D_It6HUS/original"></video>
-          </div>
-          <div class="sb-bottom-rule" aria-hidden="true"></div>
-          <div class="sb-footer-year">2026</div>
-          <div class="sb-footer-logo">
-            <img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios">
           </div>
         </div>
       </div>
