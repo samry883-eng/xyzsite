@@ -70,21 +70,6 @@
       letter-spacing: -0.035em;
       color: #fff;
     }
-    .cover-sub {
-      font-size: clamp(11px, 1.1vw, 13px);
-      color: rgba(255, 255, 255, 0.92);
-      margin-top: clamp(16px, 2.5vh, 24px);
-      font-weight: 400;
-      line-height: 1.45;
-      max-width: 28em;
-    }
-    .foot-inline {
-      margin-top: clamp(28px, 4vh, 40px);
-      font-size: 10px;
-      color: rgba(255, 255, 255, 0.28);
-      letter-spacing: 0.02em;
-    }
-
     /* ── Right: same field + CTA language as Contact / deck modal ── */
     .split-right {
       display: flex;
@@ -104,13 +89,7 @@
       font: 400 clamp(34px, 4.8vw, 52px) / 1.08 Micross, Arial, sans-serif;
       letter-spacing: -0.03em;
       color: #fff;
-      margin-bottom: 14px;
-    }
-    .deck-sub {
-      font: 400 clamp(13px, 1.35vw, 16px) / 1.55 Micross, Arial, sans-serif;
-      color: rgba(255, 255, 255, 0.38);
       margin-bottom: 48px;
-      max-width: 26em;
     }
 
     .ct-field {
@@ -216,19 +195,16 @@
 </head>
 <body>
   <div class="split">
-    <aside class="split-left" aria-label="Capabilities deck">
+    <aside class="split-left" aria-label="Capabilities">
       <div class="wordmark">XYZSTUDIOS</div>
       <div class="cover-zone">
         <h1 class="cover-title">Capabilities<br />Deck</h1>
-        <p class="cover-sub">This isn't work for hire. It's a partnership.</p>
-        <p class="foot-inline">© XYZStudios · Capabilities</p>
       </div>
     </aside>
 
     <main class="split-right">
       <div class="login-shell">
         <div class="deck-title">Login</div>
-        <div class="deck-sub">Enter the email you used to request access.</div>
 
         <form id="f" autocomplete="on" novalidate>
           <div class="ct-field ct-field--last" id="email-field">

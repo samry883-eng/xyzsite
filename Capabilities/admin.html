@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin — XYZ Studios</title>
+  <title>Admin</title>
   <meta name="robots" content="noindex, nofollow" />
   <style>
     @font-face {
@@ -16,58 +16,50 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
       min-height: 100%;
+      height: 100%;
       background: #000;
       color: #fff;
       font-family: Micross, Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
     }
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
     .page {
+      width: 100%;
       max-width: 480px;
       margin: 0 auto;
-      padding: clamp(40px, 8vh, 72px) 28px 64px;
+      padding: 0;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    .wordmark {
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.13em;
-      text-transform: uppercase;
-      margin-bottom: 40px;
-    }
-    h1 {
-      font: 400 clamp(26px, 4vw, 32px) / 1.12 Micross, Arial, sans-serif;
-      letter-spacing: -0.02em;
-      margin-bottom: 8px;
-    }
-    .sub {
-      font: 400 12px/1.55 Micross, Arial, sans-serif;
-      color: rgba(255, 255, 255, 0.34);
-      margin-bottom: 36px;
+    #login-panel,
+    #admin-panel {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     .ct-field {
       position: relative;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 20px 0 12px;
-      margin-bottom: 20px;
+      padding: 12px 0 10px;
+      margin: 0 auto 20px;
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
       transition: border-color 0.2s;
     }
     .ct-field:focus-within { border-color: rgba(255, 255, 255, 0.28); }
-    .ct-label {
-      position: absolute;
-      top: 20px;
-      left: 0;
-      font: 400 9px/1 Micross, Arial, sans-serif;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.18);
-      transition: top 0.2s, font-size 0.2s, color 0.2s;
-      pointer-events: none;
-    }
-    .ct-field:focus-within .ct-label,
-    .ct-field.filled .ct-label {
-      top: 2px;
-      font-size: 7px;
-      color: rgba(255, 255, 255, 0.38);
-    }
     .ct-field input {
       background: none;
       border: none;
@@ -75,6 +67,7 @@
       width: 100%;
       font: 400 13px/1.5 Micross, Arial, sans-serif;
       color: #fff;
+      text-align: center;
     }
     .ct-submit {
       font: 700 8px/1 Micross, Arial, sans-serif;
@@ -87,6 +80,7 @@
       padding: 0;
       margin-top: 4px;
       transition: color 0.2s;
+      text-align: center;
     }
     .ct-submit:hover { color: #fff; }
     .err {
@@ -94,33 +88,20 @@
       color: rgba(255, 140, 130, 0.95);
       margin: 0 0 12px;
       min-height: 1.2em;
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
     }
     .hidden { display: none !important; }
-    .back {
-      display: inline-block;
-      font: 400 11px/1 Micross, Arial, sans-serif;
-      color: rgba(255, 255, 255, 0.32);
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      margin-bottom: 32px;
-    }
-    .back:hover { color: #fff; }
-    /* Logged-in: minimal list */
-    .section-label {
-      font: 700 8px/1 Micross, Arial, sans-serif;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.38);
-      margin: 40px 0 16px;
-    }
     table {
       width: 100%;
       border-collapse: collapse;
       font: 400 12px/1.5 Micross, Arial, sans-serif;
+      margin: 0 auto 24px;
     }
     th, td {
-      text-align: left;
-      padding: 12px 0;
+      text-align: center;
+      padding: 12px 8px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     }
     th {
@@ -130,45 +111,37 @@
       color: rgba(255, 255, 255, 0.3);
     }
     .row-actions button {
-      font: 700 8px/1 Micross, Arial, sans-serif;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
+      font: 400 18px/1 Micross, Arial, sans-serif;
       color: rgba(255, 255, 255, 0.35);
       background: none;
       border: none;
       cursor: pointer;
+      padding: 0 4px;
+      line-height: 1;
     }
     .row-actions button:hover { color: #fff; }
-    .toolbar { margin-bottom: 8px; }
+    .toolbar {
+      margin: 0 auto 24px;
+      display: flex;
+      justify-content: center;
+    }
   </style>
 </head>
 <body>
   <div class="page">
-    <a class="back" href="/capabilities/login">Deck login</a>
-
     <div id="login-panel">
-      <div class="wordmark">XYZSTUDIOS</div>
-      <h1>Admin</h1>
-      <p class="sub">Capabilities deck access. Password only.</p>
-
       <div class="ct-field" id="f-admin-pass">
-        <label class="ct-label" for="admin-pass">Password</label>
-        <input type="password" id="admin-pass" autocomplete="current-password" required />
+        <input type="password" id="admin-pass" autocomplete="current-password" required aria-label="Password" />
       </div>
       <div class="err" id="login-err" aria-live="polite"></div>
       <button type="button" class="ct-submit" id="btn-login">Sign in &rarr;</button>
     </div>
 
     <div id="admin-panel" class="hidden">
-      <div class="wordmark">XYZSTUDIOS</div>
-      <h1>Capabilities</h1>
-      <p class="sub">Who can open the deck.</p>
-
       <div class="toolbar">
         <button type="button" class="ct-submit" id="btn-logout">Sign out</button>
       </div>
 
-      <div class="section-label">Allowed emails</div>
       <div class="err" id="list-err" aria-live="polite"></div>
       <table>
         <thead>
@@ -177,10 +150,8 @@
         <tbody id="grant-rows"></tbody>
       </table>
 
-      <div class="section-label">Add email</div>
       <div class="ct-field" id="f-new-email">
-        <label class="ct-label" for="new-email">Email</label>
-        <input type="email" id="new-email" autocomplete="off" />
+        <input type="email" id="new-email" autocomplete="off" aria-label="Email" />
       </div>
       <div class="err" id="add-err" aria-live="polite"></div>
       <button type="button" class="ct-submit" id="btn-add">Add &rarr;</button>
@@ -195,19 +166,6 @@
       var listErr = document.getElementById('list-err');
       var addErr = document.getElementById('add-err');
       var grantRows = document.getElementById('grant-rows');
-
-      function floatLabel(id) {
-        var input = document.getElementById(id);
-        if (!input) return;
-        var field = input.closest('.ct-field');
-        function check() {
-          field.classList.toggle('filled', (input.value || '').length > 0);
-        }
-        input.addEventListener('input', check);
-        check();
-      }
-      floatLabel('admin-pass');
-      floatLabel('new-email');
 
       function api(path, opts) {
         opts = opts || {};
@@ -236,7 +194,8 @@
           td3.className = 'row-actions';
           var btn = document.createElement('button');
           btn.type = 'button';
-          btn.textContent = 'Remove';
+          btn.setAttribute('aria-label', 'Remove');
+          btn.innerHTML = '&times;';
           btn.addEventListener('click', function () {
             api('/api/capabilities/admin/revoke', {
               method: 'POST',
@@ -292,7 +251,6 @@
             return;
           }
           document.getElementById('admin-pass').value = '';
-          document.getElementById('f-admin-pass').classList.remove('filled');
           showAdmin();
         });
       });
@@ -316,7 +274,6 @@
             return;
           }
           document.getElementById('new-email').value = '';
-          document.getElementById('f-new-email').classList.remove('filled');
           refreshList();
         });
       });
