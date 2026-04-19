@@ -16,7 +16,7 @@ import {
   createAdminSession,
   adminSessionCookieHeader,
   clearAdminSessionCookieHeader,
-  validateAdminCredentials,
+  validateAdminPassword,
 } from './lib/capabilities-auth.mjs';
 import { isAdminAuthorized } from './lib/capabilities-admin-guard.mjs';
 
@@ -150,7 +150,7 @@ async function handleCapabilitiesApi(req, res, urlPath) {
     } catch {
       return json(res, 400, { ok: false, error: 'Invalid JSON' });
     }
-    if (!validateAdminCredentials(body.email, body.password)) {
+    if (!validateAdminPassword(body.password)) {
       return json(res, 401, { ok: false, error: 'Unauthorized' });
     }
     const token = createAdminSession(sec);

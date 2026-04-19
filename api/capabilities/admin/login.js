@@ -1,6 +1,6 @@
 import {
   createAdminSession,
-  validateAdminCredentials,
+  validateAdminPassword,
   adminSessionCookieHeader,
 } from '../../../lib/capabilities-auth.mjs';
 import { readJsonBody } from '../../../lib/vercel-node-api.mjs';
@@ -42,7 +42,7 @@ export default async function handler(req, res) {
     sendJson(res, 400, { ok: false, error: 'Invalid JSON' });
     return;
   }
-  if (!validateAdminCredentials(body.email, body.password)) {
+  if (!validateAdminPassword(body.password)) {
     sendJson(res, 401, { ok: false, error: 'Unauthorized' });
     return;
   }

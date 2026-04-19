@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Capabilities access — Admin</title>
+  <title>Admin — XYZ Studios</title>
   <meta name="robots" content="noindex, nofollow" />
   <style>
     @font-face {
@@ -21,38 +21,33 @@
       font-family: Micross, Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
     }
-    .wrap {
-      max-width: 640px;
+    .page {
+      max-width: 480px;
       margin: 0 auto;
-      padding: 48px 28px 80px;
+      padding: clamp(40px, 8vh, 72px) 28px 64px;
+    }
+    .wordmark {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      margin-bottom: 40px;
     }
     h1 {
-      font: 400 clamp(22px, 4vw, 28px)/1.15 Micross, Arial, sans-serif;
+      font: 400 clamp(26px, 4vw, 32px) / 1.12 Micross, Arial, sans-serif;
       letter-spacing: -0.02em;
       margin-bottom: 8px;
     }
-    .hint {
-      font: 400 11px/1.6 Micross, Arial, sans-serif;
-      color: rgba(255, 255, 255, 0.32);
+    .sub {
+      font: 400 12px/1.55 Micross, Arial, sans-serif;
+      color: rgba(255, 255, 255, 0.34);
       margin-bottom: 36px;
-    }
-    .panel {
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 28px 24px 32px;
-      margin-bottom: 28px;
-    }
-    .panel h2 {
-      font: 700 8px/1 Micross, Arial, sans-serif;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.45);
-      margin-bottom: 20px;
     }
     .ct-field {
       position: relative;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 20px 0 11px;
-      margin-bottom: 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 20px 0 12px;
+      margin-bottom: 20px;
       transition: border-color 0.2s;
     }
     .ct-field:focus-within { border-color: rgba(255, 255, 255, 0.28); }
@@ -63,8 +58,8 @@
       font: 400 9px/1 Micross, Arial, sans-serif;
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.16);
-      transition: top 0.22s cubic-bezier(0.16, 1, 0.3, 1), font-size 0.22s, color 0.22s;
+      color: rgba(255, 255, 255, 0.18);
+      transition: top 0.2s, font-size 0.2s, color 0.2s;
       pointer-events: none;
     }
     .ct-field:focus-within .ct-label,
@@ -78,27 +73,45 @@
       border: none;
       outline: none;
       width: 100%;
-      font: 400 12px/1.5 Micross, Arial, sans-serif;
+      font: 400 13px/1.5 Micross, Arial, sans-serif;
       color: #fff;
     }
     .ct-submit {
       font: 700 8px/1 Micross, Arial, sans-serif;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.32);
+      color: rgba(255, 255, 255, 0.4);
       background: none;
       border: none;
       cursor: pointer;
       padding: 0;
-      margin-top: 8px;
+      margin-top: 4px;
       transition: color 0.2s;
     }
     .ct-submit:hover { color: #fff; }
     .err {
       font: 400 11px/1.5 Micross, Arial, sans-serif;
       color: rgba(255, 140, 130, 0.95);
-      margin: 12px 0 0;
+      margin: 0 0 12px;
       min-height: 1.2em;
+    }
+    .hidden { display: none !important; }
+    .back {
+      display: inline-block;
+      font: 400 11px/1 Micross, Arial, sans-serif;
+      color: rgba(255, 255, 255, 0.32);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      margin-bottom: 32px;
+    }
+    .back:hover { color: #fff; }
+    /* Logged-in: minimal list */
+    .section-label {
+      font: 700 8px/1 Micross, Arial, sans-serif;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.38);
+      margin: 40px 0 16px;
     }
     table {
       width: 100%;
@@ -107,62 +120,39 @@
     }
     th, td {
       text-align: left;
-      padding: 12px 8px;
+      padding: 12px 0;
       border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     }
     th {
       font: 700 7px/1 Micross, Arial, sans-serif;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.35);
+      color: rgba(255, 255, 255, 0.3);
     }
     .row-actions button {
       font: 700 8px/1 Micross, Arial, sans-serif;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.4);
+      color: rgba(255, 255, 255, 0.35);
       background: none;
       border: none;
       cursor: pointer;
     }
     .row-actions button:hover { color: #fff; }
-    .hidden { display: none !important; }
-    .toolbar {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-    a.back {
-      font: 400 11px/1 Micross, Arial, sans-serif;
-      color: rgba(255, 255, 255, 0.35);
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-    a.back:hover { color: #fff; }
+    .toolbar { margin-bottom: 8px; }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <a class="back" href="/capabilities/login">← Deck login</a>
-    <h1>Capabilities access</h1>
-    <p class="hint">
-      Protected by <code style="color:rgba(255,255,255,0.45)">CAPABILITIES_ADMIN_SECRET</code> (your admin password).
-      Optional: set <code style="color:rgba(255,255,255,0.45)">CAPABILITIES_ADMIN_EMAILS</code> (comma-separated) so only those addresses may sign in here.
-      On Vercel, add the Upstash Redis integration so add/remove persists (
-      <code style="color:rgba(255,255,255,0.45)">UPSTASH_REDIS_REST_URL</code> / <code style="color:rgba(255,255,255,0.45)">UPSTASH_REDIS_REST_TOKEN</code>
-      ).
-    </p>
+  <div class="page">
+    <a class="back" href="/capabilities/login">Deck login</a>
 
-    <div id="login-panel" class="panel">
-      <h2>Admin sign in</h2>
-      <div class="ct-field" id="f-admin-email">
-        <label class="ct-label" for="admin-email">Your email (if allowlist enabled)</label>
-        <input type="email" id="admin-email" autocomplete="username" />
-      </div>
+    <div id="login-panel">
+      <div class="wordmark">XYZSTUDIOS</div>
+      <h1>Admin</h1>
+      <p class="sub">Capabilities deck access. Password only.</p>
+
       <div class="ct-field" id="f-admin-pass">
-        <label class="ct-label" for="admin-pass">Admin password *</label>
+        <label class="ct-label" for="admin-pass">Password</label>
         <input type="password" id="admin-pass" autocomplete="current-password" required />
       </div>
       <div class="err" id="login-err" aria-live="polite"></div>
@@ -170,30 +160,30 @@
     </div>
 
     <div id="admin-panel" class="hidden">
+      <div class="wordmark">XYZSTUDIOS</div>
+      <h1>Capabilities</h1>
+      <p class="sub">Who can open the deck.</p>
+
       <div class="toolbar">
         <button type="button" class="ct-submit" id="btn-logout">Sign out</button>
       </div>
 
-      <div class="panel">
-        <h2>Allowed emails (deck access)</h2>
-        <div class="err" id="list-err" aria-live="polite"></div>
-        <table>
-          <thead>
-            <tr><th>Email</th><th>Added</th><th></th></tr>
-          </thead>
-          <tbody id="grant-rows"></tbody>
-        </table>
-      </div>
+      <div class="section-label">Allowed emails</div>
+      <div class="err" id="list-err" aria-live="polite"></div>
+      <table>
+        <thead>
+          <tr><th>Email</th><th>Added</th><th></th></tr>
+        </thead>
+        <tbody id="grant-rows"></tbody>
+      </table>
 
-      <div class="panel">
-        <h2>Add email</h2>
-        <div class="ct-field" id="f-new-email">
-          <label class="ct-label" for="new-email">Email *</label>
-          <input type="email" id="new-email" autocomplete="off" />
-        </div>
-        <div class="err" id="add-err" aria-live="polite"></div>
-        <button type="button" class="ct-submit" id="btn-add">Add &rarr;</button>
+      <div class="section-label">Add email</div>
+      <div class="ct-field" id="f-new-email">
+        <label class="ct-label" for="new-email">Email</label>
+        <input type="email" id="new-email" autocomplete="off" />
       </div>
+      <div class="err" id="add-err" aria-live="polite"></div>
+      <button type="button" class="ct-submit" id="btn-add">Add &rarr;</button>
     </div>
   </div>
 
@@ -206,19 +196,18 @@
       var addErr = document.getElementById('add-err');
       var grantRows = document.getElementById('grant-rows');
 
-      function floatLabels(ids) {
-        ids.forEach(function (id) {
-          var input = document.getElementById(id);
-          if (!input) return;
-          var field = input.closest('.ct-field');
-          function check() {
-            field.classList.toggle('filled', (input.value || '').length > 0);
-          }
-          input.addEventListener('input', check);
-          check();
-        });
+      function floatLabel(id) {
+        var input = document.getElementById(id);
+        if (!input) return;
+        var field = input.closest('.ct-field');
+        function check() {
+          field.classList.toggle('filled', (input.value || '').length > 0);
+        }
+        input.addEventListener('input', check);
+        check();
       }
-      floatLabels(['admin-email', 'admin-pass', 'new-email']);
+      floatLabel('admin-pass');
+      floatLabel('new-email');
 
       function api(path, opts) {
         opts = opts || {};
@@ -293,17 +282,17 @@
 
       document.getElementById('btn-login').addEventListener('click', function () {
         loginErr.textContent = '';
-        var email = document.getElementById('admin-email').value.trim();
         var password = document.getElementById('admin-pass').value;
         api('/api/capabilities/admin/login', {
           method: 'POST',
-          body: { email: email || undefined, password: password },
+          body: { password: password },
         }).then(function (x) {
           if (!x.ok) {
             loginErr.textContent = (x.data && x.data.error) || 'Sign in failed';
             return;
           }
           document.getElementById('admin-pass').value = '';
+          document.getElementById('f-admin-pass').classList.remove('filled');
           showAdmin();
         });
       });
