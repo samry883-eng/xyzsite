@@ -644,95 +644,172 @@
     .ci.span2 { grid-column: span 2; }
     .ci.span2r { grid-row: span 2; }
 
-    /* Case study — Storyboard (same header grid as other case slides; sheet + 16:9 video) */
-    .slide-case--storyboard .case-top {
-      align-items: start;
-    }
-    .slide-case--storyboard .case-left {
-      border-left: 1px solid rgba(255, 255, 255, 0.14);
-      padding-left: clamp(16px, 1.8vw, 24px);
-      box-sizing: border-box;
-    }
-    .slide-case--storyboard .case-title-divider {
-      height: 1px;
-      background: rgba(255, 255, 255, 0.28);
-      margin-top: 14px;
-      width: 100%;
-    }
-    .slide-case--storyboard .case-left .case-client {
-      margin-top: 12px;
-    }
-    .case-main-sb {
-      flex: 1;
-      min-height: 0;
-      display: grid;
-      /* Pitch: storyboard sheet left, hero video right (wide 16:9, uncropped) */
-      grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
-      gap: clamp(16px, 2.2vw, 28px);
-      align-items: stretch;
-    }
-    /* Storyboard sheet — left column */
-    .case-sb-sheet {
-      min-height: 0;
+    /* Case study — Storyboard: fixed 1600×900 artboard (PDF-matched; scales uniformly) */
+    .slide-case--storyboard { background: #000000; }
+    .slide-case--storyboard .slide-inner {
+      position: relative;
+      padding: 0;
       height: 100%;
+      display: block;
+      box-sizing: border-box;
+    }
+    .sb-scale-root {
+      position: absolute;
+      inset: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #0a0a0a;
-      padding: var(--media-frame-pad-y) clamp(8px, 1.5vw, 16px) var(--media-frame-pad-y) var(--media-frame-pad-x);
-      box-sizing: border-box;
-      order: 0;
+      overflow: hidden;
     }
-    /* RBC reel — right column: 16:9 frame, no About-style clip-path */
-    .case-video-col--sb {
-      background: #0a0a0a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 0;
-      padding: var(--media-frame-pad-y) var(--media-frame-pad-x) var(--media-frame-pad-y) 0;
-      box-sizing: border-box;
-      order: 1;
-    }
-    .case-video-crop--sb {
-      width: 100%;
-      max-width: 100%;
-      aspect-ratio: 16 / 9;
+    .sb-artboard {
+      position: relative;
+      width: 1600px;
+      height: 900px;
       flex-shrink: 0;
-      border-radius: 1px;
-      overflow: hidden;
-      background: #000;
+      background: #000000;
+      transform-origin: center center;
+      color: #F5F5F5;
+      --sb-rule: #2A2A2A;
+      --sb-text-2: #9A9A9A;
     }
-    .case-video-crop--sb .ph {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      border-radius: 0;
-      overflow: hidden;
+    .sb-marker-v {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1px;
+      height: 198px;
+      background: var(--sb-rule);
+      pointer-events: none;
     }
-    .case-video-crop--sb .ph video {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      object-position: center;
-      display: block;
-      background: #000;
+    .sb-brand {
+      position: absolute;
+      left: 48px;
+      top: 0;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: #F5F5F5;
+      line-height: 1;
     }
-    .case-sb-sheet .ph {
-      flex: 1;
-      min-height: 0;
-      width: 100%;
+    .sb-case-wrap {
+      position: absolute;
+      top: 0;
+      right: 80px;
       display: flex;
-      align-items: center;
-      justify-content: center;
+      flex-direction: column;
+      align-items: flex-end;
+      text-align: right;
+    }
+    .sb-case-label {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.1;
+      color: #F5F5F5;
+      text-transform: none;
+    }
+    .sb-case-line {
+      width: 70px;
+      height: 1px;
+      margin-top: 10px;
+      background: var(--sb-rule);
+      flex-shrink: 0;
+    }
+    .sb-title {
+      position: absolute;
+      left: 48px;
+      top: 63px;
+      width: 448px;
+      font-size: 78px;
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      color: #F5F5F5;
+    }
+    .sb-meta {
+      position: absolute;
+      left: 560px;
+      top: 81px;
+      width: 192px;
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1.25;
+      color: var(--sb-text-2);
+    }
+    .sb-body {
+      position: absolute;
+      left: 832px;
+      top: 81px;
+      width: 688px;
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--sb-text-2);
+      text-align: right;
+    }
+    .sb-body p + p {
+      margin-top: 0.75em;
+    }
+    .sb-media-left {
+      position: absolute;
+      left: 88px;
+      top: 324px;
+      width: 848px;
+      height: 405px;
+      background: #080808;
       overflow: hidden;
     }
-    .case-sb-sheet .ph img {
+    .sb-media-left img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: cover;
       object-position: center;
       display: block;
+    }
+    .sb-media-right {
+      position: absolute;
+      left: 952px;
+      top: 324px;
+      width: 560px;
+      height: 405px;
+      background: #000;
+      overflow: hidden;
+    }
+    .sb-media-right .sb-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+    .sb-bottom-rule {
+      position: absolute;
+      left: 0;
+      top: 792px;
+      width: 1600px;
+      height: 1px;
+      background: var(--sb-rule);
+    }
+    .sb-footer-year {
+      position: absolute;
+      left: 48px;
+      top: 819px;
+      font-size: 13px;
+      font-weight: 400;
+      color: #F5F5F5;
+      line-height: 1;
+    }
+    .sb-footer-logo {
+      position: absolute;
+      right: 48px;
+      top: 810px;
+      text-align: right;
+    }
+    .sb-footer-logo img {
+      height: 30px;
+      width: auto;
+      display: inline-block;
+      opacity: 0.9;
     }
 
     /* ════════════════════════════════
@@ -993,14 +1070,6 @@
       .toc-list { max-width: none; }
       .services-grid { grid-template-columns: 1fr 1fr; }
       .case-top { grid-template-columns: 1fr; }
-      .slide-case--storyboard .case-left {
-        border-left: none;
-        padding-left: 0;
-      }
-      .slide-case--storyboard .case-main-sb {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto minmax(200px, 1fr);
-      }
     }
 
     /* Slide 1 — Pitch / PDF cover export (full-bleed) */
@@ -1376,43 +1445,38 @@
   </div>
 
   <!-- ═══════════════════════════════
-       11 · CASE STUDY — STORYBOARD
-       Group: Case Studies / Storyboard
+       11 · CASE STUDY — STORYBOARD (fixed 1600×900 artboard, scales uniformly)
   ═══════════════════════════════ -->
-  <div class="slide slide-case slide-case--storyboard" data-index="10">
-    <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-tag">Case study</div>
+  <div class="slide slide-case slide-case--storyboard" data-index="10" data-deck-chrome="none" data-deck-year="2026">
     <div class="slide-inner">
-      <div class="case-top">
-        <div class="case-left">
-          <div class="case-title">Storyboard</div>
-          <div class="case-title-divider" aria-hidden="true"></div>
-          <div class="case-client">Rory McIlroy<br>RBC Canadian Open</div>
-        </div>
-        <div class="case-right">
-          <div class="case-body">
-            <p>With no live shoot possible, the client asked us to develop the creative direction and bring the concept to life. We crafted a stylized 3D hype reel, taking the project from concept art through to final execution. Throughout the process, the client remained closely involved, providing notes and feedback as we shaped the visuals to capture Rory’s momentum and the anticipation around the tournament.</p>
+      <div class="sb-scale-root">
+        <div class="sb-artboard" aria-hidden="false">
+          <div class="sb-marker-v" aria-hidden="true"></div>
+          <div class="sb-brand">XYZSTUDIOS</div>
+          <div class="sb-case-wrap">
+            <div class="sb-case-label">Case study</div>
+            <div class="sb-case-line" aria-hidden="true"></div>
           </div>
-        </div>
-      </div>
-      <div class="case-main-sb">
-        <div class="case-sb-sheet" aria-label="Storyboard sheet">
-          <div class="ph">
+          <div class="sb-title">Storyboard</div>
+          <div class="sb-meta">Rory McIlroy<br>RBC Canadian Open</div>
+          <div class="sb-body">
+            <p>With no live shoot possible, the client asked us to develop the creative direction and bring the concept to life.</p>
+            <p>We crafted a stylized 3D hype reel, taking the project from concept art through to final execution. Throughout the process, the client remained closely involved, providing notes and feedback as we shaped the visuals to capture Rory’s momentum and the anticipation around the tournament.</p>
+          </div>
+          <div class="sb-media-left">
             <img src="/capabilities/Case%20Studies/Storyboard%20left%20side.png" alt="">
           </div>
-        </div>
-        <div class="case-video-col case-video-col--sb">
-          <div class="case-video-crop case-video-crop--sb">
-            <div class="ph">
-              <video autoplay muted loop playsinline preload="auto" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/85D_It6HUS/original"></video>
-            </div>
+          <div class="sb-media-right">
+            <video class="sb-video" autoplay muted loop playsinline preload="auto" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/85D_It6HUS/original"></video>
+          </div>
+          <div class="sb-bottom-rule" aria-hidden="true"></div>
+          <div class="sb-footer-year">2026</div>
+          <div class="sb-footer-logo">
+            <img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios">
           </div>
         </div>
       </div>
     </div>
-    <div class="slide-footer-line"></div>
-    <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios"></div>
   </div>
 
   <!-- ═══════════════════════════════
@@ -2248,6 +2312,7 @@
     document.body.classList.toggle('is-cover-active', current === 0);
     prog.style.width = ((current + 1) / total * 100) + '%';
     syncDeckStaticChrome();
+    scaleStoryboardArtboard();
     const abSlide = slides[current];
     if (abSlide && abSlide.classList.contains('slide-about')) {
       const av = abSlide.querySelector('.about-img video');
@@ -2261,7 +2326,23 @@
     }
   }
 
-  function slideVideo(slide) { return slide && slide.querySelector('.proj-video-bg'); }
+  function slideVideo(slide) {
+    if (!slide) return null;
+    return slide.querySelector('.proj-video-bg') || slide.querySelector('.sb-video');
+  }
+
+  function scaleStoryboardArtboard() {
+    var slide = document.querySelector('.slide-case--storyboard');
+    if (!slide) return;
+    var root = slide.querySelector('.sb-scale-root');
+    var board = slide.querySelector('.sb-artboard');
+    if (!root || !board) return;
+    var rw = root.clientWidth;
+    var rh = root.clientHeight;
+    if (rw < 2 || rh < 2) return;
+    var s = Math.min(rw / 1600, rh / 900);
+    board.style.transform = 'scale(' + s + ')';
+  }
 
   function projVideoClipSeekStart(vid) {
     if (!vid || vid.dataset.clipStart === undefined) return;
@@ -2377,6 +2458,14 @@
   }, { passive: true });
 
   updateUI();
+  window.addEventListener('resize', scaleStoryboardArtboard);
+  (function () {
+    var sb = document.querySelector('.slide-case--storyboard .sb-scale-root');
+    if (sb && typeof ResizeObserver !== 'undefined') {
+      new ResizeObserver(scaleStoryboardArtboard).observe(sb);
+    }
+  })();
+  setTimeout(scaleStoryboardArtboard, 0);
   setTimeout(() => { hint.style.opacity = '0'; }, 4000);
 </script>
 </body>
