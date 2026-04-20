@@ -179,7 +179,18 @@
           opts.body = JSON.stringify(opts.body);
         }
         return fetch(path, opts).then(function (r) {
-          return r.json().then(function (data) {
+          return r.text().then(function (text) {
+            var data = {};
+            try {
+              data = text ? JSON.parse(text) : {};
+            } catch (e) {
+              data = {
+                error:
+                  r.status === 404
+                    ? 'API not found (check deployment includes /api and env vars on this environment).'
+                    : text.slice(0, 240),
+              };
+            }
             return { ok: r.ok, status: r.status, data: data };
           });
         });
