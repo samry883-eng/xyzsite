@@ -96,10 +96,6 @@
       overflow-x: hidden;
       overflow-y: hidden;
       height: 100%;
-      user-select: none;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
     }
 
     /* ── NAV ──────────────────────────────────────────────── */
@@ -913,11 +909,10 @@
       let i = 0;
       let segStart = performance.now();
       let from = pos;
-      function easeOutQuint(t) { return 1 - Math.pow(1 - t, 5); }
       function tick(now) {
         const seg = points[i];
         const t = Math.min((now - segStart) / seg.dur, 1);
-        const eased = easeOutQuint(t);
+        const eased = 1 - Math.pow(1 - t, 3);
         pos = from + (seg.to - from) * eased;
         wrapPos();
         rowCards.scrollLeft = pos;
@@ -954,13 +949,13 @@
         return;
       }
       const dir = delta >= 0 ? 1 : -1;
-      // Casino machine feel: short directional run, then smooth ease-out lock.
-      const run = Math.min(120, Math.max(64, Math.abs(delta) * 0.55));
-      const settleNudge = Math.min(8, Math.max(3, Math.abs(delta) * 0.06));
+      const jump = Math.min(58, Math.max(24, Math.abs(delta) * 0.2));
+      const overshoot = Math.min(22, Math.max(10, Math.abs(delta) * 0.08));
       animateWaypoints([
-        { to: pos + (dir * run), dur: 240 },
-        { to: loopW + (dir * settleNudge), dur: 420 },
-        { to: loopW, dur: 220 },
+        { to: pos - (dir * jump * 0.35), dur: 120 }, // tiny opposite "catch"
+        { to: pos + delta + (dir * overshoot), dur: 420 },
+        { to: loopW - (dir * 8), dur: 180 },
+        { to: loopW, dur: 140 },
       ]);
     }
 
@@ -969,10 +964,10 @@
       const rowIndex = Number((rowCards.closest('.work-row') || {}).dataset?.rowIdx || 0);
       const dir = rowIndex % 2 === 0 ? 1 : -1;
       animateWaypoints([
-        { to: pos + (dir * 44), dur: 180 },
-        { to: pos - (dir * 52), dur: 260 },
-        { to: pos + (dir * 30), dur: 220 },
-        { to: pos - (dir * 12), dur: 180 },
+        { to: pos + (dir * 36), dur: 130 },
+        { to: pos - (dir * 54), dur: 180 },
+        { to: pos + (dir * 42), dur: 170 },
+        { to: pos - (dir * 24), dur: 160 },
         { to: pos, dur: 140 },
       ]);
     }
