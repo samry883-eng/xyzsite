@@ -233,15 +233,16 @@
     /* ── ROW ENTRANCE ANIMATION ─────────────────────────── */
     .work-row {
       opacity: 0;
-      transform: translateY(24px);
+      transform: translateY(30px);
       will-change: transform, opacity;
     }
     .work-row.wc-row-in {
       opacity: 1;
       transform: translateY(0);
+      /* Same curve as the main load overlay so the entrance feels like one motion */
       transition:
-        opacity   0.95s cubic-bezier(0.22, 1, 0.36, 1),
-        transform 0.95s cubic-bezier(0.22, 1, 0.36, 1);
+        opacity   1.1s cubic-bezier(0.76, 0, 0.24, 1),
+        transform 1.1s cubic-bezier(0.76, 0, 0.24, 1);
     }
 
     /* ── CARD WRAP — height from row strip; width = 16:9 of thumb area ─ */
@@ -572,7 +573,7 @@
           row.style.willChange = 'auto';
           row.removeEventListener('transitionend', cleanup);
         });
-      }, i * 110);
+      }, i * 150);
     });
   }
 
