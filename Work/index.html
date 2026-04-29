@@ -380,7 +380,7 @@
 
   <div class="work-fade-text"></div>
 
-  <section class="work-showcase" id="showcase" style="opacity:0;">
+  <section class="work-showcase" id="showcase">
     <div class="work-fade-right"></div>
   </section>
 
@@ -496,25 +496,6 @@
   const FALLBACK_IMG = CDN + '69c0bbd38bf9e9ecfb7c293b_final%20test1.mp4_snapshot_00.27.567.jpg';
   const showcase = document.getElementById('showcase');
 
-  function preloadPoster(url) {
-    return new Promise((resolve) => {
-      const im = new Image();
-      im.decoding = 'async';
-      im.onload = () => resolve();
-      im.onerror = () => resolve();
-      im.src = url || FALLBACK_IMG;
-    });
-  }
-
-  function preloadAllPosters() {
-    const urls = new Set();
-    ROWS.forEach((row) => {
-      row.cards.forEach((card) => {
-        urls.add(getPoster(card.title, card.client) || FALLBACK_IMG);
-      });
-    });
-    return Promise.all(Array.from(urls).map(preloadPoster));
-  }
   /** Loop only a time range on hover video (e.g. Atomic / Into the Void 24s–33s). */
   if (showcase) {
     showcase.addEventListener('loadedmetadata', function (e) {
@@ -602,14 +583,14 @@
 
     const video = document.createElement('video');
     video.className = 'wc-hover-video';
-    video.src = card.video;
+    video.dataset.src = card.video;
     video.muted = true;
     video.loop = true;
     video.playsInline = true;
     video.setAttribute('playsinline', '');
     video.setAttribute('muted', '');
-    // Preload hover videos so they are ready immediately on page open.
-    video.preload = 'auto';
+    // Do not load video bytes until hover; keeps initial page fast/stable.
+    video.preload = 'none';
     if (card.clipStart != null && card.clipEnd != null) {
       video.dataset.clipStart = String(card.clipStart);
       video.dataset.clipEnd = String(card.clipEnd);
@@ -619,10 +600,9 @@
     img.className = 'wc-card-poster';
     img.src = posterSrc;
     img.alt = `${card.client} — ${card.title}`;
-    // Keep poster rendering deterministic on first paint.
-    img.loading = 'eager';
+    img.loading = opts.loading === 'eager' ? 'eager' : 'lazy';
     img.decoding = 'async';
-    img.fetchPriority = 'high';
+    if (opts.fetchPriority) img.fetchPriority = opts.fetchPriority;
 
     img.addEventListener('error', function () {
       img.src = FALLBACK_IMG;
@@ -668,6 +648,10 @@
         wrap.classList.add('wc-hover-active');
         applyPeerRadialPush(wrap, s);
         video.muted = true;
+        if (!video.src && video.dataset.src) {
+          video.src = video.dataset.src;
+          video.load();
+        }
         const clipS = parseFloat(video.dataset.clipStart, 10);
         if (!Number.isNaN(clipS)) video.currentTime = clipS;
         video.play().catch(function () {});
@@ -766,53 +750,15 @@
   });
   }
 
-  // ── HORIZONTAL ROWS — smooth lerp scroll ─────────────────────
+    // ── HORIZONTAL ROWS ─────────────────────
   document.querySelectorAll('.work-row-cards').forEach(rowCards => {
     const originals = Array.from(rowCards.querySelectorAll('.work-card-wrap'));
     if (!originals.length) return;
-
-    originals.forEach(orig => {
-      const c = orig.cloneNode(true); c.dataset.clone='1'; rowCards.appendChild(c);
-    });
-    [...originals].reverse().forEach(orig => {
-      const c = orig.cloneNode(true); c.dataset.clone='1';
-      rowCards.insertBefore(c, rowCards.firstChild);
-    });
-
-    rowCards.querySelectorAll('[data-clone]').forEach(c => {
-      c.style.transition = 'none';
-      c.style.opacity = '1';
-      c.style.transform = 'none';
-    });
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        rowCards.querySelectorAll('[data-clone]').forEach(c => {
-          c.style.removeProperty('transition');
-        });
-      });
-    });
-
-    // Re-attach click on clones
-    rowCards.querySelectorAll('.work-card-wrap[data-clone]').forEach(cloneWrap => {
-      const ec = cloneWrap.querySelector('.wc-label-client');
-      const et = cloneWrap.querySelector('.wc-label-title');
-      const cloneClient = ec && ec.textContent ? ec.textContent.trim() : '';
-      const cloneTitle = et && et.textContent ? et.textContent.trim() : '';
-      const cloneCat = cloneWrap.dataset.rowLabel || '';
-      cloneWrap.style.cursor = 'pointer';
-      cloneWrap.addEventListener('click', () => {
-        const row = ROWS.find(r => r.label === cloneCat);
-        const card = row && row.cards ? row.cards.find(c => c.client === cloneClient && c.title === cloneTitle) : null;
-        if (card) navigateTo(projectURL(card, cloneCat), getPoster(card.title, card.client) || undefined);
-      });
-    });
-
     let loopW = 0, pos = 0, target = 0, animFrom = 0, animStart = 0, raf = null, locked = false;
 
     function easeInOut(t) { return 1 - Math.pow(1 - t, 4); }
     function wrapPos() {
-      if (pos < loopW * 0.1) { pos += loopW; target += loopW; animFrom += loopW; }
-      if (pos > loopW * 1.9) { pos -= loopW; target -= loopW; animFrom -= loopW; }
+      // No loop wrapping; keep native finite row behavior for visual stability.
     }
     function startSnap(dir) {
       const cardEl = rowCards.querySelector('.work-card-wrap');
@@ -832,8 +778,8 @@
     rowCards.addEventListener('touchend', e => { const dx = tx0 - e.changedTouches[0].clientX; if (Math.abs(dx) > 30) startSnap(dx > 0 ? 1 : -1); }, { passive: true });
 
     requestAnimationFrame(() => {
-      loopW = rowCards.scrollWidth / 3;
-      pos = loopW; target = loopW; animFrom = loopW;
+      loopW = rowCards.scrollWidth;
+      pos = 0; target = 0; animFrom = 0;
       rowCards.scrollLeft = pos;
     });
 
@@ -855,7 +801,7 @@
 
   } finally {
     markWorkPageOpen();
-    if (showcase) showcase.style.opacity = '1';
+    // Grid is visible immediately; no global reveal gate.
   }
 
   document.addEventListener('click', (e) => {
@@ -873,9 +819,7 @@
   }, true);
   }
 
-  preloadAllPosters()
-    .catch(function () {})
-    .finally(buildWorkGrid);
+  buildWorkGrid();
 </script>
 </body>
 </html>
