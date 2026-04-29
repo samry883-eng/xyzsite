@@ -557,13 +557,20 @@
     }, true);
   }
 
-  function startRowStagger() {
-    // Bottom row first — reverse order, 80 ms apart.
-    var rows = Array.prototype.slice.call(
-      showcase ? showcase.querySelectorAll('.work-row') : []
-    ).reverse();
-    rows.forEach(function (row, i) {
+  function startRowStagger(durMs) {
+    // The overlay slides upward (translateY 0 → -100%) over durMs ms.
+    // Its bottom edge starts at viewport bottom and rises to 0.
+    // Each row triggers the instant the overlay edge passes its top edge.
+    var vh = window.innerHeight;
+    var rows = showcase ? showcase.querySelectorAll('.work-row') : [];
+    Array.prototype.forEach.call(rows, function (row) {
       if (row.classList.contains('wc-row-in')) return;
+      var rect = row.getBoundingClientRect();
+      // Fraction of the viewport the overlay must travel before it clears this row's top.
+      // Subtract a tiny lead (30 ms) so the card is already moving as the overlay passes.
+      var delay = durMs != null
+        ? Math.max(0, (rect.top / vh) * durMs - 30)
+        : 0;
       setTimeout(function () {
         row.classList.add('wc-row-in');
         row.addEventListener('transitionend', function cleanup(e) {
@@ -571,7 +578,7 @@
           row.style.willChange = 'auto';
           row.removeEventListener('transitionend', cleanup);
         });
-      }, i * 80);
+      }, delay);
     });
   }
 
@@ -602,7 +609,7 @@
 
   function slideAwayPanel(fromCacheRestore) {
     if (!pageOut) {
-      startRowStagger();
+      startRowStagger(null);
       markWorkPageOpen();
       return;
     }
@@ -625,13 +632,12 @@
     pageOut.addEventListener('transitionend', onEnd);
     const fallback = setTimeout(finishOpen, parseFloat(dur) * 1000 + 120);
     const durMs = parseFloat(dur) * 1000;
-    // Kick off the row stagger 200 ms before the overlay fully clears so the
-    // card motion overlaps the tail of the slide — one continuous feeling.
-    setTimeout(startRowStagger, Math.max(0, durMs - 200));
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         pageOut.style.transition = 'transform ' + dur + ' cubic-bezier(0.76,0,0.24,1)';
         pageOut.style.transform = 'translateY(-100%)';
+        // Schedule each row to animate the moment the overlay edge passes it.
+        startRowStagger(durMs);
       });
     });
   }
