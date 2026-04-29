@@ -341,22 +341,13 @@
     }
     .work-card .wc-card-poster {
       z-index: 2;
-      opacity: 0;
-      transition: opacity 0.55s cubic-bezier(0.33, 1, 0.68, 1);
-    }
-    /* Fade posters in once work-page-open + wc-media-in */
-    body.work-page-open .work-card.wc-media-in .wc-card-poster {
       opacity: 1;
+      transition: opacity 0.55s cubic-bezier(0.33, 1, 0.68, 1);
     }
     .work-card-wrap.wc-hover-active .wc-hover-video {
       opacity: 1;
     }
-    .work-card::before {
-      content: ''; position: absolute; inset: 0;
-      background: #000; z-index: 0;
-    }
-    /* Drop the black mask when the poster fade-in runs, not merely when <img> has loaded */
-    .work-card.wc-media-in::before { display: none; }
+    .work-card::before { display: none; }
 
     /* Hover overlay */
     .work-card::after {
@@ -389,7 +380,7 @@
 
   <div class="work-fade-text"></div>
 
-  <section class="work-showcase" id="showcase">
+  <section class="work-showcase" id="showcase" style="opacity:0;">
     <div class="work-fade-right"></div>
   </section>
 
@@ -503,8 +494,27 @@
   }
 
   const FALLBACK_IMG = CDN + '69c0bbd38bf9e9ecfb7c293b_final%20test1.mp4_snapshot_00.27.567.jpg';
-
   const showcase = document.getElementById('showcase');
+
+  function preloadPoster(url) {
+    return new Promise((resolve) => {
+      const im = new Image();
+      im.decoding = 'async';
+      im.onload = () => resolve();
+      im.onerror = () => resolve();
+      im.src = url || FALLBACK_IMG;
+    });
+  }
+
+  function preloadAllPosters() {
+    const urls = new Set();
+    ROWS.forEach((row) => {
+      row.cards.forEach((card) => {
+        urls.add(getPoster(card.title, card.client) || FALLBACK_IMG);
+      });
+    });
+    return Promise.all(Array.from(urls).map(preloadPoster));
+  }
   /** Loop only a time range on hover video (e.g. Atomic / Into the Void 24s–33s). */
   if (showcase) {
     showcase.addEventListener('loadedmetadata', function (e) {
@@ -526,9 +536,7 @@
 
   function markWorkPageOpen() {
     document.body.classList.add('work-page-open');
-    const pending = Array.from(document.querySelectorAll('.work-card[data-wc-pending]'));
-    pending.forEach(function (el) {
-      el.removeAttribute('data-wc-pending');
+    document.querySelectorAll('.work-card').forEach(function (el) {
       el.classList.add('wc-media-in');
     });
   }
@@ -542,9 +550,7 @@
   function tryRevealCardMedia(div) {
     if (document.body.classList.contains('work-page-open')) {
       scheduleCardReveal(div);
-    } else {
-      div.setAttribute('data-wc-pending', '1');
-    }
+    } else div.classList.add('wc-media-in');
   }
 
   /** Direct navigation with no transition */
@@ -613,9 +619,10 @@
     img.className = 'wc-card-poster';
     img.src = posterSrc;
     img.alt = `${card.client} — ${card.title}`;
-    img.loading = opts.loading === 'eager' ? 'eager' : 'lazy';
+    // Keep poster rendering deterministic on first paint.
+    img.loading = 'eager';
     img.decoding = 'async';
-    if (opts.fetchPriority) img.fetchPriority = opts.fetchPriority;
+    img.fetchPriority = 'high';
 
     img.addEventListener('error', function () {
       img.src = FALLBACK_IMG;
@@ -682,6 +689,7 @@
 
   // ── BUILD DOM ──────────────────────────────────────────
 
+  function buildWorkGrid() {
   try {
 
   const CAT_LABELS = {
@@ -847,6 +855,7 @@
 
   } finally {
     markWorkPageOpen();
+    if (showcase) showcase.style.opacity = '1';
   }
 
   document.addEventListener('click', (e) => {
@@ -862,6 +871,11 @@
     e.preventDefault();
     navigateTo(u.pathname + u.search + u.hash);
   }, true);
+  }
+
+  preloadAllPosters()
+    .catch(function () {})
+    .finally(buildWorkGrid);
 </script>
 </body>
 </html>
