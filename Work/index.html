@@ -361,21 +361,9 @@
 
     /* Peer motion is applied via JS (radial translate); no scale on siblings */
 
-    /* Animation 2 overlay (used as controlled thumbnail load window) */
-    #page-out {
-      overflow: visible;
-    }
-    #page-out-logo {
-      position: absolute; bottom: 36px; left: 44px; width: 72px;
-      display: block; filter: invert(1); pointer-events: none;
-      opacity: 1;
-      transform: translateZ(0);
-    }
-
   </style>
 </head>
 <body>
-  <div id="page-out" style="position:fixed;inset:0;z-index:9999;background:#fff;pointer-events:none;transform:translateY(0);"><img id="page-out-logo" src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt=""></div>
   <div class="work-fade-top"></div>
 
   <nav>
@@ -392,7 +380,7 @@
 
   <div class="work-fade-text"></div>
 
-  <section class="work-showcase" id="showcase" style="opacity:0;">
+  <section class="work-showcase" id="showcase">
     <div class="work-fade-right"></div>
   </section>
 
@@ -507,29 +495,6 @@
 
   const FALLBACK_IMG = CDN + '69c0bbd38bf9e9ecfb7c293b_final%20test1.mp4_snapshot_00.27.567.jpg';
   const showcase = document.getElementById('showcase');
-  const pageOut = document.getElementById('page-out');
-  let postersReady = false;
-  let gridBuilt = false;
-
-  function preloadPoster(url) {
-    return new Promise((resolve) => {
-      const im = new Image();
-      im.decoding = 'async';
-      im.onload = () => resolve();
-      im.onerror = () => resolve();
-      im.src = url || FALLBACK_IMG;
-    });
-  }
-
-  function preloadAllPosters() {
-    const urls = new Set();
-    ROWS.forEach((row) => {
-      row.cards.forEach((card) => {
-        urls.add(getPoster(card.title, card.client) || FALLBACK_IMG);
-      });
-    });
-    return Promise.all(Array.from(urls).map(preloadPoster));
-  }
 
   /** Loop only a time range on hover video (e.g. Atomic / Into the Void 24s–33s). */
   if (showcase) {
@@ -555,7 +520,6 @@
     document.querySelectorAll('.work-card').forEach(function (el) {
       el.classList.add('wc-media-in');
     });
-    if (showcase) showcase.style.opacity = '1';
   }
 
   function scheduleCardReveal(div) {
@@ -568,38 +532,6 @@
     if (document.body.classList.contains('work-page-open')) {
       scheduleCardReveal(div);
     } else div.classList.add('wc-media-in');
-  }
-
-  function slideAwayPanel() {
-    if (!pageOut) {
-      markWorkPageOpen();
-      return;
-    }
-    pageOut.style.transition = 'none';
-    pageOut.style.transform = 'translateY(0)';
-    pageOut.style.pointerEvents = 'none';
-    const MAX_WAIT_MS = 900; // Animation 2 load budget window
-    const start = performance.now();
-
-    function beginSlide() {
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          pageOut.style.transition = 'transform 0.58s cubic-bezier(0.76,0,0.24,1)';
-          pageOut.style.transform = 'translateY(-100%)';
-        });
-      });
-      setTimeout(markWorkPageOpen, 620);
-    }
-
-    function waitUntilReady() {
-      const waited = performance.now() - start;
-      if ((gridBuilt && postersReady) || waited >= MAX_WAIT_MS) {
-        beginSlide();
-        return;
-      }
-      requestAnimationFrame(waitUntilReady);
-    }
-    waitUntilReady();
   }
 
   /** Direct navigation with no transition */
@@ -868,7 +800,8 @@
   if (fadeTop) fadeTop.style.opacity = '0';
 
   } finally {
-    gridBuilt = true;
+    markWorkPageOpen();
+    // Grid is visible immediately; no global reveal gate.
   }
 
   document.addEventListener('click', (e) => {
@@ -886,12 +819,7 @@
   }, true);
   }
 
-  preloadAllPosters()
-    .catch(function () {})
-    .finally(function () { postersReady = true; });
-
   buildWorkGrid();
-  slideAwayPanel();
 </script>
 </body>
 </html>
