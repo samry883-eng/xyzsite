@@ -527,26 +527,15 @@
 
   function markWorkPageOpen() {
     document.body.classList.add('work-page-open');
-    const pending = Array.from(document.querySelectorAll('.work-card[data-wc-pending]'));
-    pending.sort(function (a, b) {
-      return (Number(a.dataset.wcOrder) || 0) - (Number(b.dataset.wcOrder) || 0);
+    document.querySelectorAll('.work-card[data-wc-pending]').forEach(function (el) {
+      el.removeAttribute('data-wc-pending');
+      el.classList.add('wc-media-in');
     });
-    pending.forEach(scheduleCardReveal);
-  }
-
-  function scheduleCardReveal(div) {
-    if (!div || div.classList.contains('wc-media-in')) return;
-    div.removeAttribute('data-wc-pending');
-    const order = Number(div.dataset.wcOrder) || 0;
-    const delay = Math.min(order * 45, 1800);
-    setTimeout(function () {
-      div.classList.add('wc-media-in');
-    }, delay);
   }
 
   function tryRevealCardMedia(div) {
     if (document.body.classList.contains('work-page-open')) {
-      scheduleCardReveal(div);
+      div.classList.add('wc-media-in');
     } else {
       div.setAttribute('data-wc-pending', '1');
     }
@@ -680,8 +669,7 @@
     video.playsInline = true;
     video.setAttribute('playsinline', '');
     video.setAttribute('muted', '');
-    // Defer video network work until hover for faster initial grid readiness.
-    video.preload = 'none';
+    video.preload = 'metadata';
     if (card.clipStart != null && card.clipEnd != null) {
       video.dataset.clipStart = String(card.clipStart);
       video.dataset.clipEnd = String(card.clipEnd);
@@ -695,15 +683,24 @@
     img.decoding = 'async';
     if (opts.fetchPriority) img.fetchPriority = opts.fetchPriority;
 
+    var posterDone = false;
+    function onPosterReady() {
+      if (posterDone) return;
+      posterDone = true;
+      tryRevealCardMedia(div);
+    }
+    img.addEventListener('load', onPosterReady, { once: true });
     img.addEventListener('error', function () {
+      img.addEventListener('load', onPosterReady, { once: true });
       img.src = FALLBACK_IMG;
     }, { once: true });
 
     div.appendChild(video);
     div.appendChild(img);
 
-    // Reveal cards immediately (staggered) instead of blocking on image decode.
-    tryRevealCardMedia(div);
+    if (img.complete && img.naturalWidth > 0) {
+      onPosterReady();
+    }
   }
 
   function bindWorkCardHover() {
@@ -773,7 +770,6 @@
     console.error('[work] #showcase missing');
   }
   if (showcase) {
-  var revealOrderCounter = 0;
   ROWS.forEach((rowData, rowIdx) => {
     const row = document.createElement('div');
     row.className = 'work-row';
@@ -808,7 +804,6 @@
 
       const div = document.createElement('div');
       div.className = 'work-card';
-      div.dataset.wcOrder = String(revealOrderCounter++);
 
       appendCardMedia(div, card, mediaOpts);
 
