@@ -101,6 +101,11 @@
       -moz-user-select: none;
       -ms-user-select: none;
     }
+    /* Work page: disable all animations/transitions */
+    *, *::before, *::after {
+      animation: none !important;
+      transition: none !important;
+    }
 
     /* ── NAV ──────────────────────────────────────────────── */
     nav {
@@ -365,22 +370,9 @@
 
     /* Peer motion is applied via JS (radial translate); no scale on siblings */
 
-    /* Animation 2 (page-out): keep logo position aligned with Animation 1 */
-    #page-out {
-      overflow: visible;
-    }
-    #page-out-logo {
-      position: absolute; bottom: 36px; left: 44px; width: 72px;
-      display: block; filter: invert(1); pointer-events: none;
-      opacity: 1;
-      transition: none;
-      transform: translateZ(0);
-    }
   </style>
 </head>
 <body>
-<div id="page-out" style="position:fixed;inset:0;z-index:9999;background:#fff;pointer-events:none;transform:translateY(0);"><img id="page-out-logo" src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt=""></div>
-
   <div class="work-fade-top"></div>
 
   <nav>
@@ -532,8 +524,6 @@
     }, true);
   }
 
-  const pageOut = document.getElementById('page-out');
-
   function markWorkPageOpen() {
     document.body.classList.add('work-page-open');
     const pending = Array.from(document.querySelectorAll('.work-card[data-wc-pending]'));
@@ -557,83 +547,10 @@
     }
   }
 
-  function isReloadNavigation() {
-    const nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
-    if (nav && nav.type) return nav.type === 'reload';
-    try {
-      return !!(performance.navigation && performance.navigation.type === 1);
-    } catch (e) {
-      return false;
-    }
-  }
-
-  // Animation 2 — shared across non-first home navigations
-  function slideAwayPanel(fromCacheRestore) {
-    if (!pageOut) {
-      markWorkPageOpen();
-      return;
-    }
-    const dur = (!fromCacheRestore && isReloadNavigation()) ? '1.06s' : '0.58s';
-    pageOut.style.transition = 'none';
-    pageOut.style.transform = 'translateY(0)';
-    pageOut.style.pointerEvents = 'none';
-    var opened = false;
-    function finishOpen() {
-      if (opened) return;
-      opened = true;
-      pageOut.removeEventListener('transitionend', onPageOutEnd);
-      clearTimeout(fallbackTimer);
-      markWorkPageOpen();
-    }
-    function onPageOutEnd(e) {
-      if (e.target !== pageOut || e.propertyName !== 'transform') return;
-      finishOpen();
-    }
-    pageOut.addEventListener('transitionend', onPageOutEnd);
-    var fallbackTimer = setTimeout(finishOpen, parseFloat(dur) * 1000 + 120);
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        pageOut.style.transition = 'transform ' + dur + ' cubic-bezier(0.76,0,0.24,1)';
-        pageOut.style.transform = 'translateY(-100%)';
-      });
-    });
-  }
-
-  window.addEventListener('pageshow', (e) => { if (e.persisted) slideAwayPanel(true); });
-
-  /** Animation 2 navigation transition */
+  /** Direct navigation with no transition */
   function navigateTo(url, poster) {
     const dest = poster ? url + '?poster=' + encodeURIComponent(poster) : url;
-    if (!pageOut) {
-      window.location.href = dest;
-      return;
-    }
-    pageOut.style.transition = 'none';
-    pageOut.style.transform = 'translateY(100%)';
-    pageOut.style.pointerEvents = 'all';
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        let done = false;
-        function finish() {
-          if (done) return;
-          done = true;
-          window.location.href = dest;
-        }
-        function onEnd(e) {
-          if (e.target !== pageOut || e.propertyName !== 'transform') return;
-          pageOut.removeEventListener('transitionend', onEnd);
-          clearTimeout(fallback);
-          finish();
-        }
-        const fallback = setTimeout(() => {
-          pageOut.removeEventListener('transitionend', onEnd);
-          finish();
-        }, 750);
-        pageOut.addEventListener('transitionend', onEnd);
-        pageOut.style.transition = 'transform 0.48s cubic-bezier(0.76,0,0.24,1)';
-        pageOut.style.transform = 'translateY(0)';
-      });
-    });
+    window.location.href = dest;
   }
 
   /** Keep in sync with :root --wc-hover-max (gentler zoom than reference portfolios). */
@@ -685,8 +602,8 @@
     video.playsInline = true;
     video.setAttribute('playsinline', '');
     video.setAttribute('muted', '');
-    // Defer video network work until hover for faster initial grid readiness.
-    video.preload = 'none';
+    // Preload hover videos so they are ready immediately on page open.
+    video.preload = 'auto';
     if (card.clipStart != null && card.clipEnd != null) {
       video.dataset.clipStart = String(card.clipStart);
       video.dataset.clipEnd = String(card.clipEnd);
@@ -883,98 +800,20 @@
     });
 
     let loopW = 0, pos = 0, target = 0, animFrom = 0, animStart = 0, raf = null, locked = false;
-    const DURATION = 900;
 
     function easeInOut(t) { return 1 - Math.pow(1 - t, 4); }
     function wrapPos() {
       if (pos < loopW * 0.1) { pos += loopW; target += loopW; animFrom += loopW; }
       if (pos > loopW * 1.9) { pos -= loopW; target -= loopW; animFrom -= loopW; }
     }
-    function snapTick() {
-      const t = Math.min((performance.now() - animStart) / DURATION, 1);
-      pos = animFrom + (target - animFrom) * easeInOut(t);
-      wrapPos(); rowCards.scrollLeft = pos;
-      if (t < 1) { raf = requestAnimationFrame(snapTick); }
-      else { pos = target; wrapPos(); rowCards.scrollLeft = pos; raf = null; setTimeout(() => { locked = false; }, 500); }
-    }
     function startSnap(dir) {
-      if (locked) return; locked = true;
       const cardEl = rowCards.querySelector('.work-card-wrap');
       const cardW = cardEl ? cardEl.offsetWidth + 16 : 260;
-      animFrom = pos; animStart = performance.now(); target = pos + dir * cardW * 2;
-      if (raf) cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(snapTick);
-    }
-
-    function animateWaypoints(points) {
-      if (locked || !points.length) return;
-      locked = true;
-      if (raf) cancelAnimationFrame(raf);
-      let i = 0;
-      let segStart = performance.now();
-      let from = pos;
-      function easeOutQuint(t) { return 1 - Math.pow(1 - t, 5); }
-      function tick(now) {
-        const seg = points[i];
-        const t = Math.min((now - segStart) / seg.dur, 1);
-        const eased = easeOutQuint(t);
-        pos = from + (seg.to - from) * eased;
-        wrapPos();
-        rowCards.scrollLeft = pos;
-        if (t < 1) {
-          raf = requestAnimationFrame(tick);
-          return;
-        }
-        i += 1;
-        if (i >= points.length) {
-          raf = null;
-          locked = false;
-          return;
-        }
-        from = pos;
-        segStart = now;
-        raf = requestAnimationFrame(tick);
-      }
-      raf = requestAnimationFrame(tick);
-    }
-
-    function shortestDeltaToBase() {
-      let d = loopW - pos;
-      while (d > loopW / 2) d -= loopW;
-      while (d < -loopW / 2) d += loopW;
-      return d;
-    }
-
-    function settleToBaseWithStyle() {
-      if (!loopW || locked) return;
-      const delta = shortestDeltaToBase();
-      if (Math.abs(delta) < 8) {
-        pos = loopW; target = loopW; animFrom = loopW;
-        rowCards.scrollLeft = loopW;
-        return;
-      }
-      const dir = delta >= 0 ? 1 : -1;
-      // Casino machine feel: short directional run, then smooth ease-out lock.
-      const run = Math.min(120, Math.max(64, Math.abs(delta) * 0.55));
-      const settleNudge = Math.min(8, Math.max(3, Math.abs(delta) * 0.06));
-      animateWaypoints([
-        { to: pos + (dir * run), dur: 240 },
-        { to: loopW + (dir * settleNudge), dur: 420 },
-        { to: loopW, dur: 220 },
-      ]);
-    }
-
-    function introSnakePulse() {
-      if (!loopW || locked) return;
-      const rowIndex = Number((rowCards.closest('.work-row') || {}).dataset?.rowIdx || 0);
-      const dir = rowIndex % 2 === 0 ? 1 : -1;
-      animateWaypoints([
-        { to: pos + (dir * 44), dur: 180 },
-        { to: pos - (dir * 52), dur: 260 },
-        { to: pos + (dir * 30), dur: 220 },
-        { to: pos - (dir * 12), dur: 180 },
-        { to: pos, dur: 140 },
-      ]);
+      pos = pos + dir * cardW * 2;
+      wrapPos();
+      target = pos;
+      animFrom = pos;
+      rowCards.scrollLeft = pos;
     }
 
     rowCards.addEventListener('wheel', e => { if (!e.target.closest('.work-card-wrap')) return; e.preventDefault(); e.stopPropagation(); startSnap(e.deltaY > 0 ? 1 : -1); }, { passive: false });
@@ -988,8 +827,6 @@
       loopW = rowCards.scrollWidth / 3;
       pos = loopW; target = loopW; animFrom = loopW;
       rowCards.scrollLeft = pos;
-      const rowIndex = Number((rowCards.closest('.work-row') || {}).dataset?.rowIdx || 0);
-      setTimeout(introSnakePulse, 120 + rowIndex * 90);
     });
 
     const row = rowCards.closest('.work-row');
@@ -997,7 +834,7 @@
     if (rowCat) {
       rowCat.addEventListener('click', function (e) {
         e.preventDefault();
-        settleToBaseWithStyle();
+        // No category spin animation.
       });
     }
   });
@@ -1009,7 +846,7 @@
   if (fadeTop) fadeTop.style.opacity = '0';
 
   } finally {
-    slideAwayPanel();
+    markWorkPageOpen();
   }
 
   document.addEventListener('click', (e) => {
