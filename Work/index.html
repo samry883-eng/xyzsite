@@ -558,8 +558,12 @@
       markWorkPageOpen();
       return;
     }
+    pageOut.hidden = false;
     const dur = (!fromCacheRestore && isReloadNavigation()) ? '1.06s' : '0.58s';
+    const durSec = Number.parseFloat(dur);
     pageOut.style.transition = 'none';
+    pageOut.style.visibility = '';
+    pageOut.style.opacity = '';
     pageOut.style.transform = 'translateY(0)';
     pageOut.style.pointerEvents = 'none';
     var opened = false;
@@ -569,13 +573,24 @@
       pageOut.removeEventListener('transitionend', onPageOutEnd);
       clearTimeout(fallbackTimer);
       markWorkPageOpen();
+      pageOut.hidden = true;
+      pageOut.style.pointerEvents = 'none';
+      pageOut.style.transform = '';
+      pageOut.style.transition = '';
     }
+    /* Some WebKit builds omit propertyName or use "transform"; never leave the overlay up. */
     function onPageOutEnd(e) {
-      if (e.target !== pageOut || e.propertyName !== 'transform') return;
+      if (e.target !== pageOut) return;
+      if (e.propertyName && e.propertyName !== 'transform') return;
       finishOpen();
     }
     pageOut.addEventListener('transitionend', onPageOutEnd);
-    var fallbackTimer = setTimeout(finishOpen, parseFloat(dur) * 1000 + 120);
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      finishOpen();
+      return;
+    }
+    /* Backup if transition fires no transitionend events. */
+    var fallbackTimer = setTimeout(finishOpen, (Number.isFinite(durSec) ? durSec * 1000 : 580) + 200);
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         pageOut.style.transition = 'transform ' + dur + ' cubic-bezier(0.76,0,0.24,1)';
@@ -592,6 +607,9 @@
       window.location.href = dest;
       return;
     }
+    pageOut.hidden = false;
+    pageOut.style.visibility = '';
+    pageOut.style.opacity = '';
     pageOut.style.transition = 'none';
     pageOut.style.transform = 'translateY(100%)';
     pageOut.style.pointerEvents = 'all';
@@ -604,7 +622,8 @@
           window.location.href = dest;
         }
         function onEnd(e) {
-          if (e.target !== pageOut || e.propertyName !== 'transform') return;
+          if (e.target !== pageOut) return;
+          if (e.propertyName && e.propertyName !== 'transform') return;
           pageOut.removeEventListener('transitionend', onEnd);
           clearTimeout(fallback);
           finish();
