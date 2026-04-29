@@ -557,14 +557,12 @@
     }, true);
   }
 
-  function markWorkPageOpen() {
-    document.body.classList.add('work-page-open');
-    document.querySelectorAll('.work-card').forEach(function (el) {
-      el.classList.add('wc-media-in');
-    });
-    // Stagger rows up after the overlay clears — row-by-row, 100 ms apart.
-    var rows = showcase ? showcase.querySelectorAll('.work-row') : [];
-    Array.prototype.forEach.call(rows, function (row, i) {
+  function startRowStagger() {
+    // Bottom row first — reverse order, 80 ms apart.
+    var rows = Array.prototype.slice.call(
+      showcase ? showcase.querySelectorAll('.work-row') : []
+    ).reverse();
+    rows.forEach(function (row, i) {
       if (row.classList.contains('wc-row-in')) return;
       setTimeout(function () {
         row.classList.add('wc-row-in');
@@ -573,7 +571,14 @@
           row.style.willChange = 'auto';
           row.removeEventListener('transitionend', cleanup);
         });
-      }, i * 150);
+      }, i * 80);
+    });
+  }
+
+  function markWorkPageOpen() {
+    document.body.classList.add('work-page-open');
+    document.querySelectorAll('.work-card').forEach(function (el) {
+      el.classList.add('wc-media-in');
     });
   }
 
@@ -597,6 +602,7 @@
 
   function slideAwayPanel(fromCacheRestore) {
     if (!pageOut) {
+      startRowStagger();
       markWorkPageOpen();
       return;
     }
@@ -618,6 +624,10 @@
     }
     pageOut.addEventListener('transitionend', onEnd);
     const fallback = setTimeout(finishOpen, parseFloat(dur) * 1000 + 120);
+    const durMs = parseFloat(dur) * 1000;
+    // Kick off the row stagger 200 ms before the overlay fully clears so the
+    // card motion overlaps the tail of the slide — one continuous feeling.
+    setTimeout(startRowStagger, Math.max(0, durMs - 200));
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         pageOut.style.transition = 'transform ' + dur + ' cubic-bezier(0.76,0,0.24,1)';
