@@ -850,20 +850,66 @@
   document.querySelectorAll('.work-row-cards').forEach(rowCards => {
     const originals = Array.from(rowCards.querySelectorAll('.work-card-wrap'));
     if (!originals.length) return;
+
+    // Infinite strip: clone right and left so snap motion is continuous.
+    originals.forEach(orig => {
+      const c = orig.cloneNode(true); c.dataset.clone='1'; rowCards.appendChild(c);
+    });
+    [...originals].reverse().forEach(orig => {
+      const c = orig.cloneNode(true); c.dataset.clone='1';
+      rowCards.insertBefore(c, rowCards.firstChild);
+    });
+
+    rowCards.querySelectorAll('[data-clone]').forEach(c => {
+      c.style.transition = 'none';
+      c.style.opacity = '1';
+      c.style.transform = 'none';
+    });
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        rowCards.querySelectorAll('[data-clone]').forEach(c => {
+          c.style.removeProperty('transition');
+        });
+      });
+    });
+
+    // Re-attach click on clones
+    rowCards.querySelectorAll('.work-card-wrap[data-clone]').forEach(cloneWrap => {
+      const ec = cloneWrap.querySelector('.wc-label-client');
+      const et = cloneWrap.querySelector('.wc-label-title');
+      const cloneClient = ec && ec.textContent ? ec.textContent.trim() : '';
+      const cloneTitle = et && et.textContent ? et.textContent.trim() : '';
+      const cloneCat = cloneWrap.dataset.rowLabel || '';
+      cloneWrap.style.cursor = 'pointer';
+      cloneWrap.addEventListener('click', () => {
+        const row = ROWS.find(r => r.label === cloneCat);
+        const card = row && row.cards ? row.cards.find(c => c.client === cloneClient && c.title === cloneTitle) : null;
+        if (card) navigateTo(projectURL(card, cloneCat), getPoster(card.title, card.client) || undefined);
+      });
+    });
+
     let loopW = 0, pos = 0, target = 0, animFrom = 0, animStart = 0, raf = null, locked = false;
+    const DURATION = 900;
 
     function easeInOut(t) { return 1 - Math.pow(1 - t, 4); }
     function wrapPos() {
-      // No loop wrapping; keep native finite row behavior for visual stability.
+      if (pos < loopW * 0.1) { pos += loopW; target += loopW; animFrom += loopW; }
+      if (pos > loopW * 1.9) { pos -= loopW; target -= loopW; animFrom -= loopW; }
+    }
+    function snapTick() {
+      const t = Math.min((performance.now() - animStart) / DURATION, 1);
+      pos = animFrom + (target - animFrom) * easeInOut(t);
+      wrapPos(); rowCards.scrollLeft = pos;
+      if (t < 1) { raf = requestAnimationFrame(snapTick); }
+      else { pos = target; wrapPos(); rowCards.scrollLeft = pos; raf = null; setTimeout(() => { locked = false; }, 500); }
     }
     function startSnap(dir) {
+      if (locked) return; locked = true;
       const cardEl = rowCards.querySelector('.work-card-wrap');
       const cardW = cardEl ? cardEl.offsetWidth + 16 : 260;
-      pos = pos + dir * cardW * 2;
-      wrapPos();
-      target = pos;
-      animFrom = pos;
-      rowCards.scrollLeft = pos;
+      animFrom = pos; animStart = performance.now(); target = pos + dir * cardW * 2;
+      if (raf) cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(snapTick);
     }
 
     rowCards.addEventListener('wheel', e => { if (!e.target.closest('.work-card-wrap')) return; e.preventDefault(); e.stopPropagation(); startSnap(e.deltaY > 0 ? 1 : -1); }, { passive: false });
@@ -874,8 +920,8 @@
     rowCards.addEventListener('touchend', e => { const dx = tx0 - e.changedTouches[0].clientX; if (Math.abs(dx) > 30) startSnap(dx > 0 ? 1 : -1); }, { passive: true });
 
     requestAnimationFrame(() => {
-      loopW = rowCards.scrollWidth;
-      pos = 0; target = 0; animFrom = 0;
+      loopW = rowCards.scrollWidth / 3;
+      pos = loopW; target = loopW; animFrom = loopW;
       rowCards.scrollLeft = pos;
     });
 
