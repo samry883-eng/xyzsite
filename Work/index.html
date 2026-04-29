@@ -230,10 +230,17 @@
     }
     .work-row-cards::-webkit-scrollbar { display: none; }
 
-    /* ── ROW HEADER (no load-in animation) ──────────────── */
-    .work-row-header {
+    /* ── ROW ENTRANCE ANIMATION ─────────────────────────── */
+    .work-row {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    .work-row.wc-row-in {
       opacity: 1;
-      transform: none;
+      transform: translateY(0);
+      transition:
+        opacity  0.76s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.76s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     /* ── CARD WRAP — height from row strip; width = 16:9 of thumb area ─ */
@@ -552,6 +559,20 @@
     document.body.classList.add('work-page-open');
     document.querySelectorAll('.work-card').forEach(function (el) {
       el.classList.add('wc-media-in');
+    });
+    // Stagger rows up after the overlay clears — row-by-row, 100 ms apart.
+    var rows = showcase ? showcase.querySelectorAll('.work-row') : [];
+    Array.prototype.forEach.call(rows, function (row, i) {
+      if (row.classList.contains('wc-row-in')) return;
+      row.style.willChange = 'opacity, transform';
+      setTimeout(function () {
+        row.classList.add('wc-row-in');
+        row.addEventListener('transitionend', function cleanup(e) {
+          if (e.propertyName !== 'opacity') return;
+          row.style.willChange = '';
+          row.removeEventListener('transitionend', cleanup);
+        });
+      }, i * 100);
     });
   }
 
