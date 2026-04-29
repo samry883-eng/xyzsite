@@ -504,24 +504,29 @@
   const showcase = document.getElementById('showcase');
   const pageOut = document.getElementById('page-out');
 
-  function preloadPoster(url) {
-    return new Promise((resolve) => {
-      const im = new Image();
-      im.decoding = 'async';
-      im.onload = () => resolve();
-      im.onerror = () => resolve();
-      im.src = url || FALLBACK_IMG;
+  function waitForGridReady() {
+    // Wait for the actual in-DOM poster <img> elements to decode and be paint-ready.
+    // Only check originals (not clones) — unique src means one decode covers all copies.
+    const seen = new Set();
+    const imgs = [];
+    document.querySelectorAll('.wc-card-poster').forEach(function (img) {
+      if (img.closest('[data-clone]')) return;
+      if (!img.src || seen.has(img.src)) return;
+      seen.add(img.src);
+      imgs.push(img);
     });
-  }
-
-  function preloadAllPosters() {
-    const urls = new Set();
-    ROWS.forEach((row) => {
-      row.cards.forEach((card) => {
-        urls.add(getPoster(card.title, card.client) || FALLBACK_IMG);
+    if (!imgs.length) return Promise.resolve();
+    const decodes = imgs.map(function (img) {
+      if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+      if (img.decode) return img.decode().catch(function () {});
+      return new Promise(function (res) {
+        img.addEventListener('load', res, { once: true });
+        img.addEventListener('error', res, { once: true });
       });
     });
-    return Promise.all(Array.from(urls).map(preloadPoster));
+    // Never stall the page more than 6 s if something fails to load.
+    const bail = new Promise(function (res) { setTimeout(res, 6000); });
+    return Promise.race([Promise.allSettled(decodes), bail]);
   }
 
   /** Loop only a time range on hover video (e.g. Atomic / Into the Void 24s–33s). */
@@ -697,7 +702,7 @@
     img.alt = `${card.client} — ${card.title}`;
     // Keep poster paint deterministic during initial reveal window.
     img.loading = 'eager';
-    img.decoding = 'async';
+    img.decoding = 'sync';
     img.fetchPriority = opts && opts.fetchPriority === 'high' ? 'high' : 'auto';
 
     img.addEventListener('error', function () {
@@ -959,7 +964,7 @@
   }
 
   buildWorkGrid();
-  preloadAllPosters()
+  waitForGridReady()
     .catch(function () {})
     .finally(function () {
       slideAwayPanel();
