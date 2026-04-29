@@ -330,7 +330,7 @@
       opacity: 0;
       transition: opacity 0.55s cubic-bezier(0.33, 1, 0.68, 1);
     }
-    /* Fade posters in after the white page-out is gone (see work-page-open + wc-media-in) */
+    /* Fade posters in once work-page-open + wc-media-in */
     body.work-page-open .work-card.wc-media-in .wc-card-poster {
       opacity: 1;
     }
@@ -341,7 +341,7 @@
       content: ''; position: absolute; inset: 0;
       background: #000; z-index: 0;
     }
-    /* Drop the black mask only when the poster fade-in runs (after page-out), not merely when <img> has loaded */
+    /* Drop the black mask when the poster fade-in runs, not merely when <img> has loaded */
     .work-card.wc-media-in::before { display: none; }
 
     /* Hover overlay */
@@ -355,23 +355,9 @@
     }
 
     /* Peer motion is applied via JS (radial translate); no scale on siblings */
-
-    /* Animation 2 (page-out): match intro loader logo placement */
-    #page-out {
-      overflow: visible;
-    }
-    #page-out-logo {
-      position: absolute; bottom: 36px; left: 44px; width: 72px;
-      display: block; filter: invert(1); pointer-events: none;
-      opacity: 1;
-      transition: none;
-      transform: translateZ(0);
-    }
   </style>
 </head>
 <body>
-<!-- Page transition overlay (animation 2: between pages) -->
-<div id="page-out" style="position:fixed;inset:0;z-index:9999;background:#fff;pointer-events:none;transform:translateY(0);"><img id="page-out-logo" src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt=""></div>
 
   <div class="work-fade-top"></div>
 
@@ -524,8 +510,6 @@
     }, true);
   }
 
-  const pageOut = document.getElementById('page-out');
-
   function markWorkPageOpen() {
     document.body.classList.add('work-page-open');
     document.querySelectorAll('.work-card[data-wc-pending]').forEach(function (el) {
@@ -542,101 +526,10 @@
     }
   }
 
-  function isReloadNavigation() {
-    const nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
-    if (nav && nav.type) return nav.type === 'reload';
-    try {
-      return !!(performance.navigation && performance.navigation.type === 1);
-    } catch (e) {
-      return false;
-    }
-  }
-
-  /** Slide the white entry panel away (must run even if grid build throws). */
-  function slideAwayPanel(fromCacheRestore) {
-    if (!pageOut) {
-      markWorkPageOpen();
-      return;
-    }
-    pageOut.hidden = false;
-    const dur = (!fromCacheRestore && isReloadNavigation()) ? '1.06s' : '0.58s';
-    const durSec = Number.parseFloat(dur);
-    pageOut.style.transition = 'none';
-    pageOut.style.visibility = '';
-    pageOut.style.opacity = '';
-    pageOut.style.transform = 'translateY(0)';
-    pageOut.style.pointerEvents = 'none';
-    var opened = false;
-    function finishOpen() {
-      if (opened) return;
-      opened = true;
-      pageOut.removeEventListener('transitionend', onPageOutEnd);
-      clearTimeout(fallbackTimer);
-      markWorkPageOpen();
-      pageOut.hidden = true;
-      pageOut.style.pointerEvents = 'none';
-      pageOut.style.transform = '';
-      pageOut.style.transition = '';
-    }
-    /* Some WebKit builds omit propertyName or use "transform"; never leave the overlay up. */
-    function onPageOutEnd(e) {
-      if (e.target !== pageOut) return;
-      if (e.propertyName && e.propertyName !== 'transform') return;
-      finishOpen();
-    }
-    pageOut.addEventListener('transitionend', onPageOutEnd);
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      finishOpen();
-      return;
-    }
-    /* Backup if transition fires no transitionend events. */
-    var fallbackTimer = setTimeout(finishOpen, (Number.isFinite(durSec) ? durSec * 1000 : 580) + 200);
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        pageOut.style.transition = 'transform ' + dur + ' cubic-bezier(0.76,0,0.24,1)';
-        pageOut.style.transform = 'translateY(-100%)';
-      });
-    });
-  }
-
-  window.addEventListener('pageshow', (e) => { if (e.persisted) slideAwayPanel(true); });
-
+  /** Client-side guard: navigate without page-out transitions (instant assign). */
   function navigateTo(url, poster) {
     const dest = poster ? url + '?poster=' + encodeURIComponent(poster) : url;
-    if (!pageOut) {
-      window.location.href = dest;
-      return;
-    }
-    pageOut.hidden = false;
-    pageOut.style.visibility = '';
-    pageOut.style.opacity = '';
-    pageOut.style.transition = 'none';
-    pageOut.style.transform = 'translateY(100%)';
-    pageOut.style.pointerEvents = 'all';
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        let done = false;
-        function finish() {
-          if (done) return;
-          done = true;
-          window.location.href = dest;
-        }
-        function onEnd(e) {
-          if (e.target !== pageOut) return;
-          if (e.propertyName && e.propertyName !== 'transform') return;
-          pageOut.removeEventListener('transitionend', onEnd);
-          clearTimeout(fallback);
-          finish();
-        }
-        const fallback = setTimeout(() => {
-          pageOut.removeEventListener('transitionend', onEnd);
-          finish();
-        }, 750);
-        pageOut.addEventListener('transitionend', onEnd);
-        pageOut.style.transition = 'transform 0.48s cubic-bezier(0.76,0,0.24,1)';
-        pageOut.style.transform = 'translateY(0)';
-      });
-    });
+    window.location.href = dest;
   }
 
   /** Keep in sync with :root --wc-hover-max (gentler zoom than reference portfolios). */
@@ -932,7 +825,7 @@
   if (fadeTop) fadeTop.style.opacity = '0';
 
   } finally {
-    slideAwayPanel();
+    markWorkPageOpen();
   }
 
   document.addEventListener('click', (e) => {
