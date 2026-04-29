@@ -295,6 +295,19 @@
     .pj-credits.revealed .pj-cr-cols  { animation: pj-rise 0.7s cubic-bezier(0.16,1,0.3,1) 0.25s both; }
     .pj-credits.revealed .pj-frames   { animation: pj-rise 0.7s cubic-bezier(0.16,1,0.3,1) 0.35s both; }
 
+    /* Cinematic section transition layers (scroll-driven) */
+    .pj-video-area,
+    .pj-video-frame,
+    .pj-bottom-dock,
+    .pj-credits,
+    .pj-cr-title,
+    .pj-cr-sub,
+    .pj-cr-cols,
+    .pj-frames {
+      will-change: transform, opacity, filter;
+      transform: translateZ(0);
+    }
+
     /* ── CREDITS: tight, directly after stage ─────────────── */
     .pj-credits {
       background: #000;
@@ -427,6 +440,13 @@
   const track   = document.getElementById('pj-track');
   const progress= document.getElementById('pj-progress');
   const handle  = document.getElementById('pj-handle');
+  const videoArea = document.querySelector('.pj-video-area');
+  const videoFrame = document.querySelector('.pj-video-frame');
+  const bottomDock = document.querySelector('.pj-bottom-dock');
+  const titleEl = document.querySelector('.pj-cr-title');
+  const subEl = document.querySelector('.pj-cr-sub');
+  const colsEl = document.querySelector('.pj-cr-cols');
+  const framesEl = document.querySelector('.pj-frames');
 
   // Start paused
   vid.pause();
@@ -529,10 +549,74 @@
     scrollHint.classList.toggle('is-hidden', entries[0].isIntersecting);
   }, { threshold: 0.04, rootMargin: '0px 0px -8% 0px' }).observe(credits);
 
-  // Credits stagger — trigger when scrolled into view
-  new IntersectionObserver((entries, obs) => {
-    if (entries[0].isIntersecting) { credits.classList.add('revealed'); obs.disconnect(); }
-  }, { threshold: 0.05 }).observe(credits);
+  // Cinematic section-slide transition (editorial, layered, configurable)
+  const TRANSITION_CFG = {
+    triggerDistanceVh: 0.95,
+    stageLiftPx: 72,
+    frameLiftPx: 96,
+    dockLiftPx: 46,
+    frameScaleDrop: 0.06,
+    stageFade: 0.34,
+    stageBlurPx: 1.2,
+    creditsRisePx: 84,
+    creditsBlurPx: 5,
+    creditsStartOpacity: 0.22,
+    textLagPx: 30,
+  };
+
+  function clamp01(v) {
+    return Math.max(0, Math.min(1, v));
+  }
+  function easeOutCubic(t) {
+    return 1 - Math.pow(1 - t, 3);
+  }
+
+  let ticking = false;
+  function applyCinematicScroll() {
+    const rect = credits.getBoundingClientRect();
+    const trigger = window.innerHeight * TRANSITION_CFG.triggerDistanceVh;
+    const raw = (trigger - rect.top) / trigger;
+    const p = easeOutCubic(clamp01(raw));
+
+    if (videoArea) {
+      videoArea.style.transform = 'translate3d(0,' + (-TRANSITION_CFG.stageLiftPx * p).toFixed(2) + 'px,0)';
+      videoArea.style.opacity = String(1 - TRANSITION_CFG.stageFade * p);
+    }
+    if (videoFrame) {
+      const frameY = -TRANSITION_CFG.frameLiftPx * p;
+      const frameScale = 1 - TRANSITION_CFG.frameScaleDrop * p;
+      videoFrame.style.transform = 'translate3d(0,' + frameY.toFixed(2) + 'px,0) scale(' + frameScale.toFixed(4) + ')';
+      videoFrame.style.filter = 'blur(' + (TRANSITION_CFG.stageBlurPx * p).toFixed(2) + 'px)';
+    }
+    if (bottomDock) {
+      bottomDock.style.transform = 'translate3d(0,' + (-TRANSITION_CFG.dockLiftPx * p).toFixed(2) + 'px,0)';
+      bottomDock.style.opacity = String(1 - (0.32 * p));
+    }
+
+    const creditsY = (1 - p) * TRANSITION_CFG.creditsRisePx;
+    credits.style.transform = 'translate3d(0,' + creditsY.toFixed(2) + 'px,0)';
+    credits.style.opacity = String(TRANSITION_CFG.creditsStartOpacity + (1 - TRANSITION_CFG.creditsStartOpacity) * p);
+    credits.style.filter = 'blur(' + ((1 - p) * TRANSITION_CFG.creditsBlurPx).toFixed(2) + 'px)';
+
+    const lag = (1 - p) * TRANSITION_CFG.textLagPx;
+    if (titleEl) titleEl.style.transform = 'translate3d(0,' + lag.toFixed(2) + 'px,0)';
+    if (subEl) subEl.style.transform = 'translate3d(0,' + (lag * 0.8).toFixed(2) + 'px,0)';
+    if (colsEl) colsEl.style.transform = 'translate3d(0,' + (lag * 0.55).toFixed(2) + 'px,0)';
+    if (framesEl) framesEl.style.transform = 'translate3d(0,' + (lag * 0.35).toFixed(2) + 'px,0)';
+  }
+
+  function requestCinematicUpdate() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () {
+      ticking = false;
+      applyCinematicScroll();
+    });
+  }
+
+  window.addEventListener('scroll', requestCinematicUpdate, { passive: true });
+  window.addEventListener('resize', requestCinematicUpdate);
+  requestCinematicUpdate();
 </script>
 </body>
 </html>
