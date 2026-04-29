@@ -233,14 +233,15 @@
     /* ── ROW ENTRANCE ANIMATION ─────────────────────────── */
     .work-row {
       opacity: 0;
-      transform: translateY(16px);
+      transform: translateY(24px);
+      will-change: transform, opacity;
     }
     .work-row.wc-row-in {
       opacity: 1;
       transform: translateY(0);
       transition:
-        opacity  0.76s cubic-bezier(0.16, 1, 0.3, 1),
-        transform 0.76s cubic-bezier(0.16, 1, 0.3, 1);
+        opacity   0.95s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.95s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     /* ── CARD WRAP — height from row strip; width = 16:9 of thumb area ─ */
@@ -564,15 +565,14 @@
     var rows = showcase ? showcase.querySelectorAll('.work-row') : [];
     Array.prototype.forEach.call(rows, function (row, i) {
       if (row.classList.contains('wc-row-in')) return;
-      row.style.willChange = 'opacity, transform';
       setTimeout(function () {
         row.classList.add('wc-row-in');
         row.addEventListener('transitionend', function cleanup(e) {
           if (e.propertyName !== 'opacity') return;
-          row.style.willChange = '';
+          row.style.willChange = 'auto';
           row.removeEventListener('transitionend', cleanup);
         });
-      }, i * 100);
+      }, i * 110);
     });
   }
 
