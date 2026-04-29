@@ -148,15 +148,10 @@
     }
     .work-row-cat {
       font-family: Micross, Arial, sans-serif;
-      font-size: 10px; font-weight: 400;
+      font-size: 8px; font-weight: 400;
       letter-spacing: 0.2em; text-transform: uppercase;
       color: rgba(255,255,255,0.35);
       flex-shrink: 0;
-      cursor: pointer;
-      transition: color 0.2s ease;
-    }
-    .work-row-cat:hover {
-      color: rgba(255,255,255,0.72);
     }
     .work-row-line {
       display: none;
@@ -778,7 +773,7 @@
     console.error('[work] #showcase missing');
   }
   if (showcase) {
-  var revealOrderBase = 0;
+  var revealOrderCounter = 0;
   ROWS.forEach((rowData, rowIdx) => {
     const row = document.createElement('div');
     row.className = 'work-row';
@@ -794,7 +789,6 @@
     const rowCards = document.createElement('div');
     rowCards.className = 'work-row-cards';
 
-    const rowCardCount = rowData.cards.length;
     rowData.cards.forEach((card, cardIdx) => {
       const numStr = String(cardIdx + 1).padStart(2, '0');
       /* Only the first row’s first tiles are above the fold — load those eagerly; rest lazy to cut initial bytes & decode work. */
@@ -814,8 +808,7 @@
 
       const div = document.createElement('div');
       div.className = 'work-card';
-      const revealIndex = (rowIdx % 2 === 0) ? cardIdx : (rowCardCount - 1 - cardIdx);
-      div.dataset.wcOrder = String(revealOrderBase + revealIndex);
+      div.dataset.wcOrder = String(revealOrderCounter++);
 
       appendCardMedia(div, card, mediaOpts);
 
@@ -832,7 +825,6 @@
 
       rowCards.appendChild(wrap);
     });
-    revealOrderBase += rowCardCount;
 
     row.appendChild(rowHeader);
     row.appendChild(rowCards);
@@ -905,46 +897,6 @@
       raf = requestAnimationFrame(snapTick);
     }
 
-    function spinRowAndReset() {
-      if (locked || !loopW) return;
-      locked = true;
-      if (raf) cancelAnimationFrame(raf);
-      const basePos = loopW;
-      const firstLegFrom = pos;
-      const firstLegTo = pos + loopW;
-      const firstDur = 980;
-      const secondDur = 520;
-      const t0 = performance.now();
-      function tick(now) {
-        const elapsed = now - t0;
-        if (elapsed < firstDur) {
-          const t = Math.min(elapsed / firstDur, 1);
-          const eased = 1 - Math.pow(1 - t, 3);
-          pos = firstLegFrom + (firstLegTo - firstLegFrom) * eased;
-          wrapPos();
-          rowCards.scrollLeft = pos;
-          raf = requestAnimationFrame(tick);
-          return;
-        }
-        const t2 = Math.min((elapsed - firstDur) / secondDur, 1);
-        const eased2 = 1 - Math.pow(1 - t2, 4);
-        pos = firstLegTo + (basePos - firstLegTo) * eased2;
-        wrapPos();
-        rowCards.scrollLeft = pos;
-        if (t2 < 1) {
-          raf = requestAnimationFrame(tick);
-        } else {
-          pos = basePos;
-          target = basePos;
-          animFrom = basePos;
-          rowCards.scrollLeft = basePos;
-          raf = null;
-          locked = false;
-        }
-      }
-      raf = requestAnimationFrame(tick);
-    }
-
     rowCards.addEventListener('wheel', e => { if (!e.target.closest('.work-card-wrap')) return; e.preventDefault(); e.stopPropagation(); startSnap(e.deltaY > 0 ? 1 : -1); }, { passive: false });
 
     let tx0 = 0, tx1 = 0;
@@ -957,15 +909,6 @@
       pos = loopW; target = loopW; animFrom = loopW;
       rowCards.scrollLeft = pos;
     });
-
-    const row = rowCards.closest('.work-row');
-    const rowCat = row ? row.querySelector('.work-row-cat') : null;
-    if (rowCat) {
-      rowCat.addEventListener('click', function (e) {
-        e.preventDefault();
-        spinRowAndReset();
-      });
-    }
   });
 
   bindWorkCardHover();
