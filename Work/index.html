@@ -566,12 +566,13 @@
     Array.prototype.forEach.call(rows, function (row) {
       if (row.classList.contains('wc-row-in')) return;
       var rect = row.getBoundingClientRect();
-      // The overlay slides UP — its bottom edge travels from vh → 0.
-      // It passes this row's top edge when: t = ((vh - rect.top) / vh) * durMs
-      // Bottom rows have small (vh - rect.top) → short delay → animate first. ✓
-      // Subtract 30 ms lead so the card is already rising as the overlay uncovers it.
+      // The overlay slides UP — its bottom edge travels from vh → 0 over durMs.
+      // A row starts being uncovered the moment the overlay bottom passes its BOTTOM edge.
+      // t = ((vh - rect.bottom) / vh) * durMs
+      // Bottom row: rect.bottom ≈ vh → delay ≈ 0  (fires immediately, in sync with slide start)
+      // Each row up: +25% of durMs  →  natural 4-step split across the full overlay travel.
       var delay = durMs != null
-        ? Math.max(0, ((vh - rect.top) / vh) * durMs - 30)
+        ? Math.max(0, ((vh - rect.bottom) / vh) * durMs)
         : 0;
       setTimeout(function () {
         row.classList.add('wc-row-in');
