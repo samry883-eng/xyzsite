@@ -533,20 +533,16 @@
   function markWorkPageOpen() {
     document.body.classList.add('work-page-open');
     const pending = Array.from(document.querySelectorAll('.work-card[data-wc-pending]'));
-    pending.sort(function (a, b) {
-      return (Number(a.dataset.wcOrder) || 0) - (Number(b.dataset.wcOrder) || 0);
+    pending.forEach(function (el) {
+      el.removeAttribute('data-wc-pending');
+      el.classList.add('wc-media-in');
     });
-    pending.forEach(scheduleCardReveal);
   }
 
   function scheduleCardReveal(div) {
     if (!div || div.classList.contains('wc-media-in')) return;
     div.removeAttribute('data-wc-pending');
-    const order = Number(div.dataset.wcOrder) || 0;
-    const delay = Math.min(order * 45, 1800);
-    setTimeout(function () {
-      div.classList.add('wc-media-in');
-    }, delay);
+    div.classList.add('wc-media-in');
   }
 
   function tryRevealCardMedia(div) {
@@ -783,6 +779,7 @@
     const row = document.createElement('div');
     row.className = 'work-row';
     row.dataset.label = rowData.label;
+    row.dataset.rowIdx = String(rowIdx);
 
     const rowHeader = document.createElement('div');
     rowHeader.className = 'work-row-header';
@@ -905,44 +902,74 @@
       raf = requestAnimationFrame(snapTick);
     }
 
-    function spinRowAndReset() {
-      if (locked || !loopW) return;
+    function animateWaypoints(points) {
+      if (locked || !points.length) return;
       locked = true;
       if (raf) cancelAnimationFrame(raf);
-      const basePos = loopW;
-      const firstLegFrom = pos;
-      const firstLegTo = pos + loopW;
-      const firstDur = 980;
-      const secondDur = 520;
-      const t0 = performance.now();
+      let i = 0;
+      let segStart = performance.now();
+      let from = pos;
       function tick(now) {
-        const elapsed = now - t0;
-        if (elapsed < firstDur) {
-          const t = Math.min(elapsed / firstDur, 1);
-          const eased = 1 - Math.pow(1 - t, 3);
-          pos = firstLegFrom + (firstLegTo - firstLegFrom) * eased;
-          wrapPos();
-          rowCards.scrollLeft = pos;
+        const seg = points[i];
+        const t = Math.min((now - segStart) / seg.dur, 1);
+        const eased = 1 - Math.pow(1 - t, 3);
+        pos = from + (seg.to - from) * eased;
+        wrapPos();
+        rowCards.scrollLeft = pos;
+        if (t < 1) {
           raf = requestAnimationFrame(tick);
           return;
         }
-        const t2 = Math.min((elapsed - firstDur) / secondDur, 1);
-        const eased2 = 1 - Math.pow(1 - t2, 4);
-        pos = firstLegTo + (basePos - firstLegTo) * eased2;
-        wrapPos();
-        rowCards.scrollLeft = pos;
-        if (t2 < 1) {
-          raf = requestAnimationFrame(tick);
-        } else {
-          pos = basePos;
-          target = basePos;
-          animFrom = basePos;
-          rowCards.scrollLeft = basePos;
+        i += 1;
+        if (i >= points.length) {
           raf = null;
           locked = false;
+          return;
         }
+        from = pos;
+        segStart = now;
+        raf = requestAnimationFrame(tick);
       }
       raf = requestAnimationFrame(tick);
+    }
+
+    function shortestDeltaToBase() {
+      let d = loopW - pos;
+      while (d > loopW / 2) d -= loopW;
+      while (d < -loopW / 2) d += loopW;
+      return d;
+    }
+
+    function settleToBaseWithStyle() {
+      if (!loopW || locked) return;
+      const delta = shortestDeltaToBase();
+      if (Math.abs(delta) < 8) {
+        pos = loopW; target = loopW; animFrom = loopW;
+        rowCards.scrollLeft = loopW;
+        return;
+      }
+      const dir = delta >= 0 ? 1 : -1;
+      const jump = Math.min(58, Math.max(24, Math.abs(delta) * 0.2));
+      const overshoot = Math.min(22, Math.max(10, Math.abs(delta) * 0.08));
+      animateWaypoints([
+        { to: pos - (dir * jump * 0.35), dur: 120 }, // tiny opposite "catch"
+        { to: pos + delta + (dir * overshoot), dur: 420 },
+        { to: loopW - (dir * 8), dur: 180 },
+        { to: loopW, dur: 140 },
+      ]);
+    }
+
+    function introSnakePulse() {
+      if (!loopW || locked) return;
+      const rowIndex = Number((rowCards.closest('.work-row') || {}).dataset?.rowIdx || 0);
+      const dir = rowIndex % 2 === 0 ? 1 : -1;
+      animateWaypoints([
+        { to: pos + (dir * 36), dur: 130 },
+        { to: pos - (dir * 54), dur: 180 },
+        { to: pos + (dir * 42), dur: 170 },
+        { to: pos - (dir * 24), dur: 160 },
+        { to: pos, dur: 140 },
+      ]);
     }
 
     rowCards.addEventListener('wheel', e => { if (!e.target.closest('.work-card-wrap')) return; e.preventDefault(); e.stopPropagation(); startSnap(e.deltaY > 0 ? 1 : -1); }, { passive: false });
@@ -956,6 +983,8 @@
       loopW = rowCards.scrollWidth / 3;
       pos = loopW; target = loopW; animFrom = loopW;
       rowCards.scrollLeft = pos;
+      const rowIndex = Number((rowCards.closest('.work-row') || {}).dataset?.rowIdx || 0);
+      setTimeout(introSnakePulse, 120 + rowIndex * 90);
     });
 
     const row = rowCards.closest('.work-row');
@@ -963,7 +992,7 @@
     if (rowCat) {
       rowCat.addEventListener('click', function (e) {
         e.preventDefault();
-        spinRowAndReset();
+        settleToBaseWithStyle();
       });
     }
   });
