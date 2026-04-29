@@ -392,7 +392,7 @@
 
   <div class="work-fade-text"></div>
 
-  <section class="work-showcase" id="showcase">
+  <section class="work-showcase" id="showcase" style="visibility:hidden;">
     <div class="work-fade-right"></div>
   </section>
 
@@ -553,6 +553,7 @@
     document.querySelectorAll('.work-card').forEach(function (el) {
       el.classList.add('wc-media-in');
     });
+    if (showcase) showcase.style.visibility = 'visible';
   }
 
   function scheduleCardReveal(div) {
@@ -699,9 +700,10 @@
     img.className = 'wc-card-poster';
     img.src = posterSrc;
     img.alt = `${card.client} — ${card.title}`;
-    img.loading = opts.loading === 'eager' ? 'eager' : 'lazy';
+    // Keep poster paint deterministic during initial reveal window.
+    img.loading = 'eager';
     img.decoding = 'async';
-    if (opts.fetchPriority) img.fetchPriority = opts.fetchPriority;
+    img.fetchPriority = opts && opts.fetchPriority === 'high' ? 'high' : 'auto';
 
     img.addEventListener('error', function () {
       img.src = FALLBACK_IMG;
@@ -916,7 +918,11 @@
   }
 
   buildWorkGrid();
-  slideAwayPanel();
+  preloadAllPosters()
+    .catch(function () {})
+    .finally(function () {
+      slideAwayPanel();
+    });
   window.addEventListener('pageshow', function (e) { if (e.persisted) slideAwayPanel(true); });
 </script>
 </body>
