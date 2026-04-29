@@ -392,7 +392,7 @@
 
   <div class="work-fade-text"></div>
 
-  <section class="work-showcase" id="showcase" style="opacity:0;">
+  <section class="work-showcase" id="showcase">
     <div class="work-fade-right"></div>
   </section>
 
@@ -553,7 +553,6 @@
     document.querySelectorAll('.work-card').forEach(function (el) {
       el.classList.add('wc-media-in');
     });
-    if (showcase) showcase.style.opacity = '1';
   }
 
   function scheduleCardReveal(div) {
