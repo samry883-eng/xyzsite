@@ -74,7 +74,8 @@ const ROWS = [
       { video: SB  + 'LWep2Duvk-/original',                              client: 'Mercedes-Benz',  title: 'A Cold Wall',                  date: 'NOV 30' },
     ]
   },
-  {
+  /* hidden: Making Of category
+  {  {
     label: 'Making Of',
     cards: [
       { video: SB  + 'gekxSgtk7e/original',                              client: 'MLS',            title: 'Rating Reloaded',              date: 'JAN 5'  },
@@ -90,6 +91,7 @@ const ROWS = [
       { video: SB  + 'wXBUhN3tQI/original',                              client: 'Max Barskh',     title: 'Mine',                         date: 'MAR 1'  },
     ]
   }
+  */
 ];
 
 // ── Page template ──────────────────────────────────────────

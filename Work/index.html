@@ -389,7 +389,7 @@
     <ul class="nav-links">
       <li><a href="/">Home</a></li>
       <li><a href="/projects/" class="active">Work</a></li>
-      <li><a href="/services/">XYZ/Services</a></li>
+      <li style="display:none"><a href="/services/">XYZ/Services</a></li>
       <li><a href="/contact">Contact</a></li>
     </ul>
   </nav>
@@ -454,6 +454,7 @@
         { video: SB  + 'LWep2Duvk-/original',                              client: 'Mercedes-Benz',  title: 'A Cold Wall',                  date: 'NOV 30' },
       ]
     },
+    /* hidden: Making Of category
     {
       label: 'Making Of',
       cards: [
@@ -470,6 +471,7 @@
         { video: SB  + 'wXBUhN3tQI/original',                              client: 'Max Barskh',     title: 'Mine',                         date: 'MAR 1'  },
       ]
     }
+    */
   ];
 
   const CDN = window.__WORK_DATA.CDN;
@@ -821,7 +823,7 @@
     'Visual Effects': 'VISUAL',
     'Sound': 'SOUND',
     'AI': 'AI',
-    'Making Of': 'MAKING OF',
+    // 'Making Of': 'MAKING OF',
   };
 
   if (!showcase) {
