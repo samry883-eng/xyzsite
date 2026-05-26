@@ -84,7 +84,8 @@
       /* Space between video thumb and title (included in 16:9 width calc) */
       --wc-card-gap: clamp(12px, 2vh, 22px);
       /* Hover zoom; neighbors move away (no peer down-scale) */
-      --wc-hover-max: 1.25;
+      --wc-hover-max: 1.12;
+      --work-divider: rgba(255, 255, 255, 0.14);
       --wc-hover-ease: cubic-bezier(0.33, 1, 0.68, 1);
       --wc-hover-dur: 0.68s;
     }
@@ -142,27 +143,42 @@
       z-index: 1;
     }
 
-    /* ── ROW HEADER ─────────────────────────────────────── */
+    /* ── ROW HEADER (bold divider + index, ref: Work - bold dividers) ─ */
     .work-row-header {
       flex: 0 0 auto;
       display: flex;
-      align-items: center;
-      justify-content: center;
+      align-items: flex-end;
+      justify-content: flex-start;
       width: 100%;
-      gap: 14px;
-      padding-bottom: clamp(2px, 0.4vh, 6px);
+      border-bottom: 1px solid var(--work-divider);
+      padding-bottom: clamp(6px, 0.9vh, 14px);
+      margin-bottom: clamp(4px, 0.55vh, 10px);
+    }
+    .work-row-header__left {
+      display: flex;
+      align-items: baseline;
+      gap: clamp(12px, 2vw, 24px);
+      min-width: 0;
+    }
+    .work-row-num {
+      font-family: Micross, Arial, sans-serif;
+      font-size: clamp(9px, 1.05vh, 12px);
+      font-weight: 400;
+      letter-spacing: 0.22em;
+      color: rgba(255, 255, 255, 0.38);
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
     }
     .work-row-cat {
+      margin: 0;
       font-family: Micross, Arial, sans-serif;
-      font-size: 10px; font-weight: 400;
-      letter-spacing: 0.2em; text-transform: uppercase;
-      color: rgba(255,255,255,0.35);
-      flex-shrink: 0;
-      cursor: pointer;
-      transition: color 0.2s ease;
-    }
-    .work-row-cat:hover {
-      color: rgba(255,255,255,0.72);
+      font-size: clamp(24px, 3.8vh, 48px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 0.95;
+      text-transform: uppercase;
+      color: #fff;
+      cursor: default;
     }
     .work-row-line {
       display: none;
@@ -284,8 +300,13 @@
       overflow: visible;
     }
     .wc-label {
-      font-size: 8px; font-weight: 400; letter-spacing: 0.04em; line-height: 1.3;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      font-size: clamp(9px, 1.05vh, 11px);
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      line-height: 1.35;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       text-transform: uppercase;
       display: block;
       max-width: 100%;
@@ -295,9 +316,9 @@
       text-overflow: clip;
       white-space: normal;
     }
-    .wc-label-client { color: rgba(255,255,255,0.35); }
-    .wc-label-sep    { color: rgba(255,255,255,0.2); }
-    .wc-label-title  { color: rgba(255,255,255,0.9); }
+    .wc-label-client { color: rgba(255, 255, 255, 0.48); }
+    .wc-label-sep    { color: rgba(255, 255, 255, 0.22); }
+    .wc-label-title  { color: rgba(255, 255, 255, 0.95); font-weight: 600; }
 
     /* ── CARD THUMBNAIL ─────────────────────────────────── */
     .wc-tilt {
@@ -685,7 +706,7 @@
   }
 
   /** Keep in sync with :root --wc-hover-max (gentler zoom than reference portfolios). */
-  var WC_HOVER_SCALE_MAX = 1.25;
+  var WC_HOVER_SCALE_MAX = 1.12;
 
   /** Move all other cards in the showcase radially outward (all rows), not only the same strip. */
   function applyPeerRadialPush(activeWrap, scaleFactor) {
@@ -833,6 +854,7 @@
   }
   if (showcase) {
   var revealOrderBase = 0;
+  const workRowTotal = ROWS.length;
   ROWS.forEach((rowData, rowIdx) => {
     const row = document.createElement('div');
     row.className = 'work-row';
@@ -841,9 +863,14 @@
 
     const rowHeader = document.createElement('div');
     rowHeader.className = 'work-row-header';
+    const rowNum = String(rowIdx + 1).padStart(2, '0');
+    const rowTotal = String(workRowTotal).padStart(2, '0');
+    const rowCat = CAT_LABELS[rowData.label] || rowData.label.toUpperCase();
     rowHeader.innerHTML = `
-      <span class="work-row-cat">${CAT_LABELS[rowData.label] || rowData.label.toUpperCase()}</span>
-      <div class="work-row-line"></div>
+      <div class="work-row-header__left">
+        <span class="work-row-num">${rowNum} / ${rowTotal}</span>
+        <h2 class="work-row-cat">${rowCat}</h2>
+      </div>
     `;
 
     const rowCards = document.createElement('div');
