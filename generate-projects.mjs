@@ -640,9 +640,9 @@ function makeHTML(card, catLabel, framesHTML = '') {
 // Key format: 'catSlug/projSlug'
 const FRAMES = {
   'visual-effects/speedcross-3': `
-      <img src="image%201.jpg" alt="">
-      <img src="image%202.jpg" alt="">
-      <img src="image%203.jpg" alt="">`,
+      <img src="1.png" alt="">
+      <img src="2.png" alt="">
+      <img src="3.png" alt="">`,
   'visual-effects/road-to-palisades': `
       <img src="1.jpg" alt="">
       <img src="2.jpg" alt="">

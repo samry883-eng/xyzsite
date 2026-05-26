@@ -23,6 +23,10 @@ Capabilities/screenshots/
 *.jpeg
 *.avif
 *.webp
+# Work project stills (served next to each project index.html)
+!Work/**/*.png
+!Work/**/*.jpg
+!Work/**/*.jpeg
 # Allow shipped capabilities deck assets (overrides patterns above)
 !Capabilities/assets/
 !Capabilities/assets/**
