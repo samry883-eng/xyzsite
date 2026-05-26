@@ -399,6 +399,129 @@
       transform: translateZ(0);
     }
 
+    /* ── MOBILE (ref: Work - bold dividers mobile) ─────────── */
+    @media (max-width: 760px) {
+      html, body {
+        height: auto;
+        min-height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+
+      nav {
+        height: auto;
+        min-height: 52px;
+        padding: 14px 20px 16px;
+      }
+      .nav-logo img { height: 24px; }
+      .nav-links { gap: 18px; }
+      .nav-links a { font-size: 10px; letter-spacing: 0.16em; }
+
+      .work-fade-text,
+      .work-fade-right { display: none; }
+
+      .work-showcase {
+        position: relative;
+        top: auto;
+        left: auto;
+        right: auto;
+        height: auto;
+        max-height: none;
+        margin-top: 0;
+        padding: calc(var(--nav-h) + 12px) 0 40px;
+        gap: 0;
+        overflow: visible;
+      }
+
+      .work-row {
+        flex: none;
+        min-height: auto;
+        margin-bottom: 56px;
+        opacity: 1;
+        transform: none;
+        will-change: auto;
+      }
+      .work-row.wc-row-in {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+
+      .work-row-header {
+        width: auto;
+        margin: 0 20px 24px;
+        padding-bottom: 14px;
+      }
+      .work-row-header__left { gap: 12px; }
+      .work-row-num {
+        font-size: 9px;
+        letter-spacing: 0.22em;
+      }
+      .work-row-cat {
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        line-height: 1;
+      }
+
+      .work-row-cards {
+        container-type: normal;
+        flex: none;
+        min-height: auto;
+        align-items: stretch;
+        gap: 18px;
+        margin-top: 0;
+        padding: 0 20px;
+        padding-top: 0;
+        padding-right: 20px;
+        overflow-x: auto;
+        overflow-y: visible;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .work-card-wrap {
+        flex: 0 0 78%;
+        width: 78%;
+        height: auto;
+        max-height: none;
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
+      }
+      .work-card-wrap[data-clone] { display: none !important; }
+
+      .wc-tilt { gap: 12px; }
+
+      .work-card {
+        flex: none;
+        width: 100%;
+        min-height: 0;
+        aspect-ratio: 16 / 9;
+      }
+
+      .wc-header {
+        min-height: 0;
+        text-align: left;
+        justify-content: flex-start;
+        transform: none !important;
+      }
+      .wc-label {
+        font-size: 9px;
+        letter-spacing: 0.14em;
+        text-align: left;
+        white-space: normal;
+      }
+      .work-card-wrap:hover .wc-label {
+        white-space: normal;
+      }
+
+      .work-card,
+      .work-card-wrap:hover .work-card {
+        transform: none !important;
+        overflow: hidden;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -537,6 +660,8 @@
   const FALLBACK_IMG = CDN + '69c0bbd38bf9e9ecfb7c293b_final%20test1.mp4_snapshot_00.27.567.jpg';
   const showcase = document.getElementById('showcase');
   const pageOut = document.getElementById('page-out');
+  const MOBILE_WORK_MQ = window.matchMedia('(max-width: 760px)');
+  function isMobileWorkLayout() { return MOBILE_WORK_MQ.matches; }
 
   function waitForGridReady() {
     // Wait for the actual in-DOM poster <img> elements to decode and be paint-ready.
@@ -583,11 +708,18 @@
   }
 
   function startRowStagger(durMs) {
+    var rows = showcase ? showcase.querySelectorAll('.work-row') : [];
+    if (isMobileWorkLayout()) {
+      Array.prototype.forEach.call(rows, function (row) {
+        row.classList.add('wc-row-in');
+        row.style.willChange = 'auto';
+      });
+      return;
+    }
     // The overlay slides upward (translateY 0 → -100%) over durMs ms.
     // Its bottom edge starts at viewport bottom and rises to 0.
     // Each row triggers the instant the overlay edge passes its top edge.
     var vh = window.innerHeight;
-    var rows = showcase ? showcase.querySelectorAll('.work-row') : [];
     Array.prototype.forEach.call(rows, function (row) {
       if (row.classList.contains('wc-row-in')) return;
       var rect = row.getBoundingClientRect();
@@ -924,8 +1056,10 @@
 
     // ── HORIZONTAL ROWS ─────────────────────
   document.querySelectorAll('.work-row-cards').forEach(rowCards => {
-    const originals = Array.from(rowCards.querySelectorAll('.work-card-wrap'));
+    const originals = Array.from(rowCards.querySelectorAll('.work-card-wrap:not([data-clone])'));
     if (!originals.length) return;
+
+    if (isMobileWorkLayout()) return;
 
     // Infinite strip: clone right and left so snap motion is continuous.
     originals.forEach(orig => {
