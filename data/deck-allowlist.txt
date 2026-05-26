@@ -3,5 +3,6 @@
 # Lines starting with # are ignored.
 #
 # Example:
+# samry@xyzstudios.co
 # client@agency.com
 # partner@brand.com
