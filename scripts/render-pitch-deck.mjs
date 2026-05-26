@@ -1,5 +1,5 @@
 /**
- * Builds Capabilities/index.html from assets/pitch-embed/iyby7f/slides.json
+ * Builds Capabilities/vfx/index.html from assets/pitch-embed/iyby7f/slides.json
  * Run after: node scripts/build-pitch-deck-data.mjs && node scripts/fetch-pitch-embed.mjs
  */
 import fs from 'fs';
@@ -307,6 +307,6 @@ setTimeout(function () { hint.style.opacity = '0'; }, 4000);
 </html>
 `;
 
-const out = path.join(root, 'Capabilities', 'index.html');
+const out = path.join(root, 'Capabilities', 'vfx', 'index.html');
 fs.writeFileSync(out, html, 'utf8');
 console.log('Wrote', out, '(' + slides.length + ' slides)');

@@ -314,6 +314,10 @@ function getStaticFilePath(urlPath) {
     p === '/capabilities/deck.html'
   ) {
     filePath = path.join(__dirname, 'Capabilities', 'deck-legacy.html');
+  } else if (p === '/capabilities/vfx' || p === '/capabilities/vfx/') {
+    filePath = path.join(__dirname, 'Capabilities', 'vfx', 'index.html');
+  } else if (p === '/capabilities/sound' || p === '/capabilities/sound/') {
+    filePath = path.join(__dirname, 'Capabilities', 'sound', 'index.html');
   } else if (p === '/capabilities/login' || p === '/capabilities/login/' || p === '/capabilities/login.html') {
     filePath = path.join(__dirname, 'Capabilities', 'login.html');
   } else if (p === '/capabilities/admin' || p === '/capabilities/admin/' || p === '/capabilities/admin.html') {

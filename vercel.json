@@ -45,6 +45,22 @@
       "destination": "/capabilities/admin.html"
     },
     {
+      "source": "/capabilities/vfx",
+      "destination": "/capabilities/vfx/index.html"
+    },
+    {
+      "source": "/capabilities/vfx/",
+      "destination": "/capabilities/vfx/index.html"
+    },
+    {
+      "source": "/capabilities/sound",
+      "destination": "/capabilities/sound/index.html"
+    },
+    {
+      "source": "/capabilities/sound/",
+      "destination": "/capabilities/sound/index.html"
+    },
+    {
       "source": "/capabilities",
       "destination": "/capabilities/index.html"
     },

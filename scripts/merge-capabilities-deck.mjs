@@ -1,5 +1,5 @@
 /**
- * Builds Capabilities/index.html from deck-legacy.html:
+ * Builds Capabilities/vfx/index.html from deck-legacy.html:
  * slide 1 (cover), About, and Highlighted Work grid use pitch-embed AVIFs; slide 6+ stays legacy.
  * PDF: Capabilities/assets/XYZStudios-Capabilities-Deck-2026.pdf
  */
@@ -93,6 +93,6 @@ html = html.replace(
   '<!-- Merged deck: cover + About + work grid = pitch-embed; from slide 6 = legacy. Deck PDF. Source: scripts/merge-capabilities-deck.mjs -->'
 );
 
-const out = path.join(root, 'Capabilities', 'index.html');
+const out = path.join(root, 'Capabilities', 'vfx', 'index.html');
 fs.writeFileSync(out, html, 'utf8');
 console.log('Wrote', out);
