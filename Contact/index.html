@@ -92,40 +92,6 @@
     .ct-section-links .ct-action { cursor: pointer; }
     .ct-section-links .ct-action:hover { color: #fff; }
 
-    /* Capabilities deck — email access (below request link) */
-    .ct-deck-login {
-      margin-top: 28px;
-      padding-top: 22px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      max-width: 280px;
-    }
-    .ct-deck-login-label {
-      font: 700 8px/1 Micross, Arial, sans-serif;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: #fff;
-      margin-bottom: 14px;
-    }
-    .ct-deck-login-hint {
-      font: 400 11px/1.5 Micross, Arial, sans-serif;
-      color: rgba(255, 255, 255, 0.28);
-      margin-bottom: 16px;
-    }
-    .ct-deck-login .ct-field {
-      margin-bottom: 12px;
-      padding: 16px 0 8px;
-    }
-    .ct-deck-login .ct-field .ct-label { top: 16px; }
-    .ct-deck-login .ct-field:focus-within .ct-label,
-    .ct-deck-login .ct-field.filled .ct-label { top: 0; }
-    .ct-deck-login-err {
-      min-height: 1.2em;
-      margin: 0 0 10px;
-      font: 400 10px/1.4 Micross, Arial, sans-serif;
-      color: rgba(255, 140, 130, 0.95);
-    }
-    .ct-deck-login .ct-submit { margin-top: 0; }
-
     /* Footer */
     .ct-foot {
       flex-shrink: 0;
@@ -314,6 +280,39 @@
       font: 400 11px/1.65 Micross, Arial, sans-serif;
       color: rgba(255,255,255,0.3); margin-bottom: 44px;
     }
+    #deck-form {
+      flex-shrink: 0;
+    }
+    .deck-login {
+      flex-shrink: 0;
+      margin-top: 36px;
+      padding-top: 28px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .deck-login-label {
+      font: 700 8px/1 Micross, Arial, sans-serif;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .deck-login-hint {
+      font: 400 11px/1.55 Micross, Arial, sans-serif;
+      color: rgba(255, 255, 255, 0.3);
+      margin-bottom: 18px;
+    }
+    .deck-login .ct-field {
+      margin-bottom: 12px;
+    }
+    .deck-login-err {
+      min-height: 1.2em;
+      margin: 0 0 10px;
+      font: 400 10px/1.4 Micross, Arial, sans-serif;
+      color: rgba(255, 140, 130, 0.95);
+    }
+    .deck-login .ct-submit {
+      margin-top: 0;
+    }
     /* Success: fill drawer and center copy for any viewport */
     #deck-panel.deck-success-on .deck-eyebrow,
     #deck-panel.deck-success-on .deck-title,
@@ -418,18 +417,6 @@
             <div class="anim-wrap"><a href="mailto:inquiries@xyzstudios.co" class="anim-item soft" id="an-s2">inquiries@xyzstudios.co</a></div>
             <div class="anim-wrap"><span onclick="openDeckModal()" class="anim-item soft ct-action" id="an-s3">Request capabilities deck &rarr;</span></div>
           </div>
-          <div class="anim-wrap"><div class="ct-deck-login anim-item soft" id="an-s3b">
-            <div class="ct-deck-login-label">Access capabilities deck</div>
-            <p class="ct-deck-login-hint">Enter your email if you already have access.</p>
-            <form id="ct-deck-login-form" novalidate>
-              <div class="ct-field" id="ct-deck-email-field">
-                <label class="ct-label" for="ct-deck-email">Email</label>
-                <input type="email" id="ct-deck-email" name="email" required autocomplete="email" inputmode="email">
-              </div>
-              <p class="ct-deck-login-err" id="ct-deck-login-err" aria-live="polite"></p>
-              <button type="submit" class="ct-submit" id="ct-deck-login-btn">Enter deck &rarr;</button>
-            </form>
-          </div></div>
         </div>
         <div class="ct-section">
           <div class="anim-wrap"><div class="ct-section-label anim-item soft" id="an-s4">Join Us</div></div>
@@ -534,12 +521,25 @@
         <label class="ct-label" for="dk-email">Email *</label>
         <input type="email" id="dk-email" name="email" required autocomplete="email">
       </div>
-      <div class="ct-field" id="dk-field-role" style="margin-bottom:44px;">
+      <div class="ct-field" id="dk-field-role" style="margin-bottom:20px;">
         <label class="ct-label" for="dk-role">Role / Title</label>
         <input type="text" id="dk-role" name="role" autocomplete="organization-title">
       </div>
       <button type="submit" class="ct-submit">Submit &rarr;</button>
     </form>
+
+    <div class="deck-login" id="deck-login">
+      <div class="deck-login-label">Log in</div>
+      <p class="deck-login-hint">Already have access? Enter your email to open the deck.</p>
+      <form id="ct-deck-login-form" novalidate>
+        <div class="ct-field" id="ct-deck-email-field">
+          <label class="ct-label" for="ct-deck-email">Email</label>
+          <input type="email" id="ct-deck-email" name="email" required autocomplete="email" inputmode="email">
+        </div>
+        <p class="deck-login-err" id="ct-deck-login-err" aria-live="polite"></p>
+        <button type="submit" class="ct-submit" id="ct-deck-login-btn">Enter deck &rarr;</button>
+      </form>
+    </div>
 
     <div id="deck-success">
       <div class="deck-success-title">Request received.</div>
@@ -549,7 +549,7 @@
 </div>
 
 <script>
-  // ── CAPABILITIES DECK — email login (left column) ───────
+  // ── CAPABILITIES DECK — email login (request modal) ─────
   (function initDeckEmailLogin() {
     var email = document.getElementById('ct-deck-email');
     var field = document.getElementById('ct-deck-email-field');
@@ -618,12 +618,21 @@
     }
     if (success) success.classList.remove('visible');
     if (panel) panel.classList.remove('deck-success-on');
+    var loginErr = document.getElementById('ct-deck-login-err');
+    if (loginErr) loginErr.textContent = '';
+    var loginBtn = document.getElementById('ct-deck-login-btn');
+    if (loginBtn) loginBtn.disabled = false;
     ['dk-name','dk-company','dk-email','dk-role'].forEach(function(id) {
       var input = document.getElementById(id);
       if (!input) return;
       var field = input.closest('.ct-field');
       if (field) field.classList.toggle('filled', false);
     });
+    var deckEmail = document.getElementById('ct-deck-email');
+    if (deckEmail) {
+      var deckField = deckEmail.closest('.ct-field');
+      if (deckField) deckField.classList.toggle('filled', false);
+    }
   }
 
   function closeDeckModal() {
@@ -857,7 +866,7 @@
   });
 
   // Float labels for modal fields
-  ['dk-name','dk-company','dk-email','dk-role'].forEach(function(id) {
+  ['dk-name','dk-company','dk-email','dk-role','ct-deck-email'].forEach(function(id) {
     var input = document.getElementById(id);
     if (!input) return;
     var field = input.closest('.ct-field');
@@ -888,10 +897,9 @@
       ['an-s1', 220],
       ['an-s2', 270],
       ['an-s3', 310],
-      ['an-s3b', 350],
-      ['an-s4', 380],
-      ['an-s5', 420],
-      ['an-s6', 460],
+      ['an-s4', 340],
+      ['an-s5', 380],
+      ['an-s6', 420],
       // Form fields
       ['an-f1', 200],
       ['an-f2', 260],
