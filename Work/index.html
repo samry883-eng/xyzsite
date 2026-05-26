@@ -88,7 +88,6 @@
       --work-divider: rgba(255, 255, 255, 0.14);
       --wc-hover-ease: cubic-bezier(0.33, 1, 0.68, 1);
       --wc-hover-dur: 0.68s;
-      --work-deck-h: 92px;
     }
 
     html, body {
@@ -131,9 +130,9 @@
       top: var(--nav-h);
       left: 0;
       right: 0;
-      height: calc(100vh - var(--nav-h) - var(--work-deck-h));
-      height: calc(100dvh - var(--nav-h) - var(--work-deck-h));
-      max-height: calc(100dvh - var(--nav-h) - var(--work-deck-h));
+      height: calc(100vh - var(--nav-h));
+      height: calc(100dvh - var(--nav-h));
+      max-height: calc(100dvh - var(--nav-h));
       display: flex;
       flex-direction: column;
       gap: var(--row-gap);
@@ -389,130 +388,6 @@
 
     /* Peer motion is applied via JS (radial translate); no scale on siblings */
 
-    /* ── CAPABILITIES DECK ACCESS (bottom) ───────────────── */
-    .work-deck-access {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 1002;
-      background: #000;
-      border-top: 1px solid var(--work-divider);
-      padding: clamp(14px, 2vh, 22px) clamp(16px, 4vw, 48px);
-      box-sizing: border-box;
-    }
-    .work-deck-access__inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: clamp(20px, 4vw, 48px);
-      flex-wrap: wrap;
-    }
-    .work-deck-access__head {
-      flex: 0 1 auto;
-      min-width: 0;
-    }
-    .work-deck-access__eyebrow {
-      display: block;
-      font-size: 9px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.38);
-      margin-bottom: 8px;
-    }
-    .work-deck-access__title {
-      margin: 0;
-      font-size: clamp(20px, 2.8vh, 28px);
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      line-height: 1;
-      text-transform: uppercase;
-      color: #fff;
-    }
-    .work-deck-access__sub {
-      margin: 10px 0 0;
-      font-size: 10px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.35);
-    }
-    .work-deck-access__form {
-      flex: 1 1 280px;
-      max-width: 420px;
-      min-width: min(100%, 260px);
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-    }
-    .work-deck-field {
-      position: relative;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-      padding: 18px 0 10px;
-      margin-bottom: 12px;
-      transition: border-color 0.2s ease;
-    }
-    .work-deck-field:focus-within {
-      border-color: rgba(255, 255, 255, 0.32);
-    }
-    .work-deck-label {
-      position: absolute;
-      top: 18px;
-      left: 0;
-      font-size: 9px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.2);
-      pointer-events: none;
-      transition: top 0.2s ease, font-size 0.2s ease, color 0.2s ease;
-    }
-    .work-deck-field:focus-within .work-deck-label,
-    .work-deck-field.filled .work-deck-label {
-      top: 2px;
-      font-size: 7px;
-      color: rgba(255, 255, 255, 0.42);
-    }
-    .work-deck-field input {
-      width: 100%;
-      border: none;
-      outline: none;
-      background: transparent;
-      font: 400 12px/1.4 Micross, Arial, sans-serif;
-      color: #fff;
-      caret-color: rgba(255, 255, 255, 0.55);
-    }
-    .work-deck-field input:-webkit-autofill,
-    .work-deck-field input:-webkit-autofill:hover,
-    .work-deck-field input:-webkit-autofill:focus {
-      -webkit-box-shadow: 0 0 0 1000px #000 inset;
-      -webkit-text-fill-color: #fff;
-    }
-    .work-deck-err {
-      min-height: 1.2em;
-      margin: 0 0 8px;
-      font-size: 10px;
-      letter-spacing: 0.08em;
-      color: rgba(255, 140, 130, 0.95);
-    }
-    .work-deck-submit {
-      align-self: flex-start;
-      border: none;
-      background: none;
-      padding: 0;
-      cursor: pointer;
-      font: 700 8px/1 Micross, Arial, sans-serif;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.4);
-      transition: color 0.2s ease;
-    }
-    .work-deck-submit:hover:not(:disabled) { color: #fff; }
-    .work-deck-submit:disabled {
-      opacity: 0.35;
-      cursor: not-allowed;
-    }
-
     /* Animation 2 overlay (used as controlled thumbnail load window) */
     #page-out {
       overflow: visible;
@@ -646,28 +521,6 @@
         overflow: hidden;
       }
 
-      :root { --work-deck-h: 0px; }
-
-      .work-deck-access {
-        position: relative;
-        border-top: 1px solid var(--work-divider);
-        margin-top: 8px;
-        padding: 40px 20px 48px;
-      }
-      .work-deck-access__inner {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 28px;
-      }
-      .work-deck-access__title {
-        font-size: 18px;
-        letter-spacing: 0.04em;
-      }
-      .work-deck-access__form {
-        max-width: none;
-        flex: none;
-        width: 100%;
-      }
     }
 
   </style>
@@ -692,31 +545,6 @@
 
   <section class="work-showcase" id="showcase">
     <div class="work-fade-right"></div>
-  </section>
-
-  <section class="work-deck-access" id="work-deck-access" aria-labelledby="work-deck-heading">
-    <div class="work-deck-access__inner">
-      <div class="work-deck-access__head">
-        <span class="work-deck-access__eyebrow">XYZ Studios</span>
-        <h2 class="work-deck-access__title" id="work-deck-heading">Capabilities Deck</h2>
-        <p class="work-deck-access__sub">Enter your email to view the deck.</p>
-      </div>
-      <form class="work-deck-access__form" id="work-deck-form" novalidate>
-        <div class="work-deck-field" id="work-deck-email-field">
-          <label class="work-deck-label" for="work-deck-email">Email</label>
-          <input
-            type="email"
-            id="work-deck-email"
-            name="email"
-            required
-            autocomplete="email"
-            inputmode="email"
-          />
-        </div>
-        <p class="work-deck-err" id="work-deck-err" aria-live="polite"></p>
-        <button type="submit" class="work-deck-submit" id="work-deck-btn">Enter &rarr;</button>
-      </form>
-    </div>
   </section>
 
 <script>
@@ -1340,48 +1168,6 @@
     navigateTo(u.pathname + u.search + u.hash);
   }, true);
   }
-
-  (function initWorkDeckAccess() {
-    var email = document.getElementById('work-deck-email');
-    var field = document.getElementById('work-deck-email-field');
-    var form = document.getElementById('work-deck-form');
-    var err = document.getElementById('work-deck-err');
-    var btn = document.getElementById('work-deck-btn');
-    if (!email || !form) return;
-
-    function syncFilled() {
-      field.classList.toggle('filled', (email.value || '').length > 0);
-    }
-    email.addEventListener('input', syncFilled);
-    syncFilled();
-
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      err.textContent = '';
-      btn.disabled = true;
-      fetch('/api/capabilities/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'same-origin',
-        body: JSON.stringify({ email: email.value.trim() }),
-      })
-        .then(function (r) {
-          return r.json().then(function (data) { return { ok: r.ok, data: data }; });
-        })
-        .then(function (x) {
-          if (!x.ok || !x.data.ok) {
-            err.textContent = (x.data && x.data.error) || 'Unable to open the deck with that email.';
-            btn.disabled = false;
-            return;
-          }
-          window.location.href = '/capabilities/';
-        })
-        .catch(function () {
-          err.textContent = 'Network error. Try again.';
-          btn.disabled = false;
-        });
-    });
-  })();
 
   buildWorkGrid();
   waitForGridReady()

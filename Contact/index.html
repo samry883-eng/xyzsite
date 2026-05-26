@@ -92,6 +92,40 @@
     .ct-section-links .ct-action { cursor: pointer; }
     .ct-section-links .ct-action:hover { color: #fff; }
 
+    /* Capabilities deck — email access (below request link) */
+    .ct-deck-login {
+      margin-top: 28px;
+      padding-top: 22px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      max-width: 280px;
+    }
+    .ct-deck-login-label {
+      font: 700 8px/1 Micross, Arial, sans-serif;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #fff;
+      margin-bottom: 14px;
+    }
+    .ct-deck-login-hint {
+      font: 400 11px/1.5 Micross, Arial, sans-serif;
+      color: rgba(255, 255, 255, 0.28);
+      margin-bottom: 16px;
+    }
+    .ct-deck-login .ct-field {
+      margin-bottom: 12px;
+      padding: 16px 0 8px;
+    }
+    .ct-deck-login .ct-field .ct-label { top: 16px; }
+    .ct-deck-login .ct-field:focus-within .ct-label,
+    .ct-deck-login .ct-field.filled .ct-label { top: 0; }
+    .ct-deck-login-err {
+      min-height: 1.2em;
+      margin: 0 0 10px;
+      font: 400 10px/1.4 Micross, Arial, sans-serif;
+      color: rgba(255, 140, 130, 0.95);
+    }
+    .ct-deck-login .ct-submit { margin-top: 0; }
+
     /* Footer */
     .ct-foot {
       flex-shrink: 0;
@@ -384,6 +418,18 @@
             <div class="anim-wrap"><a href="mailto:inquiries@xyzstudios.co" class="anim-item soft" id="an-s2">inquiries@xyzstudios.co</a></div>
             <div class="anim-wrap"><span onclick="openDeckModal()" class="anim-item soft ct-action" id="an-s3">Request capabilities deck &rarr;</span></div>
           </div>
+          <div class="anim-wrap"><div class="ct-deck-login anim-item soft" id="an-s3b">
+            <div class="ct-deck-login-label">Access capabilities deck</div>
+            <p class="ct-deck-login-hint">Enter your email if you already have access.</p>
+            <form id="ct-deck-login-form" novalidate>
+              <div class="ct-field" id="ct-deck-email-field">
+                <label class="ct-label" for="ct-deck-email">Email</label>
+                <input type="email" id="ct-deck-email" name="email" required autocomplete="email" inputmode="email">
+              </div>
+              <p class="ct-deck-login-err" id="ct-deck-login-err" aria-live="polite"></p>
+              <button type="submit" class="ct-submit" id="ct-deck-login-btn">Enter deck &rarr;</button>
+            </form>
+          </div></div>
         </div>
         <div class="ct-section">
           <div class="anim-wrap"><div class="ct-section-label anim-item soft" id="an-s4">Join Us</div></div>
@@ -503,6 +549,49 @@
 </div>
 
 <script>
+  // ── CAPABILITIES DECK — email login (left column) ───────
+  (function initDeckEmailLogin() {
+    var email = document.getElementById('ct-deck-email');
+    var field = document.getElementById('ct-deck-email-field');
+    var form = document.getElementById('ct-deck-login-form');
+    var err = document.getElementById('ct-deck-login-err');
+    var btn = document.getElementById('ct-deck-login-btn');
+    if (!email || !form) return;
+
+    function syncFilled() {
+      field.classList.toggle('filled', (email.value || '').length > 0);
+    }
+    email.addEventListener('input', syncFilled);
+    syncFilled();
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      err.textContent = '';
+      btn.disabled = true;
+      fetch('/api/capabilities/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ email: email.value.trim() }),
+      })
+        .then(function (r) {
+          return r.json().then(function (data) { return { ok: r.ok, data: data }; });
+        })
+        .then(function (x) {
+          if (!x.ok || !x.data.ok) {
+            err.textContent = (x.data && x.data.error) || 'Unable to open the deck with that email.';
+            btn.disabled = false;
+            return;
+          }
+          window.location.href = '/capabilities/';
+        })
+        .catch(function () {
+          err.textContent = 'Network error. Try again.';
+          btn.disabled = false;
+        });
+    });
+  })();
+
   // ── CAPABILITIES MODAL ─────────────────────────────────
   function openDeckModal() {
     var modal = document.getElementById('deck-modal');
@@ -799,9 +888,10 @@
       ['an-s1', 220],
       ['an-s2', 270],
       ['an-s3', 310],
-      ['an-s4', 340],
-      ['an-s5', 380],
-      ['an-s6', 420],
+      ['an-s3b', 350],
+      ['an-s4', 380],
+      ['an-s5', 420],
+      ['an-s6', 460],
       // Form fields
       ['an-f1', 200],
       ['an-f2', 260],
