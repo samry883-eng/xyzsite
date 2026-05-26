@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Beats — Open — XYZ Studios</title>
+  <link href="/assets/xyz-studio-dev.webflow.shared.6e9159a05.css" rel="stylesheet" type="text/css">
   <style>
     @font-face {
       font-family: 'Micross';
@@ -12,18 +13,22 @@
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --pad: 48px;    /* align with .pj-nav — player spans logo ↔ Back */
-      --nav: 80px;    /* fixed header band (logo / Back) */
-      --video-top: 64px; /* offset before player (under fixed nav) */
-      --ctrl: 50px;   /* scrubber + control row */
-      --pj-scroll-h: 36px; /* scroll hint — match .pj-scroll-hint */
-      /* Max player height: landscape 16:9 box must fit above bottom dock */
-      --pj-video-slot-h: calc(100vh - var(--video-top) - var(--ctrl) - var(--pj-scroll-h));
-      --pj-video-slot-h: calc(100svh - var(--video-top) - var(--ctrl) - var(--pj-scroll-h));
+      --pad: clamp(2rem, 3.5vw, 4rem);
+      --nav: 80px;
+      --video-top: 64px;
+      --pj-ui-pad: 3rem;
+      --pj-scroll-h: 36px;
+      --pj-dock-h: calc(var(--pj-ui-pad) + 5.6rem + var(--pj-scroll-h));
+      --pj-video-slot-h: calc(100vh - var(--video-top) - var(--pj-dock-h));
+      --pj-video-slot-h: calc(100svh - var(--video-top) - var(--pj-dock-h));
     }
-    html, body { background: #000; color: #fff; font-family: Micross, Arial, sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    html, body {
+      background: #000; color: #fff;
+      font-family: Micross, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
 
-    /* ── STAGE: min first screen; flex pushes controls + hint below a larger video ─ */
     .pj-stage {
       position: relative;
       width: 100%;
@@ -34,8 +39,6 @@
       flex-direction: column;
       overflow-x: hidden;
     }
-
-    /* Fills viewport between header and dock; player centered like the reference */
     .pj-video-area {
       flex: 1 1 auto;
       width: 100%;
@@ -46,18 +49,6 @@
       justify-content: center;
       box-sizing: border-box;
     }
-
-    .pj-bottom-dock {
-      flex-shrink: 0;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /*
-      Wrapper fixes layout: <video> uses intrinsic dimensions otherwise.
-      Reference: large 16:9 cinematic frame, full width between nav gutters.
-    */
     .pj-video-frame {
       position: relative;
       box-sizing: border-box;
@@ -80,8 +71,14 @@
       object-position: center center;
       cursor: none;
     }
-
-    /* Scroll arrow — row height matches --pj-scroll-h */
+    .pj-bottom-dock {
+      flex-shrink: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 0 var(--pad);
+      box-sizing: border-box;
+    }
     .pj-scroll-hint {
       flex-shrink: 0;
       width: 100%;
@@ -130,160 +127,109 @@
     #pj-cursor.visible { opacity: 1; }
     #pj-cursor svg { display: block; }
 
-    /* ── NAV: always pinned, never hides ─────────────────── */
     .pj-nav-bar {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 200;
-      pointer-events: none;
-      flex: none;
-      width: 100%;
-      height: 0;
-      overflow: visible;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      pointer-events: none; width: 100%; height: 0; overflow: visible;
     }
-
-    /* Dark gradient fade at top */
     .pj-fade {
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 130px;
+      position: absolute; top: 0; left: 0; right: 0; height: 130px;
       background: linear-gradient(to bottom, rgba(0,0,0,0.65) 0%, transparent 100%);
       pointer-events: none;
     }
-
-    /* Shared label */
-    .lbl {
-      font: 400 10px/1 Micross, Arial, sans-serif;
-      letter-spacing: 0.18em; text-transform: uppercase;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* Nav row: logo left, back/close right */
     .pj-nav {
-      position: relative;
-      height: 80px;
+      position: relative; height: 80px;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0 48px;
-      pointer-events: all;
+      padding: 0 var(--pad); pointer-events: all;
     }
     .pj-logo { display: block; line-height: 0; }
     .pj-logo img { height: 29px; width: auto; display: block; }
-
-    /* BACK / CLOSE button — always right-aligned */
     #pj-back-btn {
-      margin-left: auto;
-      color: rgba(255,255,255,0.8);
+      margin-left: auto; color: rgba(255,255,255,0.8);
       background: none; border: none; cursor: pointer; padding: 0;
-      transition: color 0.2s;
+      font: inherit; text-transform: uppercase; transition: color 0.2s;
     }
     #pj-back-btn:hover { color: #fff; }
 
-    /* ── CONTROLS BAR: stack below video area */
-    .pj-ctrl-bar {
-      flex-shrink: 0;
-      width: 100%;
-      height: var(--ctrl);
-      box-sizing: border-box;
-      background: #000;
-      padding: 3px var(--pad) 5px;
-      display: flex; flex-direction: column; justify-content: center;
-      gap: 5px;
-    }
-
-    /* Progress track */
-    .pj-track {
-      height: 1px;
-      background: rgba(255,255,255,0.15);
+    /* Home player UI — in-flow under video (same markup + shared CSS) */
+    .pj-bottom-dock .pj-player-ui.hero_video-ui {
       position: relative;
-      cursor: pointer;
-      flex-shrink: 0;
+      left: auto; right: auto; bottom: auto;
+      z-index: auto;
+      padding: var(--pj-ui-pad) 0 0;
+      pointer-events: auto;
     }
-    #pj-progress {
-      position: absolute; left: 0; top: 0; bottom: 0;
-      background: rgba(255,255,255,0.88);
-      pointer-events: none; width: 0%;
+    .hero_home-pj-ctrl-r {
+      flex-wrap: nowrap !important;
+      justify-content: flex-end !important;
+      align-items: center !important;
+      gap: 22px;
+      grid-column-gap: 22px !important;
+      grid-row-gap: 0 !important;
     }
-    #pj-handle {
-      position: absolute; top: 50%;
-      transform: translate(-50%, -50%);
-      width: 9px; height: 9px; border-radius: 50%;
-      background: #fff; pointer-events: none; left: 0%;
-      opacity: 0; transition: opacity 0.15s;
+    .hero_home-pj-ctrl-r .div-block-73 {
+      flex-wrap: nowrap !important;
+      justify-content: flex-end !important;
+      align-items: center !important;
+      gap: 10px;
+      grid-column-gap: 10px !important;
     }
-    .pj-track:hover #pj-handle { opacity: 1; }
-
-    /* Controls row — play/time | title — client | sound/fullscreen */
-    .pj-ctrl-row {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
-      width: 100%;
-      gap: 12px;
-    }
-    .pj-ctrl-l { display: flex; align-items: center; gap: 18px; min-width: 0; }
-    .pj-ctrl-m {
-      display: flex;
-      align-items: baseline;
-      justify-content: center;
-      gap: 8px;
-      white-space: nowrap;
-      min-width: 0;
-      text-align: center;
-    }
-    .pj-ctrl-r { display: flex; align-items: center; gap: 22px; justify-content: flex-end; min-width: 0; }
-
-    #pj-play-btn { color: rgba(255,255,255,0.55); background: none; border: none; cursor: pointer; padding: 0; transition: color 0.2s; }
-    #pj-play-btn:hover { color: #fff; }
-    #pj-time { color: rgba(255,255,255,0.3); font-variant-numeric: tabular-nums; }
-    #pj-title-span { color: rgba(255,255,255,0.75); }
-    #pj-sep-span { color: rgba(255,255,255,0.22); letter-spacing: 0; }
-    #pj-client-span { color: rgba(255,255,255,0.38); }
-    #pj-mute-btn, #pj-fs-btn {
-      color: rgba(255,255,255,0.45); background: none; border: none; cursor: pointer; padding: 0;
-      transition: color 0.2s;
-      font: 400 10px/1 Micross, Arial, sans-serif;
-      letter-spacing: 0.18em; text-transform: uppercase;
+    .hero_home-pj-ctrl-r .hero_home-pj-mute,
+    .hero_home-pj-ctrl-r .hero_home-pj-fs {
+      color: rgba(255, 255, 255, 0.45) !important;
+      background: none !important;
+      border: none !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      min-width: 0 !important;
+      min-height: 0 !important;
+      padding: 0 !important;
+      font: 400 10px/1 Micross, Arial, sans-serif !important;
+      letter-spacing: 0.18em !important;
+      text-transform: uppercase !important;
       -webkit-font-smoothing: antialiased;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      transition: color 0.2s ease !important;
     }
-    #pj-mute-btn:hover, #pj-fs-btn:hover { color: #fff; }
-
-    /* ── FULLSCREEN: video fills entire screen ────────────── */
-    .pj-stage.is-fullscreen .pj-video-area {
+    .hero_home-pj-ctrl-r .hero_home-pj-mute:hover,
+    .hero_home-pj-ctrl-r .hero_home-pj-fs:hover { color: #fff !important; }
+    .hero_video-scrub-track { position: relative; }
+    .hero_video-scrub-fill {
+      width: 0%;
+      will-change: width;
+    }
+    .hero_video-scrub-thumb {
       position: absolute;
-      inset: 0;
-      z-index: 0;
-      padding: 0;
-      flex: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      left: 0%;
+    }
+    .pj-player-ui .projects_item-titles {
+      transition: opacity 0.4s ease;
+      will-change: opacity;
+    }
+
+    .pj-stage.is-fullscreen {
+      position: fixed; inset: 0; z-index: 500;
+      min-height: 100svh; height: 100svh;
+    }
+    .pj-stage.is-fullscreen .pj-video-area {
+      position: absolute; inset: 0; padding: 0;
+      flex: none; display: flex; align-items: center; justify-content: center;
     }
     .pj-stage.is-fullscreen .pj-video-frame {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      max-width: none;
-      max-height: none;
-      aspect-ratio: unset;
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      max-width: none; max-height: none; aspect-ratio: unset;
     }
-    .pj-stage.is-fullscreen #pj-video {
-      object-fit: cover;
+    .pj-stage.is-fullscreen #pj-video { object-fit: cover; }
+    .pj-stage.is-fullscreen .pj-bottom-dock {
+      position: absolute; left: 0; right: 0; bottom: 0;
+      padding: 0 var(--pad);
     }
     .pj-stage.is-fullscreen .pj-scroll-hint { display: none; }
-    .pj-stage.is-fullscreen .pj-bottom-dock {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      z-index: 50;
-    }
-    .pj-stage.is-fullscreen .pj-ctrl-bar {
-      position: relative;
-      background: transparent;
-      border-top: none;
-    }
+    .pj-stage.is-fullscreen .hero_home-pj-fs { display: none !important; }
     .pj-stage.is-fullscreen .pj-logo { display: none; }
-    .pj-stage.is-fullscreen #pj-fs-btn { display: none; }
-    .pj-stage.is-fullscreen .pj-nav-bar { position: absolute; }
 
     /* ── CREDITS STAGGER ANIMATION ───────────────────────── */
     @keyframes pj-rise {
@@ -298,7 +244,7 @@
     /* ── CREDITS: tight, directly after stage ─────────────── */
     .pj-credits {
       background: #000;
-      padding: 48px 48px 80px;
+      padding: 48px var(--pad) 80px;
     }
     .pj-cr-title {
       font: 700 48px/1.04 Micross, Arial, sans-serif;
@@ -337,14 +283,13 @@
   <!-- STAGE: hero + controls + scroll hint; video scales to largest 9:16 in the slot -->
   <div class="pj-stage" id="pj-stage">
 
-    <!-- NAV: fixed — first in DOM so flex order stays video → spacer → dock -->
     <div class="pj-nav-bar">
       <div class="pj-fade"></div>
       <div class="pj-nav">
         <a href="/" class="pj-logo">
-          <img src="/assets/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios">
+          <img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios" referrerpolicy="no-referrer" crossorigin="anonymous">
         </a>
-        <button class="lbl" id="pj-back-btn">Back</button>
+        <button type="button" id="pj-back-btn">Back</button>
       </div>
     </div>
 
@@ -361,24 +306,38 @@
     </div>
 
     <div class="pj-bottom-dock">
-      <div class="pj-ctrl-bar">
-        <div class="pj-track" id="pj-track">
-          <div id="pj-progress"></div>
-          <div id="pj-handle"></div>
-        </div>
-        <div class="pj-ctrl-row">
-          <div class="pj-ctrl-l">
-            <button class="lbl" id="pj-play-btn">Play</button>
-            <span class="lbl" id="pj-time">0:00 — 0:00</span>
+      <div class="hero_video-ui pj-player-ui">
+        <div class="hero_video-controls">
+          <div class="hero_video-time">
+            <div class="hero_video-time-current">0:00</div>
+            <div class="hero_video-time-separator"></div>
+            <div class="hero_video-time-total">0:00</div>
           </div>
-          <div class="pj-ctrl-m">
-            <span class="lbl" id="pj-title-span">Open</span>
-            <span class="lbl" id="pj-sep-span">—</span>
-            <span class="lbl" id="pj-client-span">Beats</span>
+          <div class="hero_video-scrub" id="pj-scrub">
+            <div class="hero_video-scrub-track">
+              <div class="hero_video-scrub-buffer"></div>
+              <div class="hero_video-scrub-fill"></div>
+              <div class="hero_video-scrub-thumb"></div>
+            </div>
           </div>
-          <div class="pj-ctrl-r">
-            <button id="pj-mute-btn">Sound:On</button>
-            <button id="pj-fs-btn">Full Screen</button>
+          <div class="hero_video-controls_inner">
+            <div class="hero_video-toggle play" id="pj-play-btn">
+              <div hero_video-icon="play">Play</div>
+              <div hero_video-icon="pause" style="display:none">Pause</div>
+            </div>
+            <div class="projects_item-titles" id="pj-ui-titles">
+              <div class="projects_item-title">Open</div>
+              <div class="projects_item-title company">Beats</div>
+            </div>
+            <div class="div-block-76 hero_home-pj-ctrl-r">
+              <div class="div-block-73">
+                <div class="hero_video-toggle hero_home-pj-mute" id="pj-mute-btn">
+                  <div hero_video-text="sound">Sound:On</div>
+                  <div hero_video-text="mute" style="display:none">Sound:Off</div>
+                </div>
+              </div>
+              <div class="hero_video-toggle hero_home-pj-fs" id="pj-fs-btn"><div>Full Screen</div></div>
+            </div>
           </div>
         </div>
       </div>
@@ -419,34 +378,67 @@
 <script>
   const stage   = document.getElementById('pj-stage');
   const vid     = document.getElementById('pj-video');
-  const playBtn = document.getElementById('pj-play-btn');
-  const timeEl  = document.getElementById('pj-time');
-  const muteBtn = document.getElementById('pj-mute-btn');
-  const fsBtn   = document.getElementById('pj-fs-btn');
-  const backBtn = document.getElementById('pj-back-btn');
-  const track   = document.getElementById('pj-track');
-  const progress= document.getElementById('pj-progress');
-  const handle  = document.getElementById('pj-handle');
+  const playBtn   = document.getElementById('pj-play-btn');
+  const playLabel = playBtn.querySelector('[hero_video-icon="play"]');
+  const pauseLabel= playBtn.querySelector('[hero_video-icon="pause"]');
+  const muteBtn   = document.getElementById('pj-mute-btn');
+  const soundLabel= muteBtn.querySelector('[hero_video-text="sound"]');
+  const muteLabel = muteBtn.querySelector('[hero_video-text="mute"]');
+  const fsBtn     = document.getElementById('pj-fs-btn');
+  const backBtn   = document.getElementById('pj-back-btn');
+  const scrub     = document.getElementById('pj-scrub');
+  const progress  = document.querySelector('.hero_video-scrub-fill');
+  const handle    = document.querySelector('.hero_video-scrub-thumb');
+  const credits   = document.getElementById('pj-credits');
+  const scrollHint = document.getElementById('pj-scroll-hint');
+  const uiTitles  = document.getElementById('pj-ui-titles');
+  const UI_TITLE_FADE_PX = 140;
 
-  // Start paused
+  function updateUiTitleOpacity() {
+    if (!uiTitles || stage.classList.contains('is-fullscreen')) return;
+    const creditsTop = credits.getBoundingClientRect().top;
+    const fadeEnd = window.innerHeight - UI_TITLE_FADE_PX;
+    const opacity = creditsTop >= window.innerHeight
+      ? 1
+      : creditsTop <= fadeEnd
+        ? 0
+        : (creditsTop - fadeEnd) / (window.innerHeight - fadeEnd);
+    uiTitles.style.opacity = String(opacity);
+    uiTitles.style.pointerEvents = opacity < 0.05 ? 'none' : '';
+  }
+
   vid.pause();
 
   function fmt(s) {
     if (!isFinite(s)) return '0:00';
     return Math.floor(s/60) + ':' + String(Math.floor(s%60)).padStart(2,'0');
   }
-  function updatePlay() { playBtn.textContent = vid.paused ? 'Play' : 'Pause'; }
-  function updateMute() { muteBtn.textContent = vid.muted ? 'Sound:Off' : 'Sound:On'; }
+  function updatePlay() {
+    const paused = vid.paused;
+    if (playLabel)  playLabel.style.display  = paused ? '' : 'none';
+    if (pauseLabel) pauseLabel.style.display = paused ? 'none' : '';
+  }
+  function updateMute() {
+    const muted = vid.muted;
+    if (soundLabel) soundLabel.style.display = muted ? 'none' : '';
+    if (muteLabel)  muteLabel.style.display  = muted ? '' : 'none';
+  }
 
-  vid.addEventListener('play',  updatePlay);
-  vid.addEventListener('pause', updatePlay);
-  vid.addEventListener('timeupdate', () => {
+  let _raf = null;
+  function _tick() {
     const cur = vid.currentTime, dur = vid.duration || 0;
-    timeEl.textContent = fmt(cur) + ' — ' + fmt(dur);
-    const pct = dur ? (cur / dur) * 100 : 0;
-    progress.style.width = pct + '%';
-    handle.style.left    = pct + '%';
-  });
+    document.querySelector('.hero_video-time-current').textContent = fmt(cur);
+    document.querySelector('.hero_video-time-total').textContent = fmt(dur);
+    const pct = dur ? cur / dur : 0;
+    progress.style.width = (pct * 100) + '%';
+    handle.style.left = (pct * 100) + '%';
+    _raf = requestAnimationFrame(_tick);
+  }
+  function _startRaf() { if (!_raf) _raf = requestAnimationFrame(_tick); }
+  function _stopRaf()  { if (_raf) { cancelAnimationFrame(_raf); _raf = null; } }
+  vid.addEventListener('play',  () => { updatePlay(); _startRaf(); });
+  vid.addEventListener('pause', () => { updatePlay(); _stopRaf(); });
+  vid.addEventListener('ended', () => { updatePlay(); _stopRaf(); });
 
   // Custom cursor on video
   // Custom cursor
@@ -475,16 +467,21 @@
     const fs = !!document.fullscreenElement;
     stage.classList.toggle('is-fullscreen', fs);
     backBtn.textContent = fs ? 'Close' : 'Back';
+    if (uiTitles) {
+      uiTitles.style.opacity = fs ? '' : undefined;
+      uiTitles.style.pointerEvents = fs ? '' : undefined;
+    }
+    updateUiTitleOpacity();
   });
 
   // Scrubber
   let scrubbing = false;
   function seekTo(e) {
-    const r = track.getBoundingClientRect();
+    const r = scrub.getBoundingClientRect();
     const pct = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
     if (isFinite(vid.duration)) vid.currentTime = pct * vid.duration;
   }
-  track.addEventListener('mousedown', e => { scrubbing = true; seekTo(e); });
+  scrub.addEventListener('mousedown', e => { scrubbing = true; seekTo(e); });
   document.addEventListener('mousemove', e => { if (scrubbing) seekTo(e); });
   document.addEventListener('mouseup',   () => { scrubbing = false; });
 
@@ -520,11 +517,13 @@
   updatePlay(); updateMute(); updateCursorIcon();
 
   // Scroll hint → credits
-  const credits = document.getElementById('pj-credits');
-  const scrollHint = document.getElementById('pj-scroll-hint');
   scrollHint.addEventListener('click', () => {
     credits.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
+  window.addEventListener('scroll', updateUiTitleOpacity, { passive: true });
+  window.addEventListener('resize', updateUiTitleOpacity);
+  updateUiTitleOpacity();
+
   new IntersectionObserver((entries) => {
     scrollHint.classList.toggle('is-hidden', entries[0].isIntersecting);
   }, { threshold: 0.04, rootMargin: '0px 0px -8% 0px' }).observe(credits);
