@@ -11,7 +11,8 @@
     "merge:capabilities": "node scripts/merge-capabilities-deck.mjs",
     "capabilities:grant": "node scripts/capabilities-grant.mjs",
     "capabilities:print-env": "node scripts/capabilities-print-env.mjs",
-    "capabilities:grant-and-print": "node scripts/capabilities-grant-and-print.mjs"
+    "capabilities:grant-and-print": "node scripts/capabilities-grant-and-print.mjs",
+    "deck:allow": "node scripts/deck-allow-add.mjs"
   },
   "engines": {
     "node": ">=20"

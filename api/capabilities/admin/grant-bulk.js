@@ -1,12 +1,11 @@
 import {
-  grantUpsert,
+  grantUpsertMany,
   getAdminSecretFromEnv,
   canPersistGrants,
   buildSuggestedAllowedEmails,
 } from '../../../lib/capabilities-auth.mjs';
 import { readJsonBody } from '../../../lib/vercel-node-api.mjs';
 import { isAdminAuthorized } from '../../../lib/capabilities-admin-guard.mjs';
-
 function sendJson(res, code, obj) {
   res.statusCode = code;
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
@@ -34,27 +33,30 @@ export default async function handler(req, res) {
     sendJson(res, 400, { ok: false, error: 'Invalid JSON' });
     return;
   }
+  const raw = body.emails ?? body.email ?? '';
   try {
-    const email = body.email;
     if (!(await canPersistGrants())) {
+      const suggested = buildSuggestedAllowedEmails(raw);
       sendJson(res, 200, {
         ok: true,
         mode: 'copy_env',
-        suggestedAllowedEmails: buildSuggestedAllowedEmails(email),
+        added: [],
+        suggestedAllowedEmails: suggested,
         message:
-          'Copy suggestedAllowedEmails into Vercel → CAPABILITIES_ALLOWED_EMAILS, then redeploy.',
+          'Copy suggestedAllowedEmails into Vercel → CAPABILITIES_ALLOWED_EMAILS, then redeploy. Or add lines to data/deck-allowlist.txt and push.',
       });
       return;
     }
-    await grantUpsert(email, body.password || undefined);
-    sendJson(res, 200, { ok: true, mode: 'saved' });
+    const added = await grantUpsertMany(raw);
+    sendJson(res, 200, { ok: true, mode: 'saved', added });
   } catch (e) {
     const msg = e.message || 'Grant failed';
     if (String(msg).includes('Production writes need Redis')) {
       sendJson(res, 200, {
         ok: true,
         mode: 'copy_env',
-        suggestedAllowedEmails: buildSuggestedAllowedEmails(body.email),
+        added: [],
+        suggestedAllowedEmails: buildSuggestedAllowedEmails(raw),
         message: msg,
       });
       return;

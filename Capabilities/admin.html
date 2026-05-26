@@ -127,6 +127,78 @@
       gap: 24px;
       flex-wrap: wrap;
     }
+    .help-box {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto 28px;
+      padding: 16px 18px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font: 400 10px/1.65 Micross, Arial, sans-serif;
+      color: rgba(255, 255, 255, 0.38);
+      text-align: left;
+    }
+    .help-box strong {
+      display: block;
+      color: rgba(255, 255, 255, 0.75);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 8px;
+      margin-bottom: 8px;
+    }
+    .bulk-area {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto 20px;
+    }
+    .bulk-area textarea {
+      width: 100%;
+      min-height: 88px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font: 400 12px/1.5 Micross, Arial, sans-serif;
+      padding: 12px;
+      resize: vertical;
+      outline: none;
+    }
+    .bulk-area textarea:focus {
+      border-color: rgba(255, 255, 255, 0.28);
+    }
+    .bulk-label {
+      font: 700 7px/1 Micross, Arial, sans-serif;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.35);
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .copy-box {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto 20px;
+      text-align: left;
+      display: none;
+    }
+    .copy-box.visible { display: block; }
+    .copy-box pre {
+      white-space: pre-wrap;
+      word-break: break-all;
+      font: 400 10px/1.5 Micross, Arial, sans-serif;
+      color: rgba(255, 255, 255, 0.55);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 12px;
+      margin: 8px 0 12px;
+      max-height: 120px;
+      overflow: auto;
+    }
+    .source-tag {
+      font: 400 9px/1 Micross, Arial, sans-serif;
+      color: rgba(255, 255, 255, 0.28);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
   </style>
 </head>
 <body>
@@ -145,19 +217,35 @@
         <button type="button" class="ct-submit" id="btn-logout">Sign out</button>
       </div>
 
-      <div class="err" id="list-err" aria-live="polite"></div>
+      <div class="help-box" id="help-box">
+        <strong>Easy allowlist</strong>
+        Paste emails below. On live Vercel without Redis, copy the value into
+        <code style="color:rgba(255,255,255,0.5)">CAPABILITIES_ALLOWED_EMAILS</code>
+        and redeploy — or add one email per line in
+        <code style="color:rgba(255,255,255,0.5)">data/deck-allowlist.txt</code>
+        and push to GitHub.
+      </div>
+
+      <div class="bulk-area">
+        <div class="bulk-label">Add emails (one per line or comma-separated)</div>
+        <textarea id="bulk-emails" placeholder="client@agency.com&#10;partner@brand.com" spellcheck="false"></textarea>
+      </div>
+      <div class="err" id="add-err" aria-live="polite"></div>
+      <button type="button" class="ct-submit" id="btn-bulk-add">Add access &rarr;</button>
+
+      <div class="copy-box" id="copy-box">
+        <div class="bulk-label">Paste into Vercel → CAPABILITIES_ALLOWED_EMAILS</div>
+        <pre id="copy-value"></pre>
+        <button type="button" class="ct-submit" id="btn-copy-env">Copy to clipboard</button>
+      </div>
+
+      <div class="err" id="list-err" aria-live="polite" style="margin-top:28px;"></div>
       <table>
         <thead>
-          <tr><th>Email</th><th>Added</th><th></th></tr>
+          <tr><th>Email</th><th>Source</th><th></th></tr>
         </thead>
         <tbody id="grant-rows"></tbody>
       </table>
-
-      <div class="ct-field">
-        <input type="email" id="new-email" autocomplete="off" aria-label="Email" placeholder="" />
-      </div>
-      <div class="err" id="add-err" aria-live="polite"></div>
-      <button type="button" class="ct-submit" id="btn-add">Add &rarr;</button>
     </div>
   </div>
 
@@ -196,6 +284,23 @@
         });
       }
 
+      var copyBox = document.getElementById('copy-box');
+      var copyValue = document.getElementById('copy-value');
+      var helpBox = document.getElementById('help-box');
+
+      function sourceLabel(source) {
+        if (source === 'allowlist') return 'List / env';
+        if (source === 'grant') return 'Saved';
+        if (source === 'allowlist+grant') return 'Both';
+        return '—';
+      }
+
+      function showCopyEnv(value, message) {
+        copyValue.textContent = value || '';
+        copyBox.classList.add('visible');
+        if (message) addErr.textContent = message;
+      }
+
       function renderRows(grants) {
         grantRows.innerHTML = '';
         (grants || []).forEach(function (g) {
@@ -203,27 +308,30 @@
           var td1 = document.createElement('td');
           td1.textContent = g.email;
           var td2 = document.createElement('td');
-          td2.textContent = g.createdAt ? new Date(g.createdAt).toLocaleString() : '—';
+          td2.className = 'source-tag';
+          td2.textContent = sourceLabel(g.source);
           var td3 = document.createElement('td');
           td3.className = 'row-actions';
-          var btn = document.createElement('button');
-          btn.type = 'button';
-          btn.setAttribute('aria-label', 'Remove');
-          btn.innerHTML = '&times;';
-          btn.addEventListener('click', function () {
-            api('/api/capabilities/admin/revoke', {
-              method: 'POST',
-              body: { email: g.email },
-            }).then(function (x) {
-              if (!x.ok) {
-                listErr.textContent = (x.data && x.data.error) || 'Could not remove';
-                return;
-              }
-              listErr.textContent = '';
-              refreshList();
+          if (g.source !== 'allowlist') {
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.setAttribute('aria-label', 'Remove');
+            btn.innerHTML = '&times;';
+            btn.addEventListener('click', function () {
+              api('/api/capabilities/admin/revoke', {
+                method: 'POST',
+                body: { email: g.email },
+              }).then(function (x) {
+                if (!x.ok) {
+                  listErr.textContent = (x.data && x.data.error) || 'Could not remove';
+                  return;
+                }
+                listErr.textContent = '';
+                refreshList();
+              });
             });
-          });
-          td3.appendChild(btn);
+            td3.appendChild(btn);
+          }
           tr.appendChild(td1);
           tr.appendChild(td2);
           tr.appendChild(td3);
@@ -243,8 +351,30 @@
             listErr.textContent = (x.data && x.data.error) || 'Could not load list';
             return;
           }
+          if (x.data.allowlist && x.data.allowlist.envValue) {
+            copyValue.textContent = x.data.allowlist.envValue;
+          }
           renderRows(x.data.grants);
         });
+      }
+
+      function handleGrantResponse(x, clearInput) {
+        if (!x.ok) {
+          addErr.textContent = (x.data && x.data.error) || 'Could not add';
+          return;
+        }
+        if (x.data.mode === 'copy_env' && x.data.suggestedAllowedEmails) {
+          showCopyEnv(
+            x.data.suggestedAllowedEmails,
+            x.data.message ||
+              'Copy the value below into Vercel → Environment Variables → CAPABILITIES_ALLOWED_EMAILS, then redeploy.'
+          );
+        } else {
+          addErr.textContent = '';
+          copyBox.classList.remove('visible');
+          if (clearInput) clearInput();
+        }
+        refreshList();
       }
 
       function showAdmin() {
@@ -276,20 +406,34 @@
         });
       });
 
-      document.getElementById('btn-add').addEventListener('click', function () {
+      document.getElementById('btn-bulk-add').addEventListener('click', function () {
         addErr.textContent = '';
-        var email = document.getElementById('new-email').value.trim();
-        api('/api/capabilities/admin/grant', {
+        var raw = document.getElementById('bulk-emails').value.trim();
+        if (!raw) {
+          addErr.textContent = 'Enter at least one email.';
+          return;
+        }
+        api('/api/capabilities/admin/grant-bulk', {
           method: 'POST',
-          body: { email: email },
+          body: { emails: raw },
         }).then(function (x) {
-          if (!x.ok) {
-            addErr.textContent = (x.data && x.data.error) || 'Could not add';
-            return;
-          }
-          document.getElementById('new-email').value = '';
-          refreshList();
+          handleGrantResponse(x, function () {
+            document.getElementById('bulk-emails').value = '';
+          });
         });
+      });
+
+      document.getElementById('btn-copy-env').addEventListener('click', function () {
+        var text = copyValue.textContent || '';
+        if (!text) return;
+        navigator.clipboard.writeText(text).then(
+          function () {
+            addErr.textContent = 'Copied. Paste in Vercel and redeploy.';
+          },
+          function () {
+            addErr.textContent = 'Select the box and copy manually.';
+          }
+        );
       });
 
       api('/api/capabilities/admin/list').then(function (x) {

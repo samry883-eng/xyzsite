@@ -8,8 +8,11 @@ import {
   createSession,
   verifyLogin,
   grantUpsert,
+  grantUpsertMany,
   grantRevoke,
   grantList,
+  canPersistGrants,
+  buildSuggestedAllowedEmails,
   sessionCookieHeader,
   clearSessionCookieHeader,
   getCookieName,
@@ -21,6 +24,7 @@ import {
   getAdminSecretFromEnv,
 } from './lib/capabilities-auth.mjs';
 import { isAdminAuthorized } from './lib/capabilities-admin-guard.mjs';
+import { getAllowlistSnapshot } from './lib/capabilities-allowlist.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = Number(process.env.PORT) || 2001;
@@ -171,7 +175,48 @@ async function handleCapabilitiesApi(req, res, urlPath) {
     if (!adm) return json(res, 503, { ok: false, error: 'CAPABILITIES_ADMIN_SECRET is not set' });
     if (!isAdminAuthorized(req, null, sec)) return json(res, 401, { ok: false, error: 'Unauthorized' });
     const grants = await grantList();
-    return json(res, 200, { ok: true, grants });
+    const allowlist = getAllowlistSnapshot();
+    const persist = await canPersistGrants();
+    return json(res, 200, {
+      ok: true,
+      grants,
+      allowlist,
+      canPersistGrants: persist,
+    });
+  }
+
+  if (urlPath === '/api/capabilities/admin/grant-bulk' && req.method === 'POST') {
+    if (!adm) return json(res, 503, { ok: false, error: 'CAPABILITIES_ADMIN_SECRET is not set' });
+    if (!isAdminAuthorized(req, null, sec)) return json(res, 401, { ok: false, error: 'Unauthorized' });
+    let body;
+    try {
+      body = JSON.parse((await readBody(req)).toString('utf8') || '{}');
+    } catch {
+      return json(res, 400, { ok: false, error: 'Invalid JSON' });
+    }
+    const raw = body.emails ?? body.email ?? '';
+    try {
+      if (!(await canPersistGrants())) {
+        return json(res, 200, {
+          ok: true,
+          mode: 'copy_env',
+          suggestedAllowedEmails: buildSuggestedAllowedEmails(raw),
+        });
+      }
+      const added = await grantUpsertMany(raw);
+      return json(res, 200, { ok: true, mode: 'saved', added });
+    } catch (e) {
+      const msg = e.message || 'Grant failed';
+      if (String(msg).includes('Production writes need Redis')) {
+        return json(res, 200, {
+          ok: true,
+          mode: 'copy_env',
+          suggestedAllowedEmails: buildSuggestedAllowedEmails(raw),
+          message: msg,
+        });
+      }
+      return json(res, 400, { ok: false, error: msg });
+    }
   }
 
   if (urlPath === '/api/capabilities/admin/grant' && req.method === 'POST') {
@@ -184,10 +229,26 @@ async function handleCapabilitiesApi(req, res, urlPath) {
       return json(res, 400, { ok: false, error: 'Invalid JSON' });
     }
     try {
+      if (!(await canPersistGrants())) {
+        return json(res, 200, {
+          ok: true,
+          mode: 'copy_env',
+          suggestedAllowedEmails: buildSuggestedAllowedEmails(body.email),
+        });
+      }
       await grantUpsert(body.email, body.password);
-      return json(res, 200, { ok: true });
+      return json(res, 200, { ok: true, mode: 'saved' });
     } catch (e) {
-      return json(res, 400, { ok: false, error: e.message || 'Grant failed' });
+      const msg = e.message || 'Grant failed';
+      if (String(msg).includes('Production writes need Redis')) {
+        return json(res, 200, {
+          ok: true,
+          mode: 'copy_env',
+          suggestedAllowedEmails: buildSuggestedAllowedEmails(body.email),
+          message: msg,
+        });
+      }
+      return json(res, 400, { ok: false, error: msg });
     }
   }
 

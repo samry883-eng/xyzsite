@@ -1,4 +1,5 @@
-import { grantList, getAdminSecretFromEnv } from '../../../lib/capabilities-auth.mjs';
+import { grantList, getAdminSecretFromEnv, canPersistGrants } from '../../../lib/capabilities-auth.mjs';
+import { getAllowlistSnapshot } from '../../../lib/capabilities-allowlist.mjs';
 import { isAdminAuthorized } from '../../../lib/capabilities-admin-guard.mjs';
 
 function sendJson(res, code, obj) {
@@ -22,5 +23,15 @@ export default async function handler(req, res) {
     return;
   }
   const grants = await grantList();
-  sendJson(res, 200, { ok: true, grants });
+  const allowlist = getAllowlistSnapshot();
+  const persist = await canPersistGrants();
+  sendJson(res, 200, {
+    ok: true,
+    grants,
+    allowlist,
+    canPersistGrants: persist,
+    help: persist
+      ? 'Adds save instantly (Redis or local).'
+      : 'Use CAPABILITIES_ALLOWED_EMAILS in Vercel or edit data/deck-allowlist.txt and push.',
+  });
 }

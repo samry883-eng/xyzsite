@@ -1,0 +1,7 @@
+# Capabilities deck — allowed emails (one per line).
+# Edit this file and push to GitHub; Vercel redeploys and access is live.
+# Lines starting with # are ignored.
+#
+# Example:
+# client@agency.com
+# partner@brand.com
