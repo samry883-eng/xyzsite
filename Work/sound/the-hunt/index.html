@@ -15,8 +15,8 @@
     :root {
       --pad: clamp(2rem, 3.5vw, 4rem);
       --nav: 80px;
-      --pj-ui-pad: 1rem;
-      --pj-scroll-h: 28px;
+      --pj-ui-pad: 1.25rem;
+      --pj-scroll-h: 32px;
     }
     html, body {
       background: #000; color: #fff;
@@ -31,26 +31,34 @@
       height: 100vh;
       height: 100svh;
       min-height: 100svh;
+      padding-top: var(--nav);
+      box-sizing: border-box;
       background: #000;
       display: flex;
       flex-direction: column;
       overflow: hidden;
     }
-    /* Full-bleed video; dock overlays bottom */
+    /* Video sits in the flex slot between nav and controls (no overlay) */
     .pj-video-area {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
+      flex: 1 1 0;
+      width: 100%;
+      min-height: 0;
+      padding: clamp(8px, 1.2vh, 16px) var(--pad);
       display: flex;
       align-items: center;
       justify-content: center;
       box-sizing: border-box;
+      z-index: 1;
     }
     .pj-video-frame {
       position: relative;
       box-sizing: border-box;
       width: 100%;
       height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      min-width: 0;
+      min-height: 0;
       background: #000;
       overflow: hidden;
       display: flex;
@@ -68,27 +76,15 @@
       cursor: none;
     }
     .pj-bottom-dock {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 20;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 10;
       width: 100%;
       display: flex;
       flex-direction: column;
       padding: 0 var(--pad);
       box-sizing: border-box;
-      background: linear-gradient(
-        to top,
-        rgba(0, 0, 0, 0.94) 0%,
-        rgba(0, 0, 0, 0.72) 42%,
-        rgba(0, 0, 0, 0.2) 72%,
-        transparent 100%
-      );
-      pointer-events: none;
-    }
-    .pj-bottom-dock > * {
-      pointer-events: auto;
+      background: #000;
     }
     .pj-scroll-hint {
       flex-shrink: 0;
@@ -259,10 +255,16 @@
     .pj-stage.is-fullscreen {
       position: fixed; inset: 0; z-index: 500;
       min-height: 100svh; height: 100svh;
+      padding-top: 0;
     }
     .pj-stage.is-fullscreen .pj-video-area {
-      position: absolute; inset: 0; padding: 0;
-      flex: none; display: flex; align-items: center; justify-content: center;
+      position: absolute;
+      inset: 0;
+      padding: 0;
+      flex: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .pj-stage.is-fullscreen .pj-video-frame {
       position: absolute; inset: 0;
@@ -271,8 +273,12 @@
     }
     .pj-stage.is-fullscreen #pj-video { object-fit: cover; }
     .pj-stage.is-fullscreen .pj-bottom-dock {
-      position: absolute; left: 0; right: 0; bottom: 0;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
       padding: 0 var(--pad);
+      background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
     }
     .pj-stage.is-fullscreen .pj-scroll-hint { display: none; }
     .pj-stage.is-fullscreen .hero_home-pj-fs { display: none !important; }
