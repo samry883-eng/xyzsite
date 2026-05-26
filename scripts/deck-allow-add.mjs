@@ -10,13 +10,17 @@ import { fileURLToPath } from 'url';
 import { ALLOWLIST_FILE, parseEmailList } from '../lib/capabilities-allowlist.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const ALLOWLIST_WRITE = path.join(__dirname, '..', 'data', 'allowlist');
 
 function readLines() {
-  try {
-    return fs.readFileSync(ALLOWLIST_FILE, 'utf8').split(/\n/);
-  } catch {
-    return ['# Capabilities deck — allowed emails (one per line).', ''];
+  for (const p of [ALLOWLIST_WRITE, ALLOWLIST_FILE]) {
+    try {
+      return fs.readFileSync(p, 'utf8').split(/\n/);
+    } catch {
+      /* try next */
+    }
   }
+  return ['# Capabilities deck — allowed emails (one per line).', ''];
 }
 
 function existingEmails(lines) {
@@ -58,8 +62,8 @@ if (!added.length) {
   process.exit(0);
 }
 
-fs.mkdirSync(path.dirname(ALLOWLIST_FILE), { recursive: true });
-fs.writeFileSync(ALLOWLIST_FILE, lines.join('\n').replace(/\n*$/, '\n'), 'utf8');
-console.log('Added to data/deck-allowlist.txt:');
+fs.mkdirSync(path.dirname(ALLOWLIST_WRITE), { recursive: true });
+fs.writeFileSync(ALLOWLIST_WRITE, lines.join('\n').replace(/\n*$/, '\n'), 'utf8');
+console.log('Added to data/allowlist:');
 added.forEach((e) => console.log('  ', e));
 console.log('\nCommit and push to deploy access on the live site.');
