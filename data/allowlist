@@ -1,3 +1,4 @@
 # Capabilities deck — allowed emails (one per line).
-# This file is read automatically (same as deck-allowlist.txt).
-# Push to GitHub → Vercel redeploys → access is live.
+# Lines starting with # are ignored.
+
+samry@xyzstudios.co
