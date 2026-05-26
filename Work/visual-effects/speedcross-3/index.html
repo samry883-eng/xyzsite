@@ -21,6 +21,8 @@
       --pj-dock-h: calc(var(--pj-ui-pad) + 5.6rem + var(--pj-scroll-h));
       --pj-video-slot-h: calc(100vh - var(--video-top) - var(--pj-dock-h));
       --pj-video-slot-h: calc(100svh - var(--video-top) - var(--pj-dock-h));
+      --pj-video-max-w: calc(100vw - 2 * var(--pad));
+      --pj-video-max-h: var(--pj-video-slot-h);
     }
     html, body {
       background: #000; color: #fff;
@@ -40,7 +42,7 @@
       overflow-x: hidden;
     }
     .pj-video-area {
-      flex: 1 1 auto;
+      flex: 1 1 0;
       width: 100%;
       min-height: 0;
       padding: var(--video-top) var(--pad) 8px;
@@ -52,22 +54,17 @@
     .pj-video-frame {
       position: relative;
       box-sizing: border-box;
-      width: min(100%, calc(100vw - 2 * var(--pad)), calc(var(--pj-video-slot-h) * 16 / 9));
-      max-width: 100%;
-      max-height: var(--pj-video-slot-h);
-      aspect-ratio: 16 / 9;
-      height: auto;
+      flex-shrink: 0;
       background: #000;
       overflow: hidden;
-      flex-shrink: 0;
+      max-width: var(--pj-video-max-w);
+      max-height: var(--pj-video-max-h);
     }
     #pj-video {
-      position: absolute;
-      inset: 0;
+      display: block;
       width: 100%;
       height: 100%;
-      display: block;
-      object-fit: cover;
+      object-fit: contain;
       object-position: center center;
       cursor: none;
     }
@@ -381,6 +378,7 @@
 <script>
   const stage   = document.getElementById('pj-stage');
   const vid     = document.getElementById('pj-video');
+  const videoFrame = document.querySelector('.pj-video-frame');
   const playBtn   = document.getElementById('pj-play-btn');
   const playLabel = playBtn.querySelector('[hero_video-icon="play"]');
   const pauseLabel= playBtn.querySelector('[hero_video-icon="pause"]');
@@ -397,6 +395,27 @@
   const uiTitles  = document.getElementById('pj-ui-titles');
   const UI_TITLE_FADE_PX = 140;
 
+  function fitVideoToSlot() {
+    if (!videoFrame || stage.classList.contains('is-fullscreen')) {
+      if (videoFrame) {
+        videoFrame.style.width = '';
+        videoFrame.style.height = '';
+      }
+      return;
+    }
+    const vw = vid.videoWidth;
+    const vh = vid.videoHeight;
+    if (!vw || !vh) return;
+    const area = videoFrame.closest('.pj-video-area');
+    if (!area) return;
+    const maxW = area.clientWidth;
+    const maxH = area.clientHeight;
+    if (!maxW || !maxH) return;
+    const scale = Math.min(maxW / vw, maxH / vh);
+    videoFrame.style.width = Math.round(vw * scale) + 'px';
+    videoFrame.style.height = Math.round(vh * scale) + 'px';
+  }
+
   function updateUiTitleOpacity() {
     if (!uiTitles || stage.classList.contains('is-fullscreen')) return;
     const creditsTop = credits.getBoundingClientRect().top;
@@ -411,6 +430,9 @@
   }
 
   vid.pause();
+  vid.addEventListener('loadedmetadata', fitVideoToSlot);
+  window.addEventListener('resize', fitVideoToSlot);
+  if (vid.readyState >= 1) fitVideoToSlot();
 
   function fmt(s) {
     if (!isFinite(s)) return '0:00';
@@ -474,6 +496,7 @@
       uiTitles.style.opacity = fs ? '' : undefined;
       uiTitles.style.pointerEvents = fs ? '' : undefined;
     }
+    fitVideoToSlot();
     updateUiTitleOpacity();
   });
 
