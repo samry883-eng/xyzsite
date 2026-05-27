@@ -311,14 +311,11 @@
 
     /* While scrolling: kill hover zoom / video / peer motion (less lag) */
     .work-showcase.work-hover-paused .work-card-wrap,
-    .work-showcase.work-hover-paused .work-card,
-    .work-showcase.work-hover-paused .wc-header {
+    .work-showcase.work-hover-paused .wc-tilt {
       transition: none !important;
     }
-    .work-showcase.work-hover-paused .work-card-wrap .work-card,
-    .work-showcase.work-hover-paused .work-card-wrap .wc-header,
-    .work-showcase.work-hover-paused .work-card-wrap:hover .work-card,
-    .work-showcase.work-hover-paused .work-card-wrap:hover .wc-header {
+    .work-showcase.work-hover-paused .work-card-wrap .wc-tilt,
+    .work-showcase.work-hover-paused .work-card-wrap:hover .wc-tilt {
       transform: none !important;
     }
     .work-showcase.work-hover-paused .work-card-wrap .wc-hover-video {
@@ -339,8 +336,6 @@
       display: flex;
       align-items: flex-start;
       justify-content: center;
-      transform-origin: center top;
-      transition: transform var(--wc-hover-dur) var(--wc-hover-ease);
       position: relative;
       z-index: 2;
       overflow: visible;
@@ -374,6 +369,9 @@
       flex-direction: column;
       gap: var(--wc-card-gap);
       overflow: visible;
+      transform: translateZ(0);
+      transform-origin: 50% calc((100% - var(--wc-label-h) - var(--wc-card-gap)) * 0.5);
+      transition: transform var(--wc-hover-dur) var(--wc-hover-ease);
     }
 
     @supports not (container-type: size) {
@@ -390,8 +388,6 @@
       overflow: hidden;
       background: #000;
       position: relative;
-      transform: translateZ(0);
-      transition: transform var(--wc-hover-dur) var(--wc-hover-ease);
     }
     .work-card-wrap:hover .work-card {
       overflow: visible;
@@ -549,7 +545,6 @@
         min-height: 0;
         text-align: left;
         justify-content: flex-start;
-        transform: none !important;
       }
       .wc-label {
         font-size: 9px;
@@ -561,9 +556,13 @@
         white-space: normal;
       }
 
+      .wc-tilt,
+      .work-card-wrap:hover .wc-tilt {
+        transform: none !important;
+      }
+
       .work-card,
       .work-card-wrap:hover .work-card {
-        transform: none !important;
         overflow: hidden;
       }
 
@@ -926,13 +925,12 @@
     if (!showcase) return;
     showcase.querySelectorAll('.work-card-wrap').forEach(function (wrap) {
       wrap.classList.remove('wc-hover-active');
-      var card = wrap.querySelector('.work-card');
-      var header = wrap.querySelector('.wc-header');
-      if (card) {
-        card.style.transform = '';
-        card.style.transformOrigin = '';
+      var tilt = wrap.querySelector('.wc-tilt');
+      if (tilt) {
+        tilt.style.transform = '';
+        tilt.style.transformOrigin = '';
       }
-      if (header) header.style.transform = '';
+      var card = wrap.querySelector('.work-card');
       var video = card && card.querySelector('.wc-hover-video');
       if (video) video.pause();
       var img = card && card.querySelector('.wc-card-poster');
@@ -1108,17 +1106,15 @@
     showcase.querySelectorAll('.work-card-wrap').forEach((wrap) => {
       if (wrap.dataset.hoverBound) return;
       const card = wrap.querySelector('.work-card');
+      const tilt = wrap.querySelector('.wc-tilt');
       const video = card && card.querySelector('.wc-hover-video');
       const img = card && card.querySelector('.wc-card-poster');
-      if (!card || !video) return;
+      if (!card || !tilt || !video) return;
       wrap.dataset.hoverBound = '1';
-
-      const header = wrap.querySelector('.wc-header');
 
       function applyHoverScale() {
         var s = WC_HOVER_SCALE_MAX;
-        card.style.transformOrigin = '50% 50%';
-        card.style.transform = 'translateZ(0) scale(' + s + ')';
+        tilt.style.transform = 'translateZ(0) scale(' + s + ')';
         return s;
       }
 
@@ -1140,9 +1136,7 @@
       wrap.addEventListener('mouseleave', () => {
         clearPeerRadialPush();
         wrap.classList.remove('wc-hover-active');
-        card.style.transform = '';
-        card.style.transformOrigin = '';
-        if (header) header.style.transform = '';
+        tilt.style.transform = '';
         video.pause();
         const clipS = parseFloat(video.dataset.clipStart, 10);
         video.currentTime = Number.isNaN(clipS) ? 0 : clipS;
