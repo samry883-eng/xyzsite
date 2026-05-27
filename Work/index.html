@@ -116,9 +116,9 @@
     .nav-links a {
       text-decoration: none;
       color: rgba(250,250,250,0.35);
-      font-family: Micross, Arial, sans-serif;
-      font-size: 10.64px; font-weight: 400;
-      letter-spacing: normal; text-transform: uppercase;
+      font: 400 10px/1 Micross, Arial, sans-serif;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
       transition: color 0.2s ease;
     }
     .nav-links a.active,
@@ -161,10 +161,8 @@
       min-width: 0;
     }
     .work-row-num {
-      font-family: Micross, Arial, sans-serif;
-      font-size: clamp(9px, 1.05vh, 12px);
-      font-weight: 400;
-      letter-spacing: 0.22em;
+      font: 400 10px/1 Micross, Arial, sans-serif;
+      letter-spacing: 0.18em;
       color: rgba(255, 255, 255, 0.38);
       font-variant-numeric: tabular-nums;
       flex-shrink: 0;
@@ -183,6 +181,54 @@
     .work-row-line {
       display: none;
     }
+
+    /* Row scrub bar — drag or click to move horizontal strip */
+    .work-row-scrub {
+      flex: 0 0 auto;
+      width: 100%;
+      padding: 0 clamp(16px, 4vw, 48px) clamp(4px, 0.5vh, 8px);
+      box-sizing: border-box;
+    }
+    .work-row-scrub__track {
+      position: relative;
+      width: 100%;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+    }
+    .work-row-scrub__fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 0%;
+      background: rgba(255, 255, 255, 0.35);
+      pointer-events: none;
+      transition: width 0.08s linear;
+    }
+    .work-row-scrub__thumb {
+      position: absolute;
+      top: 50%;
+      left: 0%;
+      width: 32px;
+      height: 20px;
+      margin: 0;
+      padding: 0;
+      border: none;
+      background: transparent;
+      transform: translate(-50%, -50%);
+      cursor: grab;
+      touch-action: none;
+    }
+    .work-row-scrub__thumb::after {
+      content: '';
+      display: block;
+      width: 32px;
+      height: 2px;
+      background: #fff;
+    }
+    .work-row-scrub__thumb:active { cursor: grabbing; }
+    .work-row-scrub.is-dragging .work-row-scrub__fill { transition: none; }
 
     .work-row {
       flex: 1 1 0;
@@ -300,9 +346,8 @@
       overflow: visible;
     }
     .wc-label {
-      font-size: clamp(9px, 1.05vh, 11px);
-      font-weight: 400;
-      letter-spacing: 0.14em;
+      font: 400 10px/1 Micross, Arial, sans-serif;
+      letter-spacing: 0.18em;
       line-height: 1.35;
       white-space: nowrap;
       overflow: hidden;
@@ -449,8 +494,11 @@
 
       .work-row-header {
         width: auto;
-        margin: 0 20px 24px;
+        margin: 0 20px 12px;
         padding-bottom: 14px;
+      }
+      .work-row-scrub {
+        padding: 0 20px 10px;
       }
       .work-row-header__left { gap: 12px; }
       .work-row-num {
@@ -841,6 +889,119 @@
   /** Keep in sync with :root --wc-hover-max (gentler zoom than reference portfolios). */
   var WC_HOVER_SCALE_MAX = 1.12;
 
+  function clearPeerRadialPush() {
+    if (!showcase) return;
+    showcase.querySelectorAll('.work-card-wrap').forEach(function (w) {
+      w.style.transform = '';
+    });
+  }
+
+  function resetHoverState() {
+    clearPeerRadialPush();
+    if (!showcase) return;
+    showcase.querySelectorAll('.work-card-wrap.wc-hover-active').forEach(function (wrap) {
+      wrap.classList.remove('wc-hover-active');
+      var card = wrap.querySelector('.work-card');
+      var header = wrap.querySelector('.wc-header');
+      if (card) {
+        card.style.transform = '';
+        card.style.transformOrigin = '';
+      }
+      if (header) header.style.transform = '';
+      var video = card && card.querySelector('.wc-hover-video');
+      if (video) video.pause();
+      var img = card && card.querySelector('.wc-card-poster');
+      if (img) img.style.opacity = '';
+    });
+  }
+
+  function bindRowScrub(scrub, rowCards, loopState) {
+    if (!scrub || !rowCards || scrub.dataset.bound) return;
+    scrub.dataset.bound = '1';
+    var track = scrub.querySelector('.work-row-scrub__track');
+    var fill = scrub.querySelector('.work-row-scrub__fill');
+    var thumb = scrub.querySelector('.work-row-scrub__thumb');
+    if (!track || !fill || !thumb) return;
+
+    function getFrac() {
+      if (loopState && loopState.loopW) {
+        var frac = (loopState.pos - loopState.loopW) / loopState.loopW;
+        return Math.max(0, Math.min(1, frac));
+      }
+      var max = rowCards.scrollWidth - rowCards.clientWidth;
+      if (max <= 0) return 0;
+      return Math.max(0, Math.min(1, rowCards.scrollLeft / max));
+    }
+
+    function renderScrub() {
+      var pct = (getFrac() * 100).toFixed(2) + '%';
+      fill.style.width = pct;
+      thumb.style.left = pct;
+    }
+
+    function applyFrac(frac) {
+      frac = Math.max(0, Math.min(1, frac));
+      if (loopState && loopState.loopW) {
+        var p = loopState.loopW + frac * loopState.loopW;
+        loopState.pos = p;
+        loopState.target = p;
+        loopState.animFrom = p;
+        rowCards.scrollLeft = p;
+      } else {
+        var max = rowCards.scrollWidth - rowCards.clientWidth;
+        rowCards.scrollLeft = frac * max;
+      }
+      renderScrub();
+    }
+
+    function fracFromClientX(clientX) {
+      var r = track.getBoundingClientRect();
+      if (r.width <= 0) return 0;
+      return (clientX - r.left) / r.width;
+    }
+
+    track.addEventListener('click', function (e) {
+      if (e.target === thumb) return;
+      resetHoverState();
+      applyFrac(fracFromClientX(e.clientX));
+    });
+
+    var dragging = false;
+    function onMove(clientX) {
+      if (!dragging) return;
+      resetHoverState();
+      applyFrac(fracFromClientX(clientX));
+    }
+    thumb.addEventListener('mousedown', function (e) {
+      e.preventDefault();
+      dragging = true;
+      scrub.classList.add('is-dragging');
+      resetHoverState();
+    });
+    window.addEventListener('mousemove', function (e) { onMove(e.clientX); });
+    window.addEventListener('mouseup', function () {
+      dragging = false;
+      scrub.classList.remove('is-dragging');
+    });
+    thumb.addEventListener('touchstart', function () {
+      dragging = true;
+      scrub.classList.add('is-dragging');
+      resetHoverState();
+    }, { passive: true });
+    window.addEventListener('touchmove', function (e) {
+      if (!dragging || !e.touches[0]) return;
+      onMove(e.touches[0].clientX);
+    }, { passive: true });
+    window.addEventListener('touchend', function () {
+      dragging = false;
+      scrub.classList.remove('is-dragging');
+    });
+
+    rowCards.addEventListener('scroll', renderScrub, { passive: true });
+    if (loopState) loopState.onScroll = renderScrub;
+    renderScrub();
+  }
+
   /** Move all other cards in the showcase radially outward (all rows), not only the same strip. */
   function applyPeerRadialPush(activeWrap, scaleFactor) {
     if (!showcase || !activeWrap) return;
@@ -864,13 +1025,6 @@
       var ux = dx / dist;
       var uy = dy / dist;
       w.style.transform = 'translate(' + (ux * push).toFixed(2) + 'px,' + (uy * push).toFixed(2) + 'px)';
-    });
-  }
-
-  function clearPeerRadialPush() {
-    if (!showcase) return;
-    showcase.querySelectorAll('.work-card-wrap').forEach(function (w) {
-      w.style.transform = '';
     });
   }
 
@@ -1006,6 +1160,14 @@
       </div>
     `;
 
+    const rowScrub = document.createElement('div');
+    rowScrub.className = 'work-row-scrub';
+    rowScrub.innerHTML =
+      '<div class="work-row-scrub__track">' +
+      '<div class="work-row-scrub__fill"></div>' +
+      '<button type="button" class="work-row-scrub__thumb" aria-label="Browse projects in this row"></button>' +
+      '</div>';
+
     const rowCards = document.createElement('div');
     rowCards.className = 'work-row-cards';
 
@@ -1050,6 +1212,7 @@
     revealOrderBase += rowCardCount;
 
     row.appendChild(rowHeader);
+    row.appendChild(rowScrub);
     row.appendChild(rowCards);
     showcase.appendChild(row);
   });
@@ -1100,6 +1263,8 @@
     });
 
     let loopW = 0, pos = 0, target = 0, animFrom = 0, animStart = 0, raf = null, locked = false;
+    const loopState = { loopW: 0, pos: 0, target: 0, animFrom: 0, onScroll: null };
+    const rowEl = rowCards.closest('.work-row');
     const DURATION = 900;
 
     function easeInOut(t) { return 1 - Math.pow(1 - t, 4); }
@@ -1110,12 +1275,19 @@
     function snapTick() {
       const t = Math.min((performance.now() - animStart) / DURATION, 1);
       pos = animFrom + (target - animFrom) * easeInOut(t);
-      wrapPos(); rowCards.scrollLeft = pos;
+      wrapPos();
+      loopState.pos = pos;
+      loopState.target = target;
+      loopState.animFrom = animFrom;
+      rowCards.scrollLeft = pos;
+      if (loopState.onScroll) loopState.onScroll();
       if (t < 1) { raf = requestAnimationFrame(snapTick); }
-      else { pos = target; wrapPos(); rowCards.scrollLeft = pos; raf = null; setTimeout(() => { locked = false; }, 500); }
+      else { pos = target; wrapPos(); loopState.pos = pos; rowCards.scrollLeft = pos; if (loopState.onScroll) loopState.onScroll(); raf = null; setTimeout(() => { locked = false; }, 500); }
     }
     function startSnap(dir) {
-      if (locked) return; locked = true;
+      if (locked) return;
+      resetHoverState();
+      locked = true;
       const cardEl = rowCards.querySelector('.work-card-wrap');
       const cardW = cardEl ? cardEl.offsetWidth + 16 : 260;
       animFrom = pos; animStart = performance.now(); target = pos + dir * cardW * 2;
@@ -1123,20 +1295,30 @@
       raf = requestAnimationFrame(snapTick);
     }
 
-    rowCards.addEventListener('wheel', e => { if (!e.target.closest('.work-card-wrap')) return; e.preventDefault(); e.stopPropagation(); startSnap(e.deltaY > 0 ? 1 : -1); }, { passive: false });
+    rowCards.addEventListener('wheel', e => {
+      resetHoverState();
+      e.preventDefault();
+      e.stopPropagation();
+      startSnap(e.deltaY > 0 ? 1 : -1);
+    }, { passive: false });
 
     let tx0 = 0, tx1 = 0;
-    rowCards.addEventListener('touchstart', e => { tx0 = tx1 = e.touches[0].clientX; }, { passive: true });
-    rowCards.addEventListener('touchmove', e => { const dx = tx1 - e.touches[0].clientX; tx1 = e.touches[0].clientX; pos += dx; wrapPos(); rowCards.scrollLeft = pos; }, { passive: true });
+    rowCards.addEventListener('touchstart', e => { resetHoverState(); tx0 = tx1 = e.touches[0].clientX; }, { passive: true });
+    rowCards.addEventListener('touchmove', e => { const dx = tx1 - e.touches[0].clientX; tx1 = e.touches[0].clientX; pos += dx; loopState.pos = pos; wrapPos(); rowCards.scrollLeft = pos; if (loopState.onScroll) loopState.onScroll(); }, { passive: true });
     rowCards.addEventListener('touchend', e => { const dx = tx0 - e.changedTouches[0].clientX; if (Math.abs(dx) > 30) startSnap(dx > 0 ? 1 : -1); }, { passive: true });
 
     requestAnimationFrame(() => {
       loopW = rowCards.scrollWidth / 3;
       pos = loopW; target = loopW; animFrom = loopW;
+      loopState.loopW = loopW;
+      loopState.pos = pos;
+      loopState.target = target;
+      loopState.animFrom = animFrom;
       rowCards.scrollLeft = pos;
+      bindRowScrub(rowEl && rowEl.querySelector('.work-row-scrub'), rowCards, loopState);
     });
 
-    const row = rowCards.closest('.work-row');
+    const row = rowEl;
     const rowCat = row ? row.querySelector('.work-row-cat') : null;
     if (rowCat) {
       rowCat.addEventListener('click', function (e) {
@@ -1144,6 +1326,12 @@
         // No category spin animation.
       });
     }
+  });
+
+  document.querySelectorAll('.work-row').forEach(function (row) {
+    var cards = row.querySelector('.work-row-cards');
+    var scrub = row.querySelector('.work-row-scrub');
+    if (cards && scrub && !scrub.dataset.bound) bindRowScrub(scrub, cards, null);
   });
 
   bindWorkCardHover();

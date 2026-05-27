@@ -69,6 +69,7 @@
       inset: 0;
       z-index: 1;
       background: #000;
+      touch-action: none;
     }
     #deck-stage {
       position: absolute;
@@ -981,6 +982,34 @@
       transition: background 0.3s, transform 0.3s;
     }
     .dot.active { background: rgba(255,255,255,0.85); transform: scale(1.6); }
+    .deck-nav-arrow {
+      position: absolute;
+      top: 50%;
+      z-index: 210;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 56px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.28);
+      cursor: pointer;
+      pointer-events: auto;
+      transition: color 0.2s ease, background 0.2s ease;
+    }
+    .deck-nav-arrow:hover,
+    .deck-nav-arrow:focus-visible {
+      color: rgba(255, 255, 255, 0.75);
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .deck-nav-arrow--prev { left: max(8px, 0.8cqw); }
+    .deck-nav-arrow--next { right: max(8px, 0.8cqw); }
+    .deck-nav-arrow svg {
+      display: block;
+      width: 14px;
+      height: 14px;
+      margin: 0 auto;
+    }
     #slide-counter {
       position: absolute;
       top: var(--pt);
@@ -1035,6 +1064,9 @@
       .toc-list { max-width: none; }
       .services-grid { grid-template-columns: 1fr 1fr; }
       .case-top { grid-template-columns: 1fr; }
+      #nav-dots { right: 18px; gap: 10px; }
+      .dot { width: 8px; height: 8px; }
+      .deck-nav-arrow { width: 44px; height: 64px; }
     }
 
     /* Slide 1 — Pitch / PDF cover export (full-bleed) */
@@ -2192,6 +2224,12 @@
 </div>
 
 <!-- NAV CHROME -->
+<button type="button" class="deck-nav-arrow deck-nav-arrow--prev" id="deck-arrow-prev" aria-label="Previous slide">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+<button type="button" class="deck-nav-arrow deck-nav-arrow--next" id="deck-arrow-next" aria-label="Next slide">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+</button>
 <div id="nav-dots"></div>
 <div id="progress"></div>
 <div id="slide-counter">01 / 35</div>
@@ -2203,22 +2241,25 @@
 <script>
   /* Deck surface lock (best-effort; screenshots / devtools still possible) */
   (function () {
+    var isCoarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
     function block(e) {
       e.preventDefault();
     }
-    document.addEventListener('contextmenu', block, true);
-    document.addEventListener('selectstart', block, true);
-    document.addEventListener('dragstart', function (e) {
-      if (e.target && (e.target.closest && e.target.closest('img, video'))) block(e);
-    }, true);
-    document.addEventListener('copy', block, true);
-    document.addEventListener('cut', block, true);
-    document.addEventListener('keydown', function (e) {
-      if (!e.ctrlKey && !e.metaKey) return;
-      const k = e.key.toLowerCase();
-      if (k === 's' || k === 'p' || k === 'u') block(e);
-    }, true);
-    window.addEventListener('beforeprint', block);
+    if (!isCoarse) {
+      document.addEventListener('contextmenu', block, true);
+      document.addEventListener('selectstart', block, true);
+      document.addEventListener('dragstart', function (e) {
+        if (e.target && (e.target.closest && e.target.closest('img, video'))) block(e);
+      }, true);
+      document.addEventListener('copy', block, true);
+      document.addEventListener('cut', block, true);
+      document.addEventListener('keydown', function (e) {
+        if (!e.ctrlKey && !e.metaKey) return;
+        const k = e.key.toLowerCase();
+        if (k === 's' || k === 'p' || k === 'u') block(e);
+      }, true);
+      window.addEventListener('beforeprint', block);
+    }
   })();
 
   const slides  = document.querySelectorAll('.slide');
@@ -2395,21 +2436,18 @@
     if (['ArrowUp', 'ArrowLeft'].includes(e.key)) { e.preventDefault(); prev(); }
   });
 
-  // Wheel (debounced)
-  let wt;
-  document.addEventListener('wheel', e => {
-    if (e.ctrlKey) return;
-    clearTimeout(wt);
-    wt = setTimeout(() => { e.deltaY > 0 ? next() : prev(); }, 40);
-  }, { passive: true });
+  if (hint) {
+    hint.textContent = (window.matchMedia && window.matchMedia('(pointer: coarse)').matches)
+      ? 'Swipe up · tap arrows'
+      : 'Scroll or use arrow keys';
+  }
 
-  // Touch
-  let ty = 0;
-  document.addEventListener('touchstart', e => { ty = e.touches[0].clientY; }, { passive: true });
-  document.addEventListener('touchend', e => {
-    const d = ty - e.changedTouches[0].clientY;
-    if (Math.abs(d) > 48) d > 0 ? next() : prev();
-  }, { passive: true });
+  window.__deckNavCtx = {
+    get animating: function () { return animating; },
+    next: next,
+    prev: prev,
+    hint: hint
+  };
 
   updateUI();
   window.addEventListener('resize', scaleFixedCaseArtboard);
@@ -2421,6 +2459,10 @@
   })();
   setTimeout(scaleFixedCaseArtboard, 0);
   setTimeout(() => { hint.style.opacity = '0'; }, 4000);
+</script>
+<script src="/capabilities/assets/deck-nav.js"></script>
+<script>
+  if (window.__deckNavCtx && window.__initDeckNav) window.__initDeckNav(window.__deckNavCtx);
 </script>
 </body>
 </html>

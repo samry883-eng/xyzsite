@@ -296,4 +296,35 @@
   },true);
 })();
 </script>
+<script>
+(function () {
+  function playHeroVideos() {
+    document.querySelectorAll('.hero_vid video, .hero_vid-container video, .w-background-video video').forEach(function (v) {
+      v.muted = true;
+      v.setAttribute('playsinline', '');
+      v.setAttribute('webkit-playsinline', '');
+      if (v.paused) v.play().catch(function () {});
+    });
+  }
+  function schedulePlay() {
+    playHeroVideos();
+    setTimeout(playHeroVideos, 500);
+    setTimeout(playHeroVideos, 1500);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', schedulePlay);
+  } else {
+    schedulePlay();
+  }
+  document.addEventListener('xyz-exiting', schedulePlay);
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) schedulePlay();
+  });
+  window.addEventListener('pageshow', schedulePlay);
+  document.addEventListener('touchstart', function once() {
+    schedulePlay();
+    document.removeEventListener('touchstart', once);
+  }, { passive: true, once: true });
+})();
+</script>
 </body></html>
