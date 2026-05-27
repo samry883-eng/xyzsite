@@ -147,12 +147,14 @@
     .work-row-header {
       flex: 0 0 auto;
       display: flex;
-      align-items: flex-end;
-      justify-content: flex-start;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-end;
       width: 100%;
-      border-bottom: 1px solid var(--work-divider);
-      padding-bottom: clamp(6px, 0.9vh, 14px);
-      margin-bottom: clamp(4px, 0.55vh, 10px);
+      gap: clamp(10px, 1.2vh, 16px);
+      padding: 0 clamp(16px, 4vw, 48px) clamp(8px, 0.9vh, 14px);
+      margin-bottom: clamp(2px, 0.35vh, 6px);
+      box-sizing: border-box;
     }
     .work-row-header__left {
       display: flex;
@@ -178,56 +180,32 @@
       color: #fff;
       cursor: default;
     }
-    .work-row-line {
-      display: none;
-    }
-
-    /* Row scrub bar — drag or click to move horizontal strip */
+    /* Row scrub — single line under title (replaces separate divider + scrub) */
     .work-row-scrub {
       flex: 0 0 auto;
       width: 100%;
-      padding: 0 clamp(16px, 4vw, 48px) clamp(4px, 0.5vh, 8px);
+      padding: 0;
       box-sizing: border-box;
     }
     .work-row-scrub__track {
       position: relative;
       width: 100%;
-      height: 2px;
-      background: rgba(255, 255, 255, 0.1);
-      cursor: pointer;
+      height: 1px;
+      background: var(--work-divider);
+      cursor: grab;
+      touch-action: none;
     }
+    .work-row-scrub__track:active { cursor: grabbing; }
     .work-row-scrub__fill {
       position: absolute;
       left: 0;
       top: 0;
       bottom: 0;
       width: 0%;
-      background: rgba(255, 255, 255, 0.35);
+      background: rgba(255, 255, 255, 0.42);
       pointer-events: none;
       transition: width 0.08s linear;
     }
-    .work-row-scrub__thumb {
-      position: absolute;
-      top: 50%;
-      left: 0%;
-      width: 32px;
-      height: 20px;
-      margin: 0;
-      padding: 0;
-      border: none;
-      background: transparent;
-      transform: translate(-50%, -50%);
-      cursor: grab;
-      touch-action: none;
-    }
-    .work-row-scrub__thumb::after {
-      content: '';
-      display: block;
-      width: 32px;
-      height: 2px;
-      background: #fff;
-    }
-    .work-row-scrub__thumb:active { cursor: grabbing; }
     .work-row-scrub.is-dragging .work-row-scrub__fill { transition: none; }
 
     .work-row {
@@ -494,11 +472,9 @@
 
       .work-row-header {
         width: auto;
-        margin: 0 20px 12px;
-        padding-bottom: 14px;
-      }
-      .work-row-scrub {
-        padding: 0 20px 10px;
+        margin: 0 20px 8px;
+        padding: 0 0 12px;
+        gap: 12px;
       }
       .work-row-header__left { gap: 12px; }
       .work-row-num {
@@ -920,8 +896,7 @@
     scrub.dataset.bound = '1';
     var track = scrub.querySelector('.work-row-scrub__track');
     var fill = scrub.querySelector('.work-row-scrub__fill');
-    var thumb = scrub.querySelector('.work-row-scrub__thumb');
-    if (!track || !fill || !thumb) return;
+    if (!track || !fill) return;
 
     function getFrac() {
       if (loopState && loopState.loopW) {
@@ -934,9 +909,9 @@
     }
 
     function renderScrub() {
-      var pct = (getFrac() * 100).toFixed(2) + '%';
-      fill.style.width = pct;
-      thumb.style.left = pct;
+      var pct = Math.round(getFrac() * 100);
+      fill.style.width = pct + '%';
+      track.setAttribute('aria-valuenow', String(pct));
     }
 
     function applyFrac(frac) {
@@ -961,7 +936,6 @@
     }
 
     track.addEventListener('click', function (e) {
-      if (e.target === thumb) return;
       resetHoverState();
       applyFrac(fracFromClientX(e.clientX));
     });
@@ -972,21 +946,23 @@
       resetHoverState();
       applyFrac(fracFromClientX(clientX));
     }
-    thumb.addEventListener('mousedown', function (e) {
+    track.addEventListener('mousedown', function (e) {
       e.preventDefault();
       dragging = true;
       scrub.classList.add('is-dragging');
       resetHoverState();
+      applyFrac(fracFromClientX(e.clientX));
     });
     window.addEventListener('mousemove', function (e) { onMove(e.clientX); });
     window.addEventListener('mouseup', function () {
       dragging = false;
       scrub.classList.remove('is-dragging');
     });
-    thumb.addEventListener('touchstart', function () {
+    track.addEventListener('touchstart', function (e) {
       dragging = true;
       scrub.classList.add('is-dragging');
       resetHoverState();
+      if (e.touches[0]) applyFrac(fracFromClientX(e.touches[0].clientX));
     }, { passive: true });
     window.addEventListener('touchmove', function (e) {
       if (!dragging || !e.touches[0]) return;
@@ -1158,15 +1134,12 @@
         <span class="work-row-num">${rowNum} / ${rowTotal}</span>
         <h2 class="work-row-cat">${rowCat}</h2>
       </div>
+      <div class="work-row-scrub" aria-hidden="false">
+        <div class="work-row-scrub__track" role="slider" aria-label="Browse projects in this row" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div class="work-row-scrub__fill"></div>
+        </div>
+      </div>
     `;
-
-    const rowScrub = document.createElement('div');
-    rowScrub.className = 'work-row-scrub';
-    rowScrub.innerHTML =
-      '<div class="work-row-scrub__track">' +
-      '<div class="work-row-scrub__fill"></div>' +
-      '<button type="button" class="work-row-scrub__thumb" aria-label="Browse projects in this row"></button>' +
-      '</div>';
 
     const rowCards = document.createElement('div');
     rowCards.className = 'work-row-cards';
@@ -1212,7 +1185,6 @@
     revealOrderBase += rowCardCount;
 
     row.appendChild(rowHeader);
-    row.appendChild(rowScrub);
     row.appendChild(rowCards);
     showcase.appendChild(row);
   });
@@ -1315,7 +1287,9 @@
       loopState.target = target;
       loopState.animFrom = animFrom;
       rowCards.scrollLeft = pos;
-      bindRowScrub(rowEl && rowEl.querySelector('.work-row-scrub'), rowCards, loopState);
+      var scrubEl = rowEl && rowEl.querySelector('.work-row-scrub');
+      bindRowScrub(scrubEl, rowCards, loopState);
+      if (scrubEl && loopState.onScroll) loopState.onScroll();
     });
 
     const row = rowEl;
@@ -1331,7 +1305,10 @@
   document.querySelectorAll('.work-row').forEach(function (row) {
     var cards = row.querySelector('.work-row-cards');
     var scrub = row.querySelector('.work-row-scrub');
-    if (cards && scrub && !scrub.dataset.bound) bindRowScrub(scrub, cards, null);
+    if (cards && scrub && !scrub.dataset.bound) {
+      cards.scrollLeft = 0;
+      bindRowScrub(scrub, cards, null);
+    }
   });
 
   bindWorkCardHover();
