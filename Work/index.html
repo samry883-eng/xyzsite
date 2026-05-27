@@ -201,12 +201,13 @@
       left: 0;
       top: 0;
       bottom: 0;
-      width: 0%;
+      width: 100%;
       background: rgba(255, 255, 255, 0.42);
       pointer-events: none;
-      transition: width 0.08s linear;
+      transform: scaleX(0);
+      transform-origin: left center;
+      will-change: transform;
     }
-    .work-row-scrub.is-dragging .work-row-scrub__fill { transition: none; }
 
     .work-row {
       flex: 1 1 0;
@@ -966,9 +967,9 @@
     }
 
     function renderScrub() {
-      var pct = Math.round(getFrac() * 100);
-      fill.style.width = pct + '%';
-      track.setAttribute('aria-valuenow', String(pct));
+      var frac = getFrac();
+      fill.style.transform = 'scaleX(' + frac + ')';
+      track.setAttribute('aria-valuenow', String(Math.round(frac * 100)));
     }
 
     function applyFrac(frac) {
@@ -1033,7 +1034,7 @@
 
     rowCards.addEventListener('scroll', renderScrub, { passive: true });
     if (loopState) loopState.onScroll = renderScrub;
-    fill.style.width = '0%';
+    fill.style.transform = 'scaleX(0)';
     track.setAttribute('aria-valuenow', '0');
     renderScrub();
   }
@@ -1332,16 +1333,39 @@
 
     bindRowScrollPause(rowCards);
 
+    let touchScrubRaf = null;
+    function touchScrubSync() {
+      if (loopState.onScroll) loopState.onScroll();
+      touchScrubRaf = requestAnimationFrame(touchScrubSync);
+    }
+    function startTouchScrubSync() {
+      if (!touchScrubRaf) touchScrubRaf = requestAnimationFrame(touchScrubSync);
+    }
+    function stopTouchScrubSync() {
+      if (touchScrubRaf) {
+        cancelAnimationFrame(touchScrubRaf);
+        touchScrubRaf = null;
+      }
+      if (loopState.onScroll) loopState.onScroll();
+    }
+
     let tx0 = 0, tx1 = 0;
-    rowCards.addEventListener('touchstart', e => { pauseWorkHover(); tx0 = tx1 = e.touches[0].clientX; }, { passive: true });
+    rowCards.addEventListener('touchstart', e => {
+      pauseWorkHover();
+      tx0 = tx1 = e.touches[0].clientX;
+      startTouchScrubSync();
+    }, { passive: true });
     rowCards.addEventListener('touchmove', e => {
       const dx = tx1 - e.touches[0].clientX;
       tx1 = e.touches[0].clientX;
       pos += dx; loopState.pos = pos; wrapPos(); rowCards.scrollLeft = pos;
-      if (loopState.onScroll) loopState.onScroll();
       scheduleResumeWorkHover();
     }, { passive: true });
-    rowCards.addEventListener('touchend', e => { const dx = tx0 - e.changedTouches[0].clientX; if (Math.abs(dx) > 30) startSnap(dx > 0 ? 1 : -1); }, { passive: true });
+    rowCards.addEventListener('touchend', e => {
+      stopTouchScrubSync();
+      const dx = tx0 - e.changedTouches[0].clientX;
+      if (Math.abs(dx) > 30) startSnap(dx > 0 ? 1 : -1);
+    }, { passive: true });
 
     requestAnimationFrame(() => {
       loopW = rowCards.scrollWidth / 3;
