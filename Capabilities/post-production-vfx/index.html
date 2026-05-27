@@ -161,18 +161,11 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // Fallback slide navigation: some bundled exports are static renders without
     // built-in paging controls when hosted. If the template contains multiple
-    // `.slide` nodes but no obvious nav, enable arrow / wheel paging.
+    // `.slide` nodes, enable arrow / wheel paging.
     (function ensureBundledDeckNav() {
       try {
         const slides = Array.from(document.querySelectorAll('.slide'));
         if (slides.length <= 1) return;
-
-        // If any scripts in the template mention navigation, assume it's handled.
-        const hasNativeNav = Array.from(document.scripts).some(s => {
-          const t = (s.textContent || '') + ' ' + (s.src || '');
-          return /Arrow(Right|Left|Down|Up)|wheel|touchstart|goToSlide|nextSlide|prevSlide|currentSlide/i.test(t);
-        });
-        if (hasNativeNav) return;
 
         let idx = 0;
         const clamp = (n) => Math.max(0, Math.min(slides.length - 1, n));
@@ -190,12 +183,23 @@ document.addEventListener('DOMContentLoaded', async function() {
           }
         }, { passive: false });
 
-        window.addEventListener('wheel', (e) => {
-          const dy = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
-          if (!dy) return;
+        let acc = 0;
+        let last = 0;
+        const WHEEL_THRESHOLD = 80;
+        const WHEEL_LOCK_MS = 260;
+        document.addEventListener('wheel', (e) => {
+          const primary = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+          if (!primary) return;
+          const now = Date.now();
+          if (now - last < WHEEL_LOCK_MS) return;
+          acc += primary;
+          if (Math.abs(acc) < WHEEL_THRESHOLD) return;
           e.preventDefault();
-          show(idx + (dy > 0 ? 1 : -1));
-        }, { passive: false });
+          last = now;
+          const dir = acc > 0 ? 1 : -1;
+          acc = 0;
+          show(idx + dir);
+        }, { passive: false, capture: true });
       } catch (e) {}
     })();
   } catch (err) {
