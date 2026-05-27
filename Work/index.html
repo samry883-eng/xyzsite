@@ -889,8 +889,10 @@
   /** Keep in sync with :root --wc-hover-max (gentler zoom than reference portfolios). */
   var WC_HOVER_SCALE_MAX = 1.12;
   var WORK_HOVER_RESUME_MS = 220;
+  var WORK_HOVER_RELEASE_MS = 520;
   var workHoverPaused = false;
   var workHoverResumeTimer = null;
+  var workHoverReleaseTimer = null;
   var workPointerX = 0;
   var workPointerY = 0;
   var workPointerTracking = false;
@@ -915,11 +917,102 @@
     wrap.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true, cancelable: true, view: window }));
   }
 
+  function applyHoverLeave(wrap, animated) {
+    if (!wrap) return;
+    var card = wrap.querySelector('.work-card');
+    var tilt = wrap.querySelector('.wc-tilt');
+    var video = card && card.querySelector('.wc-hover-video');
+    var img = card && card.querySelector('.wc-card-poster');
+    var ease = 'cubic-bezier(0.33, 1, 0.68, 1)';
+    var dur = animated ? WORK_HOVER_RELEASE_MS : 0;
+
+    wrap.classList.remove('wc-hover-active');
+
+    if (tilt) {
+      if (animated) {
+        tilt.style.transition = 'transform ' + dur + 'ms ' + ease;
+        tilt.style.transform = 'translateZ(0) scale(1)';
+      } else {
+        tilt.style.transition = '';
+        tilt.style.transform = '';
+      }
+    }
+    if (video) {
+      if (animated) video.style.transition = 'opacity 0.45s ease';
+      else video.style.transition = '';
+      video.pause();
+      var clipS = parseFloat(video.dataset.clipStart, 10);
+      video.currentTime = Number.isNaN(clipS) ? 0 : clipS;
+    }
+    if (img) {
+      if (animated) {
+        img.style.transition = 'opacity 0.55s ' + ease;
+        img.style.opacity = '1';
+      } else {
+        img.style.transition = '';
+        img.style.opacity = '';
+      }
+    }
+  }
+
+  function clearPeerRadialPushAnimated(durationMs) {
+    if (!showcase) return;
+    var ease = 'cubic-bezier(0.33, 1, 0.68, 1)';
+    showcase.querySelectorAll('.work-card-wrap').forEach(function (w) {
+      if (!w.style.transform) return;
+      w.style.transition = 'transform ' + durationMs + 'ms ' + ease;
+      w.style.transform = '';
+    });
+  }
+
+  function releaseActiveHoverBeforeScroll(done) {
+    if (!showcase) {
+      done();
+      return;
+    }
+    var active = showcase.querySelector('.work-card-wrap.wc-hover-active');
+    if (!active) {
+      done();
+      return;
+    }
+    if (workHoverReleaseTimer) clearTimeout(workHoverReleaseTimer);
+
+    clearPeerRadialPushAnimated(WORK_HOVER_RELEASE_MS);
+    applyHoverLeave(active, true);
+
+    workHoverReleaseTimer = setTimeout(function () {
+      workHoverReleaseTimer = null;
+      done();
+    }, WORK_HOVER_RELEASE_MS);
+  }
+
   function pauseWorkHover() {
+    if (workHoverReleaseTimer) {
+      clearTimeout(workHoverReleaseTimer);
+      workHoverReleaseTimer = null;
+    }
     workHoverPaused = true;
     if (showcase) showcase.classList.add('work-hover-paused');
     resetHoverState();
     if (workHoverResumeTimer) clearTimeout(workHoverResumeTimer);
+  }
+
+  function beginScrollHoverPause(done) {
+    if (workHoverResumeTimer) clearTimeout(workHoverResumeTimer);
+    if (workHoverPaused) {
+      if (done) done();
+      return;
+    }
+    var active = showcase && showcase.querySelector('.work-card-wrap.wc-hover-active');
+    if (!active) {
+      pauseWorkHover();
+      if (done) done();
+      return;
+    }
+    releaseActiveHoverBeforeScroll(function () {
+      pauseWorkHover();
+      if (done) done();
+    });
   }
 
   function scheduleResumeWorkHover(delayMs) {
@@ -937,8 +1030,9 @@
     if (!rowCards || rowCards.dataset.scrollPauseBound) return;
     rowCards.dataset.scrollPauseBound = '1';
     rowCards.addEventListener('scroll', function () {
-      pauseWorkHover();
       scheduleResumeWorkHover();
+      if (workHoverPaused) return;
+      beginScrollHoverPause();
     }, { passive: true });
   }
 
@@ -1020,24 +1114,28 @@
     }
 
     track.addEventListener('click', function (e) {
-      pauseWorkHover();
-      scheduleResumeWorkHover();
-      applyFrac(fracFromClientX(e.clientX));
+      var x = e.clientX;
+      beginScrollHoverPause(function () {
+        scheduleResumeWorkHover();
+        applyFrac(fracFromClientX(x));
+      });
     });
 
     var dragging = false;
     function onMove(clientX) {
       if (!dragging) return;
-      pauseWorkHover();
       scheduleResumeWorkHover();
+      if (!workHoverPaused) beginScrollHoverPause();
       applyFrac(fracFromClientX(clientX));
     }
     track.addEventListener('mousedown', function (e) {
       e.preventDefault();
       dragging = true;
       scrub.classList.add('is-dragging');
-      pauseWorkHover();
-      applyFrac(fracFromClientX(e.clientX));
+      var x = e.clientX;
+      beginScrollHoverPause(function () {
+        applyFrac(fracFromClientX(x));
+      });
     });
     window.addEventListener('mousemove', function (e) { onMove(e.clientX); });
     window.addEventListener('mouseup', function () {
@@ -1047,8 +1145,10 @@
     track.addEventListener('touchstart', function (e) {
       dragging = true;
       scrub.classList.add('is-dragging');
-      pauseWorkHover();
-      if (e.touches[0]) applyFrac(fracFromClientX(e.touches[0].clientX));
+      var x = e.touches[0] ? e.touches[0].clientX : 0;
+      beginScrollHoverPause(function () {
+        if (e.touches[0]) applyFrac(fracFromClientX(x));
+      });
     }, { passive: true });
     window.addEventListener('touchmove', function (e) {
       if (!dragging || !e.touches[0]) return;
@@ -1165,12 +1265,7 @@
       });
       wrap.addEventListener('mouseleave', () => {
         clearPeerRadialPush();
-        wrap.classList.remove('wc-hover-active');
-        tilt.style.transform = '';
-        video.pause();
-        const clipS = parseFloat(video.dataset.clipStart, 10);
-        video.currentTime = Number.isNaN(clipS) ? 0 : clipS;
-        if (img) img.style.opacity = '';
+        applyHoverLeave(wrap, false);
       });
     });
   }
@@ -1344,13 +1439,17 @@
     }
     function startSnap(dir) {
       if (locked) return;
-      pauseWorkHover();
-      locked = true;
-      const cardEl = rowCards.querySelector('.work-card-wrap');
-      const cardW = cardEl ? cardEl.offsetWidth + 16 : 260;
-      animFrom = pos; animStart = performance.now(); target = pos + dir * cardW * 2;
-      if (raf) cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(snapTick);
+      beginScrollHoverPause(function () {
+        if (locked) return;
+        locked = true;
+        const cardEl = rowCards.querySelector('.work-card-wrap');
+        const cardW = cardEl ? cardEl.offsetWidth + 16 : 260;
+        animFrom = pos;
+        animStart = performance.now();
+        target = pos + dir * cardW * 2;
+        if (raf) cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(snapTick);
+      });
     }
 
     rowCards.addEventListener('wheel', e => {
@@ -1383,8 +1482,8 @@
 
     let tx0 = 0, tx1 = 0;
     rowCards.addEventListener('touchstart', e => {
-      pauseWorkHover();
       tx0 = tx1 = e.touches[0].clientX;
+      beginScrollHoverPause();
       startTouchScrubSync();
     }, { passive: true });
     rowCards.addEventListener('touchmove', e => {
