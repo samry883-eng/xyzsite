@@ -926,7 +926,7 @@
     });
   }
 
-  revealItems();
+  window.__xyzContactReveal = revealItems;
 </script>
 <script>
 (function(){
@@ -937,12 +937,21 @@
     if(nav&&nav.type)return nav.type==='reload';
     try{return !!(performance.navigation&&performance.navigation.type===1);}catch(e){return false;}
   }
+  function scheduleReveal(fromCacheRestore){
+    var dur=(!fromCacheRestore&&isReloadNavigation())?'1.06s':'0.58s';
+    var durMs=parseFloat(dur)*1000;
+    var overlapMs=80;
+    setTimeout(function(){
+      if(typeof window.__xyzContactReveal==='function')window.__xyzContactReveal();
+    },Math.max(0,durMs-overlapMs));
+  }
   // Animation 2 — same timing as Work (not Home)
   function slideAwayPanel(fromCacheRestore){
     var dur=(!fromCacheRestore&&isReloadNavigation())?'1.06s':'0.58s';
     pageOut.style.transition='none';
     pageOut.style.transform='translateY(0)';
     pageOut.style.pointerEvents='none';
+    scheduleReveal(fromCacheRestore);
     requestAnimationFrame(function(){
       requestAnimationFrame(function(){
         pageOut.style.transition='transform '+dur+' cubic-bezier(0.76,0,0.24,1)';

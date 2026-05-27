@@ -278,16 +278,16 @@
     /* ── ROW ENTRANCE ANIMATION ─────────────────────────── */
     .work-row {
       opacity: 0;
-      transform: translateY(30px);
+      transform: translateY(24px);
       will-change: transform, opacity;
     }
     .work-row.wc-row-in {
       opacity: 1;
       transform: translateY(0);
-      /* Same curve as the main load overlay so the entrance feels like one motion */
+      /* Tuned to hand off from the load overlay — quick, smooth, no dead beat after slide-up */
       transition:
-        opacity   1.1s cubic-bezier(0.76, 0, 0.24, 1),
-        transform 1.1s cubic-bezier(0.76, 0, 0.24, 1);
+        opacity   0.68s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.68s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     /* ── CARD WRAP — height from row strip; width = 16:9 of thumb area ─ */
@@ -762,20 +762,16 @@
       });
       return;
     }
-    // The overlay slides upward (translateY 0 → -100%) over durMs ms.
-    // Its bottom edge starts at viewport bottom and rises to 0.
-    // Each row triggers the instant the overlay edge passes its top edge.
+    // Overlay slides up (translateY 0 → -100%) over durMs. Schedule each row when its
+    // top edge is about to clear the overlay — slight lead so motion is visible as it uncovers.
     var vh = window.innerHeight;
+    var overlapMs = 90;
     Array.prototype.forEach.call(rows, function (row) {
       if (row.classList.contains('wc-row-in')) return;
       var rect = row.getBoundingClientRect();
-      // The overlay slides UP — its bottom edge travels from vh → 0 over durMs.
-      // A row starts being uncovered the moment the overlay bottom passes its BOTTOM edge.
-      // t = ((vh - rect.bottom) / vh) * durMs
-      // Bottom row: rect.bottom ≈ vh → delay ≈ 0  (fires immediately, in sync with slide start)
-      // Each row up: +25% of durMs  →  natural 4-step split across the full overlay travel.
+      // t = ((vh - rect.top) / vh) * durMs − overlap  →  bottom rows first, top row ~slide end
       var delay = durMs != null
-        ? Math.max(0, ((vh - rect.bottom) / vh) * durMs)
+        ? Math.max(0, ((vh - rect.top) / vh) * durMs - overlapMs)
         : 0;
       setTimeout(function () {
         row.classList.add('wc-row-in');
@@ -1426,11 +1422,8 @@
   }
 
   buildWorkGrid();
-  waitForGridReady()
-    .catch(function () {})
-    .finally(function () {
-      slideAwayPanel();
-    });
+  slideAwayPanel();
+  waitForGridReady().catch(function () {});
   window.addEventListener('pageshow', function (e) { if (e.persisted) slideAwayPanel(true); });
 </script>
 </body>
