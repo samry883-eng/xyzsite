@@ -158,6 +158,46 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (window.Babel && typeof window.Babel.transformScriptTags === 'function') {
       window.Babel.transformScriptTags();
     }
+
+    // Fallback slide navigation: some bundled exports are static renders without
+    // built-in paging controls when hosted. If the template contains multiple
+    // `.slide` nodes but no obvious nav, enable arrow / wheel paging.
+    (function ensureBundledDeckNav() {
+      try {
+        const slides = Array.from(document.querySelectorAll('.slide'));
+        if (slides.length <= 1) return;
+
+        // If any scripts in the template mention navigation, assume it's handled.
+        const hasNativeNav = Array.from(document.scripts).some(s => {
+          const t = (s.textContent || '') + ' ' + (s.src || '');
+          return /Arrow(Right|Left|Down|Up)|wheel|touchstart|goToSlide|nextSlide|prevSlide|currentSlide/i.test(t);
+        });
+        if (hasNativeNav) return;
+
+        let idx = 0;
+        const clamp = (n) => Math.max(0, Math.min(slides.length - 1, n));
+        const show = (n) => {
+          idx = clamp(n);
+          slides.forEach((el, i) => { el.style.display = (i === idx) ? 'block' : 'none'; });
+        };
+        show(0);
+
+        window.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
+            e.preventDefault(); show(idx + 1);
+          } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+            e.preventDefault(); show(idx - 1);
+          }
+        }, { passive: false });
+
+        window.addEventListener('wheel', (e) => {
+          const dy = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+          if (!dy) return;
+          e.preventDefault();
+          show(idx + (dy > 0 ? 1 : -1));
+        }, { passive: false });
+      } catch (e) {}
+    })();
   } catch (err) {
     setStatus('Error unpacking: ' + err.message);
     console.error('Bundle unpack error:', err);
