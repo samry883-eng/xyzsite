@@ -777,7 +777,7 @@
     // xyzstudios.co/projects: items use delay 0.1s + stagger 0.06s from "start" (top → bottom).
     // We were reversed (bottom rows first via rect.top) — that felt choppy vs the reference.
     var baseDelayMs = 100;
-    var staggerMs = 60;
+    var staggerMs = 100;
     Array.prototype.forEach.call(rows, function (row, rowIdx) {
       if (row.classList.contains('wc-row-in')) return;
       var delay = baseDelayMs + rowIdx * staggerMs;
