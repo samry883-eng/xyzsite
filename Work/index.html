@@ -86,6 +86,7 @@
       /* Hover zoom; neighbors move away (no peer down-scale) */
       --wc-hover-max: 1.12;
       --work-divider: rgba(255, 255, 255, 0.14);
+      --work-row-edge-pad: clamp(16px, 4vw, 48px);
       --wc-hover-ease: cubic-bezier(0.33, 1, 0.68, 1);
       --wc-hover-dur: 0.68s;
     }
@@ -154,7 +155,7 @@
       justify-content: flex-end;
       width: 100%;
       gap: clamp(10px, 1.2vh, 16px);
-      padding: 0 clamp(16px, 4vw, 48px) clamp(8px, 0.9vh, 14px);
+      padding: 0 0 clamp(8px, 0.9vh, 14px);
       margin-bottom: clamp(2px, 0.35vh, 6px);
       box-sizing: border-box;
     }
@@ -193,6 +194,7 @@
     .work-row-scrub__track {
       position: relative;
       width: 100%;
+      max-width: 100%;
       height: 1px;
       background: var(--work-divider);
       cursor: grab;
@@ -273,7 +275,7 @@
       padding-top: clamp(2px, 0.5vh, 8px);
       margin-top: 0;
       padding-bottom: 2px;
-      padding-right: clamp(16px, 4vw, 48px);
+      padding-right: var(--work-row-edge-pad);
       scrollbar-width: none;
     }
     .work-row-cards::-webkit-scrollbar { display: none; }
@@ -1070,21 +1072,41 @@
     var fill = scrub.querySelector('.work-row-scrub__fill');
     if (!track || !fill) return;
 
+    var scrubZero = 0;
+
     function scrubDen() {
       if (loopState && loopState.loopW) return loopState.loopW * WORK_SCRUB_LOOPS;
       var max = rowCards.scrollWidth - rowCards.clientWidth;
       return max > 0 ? max * WORK_SCRUB_LOOPS : 1;
     }
 
-    function scrubOrigin() {
-      if (loopState && loopState.loopW) return loopState.loopW;
-      return 0;
+    function alignScrubTrack() {
+      var scrubR = scrub.getBoundingClientRect();
+      var rowR = rowCards.getBoundingClientRect();
+      var padR = parseFloat(getComputedStyle(rowCards).paddingRight) || 0;
+      var marginLeft = Math.max(0, Math.round(rowR.left - scrubR.left));
+      var width = Math.max(0, Math.round(rowR.width - padR - marginLeft));
+      track.style.marginLeft = marginLeft + 'px';
+      track.style.width = width + 'px';
+    }
+
+    function resetScrubZero() {
+      scrubZero = loopState && loopState.loopW != null ? loopState.pos : rowCards.scrollLeft;
     }
 
     function getFrac() {
-      var origin = scrubOrigin();
       var pos = loopState && loopState.loopW != null ? loopState.pos : rowCards.scrollLeft;
-      return Math.max(0, Math.min(1, (pos - origin) / scrubDen()));
+      var traveled = pos - scrubZero;
+      if (loopState && loopState.loopW) {
+        var lw = loopState.loopW;
+        var range = lw * WORK_SCRUB_LOOPS;
+        if (traveled < 0) traveled += Math.ceil(-traveled / lw) * lw;
+        if (traveled > range) traveled = range;
+      }
+      var den = scrubDen();
+      var frac = den > 0 ? traveled / den : 0;
+      if (frac < 0.008) frac = 0;
+      return Math.max(0, Math.min(1, frac));
     }
 
     function renderScrub() {
@@ -1095,7 +1117,7 @@
 
     function applyFrac(frac) {
       frac = Math.max(0, Math.min(1, frac));
-      var p = scrubOrigin() + frac * scrubDen();
+      var p = scrubZero + frac * scrubDen();
       if (loopState && loopState.loopW) {
         loopState.pos = p;
         loopState.target = p;
@@ -1161,9 +1183,19 @@
 
     rowCards.addEventListener('scroll', renderScrub, { passive: true });
     if (loopState) loopState.onScroll = renderScrub;
+    resetScrubZero();
+    alignScrubTrack();
     fill.style.transform = 'scaleX(0)';
     track.setAttribute('aria-valuenow', '0');
     renderScrub();
+    var scrubResizeTimer = null;
+    window.addEventListener('resize', function () {
+      if (scrubResizeTimer) clearTimeout(scrubResizeTimer);
+      scrubResizeTimer = setTimeout(function () {
+        alignScrubTrack();
+        renderScrub();
+      }, 120);
+    });
   }
 
   /** Horizontal nudge only — no vertical push (was causing row jitter). */
