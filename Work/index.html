@@ -262,10 +262,12 @@
       align-items: stretch;
       gap: var(--card-gap);
       overflow-x: auto;
-      /* allow scaled label/video to extend past row strip vertically */
-      overflow-y: visible;
-      padding-top: clamp(2px, 0.5vh, 14px);
-      margin-top: clamp(-6px, -0.45vh, -14px);
+      overflow-y: hidden;
+      overscroll-behavior-x: contain;
+      overscroll-behavior-y: none;
+      touch-action: pan-x;
+      padding-top: clamp(2px, 0.5vh, 8px);
+      margin-top: 0;
       padding-bottom: 2px;
       padding-right: clamp(16px, 4vw, 48px);
       scrollbar-width: none;
@@ -306,7 +308,26 @@
       z-index: 50;
     }
 
-    /* ── CARD HEADER: same scale as video on hover + translate (no down-scaling) ── */
+    /* While scrolling: kill hover zoom / video / peer motion (less lag) */
+    .work-showcase.work-hover-paused .work-card-wrap,
+    .work-showcase.work-hover-paused .work-card,
+    .work-showcase.work-hover-paused .wc-header {
+      transition: none !important;
+    }
+    .work-showcase.work-hover-paused .work-card-wrap .work-card,
+    .work-showcase.work-hover-paused .work-card-wrap .wc-header,
+    .work-showcase.work-hover-paused .work-card-wrap:hover .work-card,
+    .work-showcase.work-hover-paused .work-card-wrap:hover .wc-header {
+      transform: none !important;
+    }
+    .work-showcase.work-hover-paused .work-card-wrap .wc-hover-video {
+      opacity: 0 !important;
+    }
+    .work-showcase.work-hover-paused .work-card-wrap .wc-card-poster {
+      opacity: 1 !important;
+    }
+
+    /* ── CARD HEADER: label above thumb (no vertical shift on hover) ── */
     .wc-header {
       flex: 0 0 auto;
       min-height: var(--wc-label-h);
@@ -864,6 +885,33 @@
 
   /** Keep in sync with :root --wc-hover-max (gentler zoom than reference portfolios). */
   var WC_HOVER_SCALE_MAX = 1.12;
+  var workHoverPaused = false;
+  var workHoverResumeTimer = null;
+
+  function pauseWorkHover() {
+    workHoverPaused = true;
+    if (showcase) showcase.classList.add('work-hover-paused');
+    resetHoverState();
+    if (workHoverResumeTimer) clearTimeout(workHoverResumeTimer);
+  }
+
+  function scheduleResumeWorkHover() {
+    if (workHoverResumeTimer) clearTimeout(workHoverResumeTimer);
+    workHoverResumeTimer = setTimeout(function () {
+      workHoverPaused = false;
+      if (showcase) showcase.classList.remove('work-hover-paused');
+      workHoverResumeTimer = null;
+    }, 220);
+  }
+
+  function bindRowScrollPause(rowCards) {
+    if (!rowCards || rowCards.dataset.scrollPauseBound) return;
+    rowCards.dataset.scrollPauseBound = '1';
+    rowCards.addEventListener('scroll', function () {
+      pauseWorkHover();
+      scheduleResumeWorkHover();
+    }, { passive: true });
+  }
 
   function clearPeerRadialPush() {
     if (!showcase) return;
@@ -875,7 +923,7 @@
   function resetHoverState() {
     clearPeerRadialPush();
     if (!showcase) return;
-    showcase.querySelectorAll('.work-card-wrap.wc-hover-active').forEach(function (wrap) {
+    showcase.querySelectorAll('.work-card-wrap').forEach(function (wrap) {
       wrap.classList.remove('wc-hover-active');
       var card = wrap.querySelector('.work-card');
       var header = wrap.querySelector('.wc-header');
@@ -944,21 +992,23 @@
     }
 
     track.addEventListener('click', function (e) {
-      resetHoverState();
+      pauseWorkHover();
+      scheduleResumeWorkHover();
       applyFrac(fracFromClientX(e.clientX));
     });
 
     var dragging = false;
     function onMove(clientX) {
       if (!dragging) return;
-      resetHoverState();
+      pauseWorkHover();
+      scheduleResumeWorkHover();
       applyFrac(fracFromClientX(clientX));
     }
     track.addEventListener('mousedown', function (e) {
       e.preventDefault();
       dragging = true;
       scrub.classList.add('is-dragging');
-      resetHoverState();
+      pauseWorkHover();
       applyFrac(fracFromClientX(e.clientX));
     });
     window.addEventListener('mousemove', function (e) { onMove(e.clientX); });
@@ -969,7 +1019,7 @@
     track.addEventListener('touchstart', function (e) {
       dragging = true;
       scrub.classList.add('is-dragging');
-      resetHoverState();
+      pauseWorkHover();
       if (e.touches[0]) applyFrac(fracFromClientX(e.touches[0].clientX));
     }, { passive: true });
     window.addEventListener('touchmove', function (e) {
@@ -988,29 +1038,26 @@
     renderScrub();
   }
 
-  /** Move all other cards in the showcase radially outward (all rows), not only the same strip. */
+  /** Horizontal nudge only — no vertical push (was causing row jitter). */
   function applyPeerRadialPush(activeWrap, scaleFactor) {
-    if (!showcase || !activeWrap) return;
+    if (!showcase || !activeWrap || workHoverPaused) return;
     var ar = activeWrap.getBoundingClientRect();
-    var hc = { x: ar.left + ar.width / 2, y: ar.top + ar.height / 2 };
+    var hc = { x: ar.left + ar.width / 2 };
     var base = Math.min(ar.width, ar.height);
-    var pushMax = Math.max(16, (scaleFactor - 1) * base * 0.55);
-    var vw = typeof window !== 'undefined' ? Math.min(window.innerWidth, window.innerHeight) : 800;
-    /* Larger falloff radius so cards in other rows still get a visible nudge */
-    var falloffDen = Math.max(base * 1.2, vw * 0.22);
-    showcase.querySelectorAll('.work-card-wrap').forEach(function (w) {
+    var pushMax = Math.max(12, (scaleFactor - 1) * base * 0.45);
+    var falloffDen = Math.max(base * 1.2, window.innerWidth * 0.22);
+    var rowCards = activeWrap.closest('.work-row-cards');
+    if (!rowCards) return;
+    rowCards.querySelectorAll('.work-card-wrap').forEach(function (w) {
       if (w === activeWrap) return;
       var wr = w.getBoundingClientRect();
-      var pc = { x: wr.left + wr.width / 2, y: wr.top + wr.height / 2 };
-      var dx = pc.x - hc.x;
-      var dy = pc.y - hc.y;
-      var dist = Math.hypot(dx, dy);
+      var dx = (wr.left + wr.width / 2) - hc.x;
+      var dist = Math.abs(dx);
       if (dist < 0.5) return;
       var falloff = 1 / (1 + dist / falloffDen);
       var push = pushMax * falloff;
-      var ux = dx / dist;
-      var uy = dy / dist;
-      w.style.transform = 'translate(' + (ux * push).toFixed(2) + 'px,' + (uy * push).toFixed(2) + 'px)';
+      var pushX = (dx >= 0 ? 1 : -1) * push;
+      w.style.transform = 'translate(' + pushX.toFixed(2) + 'px, 0)';
     });
   }
 
@@ -1069,20 +1116,13 @@
 
       function applyHoverScale() {
         var s = WC_HOVER_SCALE_MAX;
-        var r = card.getBoundingClientRect();
-        /* Same for every card: center scale; avoids per-edge math that made zoom inconsistent */
         card.style.transformOrigin = '50% 50%';
         card.style.transform = 'translateZ(0) scale(' + s + ')';
-        if (header) {
-          var H = r.height;
-          /* Follow scaled video; do not scale the label (was clipping / overflow) */
-          var ty = (s - 1) * H * 0.5;
-          header.style.transform = 'translate(0px,' + ty + 'px)';
-        }
         return s;
       }
 
       wrap.addEventListener('mouseenter', () => {
+        if (workHoverPaused) return;
         const s = applyHoverScale();
         wrap.classList.add('wc-hover-active');
         applyPeerRadialPush(wrap, s);
@@ -1268,7 +1308,8 @@
     }
     function startSnap(dir) {
       if (locked) return;
-      resetHoverState();
+      pauseWorkHover();
+      scheduleResumeWorkHover();
       locked = true;
       const cardEl = rowCards.querySelector('.work-card-wrap');
       const cardW = cardEl ? cardEl.offsetWidth + 16 : 260;
@@ -1278,15 +1319,28 @@
     }
 
     rowCards.addEventListener('wheel', e => {
-      resetHoverState();
+      pauseWorkHover();
+      scheduleResumeWorkHover();
       e.preventDefault();
       e.stopPropagation();
-      startSnap(e.deltaY > 0 ? 1 : -1);
+      if (Math.abs(e.deltaY) >= Math.abs(e.deltaX)) {
+        startSnap(e.deltaY > 0 ? 1 : -1);
+      } else {
+        startSnap(e.deltaX > 0 ? 1 : -1);
+      }
     }, { passive: false });
 
+    bindRowScrollPause(rowCards);
+
     let tx0 = 0, tx1 = 0;
-    rowCards.addEventListener('touchstart', e => { resetHoverState(); tx0 = tx1 = e.touches[0].clientX; }, { passive: true });
-    rowCards.addEventListener('touchmove', e => { const dx = tx1 - e.touches[0].clientX; tx1 = e.touches[0].clientX; pos += dx; loopState.pos = pos; wrapPos(); rowCards.scrollLeft = pos; if (loopState.onScroll) loopState.onScroll(); }, { passive: true });
+    rowCards.addEventListener('touchstart', e => { pauseWorkHover(); tx0 = tx1 = e.touches[0].clientX; }, { passive: true });
+    rowCards.addEventListener('touchmove', e => {
+      const dx = tx1 - e.touches[0].clientX;
+      tx1 = e.touches[0].clientX;
+      pos += dx; loopState.pos = pos; wrapPos(); rowCards.scrollLeft = pos;
+      if (loopState.onScroll) loopState.onScroll();
+      scheduleResumeWorkHover();
+    }, { passive: true });
     rowCards.addEventListener('touchend', e => { const dx = tx0 - e.changedTouches[0].clientX; if (Math.abs(dx) > 30) startSnap(dx > 0 ? 1 : -1); }, { passive: true });
 
     requestAnimationFrame(() => {
@@ -1318,8 +1372,17 @@
     if (cards && scrub && !scrub.dataset.bound) {
       cards.scrollLeft = 0;
       bindRowScrub(scrub, cards, null);
+      bindRowScrollPause(cards);
     }
   });
+
+  if (showcase && !showcase.dataset.wheelBound) {
+    showcase.dataset.wheelBound = '1';
+    showcase.addEventListener('wheel', function (e) {
+      if (!e.target.closest('.work-row-cards')) return;
+      e.preventDefault();
+    }, { passive: false, capture: true });
+  }
 
   bindWorkCardHover();
 
