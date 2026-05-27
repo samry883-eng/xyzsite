@@ -891,6 +891,8 @@
     });
   }
 
+  var WORK_SCRUB_LOOPS = 2;
+
   function bindRowScrub(scrub, rowCards, loopState) {
     if (!scrub || !rowCards || scrub.dataset.bound) return;
     scrub.dataset.bound = '1';
@@ -898,14 +900,21 @@
     var fill = scrub.querySelector('.work-row-scrub__fill');
     if (!track || !fill) return;
 
-    function getFrac() {
-      if (loopState && loopState.loopW) {
-        var frac = (loopState.pos - loopState.loopW) / loopState.loopW;
-        return Math.max(0, Math.min(1, frac));
-      }
+    function scrubDen() {
+      if (loopState && loopState.loopW) return loopState.loopW * WORK_SCRUB_LOOPS;
       var max = rowCards.scrollWidth - rowCards.clientWidth;
-      if (max <= 0) return 0;
-      return Math.max(0, Math.min(1, rowCards.scrollLeft / max));
+      return max > 0 ? max * WORK_SCRUB_LOOPS : 1;
+    }
+
+    function scrubOrigin() {
+      if (loopState && loopState.loopW) return loopState.loopW;
+      return 0;
+    }
+
+    function getFrac() {
+      var origin = scrubOrigin();
+      var pos = loopState && loopState.loopW != null ? loopState.pos : rowCards.scrollLeft;
+      return Math.max(0, Math.min(1, (pos - origin) / scrubDen()));
     }
 
     function renderScrub() {
@@ -916,15 +925,14 @@
 
     function applyFrac(frac) {
       frac = Math.max(0, Math.min(1, frac));
+      var p = scrubOrigin() + frac * scrubDen();
       if (loopState && loopState.loopW) {
-        var p = loopState.loopW + frac * loopState.loopW;
         loopState.pos = p;
         loopState.target = p;
         loopState.animFrom = p;
         rowCards.scrollLeft = p;
       } else {
-        var max = rowCards.scrollWidth - rowCards.clientWidth;
-        rowCards.scrollLeft = frac * max;
+        rowCards.scrollLeft = p;
       }
       renderScrub();
     }
@@ -975,6 +983,8 @@
 
     rowCards.addEventListener('scroll', renderScrub, { passive: true });
     if (loopState) loopState.onScroll = renderScrub;
+    fill.style.width = '0%';
+    track.setAttribute('aria-valuenow', '0');
     renderScrub();
   }
 
@@ -1242,7 +1252,7 @@
     function easeInOut(t) { return 1 - Math.pow(1 - t, 4); }
     function wrapPos() {
       if (pos < loopW * 0.1) { pos += loopW; target += loopW; animFrom += loopW; }
-      if (pos > loopW * 1.9) { pos -= loopW; target -= loopW; animFrom -= loopW; }
+      if (pos > loopW * (WORK_SCRUB_LOOPS + 0.95)) { pos -= loopW; target -= loopW; animFrom -= loopW; }
     }
     function snapTick() {
       const t = Math.min((performance.now() - animStart) / DURATION, 1);
