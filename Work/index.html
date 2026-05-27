@@ -281,13 +281,13 @@
     /* ── ROW ENTRANCE ANIMATION ─────────────────────────── */
     .work-row {
       opacity: 0;
-      transform: translateY(48px);
+      transform: translateY(12rem);
       will-change: transform, opacity;
     }
     .work-row.wc-row-in {
       opacity: 1;
       transform: translateY(0);
-      /* Item reveal on xyzstudios.co/projects: 1.2s, power3.inOut, 60ms stagger from top */
+      /* xyzstudios.co/projects items: 12rem → 0, 1.2s power3.inOut */
       transition:
         opacity   1.2s cubic-bezier(0.65, 0, 0.35, 1),
         transform 1.2s cubic-bezier(0.65, 0, 0.35, 1);
@@ -774,10 +774,9 @@
       });
       return;
     }
-    // xyzstudios.co/projects: items use delay 0.1s + stagger 0.06s from "start" (top → bottom).
-    // We were reversed (bottom rows first via rect.top) — that felt choppy vs the reference.
+    // xyzstudios.co/projects: 0.1s base + stagger from top; wider gaps for 4 rows.
     var baseDelayMs = 100;
-    var staggerMs = 100;
+    var staggerMs = 180;
     Array.prototype.forEach.call(rows, function (row, rowIdx) {
       if (row.classList.contains('wc-row-in')) return;
       var delay = baseDelayMs + rowIdx * staggerMs;
