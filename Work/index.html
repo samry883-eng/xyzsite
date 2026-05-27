@@ -888,8 +888,32 @@
 
   /** Keep in sync with :root --wc-hover-max (gentler zoom than reference portfolios). */
   var WC_HOVER_SCALE_MAX = 1.12;
+  var WORK_HOVER_RESUME_MS = 220;
   var workHoverPaused = false;
   var workHoverResumeTimer = null;
+  var workPointerX = 0;
+  var workPointerY = 0;
+  var workPointerTracking = false;
+
+  function ensureWorkPointerTracking() {
+    if (workPointerTracking) return;
+    workPointerTracking = true;
+    document.addEventListener('mousemove', function (e) {
+      workPointerX = e.clientX;
+      workPointerY = e.clientY;
+    }, { passive: true });
+  }
+
+  function resumeWorkHoverUnderPointer() {
+    if (!window.matchMedia || !window.matchMedia('(hover: hover)').matches) return;
+    if (!showcase || workHoverPaused) return;
+    var el = document.elementFromPoint(workPointerX, workPointerY);
+    if (!el) return;
+    var wrap = el.closest('.work-card-wrap');
+    if (!wrap || !showcase.contains(wrap)) return;
+    if (wrap.classList.contains('wc-hover-active')) return;
+    wrap.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true, cancelable: true, view: window }));
+  }
 
   function pauseWorkHover() {
     workHoverPaused = true;
@@ -898,13 +922,15 @@
     if (workHoverResumeTimer) clearTimeout(workHoverResumeTimer);
   }
 
-  function scheduleResumeWorkHover() {
+  function scheduleResumeWorkHover(delayMs) {
     if (workHoverResumeTimer) clearTimeout(workHoverResumeTimer);
+    var delay = delayMs == null ? WORK_HOVER_RESUME_MS : delayMs;
     workHoverResumeTimer = setTimeout(function () {
       workHoverPaused = false;
       if (showcase) showcase.classList.remove('work-hover-paused');
       workHoverResumeTimer = null;
-    }, 220);
+      resumeWorkHoverUnderPointer();
+    }, delay);
   }
 
   function bindRowScrollPause(rowCards) {
@@ -1106,6 +1132,7 @@
   function bindWorkCardHover() {
     if (!window.matchMedia || !window.matchMedia('(hover: hover)').matches) return;
     if (!showcase) return;
+    ensureWorkPointerTracking();
     showcase.querySelectorAll('.work-card-wrap').forEach((wrap) => {
       if (wrap.dataset.hoverBound) return;
       const card = wrap.querySelector('.work-card');
@@ -1302,12 +1329,22 @@
       rowCards.scrollLeft = pos;
       if (loopState.onScroll) loopState.onScroll();
       if (t < 1) { raf = requestAnimationFrame(snapTick); }
-      else { pos = target; wrapPos(); loopState.pos = pos; rowCards.scrollLeft = pos; if (loopState.onScroll) loopState.onScroll(); raf = null; setTimeout(() => { locked = false; }, 500); }
+      else {
+        pos = target;
+        wrapPos();
+        loopState.pos = pos;
+        rowCards.scrollLeft = pos;
+        if (loopState.onScroll) loopState.onScroll();
+        raf = null;
+        setTimeout(function () {
+          locked = false;
+          scheduleResumeWorkHover();
+        }, 500);
+      }
     }
     function startSnap(dir) {
       if (locked) return;
       pauseWorkHover();
-      scheduleResumeWorkHover();
       locked = true;
       const cardEl = rowCards.querySelector('.work-card-wrap');
       const cardW = cardEl ? cardEl.offsetWidth + 16 : 260;
@@ -1317,8 +1354,6 @@
     }
 
     rowCards.addEventListener('wheel', e => {
-      pauseWorkHover();
-      scheduleResumeWorkHover();
       e.preventDefault();
       e.stopPropagation();
       if (Math.abs(e.deltaY) >= Math.abs(e.deltaX)) {
