@@ -1072,8 +1072,6 @@
   }
 
   var WORK_SCRUB_LOOPS = 2;
-  /** Wheel snaps (cardW × 2 each) that fill the scrub bar from empty to full. */
-  var WORK_SCRUB_SNAPS = 2;
 
   function bindRowScrub(scrub, rowCards, loopState) {
     if (!scrub || !rowCards || scrub.dataset.bound) return;
@@ -1084,14 +1082,27 @@
 
     var scrubZero = 0;
 
-    function snapStepPx() {
-      if (loopState && loopState.snapStep) return loopState.snapStep;
-      var cardEl = rowCards.querySelector('.work-card-wrap');
-      return cardEl ? (cardEl.offsetWidth + 16) * 2 : 520;
+    function scrubDen() {
+      if (loopState && loopState.loopW) return loopState.loopW * WORK_SCRUB_LOOPS;
+      var max = rowCards.scrollWidth - rowCards.clientWidth;
+      return max > 0 ? max : 1;
     }
 
-    function scrubDen() {
-      return snapStepPx() * WORK_SCRUB_SNAPS;
+    function syncBarTravel() {
+      if (!loopState || !loopState.loopW) return;
+      var lw = loopState.loopW;
+      var pos = loopState.pos;
+      if (loopState.lastPos == null) {
+        loopState.lastPos = pos;
+        loopState.barTravel = 0;
+        return;
+      }
+      var delta = pos - loopState.lastPos;
+      if (delta < -lw * 0.5) delta += lw;
+      if (delta > lw * 0.5) delta -= lw;
+      if (loopState.barTravel == null) loopState.barTravel = 0;
+      loopState.barTravel = Math.max(0, Math.min(lw * WORK_SCRUB_LOOPS, loopState.barTravel + delta));
+      loopState.lastPos = pos;
     }
 
     function alignScrubTrack() {
@@ -1109,7 +1120,14 @@
     }
 
     function getFrac() {
-      var pos = loopState && loopState.loopW != null ? loopState.pos : rowCards.scrollLeft;
+      if (loopState && loopState.loopW) {
+        var den = loopState.loopW * WORK_SCRUB_LOOPS;
+        var travel = loopState.barTravel || 0;
+        var frac = den > 0 ? travel / den : 0;
+        if (frac < 0.008) frac = 0;
+        return Math.max(0, Math.min(1, frac));
+      }
+      var pos = rowCards.scrollLeft;
       var traveled = pos - scrubZero;
       var den = scrubDen();
       if (traveled < 0) traveled = 0;
@@ -1120,6 +1138,7 @@
     }
 
     function renderScrub() {
+      syncBarTravel();
       var frac = getFrac();
       fill.style.transform = 'scaleX(' + frac + ')';
       track.setAttribute('aria-valuenow', String(Math.round(frac * 100)));
@@ -1127,6 +1146,10 @@
 
     function applyFrac(frac) {
       frac = Math.max(0, Math.min(1, frac));
+      if (loopState && loopState.loopW) {
+        loopState.barTravel = frac * scrubDen();
+        loopState.lastPos = loopState.pos;
+      }
       var p = scrubZero + frac * scrubDen();
       if (loopState && loopState.loopW) {
         loopState.pos = p;
@@ -1192,7 +1215,11 @@
     });
 
     rowCards.addEventListener('scroll', renderScrub, { passive: true });
-    if (loopState) loopState.onScroll = renderScrub;
+    if (loopState) {
+      loopState.onScroll = renderScrub;
+      loopState.barTravel = 0;
+      loopState.lastPos = loopState.pos != null ? loopState.pos : loopState.loopW;
+    }
     resetScrubZero();
     alignScrubTrack();
     fill.style.transform = 'scaleX(0)';
