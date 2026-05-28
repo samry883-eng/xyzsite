@@ -61,14 +61,6 @@
       "destination": "/capabilities/sound/index.html"
     },
     {
-      "source": "/capabilities/post-production-vfx",
-      "destination": "/capabilities/post-production-vfx/index.html"
-    },
-    {
-      "source": "/capabilities/post-production-vfx/",
-      "destination": "/capabilities/post-production-vfx/index.html"
-    },
-    {
       "source": "/capabilities",
       "destination": "/capabilities/index.html"
     },
