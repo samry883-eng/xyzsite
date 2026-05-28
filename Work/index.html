@@ -1074,8 +1074,12 @@
   var WORK_SCRUB_LOOPS = 2;
 
   function bindRowScrub(scrub, rowCards, loopState) {
-    if (!scrub || !rowCards || scrub.dataset.bound) return;
+    if (!scrub || !rowCards) return;
+    if (scrub.dataset.bound) {
+      if (!loopState || scrub.dataset.boundLoop === '1') return;
+    }
     scrub.dataset.bound = '1';
+    if (loopState && loopState.loopW) scrub.dataset.boundLoop = '1';
     var track = scrub.querySelector('.work-row-scrub__track');
     var fill = scrub.querySelector('.work-row-scrub__fill');
     if (!track || !fill) return;
@@ -1575,6 +1579,8 @@
       loopState.pos = pos;
       loopState.target = target;
       loopState.animFrom = animFrom;
+      loopState.barTravel = 0;
+      loopState.lastPos = pos;
       rowCards.scrollLeft = pos;
       var scrubEl = rowEl && rowEl.querySelector('.work-row-scrub');
       bindRowScrub(scrubEl, rowCards, loopState);
@@ -1595,6 +1601,7 @@
     var cards = row.querySelector('.work-row-cards');
     var scrub = row.querySelector('.work-row-scrub');
     if (cards && scrub && !scrub.dataset.bound) {
+      if (!isMobileWorkLayout()) return;
       cards.scrollLeft = 0;
       bindRowScrub(scrub, cards, null);
       bindRowScrollPause(cards);
