@@ -213,6 +213,11 @@
       transform: scaleX(0);
       transform-origin: left center;
       will-change: transform;
+      transition: transform 0.28s cubic-bezier(0.33, 1, 0.68, 1);
+    }
+    .work-row-scrub.is-snapping .work-row-scrub__fill,
+    .work-row-scrub.is-dragging .work-row-scrub__fill {
+      transition: none;
     }
 
     .work-row {
@@ -1092,6 +1097,18 @@
       return max > 0 ? max : 1;
     }
 
+    function scrubCycleLen() {
+      if (!loopState || !loopState.loopW) return 1;
+      return loopState.loopW * WORK_SCRUB_LOOPS;
+    }
+
+    function normalizeBarTravel() {
+      if (!loopState || !loopState.loopW) return;
+      var den = scrubCycleLen();
+      while (loopState.barTravel >= den) loopState.barTravel -= den;
+      while (loopState.barTravel < 0) loopState.barTravel += den;
+    }
+
     function syncBarTravelAt(newPos) {
       if (!loopState || !loopState.loopW) return;
       var lw = loopState.loopW;
@@ -1104,7 +1121,8 @@
       if (delta < -lw * 0.5) delta += lw;
       if (delta > lw * 0.5) delta -= lw;
       if (loopState.barTravel == null) loopState.barTravel = 0;
-      loopState.barTravel = Math.max(0, Math.min(lw * WORK_SCRUB_LOOPS, loopState.barTravel + delta));
+      loopState.barTravel += delta;
+      normalizeBarTravel();
       loopState.lastPos = newPos;
     }
 
@@ -1124,8 +1142,9 @@
 
     function getFrac() {
       if (loopState && loopState.loopW) {
-        var den = loopState.loopW * WORK_SCRUB_LOOPS;
+        var den = scrubCycleLen();
         var travel = loopState.barTravel || 0;
+        if (travel >= den - 0.5) return 1;
         var frac = den > 0 ? travel / den : 0;
         if (frac < 0.008) frac = 0;
         return Math.max(0, Math.min(1, frac));
@@ -1220,6 +1239,8 @@
     if (loopState) {
       loopState.onScroll = renderScrub;
       loopState.syncBarTravelAt = syncBarTravelAt;
+      loopState.normalizeBarTravel = normalizeBarTravel;
+      loopState.scrubCycleLen = scrubCycleLen;
       loopState.barTravel = 0;
       loopState.lastPos = loopState.pos != null ? loopState.pos : loopState.loopW;
     }
@@ -1477,8 +1498,10 @@
     });
 
     let loopW = 0, pos = 0, target = 0, animFrom = 0, animStart = 0, raf = null, locked = false;
+    let snapBarFrom = 0, snapBarStep = 0;
     const loopState = { loopW: 0, pos: 0, target: 0, animFrom: 0, snapStep: 0, onScroll: null };
     const rowEl = rowCards.closest('.work-row');
+    const scrubElRef = rowEl && rowEl.querySelector('.work-row-scrub');
     const DURATION = 900;
 
     function easeInOut(t) { return 1 - Math.pow(1 - t, 4); }
@@ -1486,31 +1509,41 @@
       if (pos < loopW * 0.1) { pos += loopW; target += loopW; animFrom += loopW; }
       if (pos > loopW * (WORK_SCRUB_LOOPS + 0.95)) { pos -= loopW; target -= loopW; animFrom -= loopW; }
     }
+    function applySnapBar(eased, final) {
+      if (!loopState.loopW) return;
+      var den = loopState.scrubCycleLen ? loopState.scrubCycleLen() : loopW * WORK_SCRUB_LOOPS;
+      var raw = snapBarFrom + snapBarStep * eased;
+      if (final) {
+        loopState.barTravel = raw;
+        if (loopState.normalizeBarTravel) loopState.normalizeBarTravel();
+      } else if (snapBarStep >= 0) {
+        loopState.barTravel = Math.min(den, Math.max(0, raw));
+      } else {
+        loopState.barTravel = Math.max(0, raw);
+        if (loopState.normalizeBarTravel) loopState.normalizeBarTravel();
+      }
+    }
     function snapTick() {
       const t = Math.min((performance.now() - animStart) / DURATION, 1);
-      const nextPos = animFrom + (target - animFrom) * easeInOut(t);
-      if (loopState.syncBarTravelAt) loopState.syncBarTravelAt(nextPos);
-      pos = nextPos;
+      const eased = easeInOut(t);
+      pos = animFrom + (target - animFrom) * eased;
+      if (t >= 1) pos = target;
       wrapPos();
+      applySnapBar(eased, t >= 1);
       loopState.pos = pos;
       loopState.lastPos = pos;
       loopState.target = target;
       loopState.animFrom = animFrom;
       rowCards.scrollLeft = pos;
       if (loopState.onScroll) loopState.onScroll();
-      if (t < 1) { raf = requestAnimationFrame(snapTick); }
-      else {
-        pos = target;
-        if (loopState.syncBarTravelAt) loopState.syncBarTravelAt(pos);
-        wrapPos();
-        loopState.pos = pos;
-        loopState.lastPos = pos;
-        rowCards.scrollLeft = pos;
-        if (loopState.onScroll) loopState.onScroll();
-        raf = null;
-        locked = false;
-        finishScrollSnapHover();
+      if (t < 1) {
+        raf = requestAnimationFrame(snapTick);
+        return;
       }
+      raf = null;
+      locked = false;
+      if (scrubElRef) scrubElRef.classList.remove('is-snapping');
+      finishScrollSnapHover();
     }
     function startSnap(dir) {
       if (locked) return;
@@ -1522,6 +1555,9 @@
         animFrom = pos;
         animStart = performance.now();
         target = pos + dir * cardW * 2;
+        snapBarFrom = loopState.barTravel || 0;
+        snapBarStep = dir * cardW * 2;
+        if (scrubElRef) scrubElRef.classList.add('is-snapping');
         if (raf) cancelAnimationFrame(raf);
         raf = requestAnimationFrame(snapTick);
       });
