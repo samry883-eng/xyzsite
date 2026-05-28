@@ -89,6 +89,7 @@
       --work-row-edge-pad: clamp(16px, 4vw, 48px);
       --wc-hover-ease: cubic-bezier(0.33, 1, 0.68, 1);
       --wc-hover-dur: 0.68s;
+      --wc-scroll-release-dur: 0.42s;
     }
 
     html, body {
@@ -314,20 +315,30 @@
       z-index: 50;
     }
 
-    /* While scrolling: kill hover zoom / video / peer motion (less lag) */
-    .work-showcase.work-hover-paused .work-card-wrap,
-    .work-showcase.work-hover-paused .wc-tilt {
+    /* Instant reset when not animating release (touch scrub, etc.) */
+    .work-showcase.work-hover-paused:not(.work-scroll-releasing) .work-card-wrap,
+    .work-showcase.work-hover-paused:not(.work-scroll-releasing) .wc-tilt {
       transition: none !important;
     }
-    .work-showcase.work-hover-paused .work-card-wrap .wc-tilt,
-    .work-showcase.work-hover-paused .work-card-wrap:hover .wc-tilt {
+    .work-showcase.work-hover-paused:not(.work-scroll-releasing) .work-card-wrap .wc-tilt,
+    .work-showcase.work-hover-paused:not(.work-scroll-releasing) .work-card-wrap:hover .wc-tilt {
       transform: none !important;
     }
-    .work-showcase.work-hover-paused .work-card-wrap .wc-hover-video {
+    .work-showcase.work-hover-paused:not(.work-scroll-releasing) .work-card-wrap .wc-hover-video {
       opacity: 0 !important;
     }
-    .work-showcase.work-hover-paused .work-card-wrap .wc-card-poster {
+    .work-showcase.work-hover-paused:not(.work-scroll-releasing) .work-card-wrap .wc-card-poster {
       opacity: 1 !important;
+    }
+    /* Wheel snap: zoom out in parallel with horizontal scroll (JS sets inline transform) */
+    .work-showcase.work-scroll-releasing .work-card-wrap .wc-tilt {
+      transition: transform var(--wc-scroll-release-dur) var(--wc-hover-ease) !important;
+    }
+    .work-showcase.work-scroll-releasing .work-card-wrap .wc-hover-video {
+      transition: opacity var(--wc-scroll-release-dur) ease !important;
+    }
+    .work-showcase.work-scroll-releasing .work-card-wrap .wc-card-poster {
+      transition: opacity var(--wc-scroll-release-dur) var(--wc-hover-ease) !important;
     }
 
     /* ── CARD HEADER: label above thumb (no vertical shift on hover) ── */
@@ -890,8 +901,8 @@
 
   /** Keep in sync with :root --wc-hover-max (gentler zoom than reference portfolios). */
   var WC_HOVER_SCALE_MAX = 1.12;
-  var WORK_HOVER_RESUME_MS = 220;
-  var WORK_HOVER_RELEASE_MS = 520;
+  var WORK_HOVER_RESUME_MS = 120;
+  var WORK_HOVER_RELEASE_MS = 420;
   var workHoverPaused = false;
   var workHoverResumeTimer = null;
   var workHoverReleaseTimer = null;
@@ -967,54 +978,51 @@
     });
   }
 
-  function releaseActiveHoverBeforeScroll(done) {
-    if (!showcase) {
-      done();
-      return;
-    }
+  function releaseActiveHoverForScroll() {
+    if (!showcase) return false;
     var active = showcase.querySelector('.work-card-wrap.wc-hover-active');
-    if (!active) {
-      done();
-      return;
-    }
+    if (!active) return false;
     if (workHoverReleaseTimer) clearTimeout(workHoverReleaseTimer);
-
+    showcase.classList.add('work-scroll-releasing');
     clearPeerRadialPushAnimated(WORK_HOVER_RELEASE_MS);
     applyHoverLeave(active, true);
-
     workHoverReleaseTimer = setTimeout(function () {
       workHoverReleaseTimer = null;
-      done();
+      if (showcase) showcase.classList.remove('work-scroll-releasing');
     }, WORK_HOVER_RELEASE_MS);
+    return true;
   }
 
-  function pauseWorkHover() {
+  function pauseWorkHover(instant) {
     if (workHoverReleaseTimer) {
       clearTimeout(workHoverReleaseTimer);
       workHoverReleaseTimer = null;
     }
     workHoverPaused = true;
-    if (showcase) showcase.classList.add('work-hover-paused');
-    resetHoverState();
+    if (showcase) {
+      showcase.classList.add('work-hover-paused');
+      if (instant) showcase.classList.remove('work-scroll-releasing');
+    }
+    if (instant) resetHoverState();
     if (workHoverResumeTimer) clearTimeout(workHoverResumeTimer);
   }
 
   function beginScrollHoverPause(done) {
     if (workHoverResumeTimer) clearTimeout(workHoverResumeTimer);
-    if (workHoverPaused) {
-      if (done) done();
-      return;
+    workHoverPaused = true;
+    var hadHover = releaseActiveHoverForScroll();
+    if (!hadHover) pauseWorkHover(true);
+    else if (showcase) showcase.classList.add('work-hover-paused');
+    if (done) done();
+  }
+
+  function finishScrollSnapHover() {
+    if (showcase) {
+      showcase.classList.remove('work-scroll-releasing');
+      showcase.classList.remove('work-hover-paused');
     }
-    var active = showcase && showcase.querySelector('.work-card-wrap.wc-hover-active');
-    if (!active) {
-      pauseWorkHover();
-      if (done) done();
-      return;
-    }
-    releaseActiveHoverBeforeScroll(function () {
-      pauseWorkHover();
-      if (done) done();
-    });
+    resetHoverState();
+    scheduleResumeWorkHover(WORK_HOVER_RESUME_MS);
   }
 
   function scheduleResumeWorkHover(delayMs) {
@@ -1064,6 +1072,8 @@
   }
 
   var WORK_SCRUB_LOOPS = 2;
+  /** Wheel snaps (cardW × 2 each) that fill the scrub bar from empty to full. */
+  var WORK_SCRUB_SNAPS = 2;
 
   function bindRowScrub(scrub, rowCards, loopState) {
     if (!scrub || !rowCards || scrub.dataset.bound) return;
@@ -1074,10 +1084,14 @@
 
     var scrubZero = 0;
 
+    function snapStepPx() {
+      if (loopState && loopState.snapStep) return loopState.snapStep;
+      var cardEl = rowCards.querySelector('.work-card-wrap');
+      return cardEl ? (cardEl.offsetWidth + 16) * 2 : 520;
+    }
+
     function scrubDen() {
-      if (loopState && loopState.loopW) return loopState.loopW * WORK_SCRUB_LOOPS;
-      var max = rowCards.scrollWidth - rowCards.clientWidth;
-      return max > 0 ? max * WORK_SCRUB_LOOPS : 1;
+      return snapStepPx() * WORK_SCRUB_SNAPS;
     }
 
     function alignScrubTrack() {
@@ -1097,13 +1111,9 @@
     function getFrac() {
       var pos = loopState && loopState.loopW != null ? loopState.pos : rowCards.scrollLeft;
       var traveled = pos - scrubZero;
-      if (loopState && loopState.loopW) {
-        var lw = loopState.loopW;
-        var range = lw * WORK_SCRUB_LOOPS;
-        if (traveled < 0) traveled += Math.ceil(-traveled / lw) * lw;
-        if (traveled > range) traveled = range;
-      }
       var den = scrubDen();
+      if (traveled < 0) traveled = 0;
+      if (traveled > den) traveled = den;
       var frac = den > 0 ? traveled / den : 0;
       if (frac < 0.008) frac = 0;
       return Math.max(0, Math.min(1, frac));
@@ -1437,7 +1447,7 @@
     });
 
     let loopW = 0, pos = 0, target = 0, animFrom = 0, animStart = 0, raf = null, locked = false;
-    const loopState = { loopW: 0, pos: 0, target: 0, animFrom: 0, onScroll: null };
+    const loopState = { loopW: 0, pos: 0, target: 0, animFrom: 0, snapStep: 0, onScroll: null };
     const rowEl = rowCards.closest('.work-row');
     const DURATION = 900;
 
@@ -1463,10 +1473,8 @@
         rowCards.scrollLeft = pos;
         if (loopState.onScroll) loopState.onScroll();
         raf = null;
-        setTimeout(function () {
-          locked = false;
-          scheduleResumeWorkHover();
-        }, 500);
+        locked = false;
+        finishScrollSnapHover();
       }
     }
     function startSnap(dir) {
@@ -1532,6 +1540,9 @@
 
     requestAnimationFrame(() => {
       loopW = rowCards.scrollWidth / 3;
+      const cardEl = rowCards.querySelector('.work-card-wrap');
+      const cardW = cardEl ? cardEl.offsetWidth + 16 : 260;
+      loopState.snapStep = cardW * 2;
       pos = loopW; target = loopW; animFrom = loopW;
       loopState.loopW = loopW;
       loopState.pos = pos;
