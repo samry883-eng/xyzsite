@@ -515,11 +515,10 @@
     .proj-gradient {
       position: absolute; inset: 0; z-index: 1;
       background: linear-gradient(to right,
-        rgba(0,0,0,0.93) 0%,
-        rgba(0,0,0,0.82) 12%,
-        rgba(0,0,0,0.52) 22%,
-        rgba(0,0,0,0.18) 32%,
-        rgba(0,0,0,0) 44%
+        rgba(0,0,0,0.95) 0%,
+        rgba(0,0,0,0.88) 200px,
+        rgba(0,0,0,0.45) 32%,
+        rgba(0,0,0,0) 48%
       );
       pointer-events: none;
     }
@@ -537,10 +536,10 @@
     /* Flex column — vertically centers all blocks between logo and credits */
     .proj-content-col {
       position: absolute;
-      top: 70px;
-      bottom: calc(var(--deck-pad-y) + 36px + 38px);
-      left: var(--p);
-      width: 18%;
+      top: var(--proj-pad-y, 72px);
+      bottom: calc(var(--proj-pad-y, 72px) + 38px);
+      left: var(--proj-pad-x, 72px);
+      width: min(440px, 34vw);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -808,6 +807,34 @@
     .ci-craft { background: #161616; overflow: hidden; }
     .ci-craft.span2r { grid-row: span 2; }
     .ci-craft .ph { background: #161616; }
+
+    /* Full-bleed slides (bundled wireframe layout) */
+    .slide-craft-full,
+    .slide-focus-full,
+    .slide-hww-full,
+    .slide-contact-full { background: #000; }
+    .slide-craft-full .slide-inner,
+    .slide-focus-full .slide-inner,
+    .slide-hww-full .slide-inner,
+    .slide-contact-full .slide-inner {
+      padding: 0;
+      height: 100%;
+      position: relative;
+    }
+    .deck-full-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .slide-contact-full .contact-left {
+      position: relative;
+      z-index: 4;
+      background: linear-gradient(to right, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.35) 55%, transparent 100%);
+    }
+    .slide-contact-full .contact-right { display: none; }
 
     /* ════════════════════════════════
        OUR FOCUS
@@ -1895,12 +1922,13 @@
   </div>
 
   <!-- ═══════════════════════════════
-       23 · YEAR SPLASH (PDF p.22)
+       23 · CRAFT (bundled wireframe intro)
   ═══════════════════════════════ -->
-  <div class="slide slide-year-splash" data-index="23">
+  <div class="slide slide-craft-full" data-index="23" data-deck-chrome="compact">
     <div class="xyz-logo">XYZSTUDIOS</div>
+    <div class="slide-tag">Craft</div>
     <div class="slide-inner">
-      <div class="year-splash-num">2026</div>
+      <img class="deck-full-img" src="/capabilities/assets/deck-stills/08-craft.jpg" alt="Craft" decoding="async">
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
@@ -1908,26 +1936,13 @@
   </div>
 
   <!-- ═══════════════════════════════
-       24 · CRAFT — CREATIVE DEVELOPMENT
+       09 · CREATIVE DEVELOPMENT
   ═══════════════════════════════ -->
-  <div class="slide slide-craft" data-index="24">
+  <div class="slide slide-craft-full" data-index="24" data-deck-chrome="compact">
     <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-tag">Craft</div>
+    <div class="slide-tag">Craft · Creative Development</div>
     <div class="slide-inner">
-      <div class="craft-title">Creative Development</div>
-      <div class="craft-body">Visual direction, structure, and shot logic are established before production begins. Storyboards and early visual exploration define composition, pacing, and technical feasibility, ensuring clarity across production and post.</div>
-      <div class="craft-images" style="grid-template-columns: repeat(3, 1fr) 1.7fr; grid-template-rows: repeat(3, 1fr);">
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/canadian-open/22.png" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/speedcross-3/1.png" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/canadian-open/2.png" alt=""></div></div>
-        <div class="ci-craft" style="grid-row: span 3;"><div class="ph"><img src="../Work/visual-effects/canadian-open/1.png" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/s-lab-manifesto/image 2.png" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/into-the-void/2.png" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/speedcross-3/2.png" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/canadian-open/Golf Final (4) (0-00-36-15).png" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/s-lab-manifesto/image 3 (2).png" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/the-flip/1.png" alt=""></div></div>
-      </div>
+      <img class="deck-full-img" src="/capabilities/assets/deck-stills/09-creative-development.jpg" alt="" decoding="async">
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
@@ -1935,19 +1950,13 @@
   </div>
 
   <!-- ═══════════════════════════════
-       25 · CRAFT — CG INTEGRATION
+       10 · CG INTEGRATION
   ═══════════════════════════════ -->
-  <div class="slide slide-craft" data-index="25">
+  <div class="slide slide-craft-full" data-index="25" data-deck-chrome="compact">
     <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-tag">Craft</div>
+    <div class="slide-tag">Craft · CG Integration</div>
     <div class="slide-inner">
-      <div class="craft-title">CG Intergration</div>
-      <div class="craft-body">CG elements are embedded into live-action plates using accurate camera tracking, lens calibration, and scene lighting. Surface interaction, shadow behavior, and material response are refined to ensure consistency across motion, grading, and final delivery.</div>
-      <div class="craft-images cols-3">
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/into-the-void/3.png" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/into-the-void/2.png" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/into-the-void/4.png" alt=""></div></div>
-      </div>
+      <img class="deck-full-img" src="/capabilities/assets/deck-stills/10-cg-integration.jpg" alt="" decoding="async">
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
@@ -1955,19 +1964,13 @@
   </div>
 
   <!-- ═══════════════════════════════
-       26 · CRAFT — CG ENVIRONMENTS
+       11 · CG ENVIRONMENTS
   ═══════════════════════════════ -->
-  <div class="slide slide-craft" data-index="26">
+  <div class="slide slide-craft-full" data-index="26" data-deck-chrome="compact">
     <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-tag">Craft</div>
+    <div class="slide-tag">Craft · CG Environments</div>
     <div class="slide-inner">
-      <div class="craft-title">CG Environments</div>
-      <div class="craft-body">at any scale, from full digital builds to set extensions and enhancements. We recreate real locations or design new spaces to match the project’s tone, with careful attention to scale, lighting, perspective, and atmosphere. Every environment is built for seamless integration across the sequence.</div>
-      <div class="craft-images cols-3">
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/canadian-open/Golf Final (4) (0-00-36-15).png" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/road-to-palisades/1.jpg" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/speedcross-3/1.png" alt=""></div></div>
-      </div>
+      <img class="deck-full-img" src="/capabilities/assets/deck-stills/11-cg-environments.jpg" alt="" decoding="async">
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
@@ -1975,21 +1978,13 @@
   </div>
 
   <!-- ═══════════════════════════════
-       27 · CRAFT — SIMULATION AND FX
+       12 · COMPOSITING
   ═══════════════════════════════ -->
-  <div class="slide slide-craft" data-index="27">
+  <div class="slide slide-craft-full" data-index="27" data-deck-chrome="compact">
     <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-tag">Craft</div>
+    <div class="slide-tag">Craft · Compositing</div>
     <div class="slide-inner">
-      <div class="craft-title">Simulation and FX</div>
-      <div class="craft-body">Physical motion and environmental interaction are developed using accurate scale, timing, and force behavior. Simulations are refined to respond naturally within the scene and remain consistent across camera perspective and integration.</div>
-      <div class="craft-images" style="grid-template-columns: 1.3fr 1fr 1fr; grid-template-rows: 1fr 1fr;">
-        <div class="ci-craft" style="grid-row: span 2;"><div class="ph"><img src="../Work/visual-effects/into-the-void/5.png" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/into-the-void/3.png" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/speedcross-3/3.png" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/into-the-void/4.png" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/speedcross-3/4.png" alt=""></div></div>
-      </div>
+      <img class="deck-full-img" src="/capabilities/assets/deck-stills/12-compositing.jpg" alt="" decoding="async">
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
@@ -1997,21 +1992,13 @@
   </div>
 
   <!-- ═══════════════════════════════
-       28 · CRAFT — COMPOSITING
+       13 · SIMULATION AND FX
   ═══════════════════════════════ -->
-  <div class="slide slide-craft" data-index="28">
+  <div class="slide slide-craft-full" data-index="28" data-deck-chrome="compact">
     <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-tag">Craft</div>
+    <div class="slide-tag">Craft · Simulation and FX</div>
     <div class="slide-inner">
-      <div class="craft-title">Compositing</div>
-      <div class="craft-body">Live-action and rendered elements are unified through precise control of depth, exposure, color space, and optical response. Integration is refined at the pixel level to ensure visual continuity across the entire sequence.</div>
-      <div class="craft-images" style="grid-template-columns: 1.5fr 1fr 1fr; grid-template-rows: 1fr 1fr;">
-        <div class="ci-craft" style="grid-row: span 2;"><div class="ph"><img src="../Work/visual-effects/nba-store/1.png" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/nba-store/2.png" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/s-lab-manifesto/image 1.png" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/nba-store/3.png" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/s-lab-manifesto/image 4.png" alt=""></div></div>
-      </div>
+      <img class="deck-full-img" src="/capabilities/assets/deck-stills/13-simulation-and-fx.jpg" alt="" decoding="async">
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
@@ -2019,22 +2006,13 @@
   </div>
 
   <!-- ═══════════════════════════════
-       29 · CRAFT — POLISH
+       14 · POLISH
   ═══════════════════════════════ -->
-  <div class="slide slide-craft" data-index="29">
+  <div class="slide slide-craft-full" data-index="29" data-deck-chrome="compact">
     <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-tag">Craft</div>
+    <div class="slide-tag">Craft · Polish</div>
     <div class="slide-inner">
-      <div class="craft-title">Polish</div>
-      <div class="craft-body">Cleanup, beauty work, and set extensions as part of finishing, refining continuity and removing distractions that pull focus. From subtle fixes to larger extensions, the result is a clean, cohesive finish that holds up across the sequence and delivers to spec.</div>
-      <div class="craft-images" style="grid-template-columns: 1fr 1.2fr 1.5fr; grid-template-rows: 1fr 1fr;">
-        <div class="ci-craft" style="grid-row: span 2;"><div class="ph"><img src="../Work/visual-effects/nhl-store/2.png" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/nhl-store/3.png" alt=""></div></div>
-        <div class="ci-craft" style="grid-row: span 2;"><div class="ph"><img src="../Work/visual-effects/nhl-store/1.png" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/nhl-store/4.png" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/the-flip/2.png" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/the-flip/3.png" alt=""></div></div>
-      </div>
+      <img class="deck-full-img" src="/capabilities/assets/deck-stills/14-polish.jpg" alt="" decoding="async">
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
@@ -2042,21 +2020,13 @@
   </div>
 
   <!-- ═══════════════════════════════
-       30 · CRAFT — SOUND
+       15 · SOUND
   ═══════════════════════════════ -->
-  <div class="slide slide-craft" data-index="30">
+  <div class="slide slide-craft-full" data-index="30" data-deck-chrome="compact">
     <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-tag">Craft</div>
+    <div class="slide-tag">Craft · Sound</div>
     <div class="slide-inner">
-      <div class="craft-title">Sound</div>
-      <div class="craft-body">Sound defines space, atmosphere, and emotional weight within the frame. From subtle environmental detail to full cinematic design, every layer is shaped to support the image and reinforce its presence.</div>
-      <div class="craft-images" style="grid-template-columns: 1.5fr 1fr 1fr; grid-template-rows: 1fr 1fr;">
-        <div class="ci-craft" style="grid-row: span 2;"><div class="ph"><img src="../Work/visual-effects/s-lab-manifesto/image 3 (2).png" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/the-flip/4.png" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/nba-store/4.png" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/the-flip/1.png" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/road-to-palisades/2.jpg" alt=""></div></div>
-      </div>
+      <img class="deck-full-img" src="/capabilities/assets/deck-stills/15-sound.jpg" alt="" decoding="async">
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
@@ -2064,19 +2034,13 @@
   </div>
 
   <!-- ═══════════════════════════════
-       31 · CRAFT — AI-ASSISTED WORKFLOW
+       16 · AI-ASSISTED WORKFLOW
   ═══════════════════════════════ -->
-  <div class="slide slide-craft" data-index="31">
+  <div class="slide slide-craft-full" data-index="31" data-deck-chrome="compact">
     <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-tag">Craft</div>
+    <div class="slide-tag">Craft · AI-Assisted Workflow</div>
     <div class="slide-inner">
-      <div class="craft-title">AI-Assisted Workflow</div>
-      <div class="craft-body">We integrate AI into live-action and CG workflows as a controlled extension of our process. It allows us to explore, iterate, and build imagery that would otherwise be difficult or time-intensive, while keeping every decision guided by artists. AI remains a tool, supporting realism, precision, and creative intent, never replacing it.</div>
-      <div class="craft-images" style="grid-template-columns: 1.5fr 1fr; grid-template-rows: 1fr 1fr;">
-        <div class="ci-craft" style="grid-row: span 2;"><div class="ph"><img src="../Work/visual-effects/speedcross-3/2.png" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/into-the-void/5.png" alt=""></div></div>
-        <div class="ci-craft"><div class="ph"><img src="../Work/visual-effects/s-lab-manifesto/image 1.png" alt=""></div></div>
-      </div>
+      <img class="deck-full-img" src="/capabilities/assets/deck-stills/16-ai-assisted-workflow.jpg" alt="" decoding="async">
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
@@ -2086,35 +2050,11 @@
   <!-- ═══════════════════════════════
        32 · OUR FOCUS
   ═══════════════════════════════ -->
-  <div class="slide slide-focus" data-index="32">
+  <div class="slide slide-focus-full" data-index="32" data-deck-chrome="compact">
     <div class="xyz-logo">XYZSTUDIOS</div>
+    <div class="slide-tag">Our Focus</div>
     <div class="slide-inner">
-      <div class="focus-heading">Our Focus</div>
-      <div class="focus-strip">
-        <div class="focus-cell">
-          <div class="focus-img"><div class="ph"><img src="../Work/visual-effects/canadian-open/22.png" alt=""></div></div>
-          <div class="focus-label">Early Development</div>
-        </div>
-        <div class="focus-cell">
-          <div class="focus-img"><div class="ph"><img src="../Work/visual-effects/speedcross-3/1.png" alt=""></div></div>
-          <div class="focus-label">&nbsp;</div>
-        </div>
-        <div class="focus-cell">
-          <div class="focus-img"><div class="ph"><img src="../Work/visual-effects/into-the-void/2.png" alt=""></div></div>
-          <div class="focus-label">Full-Shot Execution</div>
-        </div>
-        <div class="focus-cell">
-          <div class="focus-img"><div class="ph"><img src="../Work/visual-effects/nba-store/1.png" alt=""></div></div>
-          <div class="focus-label">&nbsp;</div>
-        </div>
-        <div class="focus-cell">
-          <div class="focus-img"><div class="ph"><img src="../Work/visual-effects/s-lab-manifesto/image 1.png" alt=""></div></div>
-          <div class="focus-label">Final Polish</div>
-        </div>
-      </div>
-      <div class="focus-footer">
-        <p>From early development and look exploration to full-shot execution and final polish.</p>
-      </div>
+      <img class="deck-full-img" src="/capabilities/assets/deck-stills/30-our-focus.jpg" alt="Our Focus" decoding="async">
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
@@ -2124,17 +2064,11 @@
   <!-- ═══════════════════════════════
        33 · HOW WE WORK
   ═══════════════════════════════ -->
-  <div class="slide slide-hww" data-index="33">
+  <div class="slide slide-hww-full" data-index="33" data-deck-chrome="compact">
     <div class="xyz-logo">XYZSTUDIOS</div>
+    <div class="slide-tag">How We Work</div>
     <div class="slide-inner">
-      <div class="hww-img"><div class="ph"><img src="../Work/visual-effects/nhl-store/1.png" alt=""></div></div>
-      <div class="hww-text">
-        <div class="hww-body">
-          <p>Each collaboration begins with alignment and develops through shared intent and consistent execution.</p>
-          <p>Our involvement adapts to the needs of each project.</p>
-          <p>Some collaborations last a single project. Others continue for years.</p>
-        </div>
-      </div>
+      <img class="deck-full-img" src="/capabilities/assets/deck-stills/31-how-we-work.jpg" alt="How We Work" decoding="async">
     </div>
     <div class="slide-footer-line"></div>
     <div class="slide-year">2026</div>
@@ -2144,9 +2078,10 @@
   <!-- ═══════════════════════════════
        34 · CONTACT
   ═══════════════════════════════ -->
-  <div class="slide slide-contact" data-index="34">
+  <div class="slide slide-contact slide-contact-full" data-index="34">
     <div class="xyz-logo">XYZSTUDIOS</div>
     <div class="slide-inner">
+      <img class="deck-full-img" src="/capabilities/assets/deck-stills/32-contact.jpg" alt="" decoding="async" aria-hidden="true">
       <div class="contact-left">
         <div class="contact-block">
           <div class="cb-label">Email</div>
