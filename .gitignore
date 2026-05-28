@@ -32,6 +32,10 @@ Capabilities/screenshots/
 !Capabilities/assets/**
 !Capabilities/assets/**/*.png
 !Capabilities/assets/**/*.avif
+# Handoff deck stills (Capabilities/vfx)
+!Capabilities/vfx/media/
+!Capabilities/vfx/media/**
+!Capabilities/vfx/media/**/*.jpg
 # Deck videos stream from r2.vidzflow.com / Supabase (see Work/index.html); keep builds small
 Capabilities/assets/video/
 !Capabilities/Case Studies/
