@@ -1,111 +1,9 @@
-/**
- * generate-projects.mjs
- * Run: node generate-projects.mjs
- * Creates Work/{category}/{project}/index.html for every card in ROWS.
- * Re-run anytime you add a new project — existing pages are overwritten.
- */
-
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const WORK = path.join(__dirname, 'Work');
-
-// ── Slugify ────────────────────────────────────────────────
-function slugify(s) {
-  return s.toLowerCase()
-    .replace(/[''`']/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
-}
-
-// ── Project data ───────────────────────────────────────────
-const VF = 'https://r2.vidzflow.com/source/';
-const SB = 'https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/';
-
-const ROWS = [
-  {
-    label: 'Visual Effects',
-    cards: [
-      { video: VF  + 'cbf82991-c743-4045-8898-b6ee78efd9b4.mp4',         client: 'Atomic',         title: 'Into the Void',                date: 'NOV 15', clipStart: 24, clipEnd: 33 },
-      { video: VF  + 'af62bf83-f2c4-4ff5-ae90-e056d209eaae.mp4',         client: 'Cara Delevingne', title: 'I Forgot & Out of My Head',   date: 'MAY 26', director: 'Jessica Le Gagne', production: 'Reset Content' },
-      { video: VF  + 'ef1dc602-5a95-4973-a0ea-82794726bc4a.mp4',         client: 'Salomon',        title: 'Speedcross 3',                 date: 'OCT 25' },
-      { video: SB  + 'PcB8hb2-uO/original',                              client: 'Salomon',        title: 's/lab Manifesto',              date: 'FEB 26' },
-      { video: SB  + '9O7xsj76Lw/original',                              client: 'Toyota',         title: 'Road to Palisades',            date: 'FEB 26' },
-      { video: SB  + '85D_It6HUS/original',                               client: 'RBC',            title: 'Canadian Open',                date: 'MAR 9'  },
-      { video: SB  + 'JchEHAr96O/original',                               client: 'JennAir',        title: 'The Flip',                     date: 'JAN 10' },
-      { video: SB  + '0yJ5A9ii2H/original',                               client: 'Fanatics',       title: 'NBA Store',                    date: 'DEC 20' },
-      { video: SB  + 'mu8ewXP3uH/original',                               client: 'Fanatics',       title: 'NHL Store',                    date: 'DEC 15' },
-      { video: VF  + 'c5bfdb30-f5d1-4f1d-a96f-b736b4ab1fcf.mp4',         client: 'Celsius',        title: 'Spritez Vibez',                date: 'MAY 20' },
-      { video: VF  + 'edac671a-7d48-4eb1-b1ea-c2556b330ee4.mp4',         client: 'Chino Pacas',    title: 'Modo Capone',                  date: 'SEP 12' },
-      { video: VF  + 'e07f965d-dc13-45bc-a958-08fd1baa3793.mp4',         client: 'Marc Jacobs',    title: 'The Essentials',               date: 'OCT 24' },
-      { video: VF  + 'b383d525-8d02-4f4b-b2fa-0d9c29a71d91.mp4',         client: 'Fuerza Regida',  title: 'Tu Sancho',                    date: 'AUG 3'  },
-      { video: VF  + 'daf3f8d1-9b55-438d-9259-922de5fb7c8f.mp4',         client: 'Fuerza Regida',  title: 'Secreto Victoria',             date: 'JUL 18' },
-      { video: VF  + '15e90e12-e3b1-420a-9b11-db60a7b199b0.mp4',         client: 'Tokischa',       title: 'De Maravisha',                 date: 'JUN 5'  },
-    ]
-  },
-  {
-    label: 'Sound',
-    cards: [
-      { video: VF  + '214a3ae2-01ca-4593-8949-98a7191f6548.mp4',         client: 'Louis Vuitton',  title: 'SS26 Teaser',                  date: 'APR 14' },
-      { video: VF  + '17e77d71-3bca-4d42-8275-71deb05724d1.mp4',         client: 'Beats',          title: 'Open',                         date: 'OCT 10' },
-      { video: VF  + '24fed0b9-4d02-45b3-895b-437c3ab89f38.mp4',         client: "Arc'teryx",      title: 'Precision Without Limits',     date: 'FEB 28' },
-      { video: VF  + '6c66aad7-7df3-4809-a8d7-1f92a377fa5e.mp4',         client: 'Lucid',          title: 'Compromise Nothing',           date: 'DEC 5'  },
-      { video: VF  + 'fb5e495e-8460-4277-a7aa-08accd388af0.mp4',         client: 'Prime Video',    title: 'Good Sports',                  date: 'NOV 21' },
-      { video: VF  + '0f5dc170-f1e8-4b0b-a0bd-d9e6486a91e7.mp4',         client: 'Samsung',        title: 'Galaxy AI',                    date: 'MAY 28' },
-      { video: VF  + '4f593e77-d9ea-4992-8dc1-f8520895f0e9.mp4',         client: 'Ford',           title: 'Join the Search',              date: 'JAN 16' },
-      { video: VF  + '996ba39f-1c06-4887-8dc3-52c21a4089b1.mp4',         client: 'Apple Music',    title: "Don't Forget to Take a Break", date: 'DEC 23' },
-      { video: VF  + '5b0d552d-9e53-4967-9d5b-15a5deb86100.mp4',         client: 'New Era',        title: 'F1',                           date: 'NOV 4'  },
-      { video: VF  + 'a1bc0884-b2b7-42a3-aac5-a490571499f5.mp4',         client: 'Burna Boy',      title: 'Tatata ft. Travis Scott',      date: 'SEP 12' },
-      { video: VF  + '0e01d94b-2f38-4e6c-8874-14fc6e98dfeb.mp4',         client: 'Nike',           title: 'Hard Is Home',                 date: 'SEP 2'  },
-      { video: VF  + '00c390f8-2185-4729-be87-dcc17552bc0b.mp4',         client: 'Foot Locker',    title: 'Stay in Rotation',             date: 'AUG 15' },
-      { video: VF  + 'ad2de35b-a84f-4468-8ea1-704e79fc1d6e.mp4',         client: 'Ram Truck',      title: 'The Hunt',                     date: 'JUL 7'  },
-      { video: VF  + '392708ea-1d8c-4872-a6cd-65f4a5e947ba.mp4',         client: 'SNIPES',         title: 'Style Is In Session',          date: 'SEP 3'  },
-      { video: VF  + '68eb0d30-28c6-4074-a239-6ff8a10dbbf1.mp4',         client: 'Hongqi',         title: 'Hongqi',                       date: 'AUG 19' },
-    ]
-  },
-  {
-    label: 'AI',
-    cards: [
-      { video: SB  + 'I_J-Bii5Ql/original',                              client: 'BMW',            title: 'Concept RR',                   date: 'MAR 14' },
-      { video: SB  + 'Clp65xDTmS/original',                              client: 'Nike',           title: 'AI',                           date: 'FEB 8',  slug: 'ai-nike'         },
-      { video: SB  + 'h-VCHXYcwA/original',                              client: 'Ducati',         title: 'AI',                           date: 'JAN 22', slug: 'ai-ducati'       },
-      { video: SB  + 'V0a7Q0zaqq/original',                              client: 'Ferrari',        title: 'AI',                           date: 'DEC 11', slug: 'ai-ferrari'      },
-      { video: SB  + 'LWep2Duvk-/original',                              client: 'Mercedes-Benz',  title: 'A Cold Wall',                  date: 'NOV 30' },
-    ]
-  },
-  /* hidden: Making Of category
-  {  {
-    label: 'Making Of',
-    cards: [
-      { video: SB  + 'gekxSgtk7e/original',                              client: 'MLS',            title: 'Rating Reloaded',              date: 'JAN 5'  },
-      { video: SB  + 'YRUPuIBrjQ/original',                              client: 'Toyota',         title: 'Road to Palisades',            date: 'DEC 18' },
-      { video: SB  + 'Bl0RrW0k4E/original',                              client: 'Concacaf',       title: 'Gold Cup',                     date: 'NOV 12' },
-      { video: SB  + '1JIMnyZZIW/original',                              client: 'RBC',            title: 'Canadian Open',                date: 'OCT 4'  },
-      { video: VF  + '8c451a49-eb58-4534-becf-87f4ca6f51dd.mp4',         client: 'Doritos',        title: 'Stranger Things',              date: 'SEP 28' },
-      { video: SB  + 'S16jMx0Mpo/original',                              client: 'Pura',           title: 'Hands On',                     date: 'AUG 14' },
-      { video: VF  + 'a9e377b3-727b-4129-adc4-f1c018d7f001.mp4',         client: 'Chris Brown',    title: 'City of Dreams',               date: 'JUL 2'  },
-      { video: SB  + 'tlCbP796Kw/original',                              client: 'Square',         title: 'Released',                     date: 'JUN 9'  },
-      { video: SB  + 'C9qMrM-8bD/original',                              client: 'Jasmin Savoy',   title: 'August',                       date: 'MAY 17' },
-      { video: SB  + 'hREydGGtah/original',                              client: 'Barskih',        title: 'Someone New',                  date: 'APR 3'  },
-      { video: SB  + 'wXBUhN3tQI/original',                              client: 'Max Barskh',     title: 'Mine',                         date: 'MAR 1'  },
-    ]
-  }
-  */
-];
-
-// ── Page template ──────────────────────────────────────────
-function makeHTML(card, catLabel, framesHTML = '') {
-  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  const director = card.director || 'XYZ Studios';
-  const production = card.production || 'XYZ Studios';
-  return `<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${esc(card.client)} — ${esc(card.title)} — XYZ Studios</title>
+  <title>Cara Delevingne — I Forgot &amp; Out of My Head — XYZ Studios</title>
   <link href="/assets/xyz-studio-dev.webflow.shared.6e9159a05.css" rel="stylesheet" type="text/css">
   <style>
     @font-face {
@@ -458,7 +356,7 @@ function makeHTML(card, catLabel, framesHTML = '') {
 
     <div class="pj-video-area">
       <div class="pj-video-frame">
-        <video id="pj-video" src="${esc(card.video)}" playsinline preload="auto"></video>
+        <video id="pj-video" src="https://r2.vidzflow.com/source/af62bf83-f2c4-4ff5-ae90-e056d209eaae.mp4" playsinline preload="auto"></video>
       </div>
     </div>
 
@@ -485,8 +383,8 @@ function makeHTML(card, catLabel, framesHTML = '') {
               </div>
             </div>
             <div class="projects_item-titles" id="pj-ui-titles">
-              <div class="projects_item-title">${esc(card.title)}</div>
-              <div class="projects_item-title company">${esc(card.client)}</div>
+              <div class="projects_item-title">I Forgot &amp; Out of My Head</div>
+              <div class="projects_item-title company">Cara Delevingne</div>
             </div>
             <div class="div-block-76 hero_home-pj-ctrl-r">
               <div class="div-block-73">
@@ -511,17 +409,17 @@ function makeHTML(card, catLabel, framesHTML = '') {
 
   <!-- CREDITS: tight directly after stage -->
   <div class="pj-credits" id="pj-credits">
-    <div class="pj-cr-title">${esc(card.title)}</div>
-    <div class="pj-cr-sub">${esc(card.client)}</div>
+    <div class="pj-cr-title">I Forgot &amp; Out of My Head</div>
+    <div class="pj-cr-sub">Cara Delevingne</div>
 
     <div class="pj-cr-cols">
       <div>
         <div class="pj-cr-col-lbl">Directed by</div>
-        <div class="pj-cr-col-val">${esc(director)}</div>
+        <div class="pj-cr-col-val">Jessica Le Gagne</div>
       </div>
       <div>
         <div class="pj-cr-col-lbl">Production by</div>
-        <div class="pj-cr-col-val">${esc(production)}</div>
+        <div class="pj-cr-col-val">Reset Content</div>
       </div>
     </div>
 
@@ -530,7 +428,7 @@ function makeHTML(card, catLabel, framesHTML = '') {
       <img src="frame.jpg" alt="">           half-width (default)
       <img src="frame.jpg" class="full">     full-width
     -->
-    <div class="pj-frames">${framesHTML}
+    <div class="pj-frames">
     </div>
   </div>
 
@@ -704,41 +602,4 @@ function makeHTML(card, catLabel, framesHTML = '') {
   }, { threshold: 0.05 }).observe(credits);
 </script>
 </body>
-</html>`;
-}
-
-// ── Per-project frames (add images here) ───────────────────
-// Key format: 'catSlug/projSlug'
-const FRAMES = {
-  'visual-effects/speedcross-3': `
-      <img src="1.png" alt="">
-      <img src="2.png" alt="">
-      <img src="3.png" alt="">`,
-  'visual-effects/road-to-palisades': `
-      <img src="1.jpg" alt="">
-      <img src="2.jpg" alt="">
-      <img src="Toyota%20Palisades%20Tundra.mp4_snapshot_00.23.046.jpg" alt="">
-      <img src="Toyota%20Palisades%20Tundra.mp4_snapshot_00.26.274.jpg" alt="">`,
-  // Add more projects here as needed:
-  // 'sound/open': `<img src="frame1.jpg" alt=""><img src="frame2.jpg" alt="">`,
-};
-
-// ── Generate ───────────────────────────────────────────────
-let total = 0;
-for (const row of ROWS) {
-  const catSlug = slugify(row.label);
-  const catDir  = path.join(WORK, catSlug);
-  fs.mkdirSync(catDir, { recursive: true });
-
-  for (const card of row.cards) {
-    const projSlug = card.slug || slugify(card.title);
-    const projDir  = path.join(catDir, projSlug);
-    fs.mkdirSync(projDir, { recursive: true });
-    const framesHTML = FRAMES[`${catSlug}/${projSlug}`] || '';
-    fs.writeFileSync(path.join(projDir, 'index.html'), makeHTML(card, row.label, framesHTML));
-    console.log(`  ✓  /work/${catSlug}/${projSlug}/`);
-    total++;
-  }
-}
-
-console.log(`\nDone — ${total} project pages generated.`);
+</html>
