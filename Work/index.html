@@ -879,29 +879,14 @@
     pageOut.style.transition = 'none';
     pageOut.style.transform = 'translateY(100%)';
     pageOut.style.pointerEvents = 'all';
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        let done = false;
-        function finish() {
-          if (done) return;
-          done = true;
-          window.location.href = dest;
-        }
-        function onEnd(e) {
-          if (e.target !== pageOut || e.propertyName !== 'transform') return;
-          pageOut.removeEventListener('transitionend', onEnd);
-          clearTimeout(fallback);
-          finish();
-        }
-        const fallback = setTimeout(() => {
-          pageOut.removeEventListener('transitionend', onEnd);
-          finish();
-        }, 750);
-        pageOut.addEventListener('transitionend', onEnd);
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
         pageOut.style.transition = 'transform 0.48s cubic-bezier(0.76,0,0.24,1)';
         pageOut.style.transform = 'translateY(0)';
       });
     });
+    // Match Home: fixed delay so cover completes before navigation (transitionend can fire early).
+    setTimeout(function () { window.location.href = dest; }, 540);
   }
 
   /** Keep in sync with :root --wc-hover-max (gentler zoom than reference portfolios). */

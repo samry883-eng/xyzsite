@@ -330,8 +330,10 @@
 </head>
 <body>
 
-  <!-- Page transition overlay -->
-  <div id="page-in" style="position:fixed;inset:0;z-index:9998;background:#000;opacity:1;pointer-events:none;transition:opacity 0.6s cubic-bezier(0,0,0.3,1);"></div>
+  <!-- Page transition overlay (white — continues Work page cover, slides up to reveal) -->
+  <div id="page-in" style="position:fixed;inset:0;z-index:9999;background:#fff;pointer-events:none;transform:translateY(0);">
+    <img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="" style="position:absolute;bottom:36px;left:44px;width:72px;display:block;filter:invert(1);pointer-events:none;">
+  </div>
 
   <!-- STAGE: hero + controls + scroll hint; video scales to largest 9:16 in the slot -->
   <div class="pj-stage" id="pj-stage">
@@ -545,11 +547,22 @@
   document.addEventListener('mouseup',   () => { scrubbing = false; });
 
 
-  // Page enter: fade in from black
+  // Page enter: white panel slides up (matches Work → project cover handoff)
   const pageIn = document.getElementById('page-in');
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => { pageIn.style.opacity = '0'; });
-  });
+  function slideAwayPageIn() {
+    if (!pageIn) return;
+    pageIn.style.transition = 'none';
+    pageIn.style.transform = 'translateY(0)';
+    pageIn.style.pointerEvents = 'none';
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        pageIn.style.transition = 'transform 0.58s cubic-bezier(0.76,0,0.24,1)';
+        pageIn.style.transform = 'translateY(-100%)';
+      });
+    });
+  }
+  slideAwayPageIn();
+  window.addEventListener('pageshow', e => { if (e.persisted) slideAwayPageIn(); });
 
   // Back: fade to black then navigate
   const pageOut = document.createElement('div');
