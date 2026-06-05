@@ -322,7 +322,9 @@
 
     /* Credits columns */
     .pj-cr-cols {
-      display: grid; grid-template-columns: 1fr 1fr;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 28px 32px;
       margin-bottom: 40px;
     }
     .pj-cr-col-lbl { font: 400 8px/1 Micross, Arial, sans-serif; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.22); margin-bottom: 10px; -webkit-font-smoothing: antialiased; }
@@ -415,12 +417,16 @@
 
     <div class="pj-cr-cols">
       <div>
-        <div class="pj-cr-col-lbl">Directed by</div>
-        <div class="pj-cr-col-val">XYZ Studios</div>
+        <div class="pj-cr-col-lbl">Sound Design</div>
+        <div class="pj-cr-col-val">@pslmsmn</div>
       </div>
       <div>
-        <div class="pj-cr-col-lbl">Production by</div>
-        <div class="pj-cr-col-val">XYZ Studios</div>
+        <div class="pj-cr-col-lbl">Mix</div>
+        <div class="pj-cr-col-val">@pslmsmn</div>
+      </div>
+      <div>
+        <div class="pj-cr-col-lbl">Directed by</div>
+        <div class="pj-cr-col-val">@bennyboom</div>
       </div>
     </div>
 
