@@ -49,11 +49,11 @@ const ROWS = [
   {
     label: 'Sound',
     cards: [
-      { video: '/work/sound/ai-awareness/video.mp4',                     client: 'Sumsub',         title: 'AI Awareness',                 date: 'JUN 26', director: 'Snezhana Yugai', production: 'LUCH UNION', poster: '/work/sound/ai-awareness/poster.jpg' },
-      { video: VF  + '214a3ae2-01ca-4593-8949-98a7191f6548.mp4',         client: 'Louis Vuitton',  title: 'SS26 Teaser',                  date: 'APR 14', director: 'Anthony Princeleslie', soundDesign: 'Ken Psalms & William Landry', soundDesignMix: true },
+      { video: '/work/sound/ai-awareness/video.mp4',                     client: 'Sumsub',         title: 'AI Awareness',                 date: 'JUN 26', director: 'Snezhana Yugai', production: 'Luch Union', poster: '/work/sound/ai-awareness/poster.jpg' },
+      { video: VF  + '214a3ae2-01ca-4593-8949-98a7191f6548.mp4',         client: 'Louis Vuitton',  title: 'SS26 Teaser',                  date: 'APR 14', director: 'Anthony Prince Leslie', soundDesign: 'Ken Psalms & William Landry', soundDesignMix: true },
       { video: VF  + '17e77d71-3bca-4d42-8275-71deb05724d1.mp4',         client: 'Beats',          title: 'Open',                         date: 'OCT 10', credits: [
-        { label: 'Directed by', value: '@Aidancullen1' },
-        { label: 'Sound Design', value: '@pslmsmn & @ayodouson' },
+        { label: 'Directed by', value: 'Aidan Cullen' },
+        { label: 'Sound Design', value: 'Ken Psalms & Ayodo Uson' },
       ] },
       { video: VF  + '24fed0b9-4d02-45b3-895b-437c3ab89f38.mp4',         client: "Arc'teryx",      title: 'Precision Without Limits',     date: 'FEB 28' },
       { video: VF  + '6c66aad7-7df3-4809-a8d7-1f92a377fa5e.mp4',         client: 'Lucid',          title: 'Compromise Nothing',           date: 'DEC 5'  },
@@ -61,29 +61,29 @@ const ROWS = [
       { video: VF  + '0f5dc170-f1e8-4b0b-a0bd-d9e6486a91e7.mp4',         client: 'Samsung',        title: 'Galaxy AI',                    date: 'MAY 28' },
       { video: VF  + '4f593e77-d9ea-4992-8dc1-f8520895f0e9.mp4',         client: 'Ford',           title: 'Join the Search',              date: 'JAN 16' },
       { video: VF  + '996ba39f-1c06-4887-8dc3-52c21a4089b1.mp4',         client: 'Apple Music',    title: "Don't Forget to Take a Break", date: 'DEC 23', credits: [
-        { label: 'Directed by', value: '@directedbymithil' },
-        { label: 'Sound Design', value: '@pslmsmn' },
+        { label: 'Directed by', value: 'Mithil Rajeev' },
+        { label: 'Sound Design', value: 'Ken Psalms' },
       ] },
       { video: VF  + '5b0d552d-9e53-4967-9d5b-15a5deb86100.mp4',         client: 'New Era',        title: 'F1',                           date: 'NOV 4'  },
       { video: VF  + 'a1bc0884-b2b7-42a3-aac5-a490571499f5.mp4',         client: 'Burna Boy',      title: 'Tatata ft. Travis Scott',      date: 'SEP 12', credits: [
-        { label: 'Sound Design', value: '@pslmsmn' },
-        { label: 'Mix', value: '@pslmsmn' },
-        { label: 'Directed by', value: '@bennyboom' },
+        { label: 'Sound Design', value: 'Ken Psalms' },
+        { label: 'Mix', value: 'Ken Psalms' },
+        { label: 'Directed by', value: 'Benny Boom' },
       ] },
       { video: VF  + '0e01d94b-2f38-4e6c-8874-14fc6e98dfeb.mp4',         client: 'Nike',           title: 'Hard Is Home',                 date: 'SEP 2', credits: [
-        { label: 'Sound Design', value: '@pslmsmn' },
-        { label: 'Sound Mixer', value: '@williamlandryaudio' },
+        { label: 'Sound Design', value: 'Ken Psalms' },
+        { label: 'Sound Mixer', value: 'William Landry' },
       ] },
       { video: VF  + '00c390f8-2185-4729-be87-dcc17552bc0b.mp4',         client: 'Foot Locker',    title: 'Stay in Rotation',             date: 'AUG 15', credits: [
-        { label: 'Sound Design', value: '@pslmsmn' },
-        { label: 'Mix', value: '@pslmsmn' },
-        { label: 'Directed by', value: '@edgaresteves' },
+        { label: 'Sound Design', value: 'Ken Psalms' },
+        { label: 'Mix', value: 'Ken Psalms' },
+        { label: 'Directed by', value: 'Edgar Esteves' },
       ] },
       { video: VF  + 'ad2de35b-a84f-4468-8ea1-704e79fc1d6e.mp4',         client: 'Ram Truck',      title: 'The Hunt',                     date: 'JUL 7'  },
       { video: VF  + '392708ea-1d8c-4872-a6cd-65f4a5e947ba.mp4',         client: 'SNIPES',         title: 'Style Is In Session',          date: 'SEP 3', credits: [
-        { label: 'Sound Design', value: '@pslmsmn & @williamlandryaudio' },
-        { label: 'Sound Mixer', value: '@pslmsmn & @williamlandryaudio' },
-        { label: 'Directed by', value: '@joshuasmedina' },
+        { label: 'Sound Design', value: 'Ken Psalms & William Landry' },
+        { label: 'Sound Mixer', value: 'Ken Psalms & William Landry' },
+        { label: 'Directed by', value: 'Joshua Smedina' },
       ] },
       { video: VF  + '68eb0d30-28c6-4074-a239-6ff8a10dbbf1.mp4',         client: 'Hongqi',         title: 'Hongqi',                       date: 'AUG 19' },
     ]
@@ -119,21 +119,58 @@ const ROWS = [
   */
 ];
 
-// ── Credits (Sound: pass credits[] with label + @handles; legacy director/production still works) ──
+// ── Credits — display names (no @ handles; title case first + last) ──
+const CREDIT_NAME_ALIASES = {
+  pslmsmn: 'Ken Psalms',
+  williamlandryaudio: 'William Landry',
+  ayodouson: 'Ayodo Uson',
+  aidancullen1: 'Aidan Cullen',
+  aidancullen: 'Aidan Cullen',
+  directedbymithil: 'Mithil Rajeev',
+  bennyboom: 'Benny Boom',
+  joshuasmedina: 'Joshua Smedina',
+  edgaresteves: 'Edgar Esteves',
+};
+
+function titleCaseWord(w) {
+  if (!w) return w;
+  return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+}
+
+function formatCreditValue(raw) {
+  if (!raw || typeof raw !== 'string') return raw;
+  return raw.split(/\s*&\s*/).map((part) => {
+    let s = part.trim().replace(/^@+/, '').replace(/\d+/g, '').trim();
+    const aliasKey = s.toLowerCase().replace(/[^a-z]/g, '');
+    if (CREDIT_NAME_ALIASES[aliasKey]) return CREDIT_NAME_ALIASES[aliasKey];
+    s = s.replace(/[._-]+/g, ' ');
+    return s.split(/\s+/).filter(Boolean).map(titleCaseWord).join(' ');
+  }).join(' & ');
+}
+
+function normalizeCreditRow(row) {
+  return { label: row.label, value: formatCreditValue(row.value) };
+}
+
 function creditRows(card) {
-  if (Array.isArray(card.credits) && card.credits.length) return card.credits;
-  const rows = [];
-  if (card.director) rows.push({ label: 'Directed by', value: card.director });
-  if (card.soundDesign) {
-    rows.push({ label: card.soundDesignMix ? 'Sound Design & Mix' : 'Sound Design', value: card.soundDesign });
-  }
-  if (card.soundMixer) rows.push({ label: 'Sound Mixer', value: card.soundMixer });
-  if (card.mix) rows.push({ label: 'Mix', value: card.mix });
-  if (card.dialogueEdit) rows.push({ label: 'Dialogue Edit', value: card.dialogueEdit });
-  if (card.production) rows.push({ label: 'Production by', value: card.production });
-  if (!rows.length) {
-    rows.push({ label: 'Directed by', value: 'XYZ Studios' });
-    rows.push({ label: 'Production by', value: 'XYZ Studios' });
+  let rows;
+  if (Array.isArray(card.credits) && card.credits.length) {
+    rows = card.credits.map(normalizeCreditRow);
+  } else {
+    rows = [];
+    if (card.director) rows.push({ label: 'Directed by', value: card.director });
+    if (card.soundDesign) {
+      rows.push({ label: card.soundDesignMix ? 'Sound Design & Mix' : 'Sound Design', value: card.soundDesign });
+    }
+    if (card.soundMixer) rows.push({ label: 'Sound Mixer', value: card.soundMixer });
+    if (card.mix) rows.push({ label: 'Mix', value: card.mix });
+    if (card.dialogueEdit) rows.push({ label: 'Dialogue Edit', value: card.dialogueEdit });
+    if (card.production) rows.push({ label: 'Production by', value: card.production });
+    if (!rows.length) {
+      rows.push({ label: 'Directed by', value: 'XYZ Studios' });
+      rows.push({ label: 'Production by', value: 'XYZ Studios' });
+    }
+    rows = rows.map(normalizeCreditRow);
   }
   return rows;
 }
