@@ -65,6 +65,7 @@
       align-items: center;
       justify-content: center;
     }
+    .pj-video-frame.is-buffering #pj-video { opacity: 0.7; }
     #pj-video {
       display: block !important;
       width: 100%;
@@ -356,7 +357,7 @@
 
     <div class="pj-video-area">
       <div class="pj-video-frame">
-        <video id="pj-video" src="https://r2.vidzflow.com/source/cbf82991-c743-4045-8898-b6ee78efd9b4.mp4" playsinline preload="auto"></video>
+        <video id="pj-video" src="https://r2.vidzflow.com/source/cbf82991-c743-4045-8898-b6ee78efd9b4.mp4" playsinline preload="metadata"></video>
       </div>
     </div>
 
@@ -465,6 +466,28 @@
   }
 
   vid.pause();
+  const videoFrame = vid.closest('.pj-video-frame');
+  const urlPoster = new URLSearchParams(location.search).get('poster');
+  if (urlPoster && !vid.getAttribute('poster')) vid.setAttribute('poster', urlPoster);
+
+  function togglePlay() {
+    if (!vid.paused) { vid.pause(); return; }
+    const attempt = vid.play();
+    if (!attempt || !attempt.then) return;
+    videoFrame && videoFrame.classList.add('is-buffering');
+    attempt.then(function () {
+      videoFrame && videoFrame.classList.remove('is-buffering');
+    }).catch(function () {
+      function onReady() {
+        vid.removeEventListener('canplay', onReady);
+        vid.play().catch(function () {}).finally(function () {
+          videoFrame && videoFrame.classList.remove('is-buffering');
+        });
+      }
+      if (vid.readyState >= 3) onReady();
+      else vid.addEventListener('canplay', onReady, { once: true });
+    });
+  }
 
   function fmt(s) {
     if (!isFinite(s)) return '0:00';
@@ -513,9 +536,9 @@
   vid.addEventListener('play',  updateCursorIcon);
   vid.addEventListener('pause', updateCursorIcon);
 
-  // Click to play/pause
-  vid.addEventListener('click', () => { vid.paused ? vid.play() : vid.pause(); });
-  playBtn.addEventListener('click', () => { vid.paused ? vid.play() : vid.pause(); });
+  // Click to play/pause (waits for canplay on large sources)
+  vid.addEventListener('click', togglePlay);
+  playBtn.addEventListener('click', togglePlay);
   muteBtn.addEventListener('click', () => { vid.muted = !vid.muted; updateMute(); });
 
   // Fullscreen — enter only; CSS hides fsBtn when in fullscreen; Back btn becomes Close

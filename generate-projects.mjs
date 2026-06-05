@@ -102,6 +102,7 @@ function makeHTML(card, catLabel, framesHTML = '') {
   const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   const director = card.director || 'XYZ Studios';
   const production = card.production || 'XYZ Studios';
+  const posterAttr = card.poster ? ` poster="${esc(card.poster)}"` : '';
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -169,6 +170,7 @@ function makeHTML(card, catLabel, framesHTML = '') {
       align-items: center;
       justify-content: center;
     }
+    .pj-video-frame.is-buffering #pj-video { opacity: 0.7; }
     #pj-video {
       display: block !important;
       width: 100%;
@@ -460,7 +462,7 @@ function makeHTML(card, catLabel, framesHTML = '') {
 
     <div class="pj-video-area">
       <div class="pj-video-frame">
-        <video id="pj-video" src="${esc(card.video)}" playsinline preload="auto"></video>
+        <video id="pj-video" src="${esc(card.video)}" playsinline preload="metadata"${posterAttr}></video>
       </div>
     </div>
 
@@ -569,6 +571,28 @@ function makeHTML(card, catLabel, framesHTML = '') {
   }
 
   vid.pause();
+  const videoFrame = vid.closest('.pj-video-frame');
+  const urlPoster = new URLSearchParams(location.search).get('poster');
+  if (urlPoster && !vid.getAttribute('poster')) vid.setAttribute('poster', urlPoster);
+
+  function togglePlay() {
+    if (!vid.paused) { vid.pause(); return; }
+    const attempt = vid.play();
+    if (!attempt || !attempt.then) return;
+    videoFrame && videoFrame.classList.add('is-buffering');
+    attempt.then(function () {
+      videoFrame && videoFrame.classList.remove('is-buffering');
+    }).catch(function () {
+      function onReady() {
+        vid.removeEventListener('canplay', onReady);
+        vid.play().catch(function () {}).finally(function () {
+          videoFrame && videoFrame.classList.remove('is-buffering');
+        });
+      }
+      if (vid.readyState >= 3) onReady();
+      else vid.addEventListener('canplay', onReady, { once: true });
+    });
+  }
 
   function fmt(s) {
     if (!isFinite(s)) return '0:00';
@@ -617,9 +641,9 @@ function makeHTML(card, catLabel, framesHTML = '') {
   vid.addEventListener('play',  updateCursorIcon);
   vid.addEventListener('pause', updateCursorIcon);
 
-  // Click to play/pause
-  vid.addEventListener('click', () => { vid.paused ? vid.play() : vid.pause(); });
-  playBtn.addEventListener('click', () => { vid.paused ? vid.play() : vid.pause(); });
+  // Click to play/pause (waits for canplay on large sources)
+  vid.addEventListener('click', togglePlay);
+  playBtn.addEventListener('click', togglePlay);
   muteBtn.addEventListener('click', () => { vid.muted = !vid.muted; updateMute(); });
 
   // Fullscreen — enter only; CSS hides fsBtn when in fullscreen; Back btn becomes Close
