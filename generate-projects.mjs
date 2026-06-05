@@ -138,12 +138,52 @@ function creditRows(card) {
   return rows;
 }
 
+function isDirectorCredit(c) { return /^directed by$/i.test(c.label); }
+function isProductionCredit(c) { return /^production by$/i.test(c.label); }
+
+function splitCreditCols(card) {
+  const rows = creditRows(card);
+  const director = rows.find(isDirectorCredit);
+  const production = rows.find(isProductionCredit);
+  const soundRows = rows.filter((c) => !isDirectorCredit(c) && !isProductionCredit(c));
+
+  if (director) {
+    return {
+      left: director,
+      right: soundRows.length ? soundRows : (production ? [production] : [{ label: 'Production by', value: 'XYZ Studios' }]),
+    };
+  }
+  if (soundRows.length >= 2) {
+    return { left: soundRows[0], right: soundRows.slice(1) };
+  }
+  if (soundRows.length === 1) {
+    return { left: soundRows[0], right: production ? [production] : [{ label: 'Production by', value: 'XYZ Studios' }] };
+  }
+  return {
+    left: { label: 'Directed by', value: 'XYZ Studios' },
+    right: [{ label: 'Production by', value: 'XYZ Studios' }],
+  };
+}
+
+function renderCreditEntry(c, esc, stacked) {
+  const stackLbl = stacked ? ' pj-cr-col-lbl--stack' : '';
+  const stackVal = stacked ? ' pj-cr-col-val--stack' : '';
+  return `<div class="pj-cr-col-lbl${stackLbl}">${esc(c.label)}</div>
+        <div class="pj-cr-col-val${stackVal}">${esc(c.value)}</div>`;
+}
+
 function renderCreditCols(card, esc) {
-  return creditRows(card).map((c) => `
+  const { left, right } = splitCreditCols(card);
+  const rightHtml = right.length === 1
+    ? renderCreditEntry(right[0], esc, false)
+    : `<div class="pj-cr-col-stack">${right.map((c, i) => renderCreditEntry(c, esc, i > 0)).join('')}</div>`;
+  return `
       <div>
-        <div class="pj-cr-col-lbl">${esc(c.label)}</div>
-        <div class="pj-cr-col-val">${esc(c.value)}</div>
-      </div>`).join('');
+        ${renderCreditEntry(left, esc, false)}
+      </div>
+      <div>
+        ${rightHtml}
+      </div>`;
 }
 
 // ── Page template ──────────────────────────────────────────
@@ -474,13 +514,12 @@ function makeHTML(card, catLabel, framesHTML = '') {
 
     /* Credits columns */
     .pj-cr-cols {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 28px 32px;
+      display: grid; grid-template-columns: 1fr 1fr;
       margin-bottom: 40px;
     }
     .pj-cr-col-lbl { font: 400 8px/1 Micross, Arial, sans-serif; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.22); margin-bottom: 10px; -webkit-font-smoothing: antialiased; }
     .pj-cr-col-val { font: 400 13px/1.5 Micross, Arial, sans-serif; color: rgba(255,255,255,0.75); }
+    .pj-cr-col-lbl--stack { margin-top: 18px; }
   </style>
 </head>
 <body>

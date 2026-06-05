@@ -322,13 +322,12 @@
 
     /* Credits columns */
     .pj-cr-cols {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 28px 32px;
+      display: grid; grid-template-columns: 1fr 1fr;
       margin-bottom: 40px;
     }
     .pj-cr-col-lbl { font: 400 8px/1 Micross, Arial, sans-serif; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.22); margin-bottom: 10px; -webkit-font-smoothing: antialiased; }
     .pj-cr-col-val { font: 400 13px/1.5 Micross, Arial, sans-serif; color: rgba(255,255,255,0.75); }
+    .pj-cr-col-lbl--stack { margin-top: 18px; }
   </style>
 </head>
 <body>
@@ -417,16 +416,13 @@
 
     <div class="pj-cr-cols">
       <div>
-        <div class="pj-cr-col-lbl">Sound Design</div>
-        <div class="pj-cr-col-val">@pslmsmn &amp; @williamlandryaudio</div>
-      </div>
-      <div>
-        <div class="pj-cr-col-lbl">Sound Mixer</div>
-        <div class="pj-cr-col-val">@pslmsmn &amp; @williamlandryaudio</div>
-      </div>
-      <div>
         <div class="pj-cr-col-lbl">Directed by</div>
         <div class="pj-cr-col-val">@joshuasmedina</div>
+      </div>
+      <div>
+        <div class="pj-cr-col-stack"><div class="pj-cr-col-lbl">Sound Design</div>
+        <div class="pj-cr-col-val">@pslmsmn &amp; @williamlandryaudio</div><div class="pj-cr-col-lbl pj-cr-col-lbl--stack">Sound Mixer</div>
+        <div class="pj-cr-col-val pj-cr-col-val--stack">@pslmsmn &amp; @williamlandryaudio</div></div>
       </div>
     </div>
 
