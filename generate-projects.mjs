@@ -50,7 +50,7 @@ const ROWS = [
     label: 'Sound',
     cards: [
       { video: '/work/sound/ai-awareness/video.mp4',                     client: 'Sumsub',         title: 'AI Awareness',                 date: 'JUN 26', director: 'Snezhana Yugai', production: 'LUCH UNION', poster: '/work/sound/ai-awareness/poster.jpg' },
-      { video: VF  + '214a3ae2-01ca-4593-8949-98a7191f6548.mp4',         client: 'Louis Vuitton',  title: 'SS26 Teaser',                  date: 'APR 14' },
+      { video: VF  + '214a3ae2-01ca-4593-8949-98a7191f6548.mp4',         client: 'Louis Vuitton',  title: 'SS26 Teaser',                  date: 'APR 14', director: 'Anthony Princeleslie', soundDesign: 'Ken Psalms & William Landry' },
       { video: VF  + '17e77d71-3bca-4d42-8275-71deb05724d1.mp4',         client: 'Beats',          title: 'Open',                         date: 'OCT 10' },
       { video: VF  + '24fed0b9-4d02-45b3-895b-437c3ab89f38.mp4',         client: "Arc'teryx",      title: 'Precision Without Limits',     date: 'FEB 28' },
       { video: VF  + '6c66aad7-7df3-4809-a8d7-1f92a377fa5e.mp4',         client: 'Lucid',          title: 'Compromise Nothing',           date: 'DEC 5'  },
@@ -102,7 +102,8 @@ const ROWS = [
 function makeHTML(card, catLabel, framesHTML = '') {
   const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   const director = card.director || 'XYZ Studios';
-  const production = card.production || 'XYZ Studios';
+  const secondCreditLabel = card.soundDesign ? 'Sound Design &amp; Mix' : 'Production by';
+  const secondCreditValue = card.soundDesign || card.production || 'XYZ Studios';
   const posterAttr = card.poster ? ` poster="${esc(card.poster)}"` : '';
   return `<!DOCTYPE html>
 <html lang="en">
@@ -525,8 +526,8 @@ function makeHTML(card, catLabel, framesHTML = '') {
         <div class="pj-cr-col-val">${esc(director)}</div>
       </div>
       <div>
-        <div class="pj-cr-col-lbl">Production by</div>
-        <div class="pj-cr-col-val">${esc(production)}</div>
+        <div class="pj-cr-col-lbl">${secondCreditLabel}</div>
+        <div class="pj-cr-col-val">${esc(secondCreditValue)}</div>
       </div>
     </div>
 
