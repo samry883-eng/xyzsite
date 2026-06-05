@@ -49,7 +49,7 @@ const ROWS = [
   {
     label: 'Sound',
     cards: [
-      { video: VF  + 'a92adc6c-d390-45a4-8fd9-1c49d6782032.MP4',         client: 'Sumsub',         title: 'AI Awareness',                 date: 'JUN 26', director: 'Snezhana Yugai', production: 'LUCH UNION', poster: '/work/sound/ai-awareness/poster.jpg' },
+      { video: '/work/sound/ai-awareness/video.mp4',                     client: 'Sumsub',         title: 'AI Awareness',                 date: 'JUN 26', director: 'Snezhana Yugai', production: 'LUCH UNION', poster: '/work/sound/ai-awareness/poster.jpg' },
       { video: VF  + '214a3ae2-01ca-4593-8949-98a7191f6548.mp4',         client: 'Louis Vuitton',  title: 'SS26 Teaser',                  date: 'APR 14' },
       { video: VF  + '17e77d71-3bca-4d42-8275-71deb05724d1.mp4',         client: 'Beats',          title: 'Open',                         date: 'OCT 10' },
       { video: VF  + '24fed0b9-4d02-45b3-895b-437c3ab89f38.mp4',         client: "Arc'teryx",      title: 'Precision Without Limits',     date: 'FEB 28' },
@@ -576,24 +576,26 @@ function makeHTML(card, catLabel, framesHTML = '') {
   const urlPoster = new URLSearchParams(location.search).get('poster');
   if (urlPoster && !vid.getAttribute('poster')) vid.setAttribute('poster', urlPoster);
 
+  function syncDuration() {
+    const total = document.querySelector('.hero_video-time-total');
+    if (total && isFinite(vid.duration) && vid.duration > 0) total.textContent = fmt(vid.duration);
+  }
+
   function togglePlay() {
     if (!vid.paused) { vid.pause(); return; }
-    const attempt = vid.play();
-    if (!attempt || !attempt.then) return;
+    if (vid.readyState === 0) vid.load();
     videoFrame && videoFrame.classList.add('is-buffering');
-    attempt.then(function () {
-      videoFrame && videoFrame.classList.remove('is-buffering');
-    }).catch(function () {
-      function onReady() {
-        vid.removeEventListener('canplay', onReady);
-        vid.play().catch(function () {}).finally(function () {
-          videoFrame && videoFrame.classList.remove('is-buffering');
-        });
-      }
-      if (vid.readyState >= 3) onReady();
-      else vid.addEventListener('canplay', onReady, { once: true });
-    });
+    function start() {
+      vid.play().catch(function () {}).finally(function () {
+        videoFrame && videoFrame.classList.remove('is-buffering');
+      });
+    }
+    if (vid.readyState >= 3) start();
+    else vid.addEventListener('canplay', start, { once: true });
   }
+
+  vid.addEventListener('loadedmetadata', syncDuration);
+  vid.addEventListener('durationchange', syncDuration);
 
   function fmt(s) {
     if (!isFinite(s)) return '0:00';
