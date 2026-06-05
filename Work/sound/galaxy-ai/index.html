@@ -321,13 +321,15 @@
     .pj-frames img.full { grid-column: 1 / -1; }
 
     /* Credits columns */
+    .pj-cr-credits-wrap { margin-bottom: 40px; }
     .pj-cr-cols {
       display: grid; grid-template-columns: 1fr 1fr;
-      margin-bottom: 40px;
+      gap: 0 32px;
     }
+    .pj-cr-sound-rows { margin-top: 22px; }
+    .pj-cr-sound-rows .pj-cr-cols + .pj-cr-cols { margin-top: 22px; }
     .pj-cr-col-lbl { font: 400 8px/1 Micross, Arial, sans-serif; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.22); margin-bottom: 10px; -webkit-font-smoothing: antialiased; }
     .pj-cr-col-val { font: 400 13px/1.5 Micross, Arial, sans-serif; color: rgba(255,255,255,0.75); }
-    .pj-cr-col-lbl--stack { margin-top: 18px; }
   </style>
 </head>
 <body>
@@ -414,7 +416,7 @@
     <div class="pj-cr-title">Galaxy AI</div>
     <div class="pj-cr-sub">Samsung</div>
 
-    <div class="pj-cr-cols">
+    <div class="pj-cr-credits-wrap"><div class="pj-cr-cols">
       <div>
         <div class="pj-cr-col-lbl">Directed by</div>
         <div class="pj-cr-col-val">XYZ Studios</div>
@@ -423,7 +425,7 @@
         <div class="pj-cr-col-lbl">Production by</div>
         <div class="pj-cr-col-val">XYZ Studios</div>
       </div>
-    </div>
+    </div></div>
 
     <!-- ── FRAMES — add stills below ─────────────────────── -->
     <!--

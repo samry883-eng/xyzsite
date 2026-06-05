@@ -140,50 +140,69 @@ function creditRows(card) {
 
 function isDirectorCredit(c) { return /^directed by$/i.test(c.label); }
 function isProductionCredit(c) { return /^production by$/i.test(c.label); }
+function isSoundCredit(c) {
+  return /sound design|sound mixer|^mix$|dialogue edit/i.test(c.label);
+}
 
-function splitCreditCols(card) {
+function partitionCredits(card) {
   const rows = creditRows(card);
-  const director = rows.find(isDirectorCredit);
-  const production = rows.find(isProductionCredit);
-  const soundRows = rows.filter((c) => !isDirectorCredit(c) && !isProductionCredit(c));
-
-  if (director) {
-    return {
-      left: director,
-      right: soundRows.length ? soundRows : (production ? [production] : [{ label: 'Production by', value: 'XYZ Studios' }]),
-    };
-  }
-  if (soundRows.length >= 2) {
-    return { left: soundRows[0], right: soundRows.slice(1) };
-  }
-  if (soundRows.length === 1) {
-    return { left: soundRows[0], right: production ? [production] : [{ label: 'Production by', value: 'XYZ Studios' }] };
-  }
   return {
-    left: { label: 'Directed by', value: 'XYZ Studios' },
-    right: [{ label: 'Production by', value: 'XYZ Studios' }],
+    director: rows.find(isDirectorCredit) || null,
+    production: rows.find(isProductionCredit) || null,
+    sound: rows.filter(isSoundCredit),
   };
 }
 
-function renderCreditEntry(c, esc, stacked) {
-  const stackLbl = stacked ? ' pj-cr-col-lbl--stack' : '';
-  const stackVal = stacked ? ' pj-cr-col-val--stack' : '';
-  return `<div class="pj-cr-col-lbl${stackLbl}">${esc(c.label)}</div>
-        <div class="pj-cr-col-val${stackVal}">${esc(c.value)}</div>`;
+function renderCreditCell(c, esc) {
+  return `<div>
+        <div class="pj-cr-col-lbl">${esc(c.label)}</div>
+        <div class="pj-cr-col-val">${esc(c.value)}</div>
+      </div>`;
+}
+
+function renderCreditPair(left, right, esc) {
+  return `<div class="pj-cr-cols">
+      ${left ? renderCreditCell(left, esc) : '<div></div>'}
+      ${right ? renderCreditCell(right, esc) : '<div></div>'}
+    </div>`;
+}
+
+function renderSoundRows(soundItems, esc) {
+  let html = '';
+  for (let i = 0; i < soundItems.length; i += 2) {
+    html += renderCreditPair(soundItems[i], soundItems[i + 1] || null, esc);
+  }
+  return html ? `<div class="pj-cr-sound-rows">${html}</div>` : '';
 }
 
 function renderCreditCols(card, esc) {
-  const { left, right } = splitCreditCols(card);
-  const rightHtml = right.length === 1
-    ? renderCreditEntry(right[0], esc, false)
-    : `<div class="pj-cr-col-stack">${right.map((c, i) => renderCreditEntry(c, esc, i > 0)).join('')}</div>`;
-  return `
-      <div>
-        ${renderCreditEntry(left, esc, false)}
-      </div>
-      <div>
-        ${rightHtml}
-      </div>`;
+  const { director, production, sound } = partitionCredits(card);
+  let inner = '';
+
+  // No director — showcase sound work only, 2 per line
+  if (!director) {
+    inner = sound.length
+      ? renderSoundRows(sound, esc)
+      : renderCreditPair(
+        { label: 'Directed by', value: 'XYZ Studios' },
+        production || { label: 'Production by', value: 'XYZ Studios' },
+        esc,
+      );
+  } else if (sound.length === 1) {
+    // Director + one sound role — same row (sound replaces production slot)
+    inner = renderCreditPair(director, sound[0], esc);
+  } else if (sound.length > 1) {
+    // Director on first row; sound/mix/dialogue rows below, 2 per line
+    inner = renderCreditPair(director, null, esc) + renderSoundRows(sound, esc);
+  } else {
+    inner = renderCreditPair(
+      director,
+      production || { label: 'Production by', value: 'XYZ Studios' },
+      esc,
+    );
+  }
+
+  return `<div class="pj-cr-credits-wrap">${inner}</div>`;
 }
 
 // ── Page template ──────────────────────────────────────────
@@ -513,13 +532,15 @@ function makeHTML(card, catLabel, framesHTML = '') {
     .pj-frames img.full { grid-column: 1 / -1; }
 
     /* Credits columns */
+    .pj-cr-credits-wrap { margin-bottom: 40px; }
     .pj-cr-cols {
       display: grid; grid-template-columns: 1fr 1fr;
-      margin-bottom: 40px;
+      gap: 0 32px;
     }
+    .pj-cr-sound-rows { margin-top: 22px; }
+    .pj-cr-sound-rows .pj-cr-cols + .pj-cr-cols { margin-top: 22px; }
     .pj-cr-col-lbl { font: 400 8px/1 Micross, Arial, sans-serif; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.22); margin-bottom: 10px; -webkit-font-smoothing: antialiased; }
     .pj-cr-col-val { font: 400 13px/1.5 Micross, Arial, sans-serif; color: rgba(255,255,255,0.75); }
-    .pj-cr-col-lbl--stack { margin-top: 18px; }
   </style>
 </head>
 <body>
@@ -606,8 +627,7 @@ function makeHTML(card, catLabel, framesHTML = '') {
     <div class="pj-cr-title">${esc(card.title)}</div>
     <div class="pj-cr-sub">${esc(card.client)}</div>
 
-    <div class="pj-cr-cols">${renderCreditCols(card, esc)}
-    </div>
+    ${renderCreditCols(card, esc)}
 
     <!-- ── FRAMES — add stills below ─────────────────────── -->
     <!--
