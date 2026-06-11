@@ -183,6 +183,7 @@ const CREDIT_NAME_ALIASES = {
   jimmyderner: 'Jimmy Derner',
   chrisvilla: 'Chris Villa',
   brthr: 'BRTHR',
+  xyzstudios: 'XYZ Studios',
 };
 
 function titleCaseWord(w) {
