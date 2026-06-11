@@ -93,7 +93,10 @@ const ROWS = [
   {
     label: 'Sound',
     cards: [
-      { video: '/work/sound/ai-awareness/video.mp4',                     client: 'Sumsub',         title: 'AI Awareness',                 date: 'JUN 26', director: 'Snezhana Yugai', production: 'Luch Union', poster: '/work/sound/ai-awareness/poster.jpg' },
+      { video: '/work/sound/ai-awareness/video.mp4',                     client: 'Sumsub',         title: 'AI Awareness',                 date: 'JUN 26', poster: '/work/sound/ai-awareness/poster.jpg', credits: [
+        { label: 'Directed by', value: 'Snezhana Yugai' },
+        { label: 'Sound Design, Mix & Music', value: 'Klangtextur' },
+      ] },
       { video: VF  + '214a3ae2-01ca-4593-8949-98a7191f6548.mp4',         client: 'Louis Vuitton',  title: 'SS26 Teaser',                  date: 'APR 14', director: 'Anthony Prince Leslie', soundDesign: 'Ken Psalms & William Landry', soundDesignMix: true },
       { video: VF  + '17e77d71-3bca-4d42-8275-71deb05724d1.mp4',         client: 'Beats',          title: 'Open',                         date: 'OCT 10', credits: [
         { label: 'Directed by', value: 'Aidan Cullen' },
@@ -233,7 +236,7 @@ function creditRows(card) {
 function isDirectorCredit(c) { return /^directed by$/i.test(c.label); }
 function isProductionCredit(c) { return /^(produced|production) by$/i.test(c.label); }
 function isSoundCredit(c) {
-  return /sound design|sound mixer|^mix$|dialogue edit/i.test(c.label);
+  return /sound design|sound mixer|^mix$|dialogue edit|mix & music/i.test(c.label);
 }
 
 function partitionCredits(card) {
