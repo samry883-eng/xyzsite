@@ -28,21 +28,66 @@ const ROWS = [
   {
     label: 'Visual Effects',
     cards: [
-      { video: VF  + 'cbf82991-c743-4045-8898-b6ee78efd9b4.mp4',         client: 'Atomic',         title: 'Into the Void',                date: 'NOV 15', clipStart: 24, clipEnd: 33 },
-      { video: VF  + 'd93de57b-6909-4f1e-81d3-8d1f6252c2f7.mp4',         client: 'Nike',           title: 'France World Cup',           date: 'JUN 26', slug: 'france-world-cup', poster: '/work/visual-effects/france-world-cup/poster.jpg' },
-      { video: VF  + 'af62bf83-f2c4-4ff5-ae90-e056d209eaae.mp4',         client: 'Cara Delevingne', title: 'I Forgot & Out of My Head',   date: 'MAY 26', director: 'Jessica Le Gagne', production: 'Reset Content', poster: '/work/visual-effects/i-forgot-out-of-my-head/poster.jpg' },
-      { video: VF  + 'ef1dc602-5a95-4973-a0ea-82794726bc4a.mp4',         client: 'Salomon',        title: 'Speedcross 3',                 date: 'OCT 25' },
-      { video: SB  + 'PcB8hb2-uO/original',                              client: 'Salomon',        title: 's/lab Manifesto',              date: 'FEB 26' },
-      { video: SB  + '9O7xsj76Lw/original',                              client: 'Toyota',         title: 'Road to Palisades',            date: 'FEB 26' },
-      { video: SB  + '85D_It6HUS/original',                               client: 'RBC',            title: 'Canadian Open',                date: 'MAR 9'  },
-      { video: SB  + 'JchEHAr96O/original',                               client: 'JennAir',        title: 'The Flip',                     date: 'JAN 10' },
-      { video: SB  + '0yJ5A9ii2H/original',                               client: 'Fanatics',       title: 'NBA Store',                    date: 'DEC 20' },
-      { video: SB  + 'mu8ewXP3uH/original',                               client: 'Fanatics',       title: 'NHL Store',                    date: 'DEC 15' },
-      { video: VF  + 'edac671a-7d48-4eb1-b1ea-c2556b330ee4.mp4',         client: 'Chino Pacas',    title: 'Modo Capone',                  date: 'SEP 12' },
-      { video: VF  + 'e07f965d-dc13-45bc-a958-08fd1baa3793.mp4',         client: 'Marc Jacobs',    title: 'The Essentials',               date: 'OCT 24' },
-      { video: VF  + 'b383d525-8d02-4f4b-b2fa-0d9c29a71d91.mp4',         client: 'Fuerza Regida',  title: 'Tu Sancho',                    date: 'AUG 3'  },
-      { video: VF  + 'daf3f8d1-9b55-438d-9259-922de5fb7c8f.mp4',         client: 'Fuerza Regida',  title: 'Secreto Victoria',             date: 'JUL 18' },
-      { video: VF  + '15e90e12-e3b1-420a-9b11-db60a7b199b0.mp4',         client: 'Tokischa',       title: 'De Maravisha',                 date: 'JUN 5'  },
+      { video: VF  + 'cbf82991-c743-4045-8898-b6ee78efd9b4.mp4',         client: 'Atomic',         title: 'Into the Void',                date: 'NOV 15', clipStart: 24, clipEnd: 33, credits: [
+        { label: 'Directed by', value: 'Dris Yousif' },
+        { label: 'Produced by', value: 'XYZ Studios' },
+      ] },
+      { video: VF  + 'd93de57b-6909-4f1e-81d3-8d1f6252c2f7.mp4',         client: 'Nike',           title: 'France World Cup',           date: 'JUN 26', slug: 'france-world-cup', poster: '/work/visual-effects/france-world-cup/poster.jpg', credits: [
+        { label: 'Directed by', value: 'Alexis Belhumeur' },
+        { label: 'Agency', value: 'Knas' },
+      ] },
+      { video: VF  + 'af62bf83-f2c4-4ff5-ae90-e056d209eaae.mp4',         client: 'Cara Delevingne', title: 'I Forgot & Out of My Head',   date: 'MAY 26', poster: '/work/visual-effects/i-forgot-out-of-my-head/poster.jpg', credits: [
+        { label: 'Directed by', value: 'Jessica Le Gagne' },
+        { label: 'Production Company USA', value: 'Reset Content' },
+      ] },
+      { video: VF  + 'ef1dc602-5a95-4973-a0ea-82794726bc4a.mp4',         client: 'Salomon',        title: 'Speedcross 3',                 date: 'OCT 25', credits: [
+        { label: 'Directed by', value: 'Lenn Anton' },
+        { label: 'Produced by', value: 'XYZ Studios' },
+      ] },
+      { video: SB  + 'PcB8hb2-uO/original',                              client: 'Salomon',        title: 's/lab Manifesto',              date: 'FEB 26', credits: [
+        { label: 'Directed by', value: 'The Reids' },
+        { label: 'Production', value: 'CommonVision' },
+      ] },
+      { video: SB  + '9O7xsj76Lw/original',                              client: 'Toyota',         title: 'Road to Palisades',            date: 'FEB 26', credits: [
+        { label: 'Directed by', value: 'Jack Botti' },
+        { label: 'Production', value: 'rabithaus' },
+      ] },
+      { video: SB  + '85D_It6HUS/original',                               client: 'RBC',            title: 'Canadian Open',                date: 'MAR 9', credits: [
+        { label: 'Agency', value: 'Wasserman' },
+        { label: 'Produced by', value: 'XYZ Studios' },
+      ] },
+      { video: SB  + 'JchEHAr96O/original',                               client: 'JennAir',        title: 'The Flip',                     date: 'JAN 10', credits: [
+        { label: 'Directed by', value: 'Nick Martini' },
+        { label: 'Production', value: 'Stept Studios' },
+      ] },
+      { video: SB  + '0yJ5A9ii2H/original',                               client: 'Fanatics',       title: 'NBA Store',                    date: 'DEC 20', credits: [
+        { label: 'Directed by', value: 'Jimmy Derner' },
+        { label: 'Production Company', value: 'Wolfpak Films' },
+      ] },
+      { video: SB  + 'mu8ewXP3uH/original',                               client: 'Fanatics',       title: 'NHL Store',                    date: 'DEC 15', credits: [
+        { label: 'Directed by', value: 'Jimmy Derner' },
+        { label: 'Production Company', value: 'Wolfpak Films' },
+      ] },
+      { video: VF  + 'edac671a-7d48-4eb1-b1ea-c2556b330ee4.mp4',         client: 'Chino Pacas',    title: 'Modo Capone ft. Drake',        date: 'SEP 12', credits: [
+        { label: 'Directed by', value: 'Chris Villa' },
+        { label: 'Production Company', value: 'SHOTCLOCK' },
+      ] },
+      { video: VF  + 'e07f965d-dc13-45bc-a958-08fd1baa3793.mp4',         client: 'Marc Jacobs',    title: 'The Essentials',               date: 'OCT 24', credits: [
+        { label: 'Directed by', value: 'BRTHR' },
+        { label: 'Produced by', value: 'Afterworld' },
+      ] },
+      { video: VF  + 'b383d525-8d02-4f4b-b2fa-0d9c29a71d91.mp4',         client: 'Fuerza Regida',  title: 'Tu Sancho',                    date: 'AUG 3', credits: [
+        { label: 'Directed by', value: 'Miguel' },
+        { label: 'Produced by', value: 'XYZ Studios' },
+      ] },
+      { video: VF  + 'daf3f8d1-9b55-438d-9259-922de5fb7c8f.mp4',         client: 'Fuerza Regida',  title: 'Secreto Victoria',             date: 'JUL 18', credits: [
+        { label: 'Directed by', value: 'Miguel' },
+        { label: 'Produced by', value: 'XYZ Studios' },
+      ] },
+      { video: VF  + '15e90e12-e3b1-420a-9b11-db60a7b199b0.mp4',         client: 'Tokischa',       title: 'De Maravisha',                 date: 'JUN 5', credits: [
+        { label: 'Directed by', value: 'Olivia Decamps' },
+        { label: 'Produced by', value: 'XYZ Studios' },
+      ] },
     ]
   },
   {
@@ -130,6 +175,14 @@ const CREDIT_NAME_ALIASES = {
   bennyboom: 'Benny Boom',
   joshuasmedina: 'Joshua Smedina',
   edgaresteves: 'Edgar Esteves',
+  jessicaleegagne: 'Jessica Le Gagne',
+  resetcontent: 'Reset Content',
+  directedbymiguel: 'Miguel',
+  oliviadecamps: 'Olivia Decamps',
+  jackbotti: 'Jack Botti',
+  jimmyderner: 'Jimmy Derner',
+  chrisvilla: 'Chris Villa',
+  brthr: 'BRTHR',
 };
 
 function titleCaseWord(w) {
@@ -165,10 +218,11 @@ function creditRows(card) {
     if (card.soundMixer) rows.push({ label: 'Sound Mixer', value: card.soundMixer });
     if (card.mix) rows.push({ label: 'Mix', value: card.mix });
     if (card.dialogueEdit) rows.push({ label: 'Dialogue Edit', value: card.dialogueEdit });
-    if (card.production) rows.push({ label: 'Production by', value: card.production });
+    if (card.agency) rows.push({ label: 'Agency', value: card.agency });
+    if (card.production) rows.push({ label: card.productionLabel || 'Produced by', value: card.production });
     if (!rows.length) {
       rows.push({ label: 'Directed by', value: 'XYZ Studios' });
-      rows.push({ label: 'Production by', value: 'XYZ Studios' });
+      rows.push({ label: 'Produced by', value: 'XYZ Studios' });
     }
     rows = rows.map(normalizeCreditRow);
   }
@@ -176,7 +230,7 @@ function creditRows(card) {
 }
 
 function isDirectorCredit(c) { return /^directed by$/i.test(c.label); }
-function isProductionCredit(c) { return /^production by$/i.test(c.label); }
+function isProductionCredit(c) { return /^(produced|production) by$/i.test(c.label); }
 function isSoundCredit(c) {
   return /sound design|sound mixer|^mix$|dialogue edit/i.test(c.label);
 }
@@ -212,31 +266,39 @@ function renderSoundRows(soundItems, esc) {
   return html ? `<div class="pj-cr-sound-rows">${html}</div>` : '';
 }
 
+function renderMetaRows(meta, esc) {
+  let html = '';
+  for (let i = 0; i < meta.length; i += 2) {
+    html += renderCreditPair(meta[i], meta[i + 1] || null, esc);
+  }
+  return html;
+}
+
 function renderCreditCols(card, esc) {
-  const { director, production, sound } = partitionCredits(card);
+  const rows = creditRows(card);
+  const sound = rows.filter(isSoundCredit);
+  const meta = rows.filter(c => !isSoundCredit(c));
+  const director = meta.find(isDirectorCredit) || null;
   let inner = '';
 
-  // No director — showcase sound work only, 2 per line
-  if (!director) {
-    inner = sound.length
-      ? renderSoundRows(sound, esc)
+  if (!sound.length) {
+    inner = meta.length
+      ? renderMetaRows(meta, esc)
       : renderCreditPair(
         { label: 'Directed by', value: 'XYZ Studios' },
-        production || { label: 'Production by', value: 'XYZ Studios' },
+        { label: 'Produced by', value: 'XYZ Studios' },
         esc,
       );
+  } else if (!director) {
+    inner = renderSoundRows(sound, esc);
   } else if (sound.length === 1) {
-    // Director + one sound role — same row (sound replaces production slot)
     inner = renderCreditPair(director, sound[0], esc);
-  } else if (sound.length > 1) {
-    // Director on first row; sound/mix/dialogue rows below, 2 per line
-    inner = renderCreditPair(director, null, esc) + renderSoundRows(sound, esc);
+    const rest = meta.filter(c => !isDirectorCredit(c));
+    inner += renderMetaRows(rest, esc);
   } else {
-    inner = renderCreditPair(
-      director,
-      production || { label: 'Production by', value: 'XYZ Studios' },
-      esc,
-    );
+    inner = renderCreditPair(director, null, esc) + renderSoundRows(sound, esc);
+    const rest = meta.filter(c => !isDirectorCredit(c));
+    inner += renderMetaRows(rest, esc);
   }
 
   return `<div class="pj-cr-credits-wrap">${inner}</div>`;
