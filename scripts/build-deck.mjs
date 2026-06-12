@@ -24,14 +24,42 @@ const DATA = [
   {
     type: 'about', chapter: 'About', nav: 'About',
     image: 'image-3-2.jpg',
-    lead: 'A post-production studio built through close creative collaboration.',
+    lead: 'a post-production studio built through close creative collaboration.',
     body: ['Working with production teams, agencies, and directors to carry projects through post, supporting where needed and staying closely involved through final delivery.', 'Each project evolves differently, and the approach is shaped to serve the work and its intended outcome.'],
   },
   {
     type: 'wall', chapter: 'Highlighted Work', nav: 'Highlighted Work',
     images: ['image-4-7.jpg', 'image-4-2.jpg', 'image-4-4.jpg', 'image-4-5.jpg', 'image-4-9.jpg', 'image-4-10.jpg', 'image-4-3.jpg', 'image-4-1.jpg', 'image-4-6.jpg'],
   },
-  { type: 'divider', chapter: 'Craft', nav: 'Craft', no: '01', title: 'Craft', image: 'image-23-2.jpg' },
+  { type: 'divider', chapter: 'Full Production', nav: 'Full Production', no: '01', title: 'Full Production', image: 'image-6-1.webp' },
+  {
+    type: 'project', chapter: 'Full Production',
+    client: 'Salomon', title: 'Speedcross 6', year: '2026', bg: 'image-7-2.jpg',
+    video: 'https://r2.vidzflow.com/source/ef1dc602-5a95-4973-a0ea-82794726bc4a.mp4',
+    director: 'Lenn Anton',
+    scope: ['Concept to Final Delivery', 'Creative Direction', 'Production', 'VFX', 'CG', 'AI', 'Compositing', 'Editing', 'Sound Design & Mix'],
+    build: [['60%', 'Live Action'], ['33%', 'AI'], ['7%', 'CGI']],
+    output: [['214', 'Final Frames'], ['2', 'Hero Shots']],
+  },
+  {
+    type: 'project', chapter: 'Full Production',
+    client: 'Atomic', title: 'Into The Void', year: '2026', bg: 'image-8-3.jpg',
+    video: 'https://r2.vidzflow.com/source/cbf82991-c743-4045-8898-b6ee78efd9b4.mp4',
+    director: 'Dris Yousif', note: 'Concept Piece',
+    scope: ['Concept to Final Delivery', 'Creative Direction', 'Production', 'CG', 'Simulation', 'Compositing', 'Editing', 'Sound Design & Mix'],
+    build: [['92%', 'CG'], ['8%', 'AI'], ['1', 'Environment']],
+    output: [['1400', 'Final Frames'], ['10', 'Hero Shots']],
+  },
+  {
+    type: 'project', chapter: 'Full Production',
+    client: 'Rory McIlroy', title: 'RBC Canadian Open', year: '2025', bg: 'image-9-2.jpg',
+    video: 'https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/85D_It6HUS/original',
+    director: 'Samry Yussuf',
+    scope: ['Concept to Final Delivery', 'Creative Direction', 'Production', 'VFX', 'CG', 'Compositing', 'Editing', 'Sound Design & Mix'],
+    build: [['72%', 'CG'], ['20%', 'Motion Graphics'], ['7%', 'Live Action']],
+    output: [['1009', 'Final Frames'], ['8', 'Hero Shots'], ['4', 'Environments']],
+  },
+  { type: 'divider', chapter: 'Craft', nav: 'Craft', no: '02', title: 'Craft', image: 'image-23-2.jpg' },
   {
     type: 'craft', chapter: 'Craft',
     title: 'Creative Development',
@@ -73,31 +101,6 @@ const DATA = [
     title: 'AI-Assisted Workflow',
     body: 'We integrate AI into live-action and CG workflows as a controlled extension of our process. It allows us to explore, iterate, and build imagery that would otherwise be difficult or time-intensive, while keeping every decision guided by artists. AI remains a tool, supporting realism, precision, and creative intent, never replacing it.',
     layout: 'hero-grid', images: ['image-31-2.jpg', 'image-31-4.jpg', 'image-31-3.jpg'],
-  },
-  { type: 'divider', chapter: 'Full Production', nav: 'Full Production', no: '02', title: 'Full Production', image: 'image-6-1.webp' },
-  {
-    type: 'project', chapter: 'Full Production',
-    client: 'Salomon', title: 'Speedcross 6', year: '2026', bg: 'image-7-2.jpg',
-    director: 'Lenn Anton',
-    scope: ['Concept to Final Delivery', 'Creative Direction', 'Production', 'VFX', 'CG', 'AI', 'Compositing', 'Editing', 'Sound Design & Mix'],
-    build: [['60%', 'Live Action'], ['33%', 'AI'], ['7%', 'CGI']],
-    output: [['214', 'Final Frames'], ['2', 'Hero Shots']],
-  },
-  {
-    type: 'project', chapter: 'Full Production',
-    client: 'Atomic', title: 'Into The Void', year: '2026', bg: 'image-8-3.jpg',
-    director: 'Dris Yousif', note: 'Concept Piece',
-    scope: ['Concept to Final Delivery', 'Creative Direction', 'Production', 'CG', 'Simulation', 'Compositing', 'Editing', 'Sound Design & Mix'],
-    build: [['92%', 'CG'], ['8%', 'AI'], ['1', 'Environment']],
-    output: [['1400', 'Final Frames'], ['10', 'Hero Shots']],
-  },
-  {
-    type: 'project', chapter: 'Full Production',
-    client: 'Rory McIlroy', title: 'RBC Canadian Open', year: '2025', bg: 'image-9-2.jpg',
-    director: 'Samry Yussuf',
-    scope: ['Concept to Final Delivery', 'Creative Direction', 'Production', 'VFX', 'CG', 'Compositing', 'Editing', 'Sound Design & Mix'],
-    build: [['72%', 'CG'], ['20%', 'Motion Graphics'], ['7%', 'Live Action']],
-    output: [['1009', 'Final Frames'], ['8', 'Hero Shots'], ['4', 'Environments']],
   },
   { type: 'divider', chapter: 'Case Study', nav: 'Case Study', no: '03', title: 'Case Studies', image: 'image-10-1.webp' },
   {
@@ -194,7 +197,7 @@ function tCover() {
     <div class="cover-year" aria-hidden="true">2026</div>
     <div class="cover-inner">
       <div class="cover-kicker"><span class="mono">International creative post production studio</span><span class="mono">Inquiries@xyzstudios.co</span></div>
-      <h1 class="cover-title">${lines('Capabilities')}${lines('Deck — 2026', 'cover-sub')}</h1>
+      <h1 class="cover-title">${lines('Capabilities Deck')}</h1>
       <div class="cover-foot mono"><span>XYZSTUDIOS &copy; 2026</span><span>VFX &middot; CG &middot; Sound</span></div>
     </div>
   </div>`;
@@ -277,9 +280,15 @@ function tProject(d) {
   const output = d.output
     .map(([v, l]) => `<div class="stat"><span class="stat-v" data-count="${esc(v)}">${esc(v)}</span><span class="mono stat-l">${esc(l)}</span></div>`)
     .join('');
+  const media = d.video
+    ? `<div class="prj-media prj-media--video">
+        <video class="fill prj-video" src="${esc(d.video)}" poster="${M}/${esc(d.bg)}" playsinline loop preload="metadata"></video>
+        <span class="prj-cursor" aria-hidden="true">Play</span>
+      </div>`
+    : `<div class="prj-media">${img(d.bg, 'fill')}</div>`;
   return `
   <div class="sl-project">
-    <div class="prj-media">${img(d.bg, 'fill')}</div>
+    ${media}
     <div class="prj-grade"></div>
     <div class="prj-inner">
       <div class="prj-top">
@@ -288,7 +297,7 @@ function tProject(d) {
         ${d.note ? `<div><div class="mono lbl">Type</div><div class="prj-client">${esc(d.note)}</div></div>` : ''}
         <div><div class="mono lbl">Year</div><div class="prj-client">${esc(d.year)}</div></div>
       </div>
-      <h2 class="prj-title">${lines(d.title)}</h2>
+      <h2 class="prj-title">${esc(d.title)}</h2>
       <div class="prj-bottom">
         <div class="prj-scope"><div class="mono lbl">Scope</div><ul>${scope}</ul></div>
         <div class="prj-stats">
@@ -398,7 +407,7 @@ function tHow(d) {
 function tContact(d) {
   return `
   <div class="sl-contact">
-    <h2 class="contact-title">${lines('Let’s Build')}${lines('Something Real')}</h2>
+    <h2 class="contact-title">${lines('Contact')}</h2>
     <div class="contact-grid">
       <div class="contact-people">
         ${d.people.map(([n, r, e]) => `<div class="person"><div class="person-n">${esc(n)}</div><div class="mono person-r">${esc(r)}</div><a class="person-e" href="mailto:${esc(e)}">${esc(e)}</a></div>`).join('')}

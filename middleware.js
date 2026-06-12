@@ -15,6 +15,11 @@ export default async function middleware(request) {
 
   const url = new URL(request.url);
   const p = url.pathname.toLowerCase();
+  if (p === '/capabilities') {
+    const dest = new URL('/capabilities/', request.url);
+    dest.search = url.search;
+    return Response.redirect(dest, 308);
+  }
   if (
     p === '/capabilities/login' ||
     p === '/capabilities/login/' ||
@@ -34,6 +39,7 @@ export default async function middleware(request) {
   if (email) return next();
 
   const login = new URL('/capabilities/login', request.url);
-  login.searchParams.set('next', url.pathname + url.search);
+  const nextPath = p === '/capabilities' ? '/capabilities/' : url.pathname;
+  login.searchParams.set('next', nextPath + url.search);
   return Response.redirect(login, 302);
 }

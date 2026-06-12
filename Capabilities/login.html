@@ -239,6 +239,7 @@
       var next = params.get('next') || '/capabilities/';
       function safeNext(n) {
         if (!n || !n.startsWith('/capabilities') || n.indexOf('//') !== -1) return '/capabilities/';
+        if (n === '/capabilities') return '/capabilities/';
         return n;
       }
       var target = safeNext(next);

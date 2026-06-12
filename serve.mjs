@@ -396,6 +396,13 @@ http.createServer((req, res) => {
         return;
       }
 
+      if (urlPath === '/capabilities' || urlPath === '/Capabilities') {
+        const qs = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
+        res.writeHead(308, { Location: `/capabilities/${qs}` });
+        res.end();
+        return;
+      }
+
       const spec = getStaticFilePath(urlPath);
       if (req.method === 'HEAD') {
         fs.stat(spec.filePath, (err) => {

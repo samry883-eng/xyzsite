@@ -35,6 +35,18 @@
       ]
     }
   ],
+  "redirects": [
+    {
+      "source": "/capabilities",
+      "destination": "/capabilities/",
+      "permanent": true
+    },
+    {
+      "source": "/Capabilities",
+      "destination": "/capabilities/",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/projects",
@@ -91,10 +103,6 @@
     {
       "source": "/capabilities/sound/",
       "destination": "/capabilities/sound/index.html"
-    },
-    {
-      "source": "/capabilities",
-      "destination": "/capabilities/index.html"
     },
     {
       "source": "/capabilities/",

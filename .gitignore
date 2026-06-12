@@ -66,3 +66,4 @@ render-pdf.mjs
 # Local secrets (admin password, etc.)
 .env.local
 .env
+.vercel
