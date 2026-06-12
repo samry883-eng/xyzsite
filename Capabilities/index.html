@@ -154,13 +154,14 @@ deck v26 · 2026-06-12
     opacity: 1; transform: scale(1);
   }
   .slide .body, .slide .lbl, .slide .svc, .slide .toc-row, .slide .stat,
-  .slide .how-row, .slide .person, .slide .clink, .slide .cover-foot, .slide .wall-cap {
+  .slide .how-row, .slide .person, .slide .clink, .slide .cover-meta,
+  .slide .prj-block, .slide .prj-foot {
     opacity: 0; transform: translateY(12px);
     transition: opacity .65s var(--ease), transform .65s var(--ease);
   }
   .slide.active .body, .slide.active .lbl, .slide.active .svc, .slide.active .toc-row,
   .slide.active .stat, .slide.active .how-row, .slide.active .person, .slide.active .clink,
-  .slide.active .cover-foot, .slide.active .wall-cap {
+  .slide.active .cover-meta, .slide.active .prj-block, .slide.active .prj-foot {
     opacity: 1; transform: translateY(0);
   }
 
@@ -187,17 +188,26 @@ deck v26 · 2026-06-12
   }
   .cover-inner {
     position: relative; z-index: 2; height: 100%;
-    display: flex; flex-direction: column; justify-content: space-between;
+    display: flex; flex-direction: column; justify-content: center; align-items: stretch;
     padding: var(--m);
     padding-bottom: 280px;
+    gap: 28px;
   }
-  .cover-kicker { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .cover-meta {
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 24px;
+    width: 100%;
+  }
+  .cover-meta--btm { margin-top: auto; padding-top: 8px; }
+  .cover-line {
+    font-size: 8px; letter-spacing: .14em; text-transform: uppercase;
+    color: rgba(244,244,242,.42); line-height: 1.5; max-width: 220px;
+  }
+  .cover-mail { color: rgba(244,244,242,.42); text-decoration: none; transition: color .3s; }
+  .cover-mail:hover { color: var(--ink); }
   .cover-title {
     font-size: var(--t-68); line-height: .92; font-weight: 400;
-    letter-spacing: -.02em;
+    letter-spacing: -.02em; align-self: flex-start;
   }
-  .cover-title .cover-sub .rl-i { color: var(--faint); font-weight: 520; }
-  .cover-foot { display: flex; justify-content: space-between; margin-top: 12px; flex-wrap: wrap; gap: 8px; }
 
   /* toc */
   .sl-toc { display: grid; grid-template-columns: 420px 1fr; gap: 48px; align-items: end; height: 100%; }
@@ -214,20 +224,24 @@ deck v26 · 2026-06-12
   .toc-row .toc-no, .toc-row .toc-pg { color: var(--faint); }
 
   /* about */
-  .sl-about { display: grid; grid-template-columns: 1fr 1.05fr; gap: 48px; align-items: center; height: 100%; }
-  .about-media { height: 420px; overflow: hidden; border-radius: 1px; }
-  .about-lead { font-size: var(--t-18); font-weight: 400; letter-spacing: -.01em; line-height: 1.1; margin-bottom: 16px; max-width: 18ch; }
+  .sl-about { display: grid; grid-template-columns: .92fr 1.08fr; gap: 40px; align-items: stretch; height: 100%; }
+  .about-media { min-height: 100%; overflow: hidden; border-radius: 1px; }
+  .about-media .fill { height: 100%; min-height: 520px; object-position: 50% 20%; }
+  .about-copy { display: flex; flex-direction: column; justify-content: center; padding-right: 8px; }
+  .about-lead { font-size: var(--t-18); font-weight: 400; letter-spacing: -.01em; line-height: 1.12; margin-bottom: 18px; max-width: 28ch; }
 
-  /* wall — edge-to-edge mosaic */
-  .sl-wall { display: flex; flex-direction: column; gap: 8px; padding: var(--m) 0 48px; }
+  /* wall — scaled grid */
+  .sl-wall {
+    display: flex; align-items: center; justify-content: center;
+    height: 100%; padding: calc(var(--m) + 8px) var(--m);
+  }
   .wall-grid {
-    flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 1fr;
-    gap: 3px; min-height: 0; width: 100%;
+    display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr);
+    gap: 3px; width: 100%; max-width: 980px; height: 100%; max-height: 560px;
   }
   .wall-cell { overflow: hidden; position: relative; }
   .wall-cell .fill { transition: transform 1s var(--ease), filter .5s; }
   .wall-cell:hover .fill { transform: scale(1.05); filter: brightness(1.08); }
-  .wall-cap { display: flex; justify-content: space-between; padding: 0 var(--m); }
 
   /* services */
   .sl-services { display: flex; flex-direction: column; gap: 18px; height: 100%; }
@@ -253,46 +267,56 @@ deck v26 · 2026-06-12
   }
   .div-copy { position: relative; z-index: 2; padding: 0 var(--m) 44px; }
   .div-no { margin-bottom: 6px; color: var(--faint); }
-  .div-title { font-size: var(--t-68); font-weight: 400; letter-spacing: -.02em; text-transform: uppercase; line-height: .88; }
+  .div-title { font-size: var(--t-68); font-weight: 630; letter-spacing: -.02em; text-transform: uppercase; line-height: .88; }
 
-  /* project — full bleed */
-  .sl-project { display: flex; flex-direction: column; position: relative; overflow: hidden; }
-  .prj-media { position: absolute; inset: 0; z-index: 0; }
-  .prj-media .fill { transform: scale(1.06); transition: transform 8s linear; filter: saturate(.92); }
-  .slide.active .prj-media .fill { transform: scale(1); }
-  .prj-media--video { cursor: none; }
-  .prj-media--video .prj-video { transform: scale(1); transition: opacity .35s; }
+  /* project — sidebar + video stage (PPTX layout) */
+  .sl-project {
+    display: grid; grid-template-columns: 248px 1fr; height: 100%; background: var(--bg);
+  }
+  .prj-sidebar {
+    display: flex; flex-direction: column; gap: 0;
+    padding: calc(var(--m) - 4px) 24px calc(var(--m) - 4px) var(--m);
+    border-right: 1px solid var(--line); background: var(--bg); z-index: 2; min-height: 0;
+  }
+  .prj-brand { font-size: var(--t-5); color: var(--dim); margin-bottom: 10px; }
+  .prj-title {
+    font-size: var(--t-14); font-weight: 400; letter-spacing: .03em;
+    text-transform: uppercase; line-height: 1.05;
+    padding-bottom: 18px; margin-bottom: 20px; border-bottom: 1px solid var(--line);
+  }
+  .prj-block { margin-bottom: 16px; }
+  .prj-block .lbl { margin-bottom: 8px; }
+  .prj-list { list-style: none; font-size: 8px; line-height: 1.65; color: var(--dim); letter-spacing: .04em; text-transform: uppercase; }
+  .prj-list li + li { margin-top: 2px; }
+  .prj-stat { font-size: 8px; line-height: 1.65; color: var(--dim); letter-spacing: .04em; text-transform: uppercase; }
+  .prj-stat-v { color: rgba(244,244,242,.72); }
+  .prj-foot { margin-top: auto; padding-top: 12px; }
+  .prj-foot-name { font-size: var(--t-6); letter-spacing: .06em; text-transform: uppercase; }
+  .prj-stage { position: relative; overflow: hidden; background: #0a0a0a; min-width: 0; }
+  .prj-stage-media { position: absolute; inset: 0; z-index: 0; }
+  .prj-stage-media .fill { transform: scale(1.04); transition: transform 8s linear, filter .45s var(--ease); filter: saturate(.94); }
+  .slide.active .prj-stage-media .fill { transform: scale(1); }
+  .prj-stage-media--video { cursor: none; }
+  .prj-stage-media--video .prj-video { transform: scale(1); }
+  .prj-stage-shade {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: linear-gradient(90deg, rgba(5,5,5,.18) 0%, transparent 28%);
+  }
+  .prj-stage-tag {
+    position: absolute; right: 36px; bottom: 36px; z-index: 2; pointer-events: none; text-align: right;
+  }
+  .prj-stage-tag .prj-brand { margin: 0; font-size: var(--t-6); color: rgba(244,244,242,.55); }
   .prj-cursor {
     position: fixed; z-index: 92; pointer-events: none;
-    font: 400 var(--t-5)/1 Helvetica, 'Helvetica Neue', Arial, sans-serif;
-    letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.88);
-    transform: translate(14px, 14px); mix-blend-mode: difference;
-    opacity: 0; transition: opacity .2s;
+    font: 400 8px/1 Helvetica, 'Helvetica Neue', Arial, sans-serif;
+    letter-spacing: .16em; text-transform: uppercase; color: rgba(255,255,255,.88);
+    transform: translate(14px, 14px);
+    padding: 7px 11px; border: 1px solid rgba(255,255,255,.22);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    opacity: 0; transition: opacity .25s, border-color .25s, background .25s;
   }
-  .prj-media--video:hover .prj-cursor { opacity: 1; }
-  .prj-grade {
-    position: absolute; inset: 0; z-index: 1;
-    background:
-      linear-gradient(180deg, rgba(5,5,5,.72) 0%, rgba(5,5,5,.08) 38%, rgba(5,5,5,.88) 100%),
-      linear-gradient(90deg, rgba(5,5,5,.55) 0%, transparent 55%);
-  }
-  .prj-inner {
-    position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column;
-    padding: var(--m);
-  }
-  .prj-top { display: flex; gap: 40px; flex-wrap: wrap; }
-  .prj-client { font-size: var(--t-7); font-weight: 400; letter-spacing: .04em; text-transform: uppercase; }
-  .prj-title {
-    margin-top: auto; font-size: var(--t-14); font-weight: 400;
-    letter-spacing: .02em; text-transform: uppercase; line-height: 1.05;
-    margin-bottom: 16px;
-  }
-  .prj-bottom { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; flex-wrap: wrap; }
-  .prj-scope ul { list-style: none; columns: 2; column-gap: 20px; font-size: var(--t-5); color: var(--dim); line-height: 1.55; text-transform: uppercase; }
-  .prj-stats { display: flex; gap: 36px; text-align: right; flex-wrap: wrap; }
-  .stat-row { display: flex; gap: 20px; }
-  .stat-v { display: block; font-size: var(--t-5); font-weight: 400; letter-spacing: .04em; font-variant-numeric: tabular-nums; line-height: 1.2; text-transform: uppercase; }
-  .stat-l { display: block; margin-top: 2px; font-size: var(--t-5); text-transform: uppercase; }
+  .prj-stage-media--video:hover .prj-cursor { opacity: 1; }
+  .prj-stage-media--video:hover .prj-video { filter: saturate(1) brightness(1.04); }
 
   /* case / craft — PPTX slide 14 layout */
   .sl-case { position: relative; width: 100%; height: 100%; box-sizing: border-box; }
@@ -397,16 +421,21 @@ deck v26 · 2026-06-12
     <div class="cover-shade"></div>
     <div class="cover-year" aria-hidden="true">2026</div>
     <div class="cover-inner">
-      <div class="cover-kicker"><span class="mono">International creative post production studio</span><span class="mono">Inquiries@xyzstudios.co</span></div>
+      <div class="cover-meta cover-meta--top">
+        <span class="cover-line">International creative post production studio</span>
+        <a class="cover-line cover-mail" href="mailto:Inquiries@xyzstudios.co">Inquiries@xyzstudios.co</a>
+      </div>
       <h1 class="cover-title"><span class="rl "><span class="rl-i">Capabilities Deck</span></span></h1>
-      <div class="cover-foot mono"><span>XYZSTUDIOS &copy; 2026</span><span>VFX &middot; CG &middot; Sound</span></div>
+      <div class="cover-meta cover-meta--btm">
+        <span class="cover-line">XYZSTUDIOS &copy; 2026</span>
+        <span class="cover-line">VFX &middot; CG &middot; Sound</span>
+      </div>
     </div>
   </div></section>
 <section class="slide slide--inset" data-chapter="About" data-i="1">
   <div class="sl-about">
     <div class="about-media"><img class="fill" src="deck-media/image-3-2.jpg" alt="" loading="lazy" draggable="false"></div>
     <div class="about-copy">
-      <div class="mono lbl">About</div>
       <h2 class="about-lead"><span class="rl "><span class="rl-i">a post-production studio built through close creative collaboration.</span></span></h2>
       <p class="body">Working with production teams, agencies, and directors to carry projects through post, supporting where needed and staying closely involved through final delivery.</p><p class="body">Each project evolves differently, and the approach is shaped to serve the work and its intended outcome.</p>
     </div>
@@ -414,87 +443,68 @@ deck v26 · 2026-06-12
 <section class="slide slide--bleed" data-chapter="Highlighted Work" data-i="2">
   <div class="sl-wall">
     <div class="wall-grid"><div class="wall-cell"><img class="fill" src="deck-media/image-4-7.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-5.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-9.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-10.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-3.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-1.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-6.jpg" alt="" loading="lazy" draggable="false"></div></div>
-    <div class="wall-cap mono"><span>Highlighted Work</span><span>2024 — 2026</span></div>
   </div></section>
 <section class="slide slide--bleed" data-chapter="Full Production" data-i="3">
   <div class="sl-divider">
     <div class="div-media"><img class="fill" src="deck-media/image-6-1.webp" alt="" loading="lazy" draggable="false"></div>
     <div class="div-shade"></div>
     <div class="div-copy">
-      <div class="div-no mono">Chapter 01</div>
+      
       <h2 class="div-title"><span class="rl "><span class="rl-i">Full Production</span></span></h2>
     </div>
   </div></section>
 <section class="slide slide--bleed" data-chapter="Full Production" data-i="4">
   <div class="sl-project">
-    <div class="prj-media prj-media--video">
+    <aside class="prj-sidebar">
+      <h2 class="prj-title">Speedcross 6</h2>
+      <div class="prj-block"><div class="mono lbl">Scope</div><ul class="prj-list"><li>Concept to Final Delivery</li><li>Creative Direction</li><li>Production</li><li>VFX</li><li>CG</li><li>AI</li><li>Compositing</li><li>Editing</li><li>Sound Design &amp; Mix</li></ul></div>
+      <div class="prj-block"><div class="mono lbl">Build</div><div class="prj-list"><div class="prj-stat"><span class="prj-stat-v">60%</span> Live Action</div><div class="prj-stat"><span class="prj-stat-v">33%</span> AI</div><div class="prj-stat"><span class="prj-stat-v">7%</span> CGI</div></div></div>
+      <div class="prj-block"><div class="mono lbl">Output</div><div class="prj-list"><div class="prj-stat"><span class="prj-stat-v">214</span> Final Frames</div><div class="prj-stat"><span class="prj-stat-v">2</span> Hero Shots</div></div></div>
+      <div class="prj-foot"><div class="mono lbl">Director</div><div class="prj-foot-name">Lenn Anton</div></div>
+    </aside>
+    <div class="prj-stage">
+      <div class="prj-stage-media prj-stage-media--video">
         <video class="fill prj-video" src="https://r2.vidzflow.com/source/ef1dc602-5a95-4973-a0ea-82794726bc4a.mp4" poster="deck-media/image-7-2.jpg" playsinline loop preload="metadata"></video>
         <span class="prj-cursor" aria-hidden="true">Play</span>
       </div>
-    <div class="prj-grade"></div>
-    <div class="prj-inner">
-      <div class="prj-top">
-        <div><div class="mono lbl">Client</div><div class="prj-client">Salomon</div></div>
-        <div><div class="mono lbl">Director</div><div class="prj-client">Lenn Anton</div></div>
-        
-        <div><div class="mono lbl">Year</div><div class="prj-client">2026</div></div>
-      </div>
-      <h2 class="prj-title">Speedcross 6</h2>
-      <div class="prj-bottom">
-        <div class="prj-scope"><div class="mono lbl">Scope</div><ul><li>Concept to Final Delivery</li><li>Creative Direction</li><li>Production</li><li>VFX</li><li>CG</li><li>AI</li><li>Compositing</li><li>Editing</li><li>Sound Design &amp; Mix</li></ul></div>
-        <div class="prj-stats">
-          <div class="prj-statgroup"><div class="mono lbl">Build</div><div class="stat-row"><div class="stat"><span class="stat-v" data-count="60%">60%</span><span class="mono stat-l">Live Action</span></div><div class="stat"><span class="stat-v" data-count="33%">33%</span><span class="mono stat-l">AI</span></div><div class="stat"><span class="stat-v" data-count="7%">7%</span><span class="mono stat-l">CGI</span></div></div></div>
-          <div class="prj-statgroup"><div class="mono lbl">Output</div><div class="stat-row"><div class="stat"><span class="stat-v" data-count="214">214</span><span class="mono stat-l">Final Frames</span></div><div class="stat"><span class="stat-v" data-count="2">2</span><span class="mono stat-l">Hero Shots</span></div></div></div>
-        </div>
-      </div>
+      <div class="prj-stage-shade"></div>
+      <div class="prj-stage-tag"><div class="mono prj-brand">Salomon</div></div>
     </div>
   </div></section>
 <section class="slide slide--bleed" data-chapter="Full Production" data-i="5">
   <div class="sl-project">
-    <div class="prj-media prj-media--video">
+    <aside class="prj-sidebar">
+      <h2 class="prj-title">Into The Void</h2>
+      <div class="prj-block"><div class="mono lbl">Scope</div><ul class="prj-list"><li>Concept to Final Delivery</li><li>Creative Direction</li><li>Production</li><li>CG</li><li>Simulation</li><li>Compositing</li><li>Editing</li><li>Sound Design &amp; Mix</li></ul></div>
+      <div class="prj-block"><div class="mono lbl">Build</div><div class="prj-list"><div class="prj-stat"><span class="prj-stat-v">92%</span> CG</div><div class="prj-stat"><span class="prj-stat-v">8%</span> AI</div><div class="prj-stat"><span class="prj-stat-v">1</span> Environment</div></div></div>
+      <div class="prj-block"><div class="mono lbl">Output</div><div class="prj-list"><div class="prj-stat"><span class="prj-stat-v">1400</span> Final Frames</div><div class="prj-stat"><span class="prj-stat-v">10</span> Hero Shots</div></div></div>
+      <div class="prj-foot"><div class="mono lbl">Director</div><div class="prj-foot-name">Dris Yousif</div></div>
+    </aside>
+    <div class="prj-stage">
+      <div class="prj-stage-media prj-stage-media--video">
         <video class="fill prj-video" src="https://r2.vidzflow.com/source/cbf82991-c743-4045-8898-b6ee78efd9b4.mp4" poster="deck-media/image-8-3.jpg" playsinline loop preload="metadata"></video>
         <span class="prj-cursor" aria-hidden="true">Play</span>
       </div>
-    <div class="prj-grade"></div>
-    <div class="prj-inner">
-      <div class="prj-top">
-        <div><div class="mono lbl">Client</div><div class="prj-client">Atomic</div></div>
-        <div><div class="mono lbl">Director</div><div class="prj-client">Dris Yousif</div></div>
-        <div><div class="mono lbl">Type</div><div class="prj-client">Concept Piece</div></div>
-        <div><div class="mono lbl">Year</div><div class="prj-client">2026</div></div>
-      </div>
-      <h2 class="prj-title">Into The Void</h2>
-      <div class="prj-bottom">
-        <div class="prj-scope"><div class="mono lbl">Scope</div><ul><li>Concept to Final Delivery</li><li>Creative Direction</li><li>Production</li><li>CG</li><li>Simulation</li><li>Compositing</li><li>Editing</li><li>Sound Design &amp; Mix</li></ul></div>
-        <div class="prj-stats">
-          <div class="prj-statgroup"><div class="mono lbl">Build</div><div class="stat-row"><div class="stat"><span class="stat-v" data-count="92%">92%</span><span class="mono stat-l">CG</span></div><div class="stat"><span class="stat-v" data-count="8%">8%</span><span class="mono stat-l">AI</span></div><div class="stat"><span class="stat-v" data-count="1">1</span><span class="mono stat-l">Environment</span></div></div></div>
-          <div class="prj-statgroup"><div class="mono lbl">Output</div><div class="stat-row"><div class="stat"><span class="stat-v" data-count="1400">1400</span><span class="mono stat-l">Final Frames</span></div><div class="stat"><span class="stat-v" data-count="10">10</span><span class="mono stat-l">Hero Shots</span></div></div></div>
-        </div>
-      </div>
+      <div class="prj-stage-shade"></div>
+      <div class="prj-stage-tag"><div class="mono prj-brand">Atomic</div></div>
     </div>
   </div></section>
 <section class="slide slide--bleed" data-chapter="Full Production" data-i="6">
   <div class="sl-project">
-    <div class="prj-media prj-media--video">
+    <aside class="prj-sidebar">
+      <h2 class="prj-title">RBC Canadian Open</h2>
+      <div class="prj-block"><div class="mono lbl">Scope</div><ul class="prj-list"><li>Concept to Final Delivery</li><li>Creative Direction</li><li>Production</li><li>VFX</li><li>CG</li><li>Compositing</li><li>Editing</li><li>Sound Design &amp; Mix</li></ul></div>
+      <div class="prj-block"><div class="mono lbl">Build</div><div class="prj-list"><div class="prj-stat"><span class="prj-stat-v">72%</span> CG</div><div class="prj-stat"><span class="prj-stat-v">20%</span> Motion Graphics</div><div class="prj-stat"><span class="prj-stat-v">7%</span> Live Action</div></div></div>
+      <div class="prj-block"><div class="mono lbl">Output</div><div class="prj-list"><div class="prj-stat"><span class="prj-stat-v">1009</span> Final Frames</div><div class="prj-stat"><span class="prj-stat-v">8</span> Hero Shots</div><div class="prj-stat"><span class="prj-stat-v">4</span> Environments</div></div></div>
+      <div class="prj-foot"><div class="mono lbl">Director</div><div class="prj-foot-name">Samry Yussuf</div></div>
+    </aside>
+    <div class="prj-stage">
+      <div class="prj-stage-media prj-stage-media--video">
         <video class="fill prj-video" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/85D_It6HUS/original" poster="deck-media/image-9-2.jpg" playsinline loop preload="metadata"></video>
         <span class="prj-cursor" aria-hidden="true">Play</span>
       </div>
-    <div class="prj-grade"></div>
-    <div class="prj-inner">
-      <div class="prj-top">
-        <div><div class="mono lbl">Client</div><div class="prj-client">Rory McIlroy</div></div>
-        <div><div class="mono lbl">Director</div><div class="prj-client">Samry Yussuf</div></div>
-        
-        <div><div class="mono lbl">Year</div><div class="prj-client">2025</div></div>
-      </div>
-      <h2 class="prj-title">RBC Canadian Open</h2>
-      <div class="prj-bottom">
-        <div class="prj-scope"><div class="mono lbl">Scope</div><ul><li>Concept to Final Delivery</li><li>Creative Direction</li><li>Production</li><li>VFX</li><li>CG</li><li>Compositing</li><li>Editing</li><li>Sound Design &amp; Mix</li></ul></div>
-        <div class="prj-stats">
-          <div class="prj-statgroup"><div class="mono lbl">Build</div><div class="stat-row"><div class="stat"><span class="stat-v" data-count="72%">72%</span><span class="mono stat-l">CG</span></div><div class="stat"><span class="stat-v" data-count="20%">20%</span><span class="mono stat-l">Motion Graphics</span></div><div class="stat"><span class="stat-v" data-count="7%">7%</span><span class="mono stat-l">Live Action</span></div></div></div>
-          <div class="prj-statgroup"><div class="mono lbl">Output</div><div class="stat-row"><div class="stat"><span class="stat-v" data-count="1009">1009</span><span class="mono stat-l">Final Frames</span></div><div class="stat"><span class="stat-v" data-count="8">8</span><span class="mono stat-l">Hero Shots</span></div><div class="stat"><span class="stat-v" data-count="4">4</span><span class="mono stat-l">Environments</span></div></div></div>
-        </div>
-      </div>
+      <div class="prj-stage-shade"></div>
+      <div class="prj-stage-tag"><div class="mono prj-brand">Rory McIlroy</div></div>
     </div>
   </div></section>
 <section class="slide slide--bleed" data-chapter="Craft" data-i="7">
@@ -628,14 +638,23 @@ deck v26 · 2026-06-12
     </div>
     <div class="cs-media cs-hero"><div class="cs-cell cs-big"><img class="fill" src="deck-media/image-15-8.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-rest n6"><div class="cs-cell"><img class="fill" src="deck-media/image-15-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-15-3.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-15-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-15-7.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-15-6.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-15-5.jpg" alt="" loading="lazy" draggable="false"></div></div></div>
   </div></section>
-<section class="slide slide--inset" data-chapter="Case Study — Celsius" data-i="21">
-  <div class="sl-case">
-    <div class="cs-head-ppt">
-      <h2 class="cs-title">On Location References</h2>
-      <div class="cs-meta-col"><div class="cs-meta">Celsius</div><div class="cs-meta">Spritz Vibe</div></div>
+<section class="slide slide--bleed" data-chapter="Case Study" data-i="21">
+  <div class="sl-project">
+    <aside class="prj-sidebar">
+      <h2 class="prj-title">Spritz Vibe</h2>
+      <div class="prj-block"><div class="mono lbl">Scope</div><ul class="prj-list"><li>Pre-Production</li><li>VFX</li><li>CG</li><li>Simulation</li><li>Clean Up</li><li>Compositing</li><li>Sound Design &amp; Mix</li></ul></div>
+      <div class="prj-block"><div class="mono lbl">Build</div><div class="prj-list"><div class="prj-stat"><span class="prj-stat-v">60%</span> Live Action</div><div class="prj-stat"><span class="prj-stat-v">40%</span> CG</div><div class="prj-stat"><span class="prj-stat-v">1</span> Environment</div></div></div>
+      <div class="prj-block"><div class="mono lbl">Output</div><div class="prj-list"><div class="prj-stat"><span class="prj-stat-v">992</span> Final Frames</div><div class="prj-stat"><span class="prj-stat-v">8</span> Hero Shots</div></div></div>
       
+    </aside>
+    <div class="prj-stage">
+      <div class="prj-stage-media prj-stage-media--video">
+        <video class="fill prj-video" src="https://r2.vidzflow.com/source/c5bfdb30-f5d1-4f1d-a96f-b736b4ab1fcf.mp4" poster="deck-media/image-16-3.jpg" playsinline loop preload="metadata"></video>
+        <span class="prj-cursor" aria-hidden="true">Play</span>
+      </div>
+      <div class="prj-stage-shade"></div>
+      <div class="prj-stage-tag"><div class="mono prj-brand">Celsius</div></div>
     </div>
-    <div class="cs-media cs-mosaic"><div class="cs-cell"><img class="fill" src="deck-media/image-17-3.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-11.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-1.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-5.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-6.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-8.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-10.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-9.jpg" alt="" loading="lazy" draggable="false"></div></div>
   </div></section>
 <section class="slide slide--inset" data-chapter="Case Study — Celsius" data-i="22">
   <div class="sl-case">
@@ -646,26 +665,14 @@ deck v26 · 2026-06-12
     </div>
     <div class="cs-media cs-duo"><div class="cs-cell"><img class="fill" src="deck-media/image-18-3.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-18-2.jpg" alt="" loading="lazy" draggable="false"></div></div>
   </div></section>
-<section class="slide slide--bleed" data-chapter="Case Study" data-i="23">
-  <div class="sl-project">
-    <div class="prj-media"><img class="fill" src="deck-media/image-16-3.jpg" alt="" loading="lazy" draggable="false"></div>
-    <div class="prj-grade"></div>
-    <div class="prj-inner">
-      <div class="prj-top">
-        <div><div class="mono lbl">Client</div><div class="prj-client">Celsius</div></div>
-        
-        
-        <div><div class="mono lbl">Year</div><div class="prj-client">2025</div></div>
-      </div>
-      <h2 class="prj-title">Spritz Vibe</h2>
-      <div class="prj-bottom">
-        <div class="prj-scope"><div class="mono lbl">Scope</div><ul><li>Pre-Production</li><li>VFX</li><li>CG</li><li>Simulation</li><li>Clean Up</li><li>Compositing</li><li>Sound Design &amp; Mix</li></ul></div>
-        <div class="prj-stats">
-          <div class="prj-statgroup"><div class="mono lbl">Build</div><div class="stat-row"><div class="stat"><span class="stat-v" data-count="60%">60%</span><span class="mono stat-l">Live Action</span></div><div class="stat"><span class="stat-v" data-count="40%">40%</span><span class="mono stat-l">CG</span></div><div class="stat"><span class="stat-v" data-count="1">1</span><span class="mono stat-l">Environment</span></div></div></div>
-          <div class="prj-statgroup"><div class="mono lbl">Output</div><div class="stat-row"><div class="stat"><span class="stat-v" data-count="992">992</span><span class="mono stat-l">Final Frames</span></div><div class="stat"><span class="stat-v" data-count="8">8</span><span class="mono stat-l">Hero Shots</span></div></div></div>
-        </div>
-      </div>
+<section class="slide slide--inset" data-chapter="Case Study — Celsius" data-i="23">
+  <div class="sl-case">
+    <div class="cs-head-ppt">
+      <h2 class="cs-title">On Location References</h2>
+      <div class="cs-meta-col"><div class="cs-meta">Celsius</div><div class="cs-meta">Spritz Vibe</div></div>
+      
     </div>
+    <div class="cs-media cs-mosaic"><div class="cs-cell"><img class="fill" src="deck-media/image-17-3.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-11.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-1.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-5.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-6.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-8.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-10.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-9.jpg" alt="" loading="lazy" draggable="false"></div></div>
   </div></section>
 <section class="slide slide--inset" data-chapter="How We Work" data-i="24">
   <div class="sl-how">
@@ -808,7 +815,7 @@ deck v26 · 2026-06-12
   var start = parseInt((location.hash || '').slice(1), 10);
   show(isNaN(start) ? 0 : start - 1);
 
-  document.querySelectorAll('.prj-media--video').forEach(function (wrap) {
+  document.querySelectorAll('.prj-stage-media--video').forEach(function (wrap) {
     var vid = wrap.querySelector('video');
     var cur = wrap.querySelector('.prj-cursor');
     if (!vid || !cur) return;

@@ -31,7 +31,7 @@ const DATA = [
     type: 'wall', chapter: 'Highlighted Work', nav: 'Highlighted Work',
     images: ['image-4-7.jpg', 'image-4-2.jpg', 'image-4-4.jpg', 'image-4-5.jpg', 'image-4-9.jpg', 'image-4-10.jpg', 'image-4-3.jpg', 'image-4-1.jpg', 'image-4-6.jpg'],
   },
-  { type: 'divider', chapter: 'Full Production', nav: 'Full Production', no: '01', title: 'Full Production', image: 'image-6-1.webp' },
+  { type: 'divider', chapter: 'Full Production', nav: 'Full Production', no: '01', title: 'Full Production', image: 'image-6-1.webp', hideNo: true },
   {
     type: 'project', chapter: 'Full Production',
     client: 'Salomon', title: 'Speedcross 6', year: '2026', bg: 'image-7-2.jpg',
@@ -134,10 +134,12 @@ const DATA = [
     layout: 'hero-grid', images: ['image-15-8.jpg', 'image-15-2.jpg', 'image-15-3.jpg', 'image-15-4.jpg', 'image-15-7.jpg', 'image-15-6.jpg', 'image-15-5.jpg'],
   },
   {
-    type: 'case', chapter: 'Case Study — Celsius',
-    step: '01', title: 'On Location References', meta: 'Celsius — Spritz Vibe',
-    body: [],
-    layout: 'mosaic', images: ['image-17-3.jpg', 'image-17-2.jpg', 'image-17-11.jpg', 'image-17-1.jpg', 'image-17-5.jpg', 'image-17-6.jpg', 'image-17-8.jpg', 'image-17-10.jpg', 'image-17-9.jpg'],
+    type: 'project', chapter: 'Case Study',
+    client: 'Celsius', title: 'Spritz Vibe', year: '2025', bg: 'image-16-3.jpg',
+    video: 'https://r2.vidzflow.com/source/c5bfdb30-f5d1-4f1d-a96f-b736b4ab1fcf.mp4',
+    scope: ['Pre-Production', 'VFX', 'CG', 'Simulation', 'Clean Up', 'Compositing', 'Sound Design & Mix'],
+    build: [['60%', 'Live Action'], ['40%', 'CG'], ['1', 'Environment']],
+    output: [['992', 'Final Frames'], ['8', 'Hero Shots']],
   },
   {
     type: 'case', chapter: 'Case Study — Celsius',
@@ -146,11 +148,10 @@ const DATA = [
     layout: 'duo', images: ['image-18-3.jpg', 'image-18-2.jpg'],
   },
   {
-    type: 'project', chapter: 'Case Study',
-    client: 'Celsius', title: 'Spritz Vibe', year: '2025', bg: 'image-16-3.jpg',
-    scope: ['Pre-Production', 'VFX', 'CG', 'Simulation', 'Clean Up', 'Compositing', 'Sound Design & Mix'],
-    build: [['60%', 'Live Action'], ['40%', 'CG'], ['1', 'Environment']],
-    output: [['992', 'Final Frames'], ['8', 'Hero Shots']],
+    type: 'case', chapter: 'Case Study — Celsius',
+    step: '01', title: 'On Location References', meta: 'Celsius — Spritz Vibe',
+    body: [],
+    layout: 'mosaic', images: ['image-17-3.jpg', 'image-17-2.jpg', 'image-17-11.jpg', 'image-17-1.jpg', 'image-17-5.jpg', 'image-17-6.jpg', 'image-17-8.jpg', 'image-17-10.jpg', 'image-17-9.jpg'],
   },
   {
     type: 'how', chapter: 'How We Work', nav: 'How We Work',
@@ -196,9 +197,15 @@ function tCover() {
     <div class="cover-shade"></div>
     <div class="cover-year" aria-hidden="true">2026</div>
     <div class="cover-inner">
-      <div class="cover-kicker"><span class="mono">International creative post production studio</span><span class="mono">Inquiries@xyzstudios.co</span></div>
+      <div class="cover-meta cover-meta--top">
+        <span class="cover-line">International creative post production studio</span>
+        <a class="cover-line cover-mail" href="mailto:Inquiries@xyzstudios.co">Inquiries@xyzstudios.co</a>
+      </div>
       <h1 class="cover-title">${lines('Capabilities Deck')}</h1>
-      <div class="cover-foot mono"><span>XYZSTUDIOS &copy; 2026</span><span>VFX &middot; CG &middot; Sound</span></div>
+      <div class="cover-meta cover-meta--btm">
+        <span class="cover-line">XYZSTUDIOS &copy; 2026</span>
+        <span class="cover-line">VFX &middot; CG &middot; Sound</span>
+      </div>
     </div>
   </div>`;
 }
@@ -227,7 +234,6 @@ function tAbout(d) {
   <div class="sl-about">
     <div class="about-media">${img(d.image, 'fill')}</div>
     <div class="about-copy">
-      <div class="mono lbl">About</div>
       <h2 class="about-lead">${lines(d.lead)}</h2>
       ${d.body.map((p) => `<p class="body">${esc(p)}</p>`).join('')}
     </div>
@@ -238,7 +244,6 @@ function tWall(d) {
   return `
   <div class="sl-wall">
     <div class="wall-grid">${d.images.map((f) => `<div class="wall-cell">${img(f, 'fill')}</div>`).join('')}</div>
-    <div class="wall-cap mono"><span>Highlighted Work</span><span>2024 — 2026</span></div>
   </div>`;
 }
 
@@ -261,12 +266,13 @@ function tServices(d) {
 }
 
 function tDivider(d) {
+  const no = d.hideNo ? '' : `<div class="div-no mono">Chapter ${d.no}</div>`;
   return `
   <div class="sl-divider">
     <div class="div-media">${img(d.image, 'fill')}</div>
     <div class="div-shade"></div>
     <div class="div-copy">
-      <div class="div-no mono">Chapter ${d.no}</div>
+      ${no}
       <h2 class="div-title">${lines(d.title)}</h2>
     </div>
   </div>`;
@@ -275,36 +281,33 @@ function tDivider(d) {
 function tProject(d) {
   const scope = d.scope.map((s) => `<li>${esc(s)}</li>`).join('');
   const build = d.build
-    .map(([v, l]) => `<div class="stat"><span class="stat-v" data-count="${esc(v)}">${esc(v)}</span><span class="mono stat-l">${esc(l)}</span></div>`)
+    .map(([v, l]) => `<div class="prj-stat"><span class="prj-stat-v">${esc(v)}</span> ${esc(l)}</div>`)
     .join('');
   const output = d.output
-    .map(([v, l]) => `<div class="stat"><span class="stat-v" data-count="${esc(v)}">${esc(v)}</span><span class="mono stat-l">${esc(l)}</span></div>`)
+    .map(([v, l]) => `<div class="prj-stat"><span class="prj-stat-v">${esc(v)}</span> ${esc(l)}</div>`)
     .join('');
   const media = d.video
-    ? `<div class="prj-media prj-media--video">
+    ? `<div class="prj-stage-media prj-stage-media--video">
         <video class="fill prj-video" src="${esc(d.video)}" poster="${M}/${esc(d.bg)}" playsinline loop preload="metadata"></video>
         <span class="prj-cursor" aria-hidden="true">Play</span>
       </div>`
-    : `<div class="prj-media">${img(d.bg, 'fill')}</div>`;
+    : `<div class="prj-stage-media">${img(d.bg, 'fill')}</div>`;
+  const foot = d.director
+    ? `<div class="prj-foot"><div class="mono lbl">Director</div><div class="prj-foot-name">${esc(d.director)}</div></div>`
+    : '';
   return `
   <div class="sl-project">
-    ${media}
-    <div class="prj-grade"></div>
-    <div class="prj-inner">
-      <div class="prj-top">
-        <div><div class="mono lbl">Client</div><div class="prj-client">${esc(d.client)}</div></div>
-        ${d.director ? `<div><div class="mono lbl">Director</div><div class="prj-client">${esc(d.director)}</div></div>` : ''}
-        ${d.note ? `<div><div class="mono lbl">Type</div><div class="prj-client">${esc(d.note)}</div></div>` : ''}
-        <div><div class="mono lbl">Year</div><div class="prj-client">${esc(d.year)}</div></div>
-      </div>
+    <aside class="prj-sidebar">
       <h2 class="prj-title">${esc(d.title)}</h2>
-      <div class="prj-bottom">
-        <div class="prj-scope"><div class="mono lbl">Scope</div><ul>${scope}</ul></div>
-        <div class="prj-stats">
-          <div class="prj-statgroup"><div class="mono lbl">Build</div><div class="stat-row">${build}</div></div>
-          <div class="prj-statgroup"><div class="mono lbl">Output</div><div class="stat-row">${output}</div></div>
-        </div>
-      </div>
+      <div class="prj-block"><div class="mono lbl">Scope</div><ul class="prj-list">${scope}</ul></div>
+      <div class="prj-block"><div class="mono lbl">Build</div><div class="prj-list">${build}</div></div>
+      <div class="prj-block"><div class="mono lbl">Output</div><div class="prj-list">${output}</div></div>
+      ${foot}
+    </aside>
+    <div class="prj-stage">
+      ${media}
+      <div class="prj-stage-shade"></div>
+      <div class="prj-stage-tag"><div class="mono prj-brand">${esc(d.client)}</div></div>
     </div>
   </div>`;
 }
