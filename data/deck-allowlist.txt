@@ -1,5 +1,5 @@
-# Capabilities deck — allowed emails (one per line).
-# Push to main → Vercel redeploys → access is live.
-# Lines starting with # are ignored.
+# Capabilities deck - allowed emails (one per line).
+# Add an email, push to main -> Vercel redeploys -> access is live.
+# Lines starting with # are ignored. Case doesn't matter.
 
 samry@xyzstudios.co
