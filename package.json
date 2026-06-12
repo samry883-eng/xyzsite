@@ -13,7 +13,8 @@
     "capabilities:print-env": "node scripts/capabilities-print-env.mjs",
     "capabilities:grant-and-print": "node scripts/capabilities-grant-and-print.mjs",
     "deck:allow": "node scripts/deck-allow-add.mjs",
-    "deck:export-stills": "node scripts/export-bundled-deck-stills.mjs"
+    "deck:export-stills": "node scripts/export-bundled-deck-stills.mjs",
+    "build:deck": "node scripts/build-deck.mjs"
   },
   "engines": {
     "node": ">=20"
