@@ -115,6 +115,7 @@
     visibility: hidden; opacity: 0; z-index: 1;
     transition: opacity .65s var(--ease), visibility 0s linear .65s;
   }
+  .slide:not(.active) { pointer-events: none; }
   .slide.active { visibility: visible; opacity: 1; z-index: 2; transition: opacity .65s var(--ease); }
   .slide > div { height: 100%; width: 100%; }
   .slide--inset {
@@ -132,7 +133,8 @@
     opacity: 0; transform: scale(1.03);
     transition: opacity .85s var(--ease), transform 1.1s var(--ease);
   }
-  .slide.active img, .slide.active .cs-cell, .slide.active .wall-cell {
+  .slide.active img, .slide.active .cs-cell, .slide.active .wall-cell,
+  .sl-cover .cover-horse {
     opacity: 1; transform: scale(1);
   }
   .slide .body, .slide .lbl, .slide .svc, .slide .toc-row, .slide .stat,
@@ -146,16 +148,26 @@
     opacity: 1; transform: translateY(0);
   }
 
-  /* cover — full bleed cinematic */
-  .sl-cover { position: relative; overflow: hidden; }
-  .cover-bg { position: absolute; inset: 0; z-index: 0; }
-  .cover-bg img { transform: scale(1.06); transition: transform 8s linear; }
-  .slide.active .cover-bg img { transform: scale(1); }
+  /* cover — cinematic hero (clean crop, no baked PPTX text) */
+  .sl-cover { position: relative; overflow: hidden; background: var(--bg); }
+  .cover-bg {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 0;
+    height: clamp(200px, 36vh, 420px); overflow: hidden;
+  }
+  .cover-horse {
+    width: 100%; height: 100%; object-fit: cover; object-position: 50% 38%;
+    transform: scale(1.04); transition: transform 8s linear;
+  }
+  .slide.active .cover-horse { transform: scale(1); }
   .cover-shade {
-    position: absolute; inset: 0; z-index: 1;
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
     background:
-      linear-gradient(105deg, rgba(5,5,5,.92) 0%, rgba(5,5,5,.45) 42%, rgba(5,5,5,.2) 100%),
-      linear-gradient(0deg, rgba(5,5,5,.95) 0%, transparent 38%);
+      linear-gradient(180deg, var(--bg) 0%, rgba(5,5,5,.55) 42%, rgba(5,5,5,.25) 68%, rgba(5,5,5,.85) 100%);
+  }
+  .cover-year {
+    position: absolute; right: clamp(16px, 5vw, 72px); top: clamp(80px, 18vh, 200px);
+    font-size: clamp(72px, 16vw, 240px); font-weight: 640; letter-spacing: -.045em;
+    color: rgba(255,255,255,.045); line-height: 1; z-index: 1; pointer-events: none; user-select: none;
   }
   .cover-inner {
     position: relative; z-index: 2; height: 100%;
@@ -164,11 +176,11 @@
   }
   .cover-kicker { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
   .cover-title {
-    font-size: clamp(58px, 13.5vw, 220px); line-height: .9; font-weight: 630;
-    letter-spacing: -.048em; text-transform: uppercase; margin-top: auto;
+    font-size: clamp(52px, 11vw, 168px); line-height: .92; font-weight: 630;
+    letter-spacing: -.045em; text-transform: uppercase;
   }
   .cover-title .cover-sub .rl-i { color: var(--faint); font-weight: 520; }
-  .cover-foot { display: flex; justify-content: space-between; margin-top: clamp(12px, 2vh, 24px); }
+  .cover-foot { display: flex; justify-content: space-between; margin-top: clamp(8px, 1.5vh, 16px); flex-wrap: wrap; gap: 8px; }
 
   /* toc */
   .sl-toc { display: grid; grid-template-columns: minmax(180px, .85fr) minmax(0, 1.4fr); gap: clamp(24px, 5vw, 72px); align-items: end; height: 100%; }

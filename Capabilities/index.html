@@ -115,6 +115,7 @@
     visibility: hidden; opacity: 0; z-index: 1;
     transition: opacity .65s var(--ease), visibility 0s linear .65s;
   }
+  .slide:not(.active) { pointer-events: none; }
   .slide.active { visibility: visible; opacity: 1; z-index: 2; transition: opacity .65s var(--ease); }
   .slide > div { height: 100%; width: 100%; }
   .slide--inset {
@@ -132,7 +133,8 @@
     opacity: 0; transform: scale(1.03);
     transition: opacity .85s var(--ease), transform 1.1s var(--ease);
   }
-  .slide.active img, .slide.active .cs-cell, .slide.active .wall-cell {
+  .slide.active img, .slide.active .cs-cell, .slide.active .wall-cell,
+  .sl-cover .cover-horse {
     opacity: 1; transform: scale(1);
   }
   .slide .body, .slide .lbl, .slide .svc, .slide .toc-row, .slide .stat,
@@ -146,16 +148,26 @@
     opacity: 1; transform: translateY(0);
   }
 
-  /* cover — full bleed cinematic */
-  .sl-cover { position: relative; overflow: hidden; }
-  .cover-bg { position: absolute; inset: 0; z-index: 0; }
-  .cover-bg img { transform: scale(1.06); transition: transform 8s linear; }
-  .slide.active .cover-bg img { transform: scale(1); }
+  /* cover — cinematic hero (clean crop, no baked PPTX text) */
+  .sl-cover { position: relative; overflow: hidden; background: var(--bg); }
+  .cover-bg {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 0;
+    height: clamp(200px, 36vh, 420px); overflow: hidden;
+  }
+  .cover-horse {
+    width: 100%; height: 100%; object-fit: cover; object-position: 50% 38%;
+    transform: scale(1.04); transition: transform 8s linear;
+  }
+  .slide.active .cover-horse { transform: scale(1); }
   .cover-shade {
-    position: absolute; inset: 0; z-index: 1;
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
     background:
-      linear-gradient(105deg, rgba(5,5,5,.92) 0%, rgba(5,5,5,.45) 42%, rgba(5,5,5,.2) 100%),
-      linear-gradient(0deg, rgba(5,5,5,.95) 0%, transparent 38%);
+      linear-gradient(180deg, var(--bg) 0%, rgba(5,5,5,.55) 42%, rgba(5,5,5,.25) 68%, rgba(5,5,5,.85) 100%);
+  }
+  .cover-year {
+    position: absolute; right: clamp(16px, 5vw, 72px); top: clamp(80px, 18vh, 200px);
+    font-size: clamp(72px, 16vw, 240px); font-weight: 640; letter-spacing: -.045em;
+    color: rgba(255,255,255,.045); line-height: 1; z-index: 1; pointer-events: none; user-select: none;
   }
   .cover-inner {
     position: relative; z-index: 2; height: 100%;
@@ -164,11 +176,11 @@
   }
   .cover-kicker { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
   .cover-title {
-    font-size: clamp(58px, 13.5vw, 220px); line-height: .9; font-weight: 630;
-    letter-spacing: -.048em; text-transform: uppercase; margin-top: auto;
+    font-size: clamp(52px, 11vw, 168px); line-height: .92; font-weight: 630;
+    letter-spacing: -.045em; text-transform: uppercase;
   }
   .cover-title .cover-sub .rl-i { color: var(--faint); font-weight: 520; }
-  .cover-foot { display: flex; justify-content: space-between; margin-top: clamp(12px, 2vh, 24px); }
+  .cover-foot { display: flex; justify-content: space-between; margin-top: clamp(8px, 1.5vh, 16px); flex-wrap: wrap; gap: 8px; }
 
   /* toc */
   .sl-toc { display: grid; grid-template-columns: minmax(180px, .85fr) minmax(0, 1.4fr); gap: clamp(24px, 5vw, 72px); align-items: end; height: 100%; }
@@ -358,8 +370,9 @@
 <main id="deck">
 <section class="slide slide--bleed" data-chapter="Capabilities" data-i="0">
   <div class="sl-cover">
-    <div class="cover-bg"><img class="fill" src="deck-media/image-1-1.webp" alt="" fetchpriority="high" draggable="false"></div>
+    <div class="cover-bg"><img class="cover-horse" src="deck-media/cover-strip.jpg" alt="" fetchpriority="high" draggable="false"></div>
     <div class="cover-shade"></div>
+    <div class="cover-year" aria-hidden="true">2026</div>
     <div class="cover-inner">
       <div class="cover-kicker"><span class="mono">International creative post production studio</span><span class="mono">Inquiries@xyzstudios.co</span></div>
       <h1 class="cover-title"><span class="rl "><span class="rl-i">Capabilities</span></span><span class="rl cover-sub"><span class="rl-i">Deck — 2026</span></span></h1>
@@ -377,12 +390,12 @@
       </button>
       <button class="toc-row" data-goto="4">
         <span class="mono toc-no">02</span>
-        <span class="toc-label">Highlighted Work</span>
+        <span class="toc-label">What We Do</span>
         <span class="mono toc-pg">04</span>
       </button>
       <button class="toc-row" data-goto="5">
         <span class="mono toc-no">03</span>
-        <span class="toc-label">What We Do</span>
+        <span class="toc-label">Highlighted Work</span>
         <span class="mono toc-pg">05</span>
       </button>
       <button class="toc-row" data-goto="6">
@@ -410,8 +423,13 @@
         <span class="toc-label">Our Focus</span>
         <span class="mono toc-pg">32</span>
       </button>
-      <button class="toc-row" data-goto="34">
+      <button class="toc-row" data-goto="33">
         <span class="mono toc-no">09</span>
+        <span class="toc-label">How We Work</span>
+        <span class="mono toc-pg">33</span>
+      </button>
+      <button class="toc-row" data-goto="34">
+        <span class="mono toc-no">10</span>
         <span class="toc-label">Contact</span>
         <span class="mono toc-pg">34</span>
       </button></div>
@@ -425,12 +443,7 @@
       <p class="body">Working with production teams, agencies, and directors to carry projects through post, supporting where needed and staying closely involved through final delivery.</p><p class="body">Each project evolves differently, and the approach is shaped to serve the work and its intended outcome.</p>
     </div>
   </div></section>
-<section class="slide slide--bleed" data-chapter="Highlighted Work" data-i="3">
-  <div class="sl-wall">
-    <div class="wall-grid"><div class="wall-cell"><img class="fill" src="deck-media/image-4-7.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-5.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-9.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-10.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-3.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-1.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-6.jpg" alt="" loading="lazy" draggable="false"></div></div>
-    <div class="wall-cap mono"><span>Highlighted Work</span><span>2024 — 2026</span></div>
-  </div></section>
-<section class="slide slide--inset" data-chapter="What We Do" data-i="4">
+<section class="slide slide--inset" data-chapter="What We Do" data-i="3">
   <div class="sl-services">
     <h2 class="svc-title"><span class="rl "><span class="rl-i">What We Do</span></span></h2>
     <div class="svc-grid">
@@ -479,6 +492,11 @@
         <div class="svc-t">Sound</div>
         <p class="svc-b">Full sound production from sound design through mix and composition, with original foley when needed. We build the sonic layer to match the visual tone, elevate the story, and deliver a complete final experience.</p>
       </div></div>
+  </div></section>
+<section class="slide slide--bleed" data-chapter="Highlighted Work" data-i="4">
+  <div class="sl-wall">
+    <div class="wall-grid"><div class="wall-cell"><img class="fill" src="deck-media/image-4-7.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-5.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-9.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-10.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-3.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-1.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-6.jpg" alt="" loading="lazy" draggable="false"></div></div>
+    <div class="wall-cap mono"><span>Highlighted Work</span><span>2024 — 2026</span></div>
   </div></section>
 <section class="slide slide--bleed" data-chapter="Full Production" data-i="5">
   <div class="sl-divider">
@@ -616,7 +634,29 @@
     </div>
     <div class="cs-media cs-hero"><div class="cs-cell cs-big"><img class="fill" src="deck-media/image-15-8.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-rest n6"><div class="cs-cell"><img class="fill" src="deck-media/image-15-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-15-3.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-15-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-15-7.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-15-6.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-15-5.jpg" alt="" loading="lazy" draggable="false"></div></div></div>
   </div></section>
-<section class="slide slide--bleed" data-chapter="Case Study" data-i="15">
+<section class="slide slide--inset" data-chapter="Case Study — Celsius" data-i="15">
+  <div class="sl-case">
+    <div class="cs-head">
+      <div class="cs-headline">
+        <div class="mono lbl">Celsius — Spritz Vibe — 01</div>
+        <h2 class="cs-title"><span class="rl "><span class="rl-i">On Location References</span></span></h2>
+      </div>
+      
+    </div>
+    <div class="cs-media cs-mosaic"><div class="cs-cell"><img class="fill" src="deck-media/image-17-3.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-11.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-1.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-5.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-6.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-8.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-10.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-9.jpg" alt="" loading="lazy" draggable="false"></div></div>
+  </div></section>
+<section class="slide slide--inset" data-chapter="Case Study — Celsius" data-i="16">
+  <div class="sl-case">
+    <div class="cs-head">
+      <div class="cs-headline">
+        <div class="mono lbl">Celsius — Spritz Vibe — 02</div>
+        <h2 class="cs-title"><span class="rl "><span class="rl-i">Live Action Plate</span></span></h2>
+      </div>
+      
+    </div>
+    <div class="cs-media cs-duo"><div class="cs-cell"><img class="fill" src="deck-media/image-18-3.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-18-2.jpg" alt="" loading="lazy" draggable="false"></div></div>
+  </div></section>
+<section class="slide slide--bleed" data-chapter="Case Study" data-i="17">
   <div class="sl-project">
     <div class="prj-media"><img class="fill" src="deck-media/image-16-3.jpg" alt="" loading="lazy" draggable="false"></div>
     <div class="prj-grade"></div>
@@ -636,28 +676,6 @@
         </div>
       </div>
     </div>
-  </div></section>
-<section class="slide slide--inset" data-chapter="Case Study — Celsius" data-i="16">
-  <div class="sl-case">
-    <div class="cs-head">
-      <div class="cs-headline">
-        <div class="mono lbl">Celsius — Spritz Vibe — 01</div>
-        <h2 class="cs-title"><span class="rl "><span class="rl-i">On Location References</span></span></h2>
-      </div>
-      
-    </div>
-    <div class="cs-media cs-mosaic"><div class="cs-cell"><img class="fill" src="deck-media/image-17-3.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-11.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-1.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-5.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-6.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-8.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-10.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-9.jpg" alt="" loading="lazy" draggable="false"></div></div>
-  </div></section>
-<section class="slide slide--inset" data-chapter="Case Study — Celsius" data-i="17">
-  <div class="sl-case">
-    <div class="cs-head">
-      <div class="cs-headline">
-        <div class="mono lbl">Celsius — Spritz Vibe — 02</div>
-        <h2 class="cs-title"><span class="rl "><span class="rl-i">Live Action Plate</span></span></h2>
-      </div>
-      
-    </div>
-    <div class="cs-media cs-duo"><div class="cs-cell"><img class="fill" src="deck-media/image-18-3.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-18-2.jpg" alt="" loading="lazy" draggable="false"></div></div>
   </div></section>
 <section class="slide slide--bleed" data-chapter="Selected Work" data-i="18">
   <div class="sl-divider">

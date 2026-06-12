@@ -33,25 +33,19 @@ const SERVICES = [
 
 const DATA = [
   { type: 'cover', chapter: 'Capabilities' },
+  { type: 'toc', chapter: 'Index' }, // items injected at build time
   {
-    type: 'toc', chapter: 'Index',
-    items: [
-      ['About', 3], ['Highlighted Work', 4], ['What We Do', 5], ['Full Production', 6],
-      ['Case Study', 10], ['Selected Work', 19], ['Craft', 23], ['Our Focus', 32], ['Contact', 34],
-    ],
-  },
-  {
-    type: 'about', chapter: 'About',
+    type: 'about', chapter: 'About', nav: 'About',
     image: 'image-3-2.jpg',
     lead: 'A post-production studio built through close creative collaboration.',
     body: ['Working with production teams, agencies, and directors to carry projects through post, supporting where needed and staying closely involved through final delivery.', 'Each project evolves differently, and the approach is shaped to serve the work and its intended outcome.'],
   },
+  { type: 'services', chapter: 'What We Do', nav: 'What We Do', items: SERVICES },
   {
-    type: 'wall', chapter: 'Highlighted Work',
+    type: 'wall', chapter: 'Highlighted Work', nav: 'Highlighted Work',
     images: ['image-4-7.jpg', 'image-4-2.jpg', 'image-4-4.jpg', 'image-4-5.jpg', 'image-4-9.jpg', 'image-4-10.jpg', 'image-4-3.jpg', 'image-4-1.jpg', 'image-4-6.jpg'],
   },
-  { type: 'services', chapter: 'What We Do', items: SERVICES },
-  { type: 'divider', chapter: 'Full Production', no: '01', title: 'Full Production', image: 'image-6-1.webp' },
+  { type: 'divider', chapter: 'Full Production', nav: 'Full Production', no: '01', title: 'Full Production', image: 'image-6-1.webp' },
   {
     type: 'project', chapter: 'Full Production',
     client: 'Salomon', title: 'Speedcross 6', year: '2026', bg: 'image-7-2.jpg',
@@ -76,7 +70,7 @@ const DATA = [
     build: [['72%', 'CG'], ['20%', 'Motion Graphics'], ['7%', 'Live Action']],
     output: [['1009', 'Final Frames'], ['8', 'Hero Shots'], ['4', 'Environments']],
   },
-  { type: 'divider', chapter: 'Case Study', no: '02', title: 'Case Studies', image: 'image-10-1.webp' },
+  { type: 'divider', chapter: 'Case Study', nav: 'Case Study', no: '02', title: 'Case Studies', image: 'image-10-1.webp' },
   {
     type: 'case', chapter: 'Case Study — RBC Canadian Open',
     step: '01', title: 'Storyboard', meta: 'Rory McIlroy — RBC Canadian Open',
@@ -108,13 +102,6 @@ const DATA = [
     layout: 'hero-grid', images: ['image-15-8.jpg', 'image-15-2.jpg', 'image-15-3.jpg', 'image-15-4.jpg', 'image-15-7.jpg', 'image-15-6.jpg', 'image-15-5.jpg'],
   },
   {
-    type: 'project', chapter: 'Case Study',
-    client: 'Celsius', title: 'Spritz Vibe', year: '2025', bg: 'image-16-3.jpg',
-    scope: ['Pre-Production', 'VFX', 'CG', 'Simulation', 'Clean Up', 'Compositing', 'Sound Design & Mix'],
-    build: [['60%', 'Live Action'], ['40%', 'CG'], ['1', 'Environment']],
-    output: [['992', 'Final Frames'], ['8', 'Hero Shots']],
-  },
-  {
     type: 'case', chapter: 'Case Study — Celsius',
     step: '01', title: 'On Location References', meta: 'Celsius — Spritz Vibe',
     body: [],
@@ -126,7 +113,14 @@ const DATA = [
     body: [],
     layout: 'duo', images: ['image-18-3.jpg', 'image-18-2.jpg'],
   },
-  { type: 'divider', chapter: 'Selected Work', no: '03', title: 'Selected Work', image: 'image-19-3.jpg' },
+  {
+    type: 'project', chapter: 'Case Study',
+    client: 'Celsius', title: 'Spritz Vibe', year: '2025', bg: 'image-16-3.jpg',
+    scope: ['Pre-Production', 'VFX', 'CG', 'Simulation', 'Clean Up', 'Compositing', 'Sound Design & Mix'],
+    build: [['60%', 'Live Action'], ['40%', 'CG'], ['1', 'Environment']],
+    output: [['992', 'Final Frames'], ['8', 'Hero Shots']],
+  },
+  { type: 'divider', chapter: 'Selected Work', nav: 'Selected Work', no: '03', title: 'Selected Work', image: 'image-19-3.jpg' },
   {
     type: 'project', chapter: 'Selected Work',
     client: 'Toyota', title: 'Road To Palisades', year: '2026', bg: 'image-20-3.jpg',
@@ -151,7 +145,7 @@ const DATA = [
     build: [['100%', 'CG']],
     output: [['214', 'Final Frames'], ['5', 'Hero Shots']],
   },
-  { type: 'divider', chapter: 'Craft', no: '04', title: 'Craft', image: 'image-23-2.jpg' },
+  { type: 'divider', chapter: 'Craft', nav: 'Craft', no: '04', title: 'Craft', image: 'image-23-2.jpg' },
   {
     type: 'craft', chapter: 'Craft',
     title: 'Creative Development',
@@ -201,7 +195,7 @@ const DATA = [
     layout: 'hero-grid', images: ['image-31-2.jpg', 'image-31-4.jpg', 'image-31-3.jpg'],
   },
   {
-    type: 'focus', chapter: 'Our Focus',
+    type: 'focus', chapter: 'Our Focus', nav: 'Our Focus',
     title: 'Our Focus',
     body: 'From early development and look exploration to full-shot execution and final polish.',
     images: [
@@ -213,7 +207,7 @@ const DATA = [
     ],
   },
   {
-    type: 'how', chapter: 'How We Work',
+    type: 'how', chapter: 'How We Work', nav: 'How We Work',
     title: 'How We Work',
     image: 'image-33-3.webp',
     items: [
@@ -223,7 +217,7 @@ const DATA = [
     ],
   },
   {
-    type: 'contact', chapter: 'Contact',
+    type: 'contact', chapter: 'Contact', nav: 'Contact',
     image: 'image-34-2.jpg',
     people: [
       ['Samry Yussuf', 'Post Producer, Co-Founder', 'Samry@xyzstudios.co'],
@@ -252,8 +246,9 @@ const lines = (text, cls = '') =>
 function tCover() {
   return `
   <div class="sl-cover">
-    <div class="cover-bg">${img('image-1-1.webp', 'fill', true)}</div>
+    <div class="cover-bg">${img('cover-strip.jpg', 'cover-horse', true)}</div>
     <div class="cover-shade"></div>
+    <div class="cover-year" aria-hidden="true">2026</div>
     <div class="cover-inner">
       <div class="cover-kicker"><span class="mono">International creative post production studio</span><span class="mono">Inquiries@xyzstudios.co</span></div>
       <h1 class="cover-title">${lines('Capabilities')}${lines('Deck — 2026', 'cover-sub')}</h1>
@@ -263,7 +258,8 @@ function tCover() {
 }
 
 function tToc(d) {
-  const rows = d.items
+  const items = d.items || [];
+  const rows = items
     .map(
       ([label, slide], i) => `
       <button class="toc-row" data-goto="${slide}">
@@ -470,6 +466,17 @@ const TEMPLATES = {
 // ---------------------------------------------------------------------------
 
 const BLEED = new Set(['cover', 'divider', 'project', 'wall']);
+
+// Build index links from first occurrence of each `nav` section label
+const tocItems = [];
+const seenNav = new Set();
+DATA.forEach((d, i) => {
+  if (d.type === 'cover' || d.type === 'toc' || !d.nav || seenNav.has(d.nav)) return;
+  seenNav.add(d.nav);
+  tocItems.push([d.nav, i + 1]);
+});
+const tocEntry = DATA.find((d) => d.type === 'toc');
+if (tocEntry) tocEntry.items = tocItems;
 
 const slidesHtml = DATA.map((d, i) => {
   const inner = TEMPLATES[d.type](d);
