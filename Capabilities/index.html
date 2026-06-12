@@ -19,13 +19,13 @@
     --faint: rgba(244, 244, 242, .22);
     --line: rgba(244, 244, 242, .11);
     --ease: cubic-bezier(.16, 1, .3, 1);
-    --safe-t: max(env(safe-area-inset-top, 0px), 12px);
-    --safe-b: max(env(safe-area-inset-bottom, 0px), 12px);
-    --safe-l: max(env(safe-area-inset-left, 0px), 14px);
-    --safe-r: max(env(safe-area-inset-right, 0px), 14px);
-    --edge: clamp(18px, 3.4vw, 56px);
-    --hud-pad: calc(var(--safe-t) + 42px);
-    --hud-bot: calc(var(--safe-b) + 42px);
+    --aw: 1280px;
+    --ah: 720px;
+    --m: 52px;
+    --safe-t: max(env(safe-area-inset-top, 0px), 8px);
+    --safe-b: max(env(safe-area-inset-bottom, 0px), 8px);
+    --safe-l: max(env(safe-area-inset-left, 0px), 8px);
+    --safe-r: max(env(safe-area-inset-right, 0px), 8px);
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body {
@@ -48,9 +48,9 @@
   }
   img { user-select: none; -webkit-user-drag: none; }
   .fill { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .lbl { margin-bottom: 10px; }
-  .body { font-size: clamp(13px, 1.05vw, 16px); line-height: 1.68; color: var(--dim); max-width: 48ch; }
-  .body + .body { margin-top: .95em; }
+  .lbl { margin-bottom: 8px; }
+  .body { font-size: 12px; line-height: 1.45; color: var(--dim); max-width: none; }
+  .body + .body { margin-top: .85em; }
 
   /* atmosphere */
   #grain {
@@ -64,7 +64,14 @@
   }
   #vignette {
     position: fixed; inset: 0; z-index: 94; pointer-events: none;
-    background: radial-gradient(ellipse 120% 90% at 50% 50%, transparent 40%, rgba(0,0,0,.55) 100%);
+    background: radial-gradient(ellipse 120% 90% at 50% 50%, transparent 55%, rgba(0,0,0,.35) 100%);
+  }
+
+  /* artboard — fixed 16:9 PPTX canvas, scaled to cover viewport */
+  #stage { position: fixed; inset: 0; overflow: hidden; background: var(--bg); }
+  #artboard {
+    position: absolute; width: var(--aw); height: var(--ah);
+    left: 50%; top: 50%; transform-origin: center center; will-change: transform;
   }
 
   /* HUD */
@@ -72,11 +79,11 @@
   #bar i { display: block; height: 100%; width: 0; background: var(--ink); transition: width .55s var(--ease); }
   #hud { position: fixed; inset: 0; z-index: 86; pointer-events: none; }
   .hud-top, .hud-bot {
-    position: absolute; left: calc(var(--safe-l) + var(--edge)); right: calc(var(--safe-r) + var(--edge) + 28px);
+    position: absolute; left: calc(var(--safe-l) + 16px); right: calc(var(--safe-r) + 36px);
     display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
   }
-  .hud-top { top: var(--safe-t); padding-top: 8px; }
-  .hud-bot { bottom: var(--safe-b); padding-bottom: 8px; }
+  .hud-top { top: var(--safe-t); padding-top: 6px; }
+  .hud-bot { bottom: var(--safe-b); padding-bottom: 6px; }
   #hud .wordmark {
     color: var(--ink); font-weight: 650; letter-spacing: .08em; font-size: 11px;
     pointer-events: auto; cursor: pointer; transition: opacity .3s;
@@ -108,19 +115,22 @@
   .rail-dot:hover { background: rgba(255,255,255,.35); transform: scale(1.35); }
   .rail-dot.on { background: var(--ink); transform: scale(1.2); }
 
-  /* slides — true full viewport */
-  #deck { position: fixed; inset: 0; width: 100vw; height: 100vh; height: 100dvh; }
+  /* slides — 1280×720 artboard, vertical push transitions */
+  #deck { position: relative; width: var(--aw); height: var(--ah); overflow: hidden; background: var(--bg); }
   .slide {
     position: absolute; inset: 0; width: 100%; height: 100%;
-    visibility: hidden; opacity: 0; z-index: 1;
-    transition: opacity .65s var(--ease), visibility 0s linear .65s;
+    visibility: hidden; transform: translateY(100%); z-index: 1;
+    transition: transform .72s var(--ease), visibility 0s linear .72s;
+    will-change: transform;
   }
   .slide:not(.active) { pointer-events: none; }
-  .slide.active { visibility: visible; opacity: 1; z-index: 2; transition: opacity .65s var(--ease); }
-  .slide > div { height: 100%; width: 100%; }
-  .slide--inset {
-    padding: var(--hud-pad) calc(var(--safe-r) + var(--edge) + 20px) var(--hud-bot) calc(var(--safe-l) + var(--edge));
+  .slide.is-before { transform: translateY(-100%); }
+  .slide.active {
+    visibility: visible; transform: translateY(0); z-index: 2;
+    transition: transform .72s var(--ease), visibility 0s;
   }
+  .slide > div { height: 100%; width: 100%; }
+  .slide--inset { padding: var(--m); }
   .slide--bleed { padding: 0; }
 
   /* reveals */
@@ -148,11 +158,11 @@
     opacity: 1; transform: translateY(0);
   }
 
-  /* cover — cinematic hero (clean crop, no baked PPTX text) */
+  /* cover — PPTX slide 1 proportions */
   .sl-cover { position: relative; overflow: hidden; background: var(--bg); }
   .cover-bg {
     position: absolute; left: 0; right: 0; bottom: 0; z-index: 0;
-    height: clamp(200px, 36vh, 420px); overflow: hidden;
+    height: 258px; overflow: hidden;
   }
   .cover-horse {
     width: 100%; height: 100%; object-fit: cover; object-position: 50% 38%;
@@ -165,44 +175,45 @@
       linear-gradient(180deg, var(--bg) 0%, rgba(5,5,5,.55) 42%, rgba(5,5,5,.25) 68%, rgba(5,5,5,.85) 100%);
   }
   .cover-year {
-    position: absolute; right: clamp(16px, 5vw, 72px); top: clamp(80px, 18vh, 200px);
-    font-size: clamp(72px, 16vw, 240px); font-weight: 640; letter-spacing: -.045em;
+    position: absolute; right: 52px; top: 120px;
+    font-size: 178px; font-weight: 640; letter-spacing: -.045em;
     color: rgba(255,255,255,.045); line-height: 1; z-index: 1; pointer-events: none; user-select: none;
   }
   .cover-inner {
     position: relative; z-index: 2; height: 100%;
     display: flex; flex-direction: column; justify-content: space-between;
-    padding: var(--hud-pad) calc(var(--safe-r) + var(--edge) + 20px) var(--hud-bot) calc(var(--safe-l) + var(--edge));
+    padding: var(--m);
+    padding-bottom: 280px;
   }
   .cover-kicker { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
   .cover-title {
-    font-size: clamp(52px, 11vw, 168px); line-height: .92; font-weight: 630;
+    font-size: 96px; line-height: .92; font-weight: 630;
     letter-spacing: -.045em; text-transform: uppercase;
   }
   .cover-title .cover-sub .rl-i { color: var(--faint); font-weight: 520; }
-  .cover-foot { display: flex; justify-content: space-between; margin-top: clamp(8px, 1.5vh, 16px); flex-wrap: wrap; gap: 8px; }
+  .cover-foot { display: flex; justify-content: space-between; margin-top: 12px; flex-wrap: wrap; gap: 8px; }
 
   /* toc */
-  .sl-toc { display: grid; grid-template-columns: minmax(180px, .85fr) minmax(0, 1.4fr); gap: clamp(24px, 5vw, 72px); align-items: end; height: 100%; }
-  .toc-title { font-size: clamp(48px, 7.5vw, 128px); font-weight: 630; letter-spacing: -.042em; text-transform: uppercase; line-height: .92; }
+  .sl-toc { display: grid; grid-template-columns: 420px 1fr; gap: 48px; align-items: end; height: 100%; }
+  .toc-title { font-size: 71px; font-weight: 630; letter-spacing: -.042em; text-transform: uppercase; line-height: .92; }
   .toc-list { display: flex; flex-direction: column; }
   .toc-row {
     display: grid; grid-template-columns: 44px 1fr auto; align-items: baseline; gap: 14px;
-    padding: clamp(9px, 1.35vh, 15px) 0; border: 0; border-bottom: 1px solid var(--line);
+    padding: 11px 0; border: 0; border-bottom: 1px solid var(--line);
     background: none; color: var(--ink); text-align: left; cursor: pointer; font: inherit;
   }
   .toc-row:first-child { border-top: 1px solid var(--line); }
-  .toc-label { font-size: clamp(17px, 2vw, 30px); font-weight: 530; letter-spacing: -.015em; transition: transform .4s var(--ease); }
+  .toc-label { font-size: 21px; font-weight: 530; letter-spacing: -.015em; transition: transform .4s var(--ease); }
   .toc-row:hover .toc-label { transform: translateX(10px); }
   .toc-row .toc-no, .toc-row .toc-pg { color: var(--faint); }
 
   /* about */
-  .sl-about { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(24px, 4vw, 64px); align-items: center; height: 100%; }
-  .about-media { height: min(62vh, 100%); overflow: hidden; border-radius: 1px; }
-  .about-lead { font-size: clamp(28px, 3.6vw, 56px); font-weight: 540; letter-spacing: -.028em; line-height: 1.1; margin-bottom: clamp(14px, 2.8vh, 28px); max-width: 16ch; }
+  .sl-about { display: grid; grid-template-columns: 1fr 1.05fr; gap: 48px; align-items: center; height: 100%; }
+  .about-media { height: 420px; overflow: hidden; border-radius: 1px; }
+  .about-lead { font-size: 32px; font-weight: 540; letter-spacing: -.028em; line-height: 1.1; margin-bottom: 20px; max-width: 16ch; }
 
   /* wall — edge-to-edge mosaic */
-  .sl-wall { display: flex; flex-direction: column; gap: 10px; padding: var(--hud-pad) 0 var(--hud-bot); }
+  .sl-wall { display: flex; flex-direction: column; gap: 8px; padding: var(--m) 0 48px; }
   .wall-grid {
     flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 1fr;
     gap: 3px; min-height: 0; width: 100%;
@@ -210,20 +221,20 @@
   .wall-cell { overflow: hidden; position: relative; }
   .wall-cell .fill { transition: transform 1s var(--ease), filter .5s; }
   .wall-cell:hover .fill { transform: scale(1.05); filter: brightness(1.08); }
-  .wall-cap { display: flex; justify-content: space-between; padding: 0 calc(var(--safe-l) + var(--edge)); }
+  .wall-cap { display: flex; justify-content: space-between; padding: 0 var(--m); }
 
   /* services */
-  .sl-services { display: flex; flex-direction: column; gap: clamp(12px, 2.2vh, 26px); height: 100%; }
-  .svc-title { font-size: clamp(36px, 5.2vw, 88px); font-weight: 630; letter-spacing: -.038em; text-transform: uppercase; line-height: .92; }
+  .sl-services { display: flex; flex-direction: column; gap: 18px; height: 100%; }
+  .svc-title { font-size: 64px; font-weight: 630; letter-spacing: -.038em; text-transform: uppercase; line-height: .92; }
   .svc-grid {
     flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
     background: var(--line); border: 1px solid var(--line); min-height: 0; overflow: hidden;
   }
-  .svc { background: var(--bg); padding: clamp(10px, 1.4vw, 20px); display: flex; flex-direction: column; gap: 5px; min-height: 0; transition: background .35s; }
+  .svc { background: var(--bg); padding: 14px; display: flex; flex-direction: column; gap: 5px; min-height: 0; transition: background .35s; }
   .svc:hover { background: rgba(255,255,255,.03); }
   .svc-no { color: var(--faint); }
-  .svc-t { font-size: clamp(12.5px, 1.15vw, 18px); font-weight: 600; letter-spacing: -.012em; }
-  .svc-b { font-size: clamp(10px, .78vw, 12px); line-height: 1.48; color: var(--dim); overflow: hidden; }
+  .svc-t { font-size: 14px; font-weight: 600; letter-spacing: -.012em; }
+  .svc-b { font-size: 10px; line-height: 1.48; color: var(--dim); overflow: hidden; }
 
   /* divider — full bleed chapter */
   .sl-divider { display: flex; flex-direction: column; justify-content: flex-end; position: relative; overflow: hidden; }
@@ -234,12 +245,9 @@
     position: absolute; inset: 0; z-index: 1;
     background: linear-gradient(0deg, rgba(5,5,5,.94) 0%, rgba(5,5,5,.25) 55%, rgba(5,5,5,.5) 100%);
   }
-  .div-copy {
-    position: relative; z-index: 2;
-    padding: 0 calc(var(--safe-r) + var(--edge) + 20px) calc(var(--hud-bot) - 8px) calc(var(--safe-l) + var(--edge));
-  }
+  .div-copy { position: relative; z-index: 2; padding: 0 var(--m) 44px; }
   .div-no { margin-bottom: 6px; color: var(--faint); }
-  .div-title { font-size: clamp(60px, 14vw, 240px); font-weight: 640; letter-spacing: -.048em; text-transform: uppercase; line-height: .88; }
+  .div-title { font-size: 128px; font-weight: 640; letter-spacing: -.048em; text-transform: uppercase; line-height: .88; }
 
   /* project — full bleed case study */
   .sl-project { display: flex; flex-direction: column; position: relative; overflow: hidden; }
@@ -254,100 +262,95 @@
   }
   .prj-inner {
     position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column;
-    padding: var(--hud-pad) calc(var(--safe-r) + var(--edge) + 20px) var(--hud-bot) calc(var(--safe-l) + var(--edge));
+    padding: var(--m);
   }
-  .prj-top { display: flex; gap: clamp(20px, 4.5vw, 80px); flex-wrap: wrap; }
-  .prj-client { font-size: clamp(13px, 1.15vw, 17px); font-weight: 560; letter-spacing: -.01em; }
+  .prj-top { display: flex; gap: 48px; flex-wrap: wrap; }
+  .prj-client { font-size: 14px; font-weight: 560; letter-spacing: -.01em; }
   .prj-title {
-    margin-top: auto; font-size: clamp(48px, 9vw, 160px); font-weight: 640;
+    margin-top: auto; font-size: 89px; font-weight: 640;
     letter-spacing: -.042em; text-transform: uppercase; line-height: .9;
-    margin-bottom: clamp(14px, 3vh, 36px);
+    margin-bottom: 20px;
   }
-  .prj-bottom { display: flex; justify-content: space-between; align-items: flex-end; gap: clamp(20px, 4vw, 56px); flex-wrap: wrap; }
-  .prj-scope ul { list-style: none; columns: 2; column-gap: 24px; font-size: clamp(10.5px, .9vw, 13px); color: var(--dim); line-height: 1.65; }
-  .prj-stats { display: flex; gap: clamp(20px, 3.5vw, 64px); text-align: right; flex-wrap: wrap; }
-  .stat-row { display: flex; gap: clamp(14px, 2vw, 36px); }
-  .stat-v { display: block; font-size: clamp(24px, 3.2vw, 52px); font-weight: 560; letter-spacing: -.035em; font-variant-numeric: tabular-nums; line-height: 1; }
+  .prj-bottom { display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; flex-wrap: wrap; }
+  .prj-scope ul { list-style: none; columns: 2; column-gap: 24px; font-size: 11px; color: var(--dim); line-height: 1.65; }
+  .prj-stats { display: flex; gap: 48px; text-align: right; flex-wrap: wrap; }
+  .stat-row { display: flex; gap: 28px; }
+  .stat-v { display: block; font-size: 36px; font-weight: 560; letter-spacing: -.035em; font-variant-numeric: tabular-nums; line-height: 1; }
   .stat-l { display: block; margin-top: 4px; font-size: 9px; }
 
-  /* case / craft */
-  .sl-case { display: flex; flex-direction: column; gap: clamp(12px, 2.2vh, 24px); height: 100%; }
-  .cs-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(20px, 4vw, 56px); align-items: end; }
-  .cs-title { font-size: clamp(36px, 5.6vw, 96px); font-weight: 630; letter-spacing: -.036em; text-transform: uppercase; line-height: .92; }
-  .cs-copy { padding-bottom: 4px; }
-  .cs-media { flex: 1; min-height: 0; display: grid; gap: 3px; }
+  /* case / craft — PPTX slide 14 layout */
+  .sl-case { position: relative; width: 100%; height: 100%; box-sizing: border-box; }
+  .cs-head-ppt { position: relative; height: 149px; }
+  .cs-title {
+    position: absolute; left: 0; top: 38px;
+    font-size: 53px; font-weight: 630; letter-spacing: -.02em;
+    line-height: .95; max-width: 390px;
+  }
+  .cs-meta-col { position: absolute; left: 410px; top: 59px; }
+  .cs-meta { font-size: 12px; line-height: 1.35; color: var(--dim); letter-spacing: -.01em; }
+  .cs-copy { position: absolute; left: 549px; top: 57px; width: 597px; }
+  .cs-craft-lbl { position: absolute; left: 0; top: 0; }
+  .sl-craft .cs-title { top: 24px; }
+  .sl-craft .cs-copy { top: 72px; }
+  .cs-media { position: absolute; left: 0; top: 201px; width: 1176px; height: 345px; }
   .cs-cell { overflow: hidden; min-height: 0; }
-  .cs-duo { grid-template-columns: 1fr 1fr; }
+  .cs-ppt-grid { position: relative; }
+  .cs-ppt-big { position: absolute; left: 0; top: 0; width: 613px; height: 345px; }
+  .cs-ppt-mt { position: absolute; left: 624px; top: 0; width: 302px; height: 170px; }
+  .cs-ppt-mb { position: absolute; left: 624px; top: 178px; width: 302px; height: 167px; }
+  .cs-ppt-tall { position: absolute; left: 938px; top: 0; width: 238px; height: 345px; }
+  .cs-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .cs-duo.wide { grid-template-columns: 1.35fr 1fr; }
-  .cs-strip { grid-auto-flow: column; grid-auto-columns: 1fr; }
-  .cs-grid6 { grid-template-columns: repeat(3, 1fr); grid-template-rows: 1fr 1fr; }
-  .cs-mosaic { grid-template-columns: repeat(4, 1fr); grid-template-rows: 1fr 1fr; }
+  .cs-strip { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 8px; }
+  .cs-grid6 { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: 1fr 1fr; gap: 8px; }
+  .cs-mosaic { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: 1fr 1fr; gap: 8px; }
   .cs-mosaic .cs-cell:nth-child(3) { grid-row: span 2; }
-  .cs-hero { grid-template-columns: 1.55fr 1fr; }
-  .cs-rest { display: grid; gap: 3px; grid-template-columns: 1fr 1fr; min-height: 0; }
-  .cs-rest.n2 { grid-template-columns: 1fr; }
-  .cs-rest.n3 { grid-template-columns: 1fr 1fr; }
+  .cs-hero { display: grid; grid-template-columns: 613px 1fr; gap: 11px; }
+  .cs-rest { display: grid; gap: 8px; grid-template-columns: 1fr 1fr; min-height: 0; }
+  .cs-rest.n1 { grid-template-columns: 1fr; }
+  .cs-rest.n2 { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
   .cs-rest.n3 .cs-cell:first-child { grid-column: span 2; }
-  .cs-rest.n6 { grid-template-columns: 1fr 1fr 1fr; }
 
   /* focus */
-  .sl-focus { display: flex; flex-direction: column; gap: clamp(14px, 2.6vh, 28px); height: 100%; }
+  .sl-focus { display: flex; flex-direction: column; gap: 18px; height: 100%; }
   .focus-strip { flex: 1; display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; min-height: 0; }
   .focus-cell { position: relative; overflow: hidden; display: flex; flex-direction: column; min-height: 0; }
   .focus-cell img { flex: 1; min-height: 0; object-fit: cover; width: 100%; }
   .focus-cell figcaption { display: flex; gap: 8px; padding-top: 8px; font-size: 9px; }
   .focus-cell figcaption span { color: var(--faint); }
-  .focus-cap { max-width: 58ch; }
+  .focus-cap { max-width: 640px; }
 
   /* how */
-  .sl-how { display: grid; grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr); gap: clamp(24px, 4vw, 64px); align-items: center; height: 100%; }
-  .how-media { height: min(58vh, 100%); overflow: hidden; }
-  .how-list { margin-top: clamp(16px, 3vh, 32px); }
-  .how-row { display: grid; grid-template-columns: 40px 1fr; gap: 12px; align-items: baseline; padding: clamp(11px, 1.8vh, 20px) 0; border-bottom: 1px solid var(--line); }
+  .sl-how { display: grid; grid-template-columns: .82fr 1.18fr; gap: 48px; align-items: center; height: 100%; }
+  .how-media { height: 400px; overflow: hidden; }
+  .how-list { margin-top: 24px; }
+  .how-row { display: grid; grid-template-columns: 40px 1fr; gap: 12px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid var(--line); }
   .how-row:first-child { border-top: 1px solid var(--line); }
   .how-row .mono { color: var(--faint); }
-  .how-row p { font-size: clamp(15px, 1.45vw, 21px); font-weight: 480; line-height: 1.38; max-width: 34ch; }
+  .how-row p { font-size: 18px; font-weight: 480; line-height: 1.38; max-width: 34ch; }
 
   /* contact */
   .sl-contact { display: flex; flex-direction: column; height: 100%; }
-  .contact-title { font-size: clamp(46px, 8.5vw, 148px); font-weight: 640; letter-spacing: -.042em; text-transform: uppercase; line-height: .9; }
+  .contact-title { font-size: 89px; font-weight: 640; letter-spacing: -.042em; text-transform: uppercase; line-height: .9; }
   .contact-grid {
-    flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .75fr) minmax(0, 1.05fr);
-    gap: clamp(20px, 4vw, 56px); align-items: end; margin-top: clamp(16px, 3vh, 36px); min-height: 0;
+    flex: 1; display: grid; grid-template-columns: 1fr .75fr 1.05fr;
+    gap: 40px; align-items: end; margin-top: 24px; min-height: 0;
   }
   .person { padding: 12px 0; border-top: 1px solid var(--line); }
-  .person-n { font-size: clamp(16px, 1.5vw, 22px); font-weight: 560; }
+  .person-n { font-size: 18px; font-weight: 560; }
   .person-r { margin: 3px 0 7px; }
   .person-e { color: var(--dim); text-decoration: none; font-size: 13px; border-bottom: 1px solid var(--line); transition: color .3s; }
   .person-e:hover { color: var(--ink); }
   .contact-links { display: flex; flex-direction: column; }
   .clink { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 11px 0; border-top: 1px solid var(--line); color: var(--ink); text-decoration: none; font-size: 13px; transition: opacity .3s; }
   .clink:hover { opacity: .55; }
-  .contact-media { height: min(34vh, 100%); overflow: hidden; align-self: end; }
+  .contact-media { height: 220px; overflow: hidden; align-self: end; }
   .contact-foot { display: flex; justify-content: space-between; margin-top: 14px; flex-wrap: wrap; gap: 8px; }
 
   @media (max-width: 900px), (max-height: 580px) {
     #rail { display: none; }
-    .slide--inset { padding-right: calc(var(--safe-r) + var(--edge)); }
-    .sl-toc, .sl-about, .sl-how { grid-template-columns: 1fr; align-items: start; }
-    .about-media, .how-media { height: 24vh; }
-    .how-media { display: none; }
-    .svc-grid { grid-template-columns: 1fr 1fr; overflow-y: auto; }
-    .svc-b { display: none; }
-    .cs-head { grid-template-columns: 1fr; gap: 8px; }
-    .cs-hero { grid-template-columns: 1fr; grid-template-rows: 1.35fr 1fr; }
-    .cs-mosaic { grid-template-columns: 1fr 1fr; }
-    .cs-mosaic .cs-cell:nth-child(n+7) { display: none; }
-    .wall-grid { grid-template-columns: 1fr 1fr; }
-    .wall-cell:nth-child(n+7) { display: none; }
-    .focus-strip { grid-template-columns: repeat(2, 1fr); overflow-y: auto; }
-    .prj-bottom { flex-direction: column; align-items: flex-start; }
-    .prj-stats { text-align: left; }
-    .contact-grid { grid-template-columns: 1fr; }
-    .contact-media { display: none; }
-    .cover-title { font-size: clamp(44px, 14vw, 88px); }
     #hud-chapter { display: none; }
-    .hud-top, .hud-bot { right: calc(var(--safe-r) + var(--edge)); }
+    .hud-top, .hud-bot { right: calc(var(--safe-r) + 16px); }
   }
 </style>
 </head>
@@ -363,11 +366,13 @@
     <span class="mono">2026</span>
   </div>
   <div class="hud-bot">
-    <span class="mono" id="hud-counter">01 — 34</span>
+    <span class="mono" id="hud-counter">01 — 26</span>
     <span class="mono" id="hud-hint"><span class="tick"></span>Scroll</span>
   </div>
 </div>
-<main id="deck">
+<main id="stage">
+  <div id="artboard">
+    <div id="deck">
 <section class="slide slide--bleed" data-chapter="Capabilities" data-i="0">
   <div class="sl-cover">
     <div class="cover-bg"><img class="cover-horse" src="deck-media/cover-strip.jpg" alt="" fetchpriority="high" draggable="false"></div>
@@ -379,62 +384,7 @@
       <div class="cover-foot mono"><span>XYZSTUDIOS &copy; 2026</span><span>VFX &middot; CG &middot; Sound</span></div>
     </div>
   </div></section>
-<section class="slide slide--inset" data-chapter="Index" data-i="1">
-  <div class="sl-toc">
-    <h2 class="toc-title"><span class="rl "><span class="rl-i">Index</span></span></h2>
-    <div class="toc-list">
-      <button class="toc-row" data-goto="3">
-        <span class="mono toc-no">01</span>
-        <span class="toc-label">About</span>
-        <span class="mono toc-pg">03</span>
-      </button>
-      <button class="toc-row" data-goto="4">
-        <span class="mono toc-no">02</span>
-        <span class="toc-label">What We Do</span>
-        <span class="mono toc-pg">04</span>
-      </button>
-      <button class="toc-row" data-goto="5">
-        <span class="mono toc-no">03</span>
-        <span class="toc-label">Highlighted Work</span>
-        <span class="mono toc-pg">05</span>
-      </button>
-      <button class="toc-row" data-goto="6">
-        <span class="mono toc-no">04</span>
-        <span class="toc-label">Full Production</span>
-        <span class="mono toc-pg">06</span>
-      </button>
-      <button class="toc-row" data-goto="10">
-        <span class="mono toc-no">05</span>
-        <span class="toc-label">Case Study</span>
-        <span class="mono toc-pg">10</span>
-      </button>
-      <button class="toc-row" data-goto="19">
-        <span class="mono toc-no">06</span>
-        <span class="toc-label">Selected Work</span>
-        <span class="mono toc-pg">19</span>
-      </button>
-      <button class="toc-row" data-goto="23">
-        <span class="mono toc-no">07</span>
-        <span class="toc-label">Craft</span>
-        <span class="mono toc-pg">23</span>
-      </button>
-      <button class="toc-row" data-goto="32">
-        <span class="mono toc-no">08</span>
-        <span class="toc-label">Our Focus</span>
-        <span class="mono toc-pg">32</span>
-      </button>
-      <button class="toc-row" data-goto="33">
-        <span class="mono toc-no">09</span>
-        <span class="toc-label">How We Work</span>
-        <span class="mono toc-pg">33</span>
-      </button>
-      <button class="toc-row" data-goto="34">
-        <span class="mono toc-no">10</span>
-        <span class="toc-label">Contact</span>
-        <span class="mono toc-pg">34</span>
-      </button></div>
-  </div></section>
-<section class="slide slide--inset" data-chapter="About" data-i="2">
+<section class="slide slide--inset" data-chapter="About" data-i="1">
   <div class="sl-about">
     <div class="about-media"><img class="fill" src="deck-media/image-3-2.jpg" alt="" loading="lazy" draggable="false"></div>
     <div class="about-copy">
@@ -443,71 +393,93 @@
       <p class="body">Working with production teams, agencies, and directors to carry projects through post, supporting where needed and staying closely involved through final delivery.</p><p class="body">Each project evolves differently, and the approach is shaped to serve the work and its intended outcome.</p>
     </div>
   </div></section>
-<section class="slide slide--inset" data-chapter="What We Do" data-i="3">
-  <div class="sl-services">
-    <h2 class="svc-title"><span class="rl "><span class="rl-i">What We Do</span></span></h2>
-    <div class="svc-grid">
-      <div class="svc">
-        <div class="mono svc-no">01</div>
-        <div class="svc-t">Creative Direction</div>
-        <p class="svc-b">We translate the client’s vision into a clear VFX approach that fits the brand, the brief, and the level of realism the project needs. We help set the art style early so every shot stays consistent from concept through final delivery.</p>
-      </div>
-      <div class="svc">
-        <div class="mono svc-no">02</div>
-        <div class="svc-t">Research + Look Development</div>
-        <p class="svc-b">We explore references, test techniques, and build early look development to lock the visual direction. The goal is clarity before cameras roll, so the team stays aligned and production moves fast.</p>
-      </div>
-      <div class="svc">
-        <div class="mono svc-no">03</div>
-        <div class="svc-t">Technical Planning</div>
-        <p class="svc-b">We align with production on on-set capture needs and shot requirements, prepping the team with shot notes, tracking and lens data, and the right reference for lighting and integration. It keeps post clean and controlled.</p>
-      </div>
-      <div class="svc">
-        <div class="mono svc-no">04</div>
-        <div class="svc-t">Full-Shot Execution</div>
-        <p class="svc-b">We take ownership from matchmove and layout through asset build, simulation, and CG integration, keeping the work consistent across the full sequence. We keep shots organized, versioned, and review-ready so feedback moves fast.</p>
-      </div>
-      <div class="svc">
-        <div class="mono svc-no">05</div>
-        <div class="svc-t">Environments, Set Extensions + Simulation</div>
-        <p class="svc-b">We build digital environments and extensions, paired with simulations that add scale, realism, and physical detail where it matters. Every element is built to match camera, lighting, and the real-world plate.</p>
-      </div>
-      <div class="svc">
-        <div class="mono svc-no">06</div>
-        <div class="svc-t">Compositing + Paint</div>
-        <p class="svc-b">We bring every element together through compositing, cleanup, beauty, roto and paint, balancing light, texture, and continuity for a seamless final frame. Final frames are dialed for realism, clarity, and consistency shot-to-shot.</p>
-      </div>
-      <div class="svc">
-        <div class="mono svc-no">07</div>
-        <div class="svc-t">Beauty + Cleanup</div>
-        <p class="svc-b">We handle beauty work and cleanup at the final stage, refining details that distract from the frame. Roto, paint, polish, and continuity fixes are treated with the same care as the main VFX so the shot feels finished, not touched.</p>
-      </div>
-      <div class="svc">
-        <div class="mono svc-no">08</div>
-        <div class="svc-t">AI-Assisted Workflows</div>
-        <p class="svc-b">We integrate AI where it improves speed and iteration, while keeping realism and control intact. It supports VFX tasks like cleanup, detail work, and versioning, without compromising the final look.</p>
-      </div>
-      <div class="svc">
-        <div class="mono svc-no">09</div>
-        <div class="svc-t">Sound</div>
-        <p class="svc-b">Full sound production from sound design through mix and composition, with original foley when needed. We build the sonic layer to match the visual tone, elevate the story, and deliver a complete final experience.</p>
-      </div></div>
-  </div></section>
-<section class="slide slide--bleed" data-chapter="Highlighted Work" data-i="4">
+<section class="slide slide--bleed" data-chapter="Highlighted Work" data-i="2">
   <div class="sl-wall">
     <div class="wall-grid"><div class="wall-cell"><img class="fill" src="deck-media/image-4-7.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-5.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-9.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-10.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-3.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-1.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-6.jpg" alt="" loading="lazy" draggable="false"></div></div>
     <div class="wall-cap mono"><span>Highlighted Work</span><span>2024 — 2026</span></div>
   </div></section>
-<section class="slide slide--bleed" data-chapter="Full Production" data-i="5">
+<section class="slide slide--bleed" data-chapter="Craft" data-i="3">
+  <div class="sl-divider">
+    <div class="div-media"><img class="fill" src="deck-media/image-23-2.jpg" alt="" loading="lazy" draggable="false"></div>
+    <div class="div-shade"></div>
+    <div class="div-copy">
+      <div class="div-no mono">Chapter 01</div>
+      <h2 class="div-title"><span class="rl "><span class="rl-i">Craft</span></span></h2>
+    </div>
+  </div></section>
+<section class="slide slide--inset" data-chapter="Craft" data-i="4">
+  <div class="sl-case sl-craft">
+    <div class="cs-head-ppt">
+      <div class="mono cs-craft-lbl">Craft</div>
+      <h2 class="cs-title">Creative Development</h2>
+      <div class="cs-copy"><p class="body">Visual direction, structure, and shot logic are established before production begins. Storyboards and early visual exploration define composition, pacing, and technical feasibility, ensuring clarity across production and post.</p></div>
+    </div>
+    <div class="cs-media cs-hero"><div class="cs-cell cs-big"><img class="fill" src="deck-media/image-24-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-rest n6"><div class="cs-cell"><img class="fill" src="deck-media/image-24-5.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-24-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-24-6.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-24-7.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-24-9.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-24-8.jpg" alt="" loading="lazy" draggable="false"></div></div></div>
+  </div></section>
+<section class="slide slide--inset" data-chapter="Craft" data-i="5">
+  <div class="sl-case sl-craft">
+    <div class="cs-head-ppt">
+      <div class="mono cs-craft-lbl">Craft</div>
+      <h2 class="cs-title">CG Integration</h2>
+      <div class="cs-copy"><p class="body">CG elements are embedded into live-action plates using accurate camera tracking, lens calibration, and scene lighting. Surface interaction, shadow behavior, and material response are refined to ensure consistency across motion, grading, and final delivery.</p></div>
+    </div>
+    <div class="cs-media cs-strip"><div class="cs-cell"><img class="fill" src="deck-media/image-25-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-25-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-25-3.jpg" alt="" loading="lazy" draggable="false"></div></div>
+  </div></section>
+<section class="slide slide--inset" data-chapter="Craft" data-i="6">
+  <div class="sl-case sl-craft">
+    <div class="cs-head-ppt">
+      <div class="mono cs-craft-lbl">Craft</div>
+      <h2 class="cs-title">CG Environments</h2>
+      <div class="cs-copy"><p class="body">At any scale, from full digital builds to set extensions and enhancements. We recreate real locations or design new spaces to match the project’s tone, with careful attention to scale, lighting, perspective, and atmosphere. Every environment is built for seamless integration across the sequence.</p></div>
+    </div>
+    <div class="cs-media cs-strip"><div class="cs-cell"><img class="fill" src="deck-media/image-26-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-26-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-26-3.jpg" alt="" loading="lazy" draggable="false"></div></div>
+  </div></section>
+<section class="slide slide--inset" data-chapter="Craft" data-i="7">
+  <div class="sl-case sl-craft">
+    <div class="cs-head-ppt">
+      <div class="mono cs-craft-lbl">Craft</div>
+      <h2 class="cs-title">Compositing</h2>
+      <div class="cs-copy"><p class="body">Live-action and rendered elements are unified through precise control of depth, exposure, color space, and optical response. Integration is refined at the pixel level to ensure visual continuity across the entire sequence.</p></div>
+    </div>
+    <div class="cs-media cs-hero"><div class="cs-cell cs-big"><img class="fill" src="deck-media/image-27-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-rest n4"><div class="cs-cell"><img class="fill" src="deck-media/image-27-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-27-7.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-27-6.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-27-5.jpg" alt="" loading="lazy" draggable="false"></div></div></div>
+  </div></section>
+<section class="slide slide--inset" data-chapter="Craft" data-i="8">
+  <div class="sl-case sl-craft">
+    <div class="cs-head-ppt">
+      <div class="mono cs-craft-lbl">Craft</div>
+      <h2 class="cs-title">Simulation and FX</h2>
+      <div class="cs-copy"><p class="body">Physical motion and environmental interaction are developed using accurate scale, timing, and force behavior. Simulations are refined to respond naturally within the scene and remain consistent across camera perspective and integration.</p></div>
+    </div>
+    <div class="cs-media cs-hero"><div class="cs-cell cs-big"><img class="fill" src="deck-media/image-28-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-rest n4"><div class="cs-cell"><img class="fill" src="deck-media/image-28-8.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-28-5.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-28-3.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-28-6.jpg" alt="" loading="lazy" draggable="false"></div></div></div>
+  </div></section>
+<section class="slide slide--inset" data-chapter="Craft" data-i="9">
+  <div class="sl-case sl-craft">
+    <div class="cs-head-ppt">
+      <div class="mono cs-craft-lbl">Craft</div>
+      <h2 class="cs-title">Polish</h2>
+      <div class="cs-copy"><p class="body">Cleanup, beauty work, and set extensions as part of finishing, refining continuity and removing distractions that pull focus. From subtle fixes to larger extensions, the result is a clean, cohesive finish that holds up across the sequence and delivers to spec.</p></div>
+    </div>
+    <div class="cs-media cs-grid6"><div class="cs-cell"><img class="fill" src="deck-media/image-29-7.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-29-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-29-5.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-29-6.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-29-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-29-3.jpg" alt="" loading="lazy" draggable="false"></div></div>
+  </div></section>
+<section class="slide slide--inset" data-chapter="Craft" data-i="10">
+  <div class="sl-case sl-craft">
+    <div class="cs-head-ppt">
+      <div class="mono cs-craft-lbl">Craft</div>
+      <h2 class="cs-title">AI-Assisted Workflow</h2>
+      <div class="cs-copy"><p class="body">We integrate AI into live-action and CG workflows as a controlled extension of our process. It allows us to explore, iterate, and build imagery that would otherwise be difficult or time-intensive, while keeping every decision guided by artists. AI remains a tool, supporting realism, precision, and creative intent, never replacing it.</p></div>
+    </div>
+    <div class="cs-media cs-hero"><div class="cs-cell cs-big"><img class="fill" src="deck-media/image-31-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-rest n2"><div class="cs-cell"><img class="fill" src="deck-media/image-31-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-31-3.jpg" alt="" loading="lazy" draggable="false"></div></div></div>
+  </div></section>
+<section class="slide slide--bleed" data-chapter="Full Production" data-i="11">
   <div class="sl-divider">
     <div class="div-media"><img class="fill" src="deck-media/image-6-1.webp" alt="" loading="lazy" draggable="false"></div>
     <div class="div-shade"></div>
     <div class="div-copy">
-      <div class="div-no mono">Chapter 01</div>
+      <div class="div-no mono">Chapter 02</div>
       <h2 class="div-title"><span class="rl "><span class="rl-i">Full Production</span></span></h2>
     </div>
   </div></section>
-<section class="slide slide--bleed" data-chapter="Full Production" data-i="6">
+<section class="slide slide--bleed" data-chapter="Full Production" data-i="12">
   <div class="sl-project">
     <div class="prj-media"><img class="fill" src="deck-media/image-7-2.jpg" alt="" loading="lazy" draggable="false"></div>
     <div class="prj-grade"></div>
@@ -528,7 +500,7 @@
       </div>
     </div>
   </div></section>
-<section class="slide slide--bleed" data-chapter="Full Production" data-i="7">
+<section class="slide slide--bleed" data-chapter="Full Production" data-i="13">
   <div class="sl-project">
     <div class="prj-media"><img class="fill" src="deck-media/image-8-3.jpg" alt="" loading="lazy" draggable="false"></div>
     <div class="prj-grade"></div>
@@ -549,7 +521,7 @@
       </div>
     </div>
   </div></section>
-<section class="slide slide--bleed" data-chapter="Full Production" data-i="8">
+<section class="slide slide--bleed" data-chapter="Full Production" data-i="14">
   <div class="sl-project">
     <div class="prj-media"><img class="fill" src="deck-media/image-9-2.jpg" alt="" loading="lazy" draggable="false"></div>
     <div class="prj-grade"></div>
@@ -570,93 +542,84 @@
       </div>
     </div>
   </div></section>
-<section class="slide slide--bleed" data-chapter="Case Study" data-i="9">
+<section class="slide slide--bleed" data-chapter="Case Study" data-i="15">
   <div class="sl-divider">
     <div class="div-media"><img class="fill" src="deck-media/image-10-1.webp" alt="" loading="lazy" draggable="false"></div>
     <div class="div-shade"></div>
     <div class="div-copy">
-      <div class="div-no mono">Chapter 02</div>
+      <div class="div-no mono">Chapter 03</div>
       <h2 class="div-title"><span class="rl "><span class="rl-i">Case Studies</span></span></h2>
     </div>
   </div></section>
-<section class="slide slide--inset" data-chapter="Case Study — RBC Canadian Open" data-i="10">
+<section class="slide slide--inset" data-chapter="Case Study — RBC Canadian Open" data-i="16">
   <div class="sl-case">
-    <div class="cs-head">
-      <div class="cs-headline">
-        <div class="mono lbl">Rory McIlroy — RBC Canadian Open — 01</div>
-        <h2 class="cs-title"><span class="rl "><span class="rl-i">Storyboard</span></span></h2>
-      </div>
+    <div class="cs-head-ppt">
+      <h2 class="cs-title">Storyboard</h2>
+      <div class="cs-meta-col"><div class="cs-meta">Rory McIlroy</div><div class="cs-meta">RBC Canadian Open</div></div>
       <div class="cs-copy"><p class="body">With no live shoot possible, the client asked us to develop the creative direction and bring the concept to life.</p><p class="body">We crafted a stylized 3D hype reel, taking the project from concept art through to final execution. Throughout the process, the client remained closely involved, providing notes and feedback as we shaped the visuals to capture Rory’s momentum and the anticipation around the tournament.</p></div>
     </div>
     <div class="cs-media cs-duo wide"><div class="cs-cell"><img class="fill" src="deck-media/image-11-2.webp" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-11-3.jpg" alt="" loading="lazy" draggable="false"></div></div>
   </div></section>
-<section class="slide slide--inset" data-chapter="Case Study — RBC Canadian Open" data-i="11">
+<section class="slide slide--inset" data-chapter="Case Study — RBC Canadian Open" data-i="17">
   <div class="sl-case">
-    <div class="cs-head">
-      <div class="cs-headline">
-        <div class="mono lbl">Rory McIlroy — RBC Canadian Open — 02</div>
-        <h2 class="cs-title"><span class="rl "><span class="rl-i">Pre-visualization</span></span></h2>
-      </div>
+    <div class="cs-head-ppt">
+      <h2 class="cs-title">Pre-visualization</h2>
+      <div class="cs-meta-col"><div class="cs-meta">Rory McIlroy</div><div class="cs-meta">RBC Canadian Open</div></div>
       <div class="cs-copy"><p class="body">Before moving into final production, we built a full pre-vis to map out pacing, camera moves, and overall flow. This stage gave the client a clear first look at how the story would unfold on screen.</p><p class="body">By reviewing timing, framing, and energy early on, they were able to provide detailed notes and shape the direction with us. The pre-vis ensured everyone was aligned creatively before resources went into final rendering and polish.</p></div>
     </div>
     <div class="cs-media cs-hero"><div class="cs-cell cs-big"><img class="fill" src="deck-media/image-12-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-rest n4"><div class="cs-cell"><img class="fill" src="deck-media/image-12-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-12-3.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-12-5.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-12-6.jpg" alt="" loading="lazy" draggable="false"></div></div></div>
   </div></section>
-<section class="slide slide--inset" data-chapter="Case Study — RBC Canadian Open" data-i="12">
+<section class="slide slide--inset" data-chapter="Case Study — RBC Canadian Open" data-i="18">
   <div class="sl-case">
-    <div class="cs-head">
-      <div class="cs-headline">
-        <div class="mono lbl">Rory McIlroy — RBC Canadian Open — 03</div>
-        <h2 class="cs-title"><span class="rl "><span class="rl-i">Asset Prep</span></span></h2>
-      </div>
+    <div class="cs-head-ppt">
+      <h2 class="cs-title">Asset Prep</h2>
+      <div class="cs-meta-col"><div class="cs-meta">Rory McIlroy</div><div class="cs-meta">RBC Canadian Open</div></div>
       <div class="cs-copy"><p class="body">The client asked that specific elements be featured within the reel to tie back to Rory and the tournament.</p><p class="body">We developed 3D assets for the Osprey bird (a nod to the course), Rory’s championship ring, the custom Rory gold ball, and the RBC Canadian Open trophy. Each was designed and integrated to enhance the narrative while aligning with the overall creative direction.</p></div>
     </div>
     <div class="cs-media cs-strip"><div class="cs-cell"><img class="fill" src="deck-media/image-13-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-13-5.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-13-6.webp" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-13-3.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-13-4.jpg" alt="" loading="lazy" draggable="false"></div></div>
   </div></section>
-<section class="slide slide--inset" data-chapter="Case Study — RBC Canadian Open" data-i="13">
+<section class="slide slide--inset" data-chapter="Case Study — RBC Canadian Open" data-i="19">
   <div class="sl-case">
-    <div class="cs-head">
-      <div class="cs-headline">
-        <div class="mono lbl">Rory McIlroy — RBC Canadian Open — 04</div>
-        <h2 class="cs-title"><span class="rl "><span class="rl-i">Environment</span></span></h2>
-      </div>
+    <div class="cs-head-ppt">
+      <h2 class="cs-title">Environment</h2>
+      <div class="cs-meta-col"><div class="cs-meta">Rory McIlroy</div><div class="cs-meta">RBC Canadian Open</div></div>
       <div class="cs-copy"><p class="body">Since no shoot was possible, we relied on archival footage of Rory and rebuilt the tournament setting digitally.</p><p class="body">Using detailed golf course maps as a base, we laid out and modeled the landscapes of Osprey Valley. From there, we re-created and enhanced the textures, rebuilt surfaces, and scattered nature elements to bring the environments to life. The result was a set of realistic, fully CG environments that replicated the real course while still supporting the stylized, cinematic direction of the reel.</p></div>
     </div>
-    <div class="cs-media cs-hero"><div class="cs-cell cs-big"><img class="fill" src="deck-media/image-14-6.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-rest n3"><div class="cs-cell"><img class="fill" src="deck-media/image-14-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-14-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-14-3.jpg" alt="" loading="lazy" draggable="false"></div></div></div>
+    <div class="cs-media cs-ppt-grid">
+      <div class="cs-ppt-big cs-cell"><img class="fill" src="deck-media/image-14-6.jpg" alt="" loading="lazy" draggable="false"></div>
+      <div class="cs-ppt-mt cs-cell"><img class="fill" src="deck-media/image-14-2.jpg" alt="" loading="lazy" draggable="false"></div>
+      <div class="cs-ppt-mb cs-cell"><img class="fill" src="deck-media/image-14-4.jpg" alt="" loading="lazy" draggable="false"></div>
+      <div class="cs-ppt-tall cs-cell"><img class="fill" src="deck-media/image-14-3.jpg" alt="" loading="lazy" draggable="false"></div>
+    </div>
   </div></section>
-<section class="slide slide--inset" data-chapter="Case Study — RBC Canadian Open" data-i="14">
+<section class="slide slide--inset" data-chapter="Case Study — RBC Canadian Open" data-i="20">
   <div class="sl-case">
-    <div class="cs-head">
-      <div class="cs-headline">
-        <div class="mono lbl">Rory McIlroy — RBC Canadian Open — 05</div>
-        <h2 class="cs-title"><span class="rl "><span class="rl-i">Reference</span></span></h2>
-      </div>
+    <div class="cs-head-ppt">
+      <h2 class="cs-title">Reference</h2>
+      <div class="cs-meta-col"><div class="cs-meta">Rory McIlroy</div><div class="cs-meta">RBC Canadian Open</div></div>
       <div class="cs-copy"><p class="body">The client provided detailed references of Osprey Valley, which we used as the foundation for the build.</p><p class="body">These materials ensured the environments were accurate to the real course and helped us deliver a CG space that feels authentic and true to the tournament setting.</p></div>
     </div>
     <div class="cs-media cs-hero"><div class="cs-cell cs-big"><img class="fill" src="deck-media/image-15-8.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-rest n6"><div class="cs-cell"><img class="fill" src="deck-media/image-15-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-15-3.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-15-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-15-7.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-15-6.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-15-5.jpg" alt="" loading="lazy" draggable="false"></div></div></div>
   </div></section>
-<section class="slide slide--inset" data-chapter="Case Study — Celsius" data-i="15">
+<section class="slide slide--inset" data-chapter="Case Study — Celsius" data-i="21">
   <div class="sl-case">
-    <div class="cs-head">
-      <div class="cs-headline">
-        <div class="mono lbl">Celsius — Spritz Vibe — 01</div>
-        <h2 class="cs-title"><span class="rl "><span class="rl-i">On Location References</span></span></h2>
-      </div>
+    <div class="cs-head-ppt">
+      <h2 class="cs-title">On Location References</h2>
+      <div class="cs-meta-col"><div class="cs-meta">Celsius</div><div class="cs-meta">Spritz Vibe</div></div>
       
     </div>
     <div class="cs-media cs-mosaic"><div class="cs-cell"><img class="fill" src="deck-media/image-17-3.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-11.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-1.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-5.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-6.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-8.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-10.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-9.jpg" alt="" loading="lazy" draggable="false"></div></div>
   </div></section>
-<section class="slide slide--inset" data-chapter="Case Study — Celsius" data-i="16">
+<section class="slide slide--inset" data-chapter="Case Study — Celsius" data-i="22">
   <div class="sl-case">
-    <div class="cs-head">
-      <div class="cs-headline">
-        <div class="mono lbl">Celsius — Spritz Vibe — 02</div>
-        <h2 class="cs-title"><span class="rl "><span class="rl-i">Live Action Plate</span></span></h2>
-      </div>
+    <div class="cs-head-ppt">
+      <h2 class="cs-title">Live Action Plate</h2>
+      <div class="cs-meta-col"><div class="cs-meta">Celsius</div><div class="cs-meta">Spritz Vibe</div></div>
       
     </div>
     <div class="cs-media cs-duo"><div class="cs-cell"><img class="fill" src="deck-media/image-18-3.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-18-2.jpg" alt="" loading="lazy" draggable="false"></div></div>
   </div></section>
-<section class="slide slide--bleed" data-chapter="Case Study" data-i="17">
+<section class="slide slide--bleed" data-chapter="Case Study" data-i="23">
   <div class="sl-project">
     <div class="prj-media"><img class="fill" src="deck-media/image-16-3.jpg" alt="" loading="lazy" draggable="false"></div>
     <div class="prj-grade"></div>
@@ -677,214 +640,17 @@
       </div>
     </div>
   </div></section>
-<section class="slide slide--bleed" data-chapter="Selected Work" data-i="18">
-  <div class="sl-divider">
-    <div class="div-media"><img class="fill" src="deck-media/image-19-3.jpg" alt="" loading="lazy" draggable="false"></div>
-    <div class="div-shade"></div>
-    <div class="div-copy">
-      <div class="div-no mono">Chapter 03</div>
-      <h2 class="div-title"><span class="rl "><span class="rl-i">Selected Work</span></span></h2>
-    </div>
-  </div></section>
-<section class="slide slide--bleed" data-chapter="Selected Work" data-i="19">
-  <div class="sl-project">
-    <div class="prj-media"><img class="fill" src="deck-media/image-20-3.jpg" alt="" loading="lazy" draggable="false"></div>
-    <div class="prj-grade"></div>
-    <div class="prj-inner">
-      <div class="prj-top">
-        <div><div class="mono lbl">Client</div><div class="prj-client">Toyota</div></div>
-        <div><div class="mono lbl">Director</div><div class="prj-client">Jack Botti</div></div>
-        
-        <div><div class="mono lbl">Year</div><div class="prj-client">2026</div></div>
-      </div>
-      <h2 class="prj-title"><span class="rl "><span class="rl-i">Road To Palisades</span></span></h2>
-      <div class="prj-bottom">
-        <div class="prj-scope"><div class="mono lbl">Scope</div><ul><li>Creative Direction</li><li>VFX</li><li>CG</li><li>Animation</li><li>Clean Up</li><li>Compositing</li></ul></div>
-        <div class="prj-stats">
-          <div class="prj-statgroup"><div class="mono lbl">Build</div><div class="stat-row"><div class="stat"><span class="stat-v" data-count="90%">90%</span><span class="mono stat-l">Live Action</span></div><div class="stat"><span class="stat-v" data-count="33%">33%</span><span class="mono stat-l">AI</span></div><div class="stat"><span class="stat-v" data-count="7%">7%</span><span class="mono stat-l">CGI</span></div></div></div>
-          <div class="prj-statgroup"><div class="mono lbl">Output</div><div class="stat-row"><div class="stat"><span class="stat-v" data-count="214">214</span><span class="mono stat-l">Final Frames</span></div><div class="stat"><span class="stat-v" data-count="5">5</span><span class="mono stat-l">Hero Shots</span></div></div></div>
-        </div>
-      </div>
-    </div>
-  </div></section>
-<section class="slide slide--bleed" data-chapter="Selected Work" data-i="20">
-  <div class="sl-project">
-    <div class="prj-media"><img class="fill" src="deck-media/image-21-1.jpg" alt="" loading="lazy" draggable="false"></div>
-    <div class="prj-grade"></div>
-    <div class="prj-inner">
-      <div class="prj-top">
-        <div><div class="mono lbl">Client</div><div class="prj-client">Concacaf</div></div>
-        <div><div class="mono lbl">Director</div><div class="prj-client">Toby Preyer</div></div>
-        
-        <div><div class="mono lbl">Year</div><div class="prj-client">2025</div></div>
-      </div>
-      <h2 class="prj-title"><span class="rl "><span class="rl-i">Gold Cup</span></span></h2>
-      <div class="prj-bottom">
-        <div class="prj-scope"><div class="mono lbl">Scope</div><ul><li>CGI</li><li>Crowd Simulation / Integration</li><li>Compositing</li><li>FX Simulation</li><li>Clean Up</li></ul></div>
-        <div class="prj-stats">
-          <div class="prj-statgroup"><div class="mono lbl">Build</div><div class="stat-row"><div class="stat"><span class="stat-v" data-count="80%">80%</span><span class="mono stat-l">Live Action</span></div><div class="stat"><span class="stat-v" data-count="10%">10%</span><span class="mono stat-l">CG</span></div><div class="stat"><span class="stat-v" data-count="10%">10%</span><span class="mono stat-l">Motion Graphics</span></div></div></div>
-          <div class="prj-statgroup"><div class="mono lbl">Output</div><div class="stat-row"><div class="stat"><span class="stat-v" data-count="730">730</span><span class="mono stat-l">Final Frames</span></div><div class="stat"><span class="stat-v" data-count="12">12</span><span class="mono stat-l">Hero Shots</span></div></div></div>
-        </div>
-      </div>
-    </div>
-  </div></section>
-<section class="slide slide--bleed" data-chapter="Selected Work" data-i="21">
-  <div class="sl-project">
-    <div class="prj-media"><img class="fill" src="deck-media/image-22-2.jpg" alt="" loading="lazy" draggable="false"></div>
-    <div class="prj-grade"></div>
-    <div class="prj-inner">
-      <div class="prj-top">
-        <div><div class="mono lbl">Client</div><div class="prj-client">Doritos</div></div>
-        <div><div class="mono lbl">Director</div><div class="prj-client">Dylan Bradshaw</div></div>
-        
-        <div><div class="mono lbl">Year</div><div class="prj-client">2026</div></div>
-      </div>
-      <h2 class="prj-title"><span class="rl "><span class="rl-i">Doritos × Stranger Things</span></span></h2>
-      <div class="prj-bottom">
-        <div class="prj-scope"><div class="mono lbl">Scope</div><ul><li>Character Rigging</li><li>Animation</li><li>Texture</li><li>CG</li></ul></div>
-        <div class="prj-stats">
-          <div class="prj-statgroup"><div class="mono lbl">Build</div><div class="stat-row"><div class="stat"><span class="stat-v" data-count="100%">100%</span><span class="mono stat-l">CG</span></div></div></div>
-          <div class="prj-statgroup"><div class="mono lbl">Output</div><div class="stat-row"><div class="stat"><span class="stat-v" data-count="214">214</span><span class="mono stat-l">Final Frames</span></div><div class="stat"><span class="stat-v" data-count="5">5</span><span class="mono stat-l">Hero Shots</span></div></div></div>
-        </div>
-      </div>
-    </div>
-  </div></section>
-<section class="slide slide--bleed" data-chapter="Craft" data-i="22">
-  <div class="sl-divider">
-    <div class="div-media"><img class="fill" src="deck-media/image-23-2.jpg" alt="" loading="lazy" draggable="false"></div>
-    <div class="div-shade"></div>
-    <div class="div-copy">
-      <div class="div-no mono">Chapter 04</div>
-      <h2 class="div-title"><span class="rl "><span class="rl-i">Craft</span></span></h2>
-    </div>
-  </div></section>
-<section class="slide slide--inset" data-chapter="Craft" data-i="23">
-  <div class="sl-case sl-craft">
-    <div class="cs-head">
-      <div class="cs-headline">
-        <div class="mono lbl">Craft</div>
-        <h2 class="cs-title"><span class="rl "><span class="rl-i">Creative Development</span></span></h2>
-      </div>
-      <div class="cs-copy"><p class="body">Visual direction, structure, and shot logic are established before production begins. Storyboards and early visual exploration define composition, pacing, and technical feasibility, ensuring clarity across production and post.</p></div>
-    </div>
-    <div class="cs-media cs-hero"><div class="cs-cell cs-big"><img class="fill" src="deck-media/image-24-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-rest n6"><div class="cs-cell"><img class="fill" src="deck-media/image-24-5.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-24-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-24-6.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-24-7.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-24-9.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-24-8.jpg" alt="" loading="lazy" draggable="false"></div></div></div>
-  </div></section>
-<section class="slide slide--inset" data-chapter="Craft" data-i="24">
-  <div class="sl-case sl-craft">
-    <div class="cs-head">
-      <div class="cs-headline">
-        <div class="mono lbl">Craft</div>
-        <h2 class="cs-title"><span class="rl "><span class="rl-i">CG Integration</span></span></h2>
-      </div>
-      <div class="cs-copy"><p class="body">CG elements are embedded into live-action plates using accurate camera tracking, lens calibration, and scene lighting. Surface interaction, shadow behavior, and material response are refined to ensure consistency across motion, grading, and final delivery.</p></div>
-    </div>
-    <div class="cs-media cs-strip"><div class="cs-cell"><img class="fill" src="deck-media/image-25-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-25-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-25-3.jpg" alt="" loading="lazy" draggable="false"></div></div>
-  </div></section>
-<section class="slide slide--inset" data-chapter="Craft" data-i="25">
-  <div class="sl-case sl-craft">
-    <div class="cs-head">
-      <div class="cs-headline">
-        <div class="mono lbl">Craft</div>
-        <h2 class="cs-title"><span class="rl "><span class="rl-i">CG Environments</span></span></h2>
-      </div>
-      <div class="cs-copy"><p class="body">At any scale, from full digital builds to set extensions and enhancements. We recreate real locations or design new spaces to match the project’s tone, with careful attention to scale, lighting, perspective, and atmosphere. Every environment is built for seamless integration across the sequence.</p></div>
-    </div>
-    <div class="cs-media cs-strip"><div class="cs-cell"><img class="fill" src="deck-media/image-26-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-26-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-26-3.jpg" alt="" loading="lazy" draggable="false"></div></div>
-  </div></section>
-<section class="slide slide--inset" data-chapter="Craft" data-i="26">
-  <div class="sl-case sl-craft">
-    <div class="cs-head">
-      <div class="cs-headline">
-        <div class="mono lbl">Craft</div>
-        <h2 class="cs-title"><span class="rl "><span class="rl-i">Compositing</span></span></h2>
-      </div>
-      <div class="cs-copy"><p class="body">Live-action and rendered elements are unified through precise control of depth, exposure, color space, and optical response. Integration is refined at the pixel level to ensure visual continuity across the entire sequence.</p></div>
-    </div>
-    <div class="cs-media cs-hero"><div class="cs-cell cs-big"><img class="fill" src="deck-media/image-27-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-rest n4"><div class="cs-cell"><img class="fill" src="deck-media/image-27-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-27-7.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-27-6.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-27-5.jpg" alt="" loading="lazy" draggable="false"></div></div></div>
-  </div></section>
-<section class="slide slide--inset" data-chapter="Craft" data-i="27">
-  <div class="sl-case sl-craft">
-    <div class="cs-head">
-      <div class="cs-headline">
-        <div class="mono lbl">Craft</div>
-        <h2 class="cs-title"><span class="rl "><span class="rl-i">Simulation and FX</span></span></h2>
-      </div>
-      <div class="cs-copy"><p class="body">Physical motion and environmental interaction are developed using accurate scale, timing, and force behavior. Simulations are refined to respond naturally within the scene and remain consistent across camera perspective and integration.</p></div>
-    </div>
-    <div class="cs-media cs-hero"><div class="cs-cell cs-big"><img class="fill" src="deck-media/image-28-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-rest n4"><div class="cs-cell"><img class="fill" src="deck-media/image-28-8.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-28-5.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-28-3.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-28-6.jpg" alt="" loading="lazy" draggable="false"></div></div></div>
-  </div></section>
-<section class="slide slide--inset" data-chapter="Craft" data-i="28">
-  <div class="sl-case sl-craft">
-    <div class="cs-head">
-      <div class="cs-headline">
-        <div class="mono lbl">Craft</div>
-        <h2 class="cs-title"><span class="rl "><span class="rl-i">Polish</span></span></h2>
-      </div>
-      <div class="cs-copy"><p class="body">Cleanup, beauty work, and set extensions as part of finishing, refining continuity and removing distractions that pull focus. From subtle fixes to larger extensions, the result is a clean, cohesive finish that holds up across the sequence and delivers to spec.</p></div>
-    </div>
-    <div class="cs-media cs-grid6"><div class="cs-cell"><img class="fill" src="deck-media/image-29-7.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-29-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-29-5.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-29-6.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-29-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-29-3.jpg" alt="" loading="lazy" draggable="false"></div></div>
-  </div></section>
-<section class="slide slide--inset" data-chapter="Craft" data-i="29">
-  <div class="sl-case sl-craft">
-    <div class="cs-head">
-      <div class="cs-headline">
-        <div class="mono lbl">Craft</div>
-        <h2 class="cs-title"><span class="rl "><span class="rl-i">Sound</span></span></h2>
-      </div>
-      <div class="cs-copy"><p class="body">Sound defines space, atmosphere, and emotional weight within the frame. From subtle environmental detail to full cinematic design, every layer is shaped to support the image and reinforce its presence.</p></div>
-    </div>
-    <div class="cs-media cs-hero"><div class="cs-cell cs-big"><img class="fill" src="deck-media/image-30-7.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-rest n4"><div class="cs-cell"><img class="fill" src="deck-media/image-30-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-30-5.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-30-3.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-30-6.jpg" alt="" loading="lazy" draggable="false"></div></div></div>
-  </div></section>
-<section class="slide slide--inset" data-chapter="Craft" data-i="30">
-  <div class="sl-case sl-craft">
-    <div class="cs-head">
-      <div class="cs-headline">
-        <div class="mono lbl">Craft</div>
-        <h2 class="cs-title"><span class="rl "><span class="rl-i">AI-Assisted Workflow</span></span></h2>
-      </div>
-      <div class="cs-copy"><p class="body">We integrate AI into live-action and CG workflows as a controlled extension of our process. It allows us to explore, iterate, and build imagery that would otherwise be difficult or time-intensive, while keeping every decision guided by artists. AI remains a tool, supporting realism, precision, and creative intent, never replacing it.</p></div>
-    </div>
-    <div class="cs-media cs-hero"><div class="cs-cell cs-big"><img class="fill" src="deck-media/image-31-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-rest n2"><div class="cs-cell"><img class="fill" src="deck-media/image-31-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-31-3.jpg" alt="" loading="lazy" draggable="false"></div></div></div>
-  </div></section>
-<section class="slide slide--inset" data-chapter="Our Focus" data-i="31">
-  <div class="sl-focus">
-    <h2 class="cs-title"><span class="rl "><span class="rl-i">Our Focus</span></span></h2>
-    <div class="focus-strip">
-      
-        <figure class="focus-cell">
-          <img class="fill" src="deck-media/image-32-2.jpg" alt="" loading="lazy" draggable="false">
-          <figcaption class="mono"><span>01</span>Early Development</figcaption>
-        </figure>
-        <figure class="focus-cell">
-          <img class="fill" src="deck-media/image-32-5.jpg" alt="" loading="lazy" draggable="false">
-          <figcaption class="mono"><span>02</span>Look Exploration</figcaption>
-        </figure>
-        <figure class="focus-cell">
-          <img class="fill" src="deck-media/image-32-3.webp" alt="" loading="lazy" draggable="false">
-          <figcaption class="mono"><span>03</span>Full-Shot Execution</figcaption>
-        </figure>
-        <figure class="focus-cell">
-          <img class="fill" src="deck-media/image-32-6.webp" alt="" loading="lazy" draggable="false">
-          <figcaption class="mono"><span>04</span>Matte &amp; Isolation</figcaption>
-        </figure>
-        <figure class="focus-cell">
-          <img class="fill" src="deck-media/image-32-4.webp" alt="" loading="lazy" draggable="false">
-          <figcaption class="mono"><span>05</span>Final Polish</figcaption>
-        </figure>
-    </div>
-    <p class="body focus-cap">From early development and look exploration to full-shot execution and final polish.</p>
-  </div></section>
-<section class="slide slide--inset" data-chapter="How We Work" data-i="32">
+<section class="slide slide--inset" data-chapter="How We Work" data-i="24">
   <div class="sl-how">
     <div class="how-media"><img class="fill" src="deck-media/image-33-3.webp" alt="" loading="lazy" draggable="false"></div>
     <div class="how-copy">
-      <h2 class="cs-title"><span class="rl "><span class="rl-i">How We Work</span></span></h2>
+      <h2 class="cs-title">How We Work</h2>
       <div class="how-list">
         <div class="how-row"><span class="mono">01</span><p>Each collaboration begins with alignment and develops through shared intent and consistent execution.</p></div><div class="how-row"><span class="mono">02</span><p>Our involvement adapts to the needs of each project.</p></div><div class="how-row"><span class="mono">03</span><p>Some collaborations last a single project. Others continue for years.</p></div>
       </div>
     </div>
   </div></section>
-<section class="slide slide--inset" data-chapter="Contact" data-i="33">
+<section class="slide slide--inset" data-chapter="Contact" data-i="25">
   <div class="sl-contact">
     <h2 class="contact-title"><span class="rl "><span class="rl-i">Let’s Build</span></span><span class="rl "><span class="rl-i">Something Real</span></span></h2>
     <div class="contact-grid">
@@ -898,9 +664,21 @@
     </div>
     <div class="contact-foot mono"><span>XYZSTUDIOS &copy; 2026</span><span>International creative post production studio</span></div>
   </div></section>
+    </div>
+  </div>
 </main>
 <script>
 (function () {
+  var artboard = document.getElementById('artboard');
+  var AW = 1280, AH = 720;
+
+  function fitArtboard() {
+    var s = Math.max(window.innerWidth / AW, window.innerHeight / AH);
+    artboard.style.transform = 'translate(-50%, -50%) scale(' + s + ')';
+  }
+  window.addEventListener('resize', fitArtboard);
+  fitArtboard();
+
   var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
   var total = slides.length;
   var counter = document.getElementById('hud-counter');
@@ -924,9 +702,12 @@
   function show(n) {
     n = Math.max(0, Math.min(total - 1, n));
     if (n === idx) return;
-    if (idx >= 0) slides[idx].classList.remove('active');
+    slides.forEach(function (s, i) {
+      s.classList.remove('active', 'is-before');
+      if (i < n) s.classList.add('is-before');
+      else if (i === n) s.classList.add('active');
+    });
     idx = n;
-    slides[idx].classList.add('active');
     counter.textContent = pad(idx + 1) + ' \u2014 ' + pad(total);
     chapter.style.opacity = 0;
     setTimeout(function () {
@@ -944,7 +725,7 @@
 
   function step(d) {
     var now = Date.now();
-    if (now - lock < 520) return;
+    if (now - lock < 720) return;
     lock = now;
     show(idx + d);
   }

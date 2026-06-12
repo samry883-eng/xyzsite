@@ -19,33 +19,62 @@ const M = 'deck-media';
 // DATA — one entry per slide. `chapter` feeds the HUD label.
 // ---------------------------------------------------------------------------
 
-const SERVICES = [
-  ['Creative Direction', 'We translate the client’s vision into a clear VFX approach that fits the brand, the brief, and the level of realism the project needs. We help set the art style early so every shot stays consistent from concept through final delivery.'],
-  ['Research + Look Development', 'We explore references, test techniques, and build early look development to lock the visual direction. The goal is clarity before cameras roll, so the team stays aligned and production moves fast.'],
-  ['Technical Planning', 'We align with production on on-set capture needs and shot requirements, prepping the team with shot notes, tracking and lens data, and the right reference for lighting and integration. It keeps post clean and controlled.'],
-  ['Full-Shot Execution', 'We take ownership from matchmove and layout through asset build, simulation, and CG integration, keeping the work consistent across the full sequence. We keep shots organized, versioned, and review-ready so feedback moves fast.'],
-  ['Environments, Set Extensions + Simulation', 'We build digital environments and extensions, paired with simulations that add scale, realism, and physical detail where it matters. Every element is built to match camera, lighting, and the real-world plate.'],
-  ['Compositing + Paint', 'We bring every element together through compositing, cleanup, beauty, roto and paint, balancing light, texture, and continuity for a seamless final frame. Final frames are dialed for realism, clarity, and consistency shot-to-shot.'],
-  ['Beauty + Cleanup', 'We handle beauty work and cleanup at the final stage, refining details that distract from the frame. Roto, paint, polish, and continuity fixes are treated with the same care as the main VFX so the shot feels finished, not touched.'],
-  ['AI-Assisted Workflows', 'We integrate AI where it improves speed and iteration, while keeping realism and control intact. It supports VFX tasks like cleanup, detail work, and versioning, without compromising the final look.'],
-  ['Sound', 'Full sound production from sound design through mix and composition, with original foley when needed. We build the sonic layer to match the visual tone, elevate the story, and deliver a complete final experience.'],
-];
-
 const DATA = [
   { type: 'cover', chapter: 'Capabilities' },
-  { type: 'toc', chapter: 'Index' }, // items injected at build time
   {
     type: 'about', chapter: 'About', nav: 'About',
     image: 'image-3-2.jpg',
     lead: 'A post-production studio built through close creative collaboration.',
     body: ['Working with production teams, agencies, and directors to carry projects through post, supporting where needed and staying closely involved through final delivery.', 'Each project evolves differently, and the approach is shaped to serve the work and its intended outcome.'],
   },
-  { type: 'services', chapter: 'What We Do', nav: 'What We Do', items: SERVICES },
   {
     type: 'wall', chapter: 'Highlighted Work', nav: 'Highlighted Work',
     images: ['image-4-7.jpg', 'image-4-2.jpg', 'image-4-4.jpg', 'image-4-5.jpg', 'image-4-9.jpg', 'image-4-10.jpg', 'image-4-3.jpg', 'image-4-1.jpg', 'image-4-6.jpg'],
   },
-  { type: 'divider', chapter: 'Full Production', nav: 'Full Production', no: '01', title: 'Full Production', image: 'image-6-1.webp' },
+  { type: 'divider', chapter: 'Craft', nav: 'Craft', no: '01', title: 'Craft', image: 'image-23-2.jpg' },
+  {
+    type: 'craft', chapter: 'Craft',
+    title: 'Creative Development',
+    body: 'Visual direction, structure, and shot logic are established before production begins. Storyboards and early visual exploration define composition, pacing, and technical feasibility, ensuring clarity across production and post.',
+    layout: 'hero-grid', images: ['image-24-2.jpg', 'image-24-5.jpg', 'image-24-4.jpg', 'image-24-6.jpg', 'image-24-7.jpg', 'image-24-9.jpg', 'image-24-8.jpg'],
+  },
+  {
+    type: 'craft', chapter: 'Craft',
+    title: 'CG Integration',
+    body: 'CG elements are embedded into live-action plates using accurate camera tracking, lens calibration, and scene lighting. Surface interaction, shadow behavior, and material response are refined to ensure consistency across motion, grading, and final delivery.',
+    layout: 'row', images: ['image-25-4.jpg', 'image-25-2.jpg', 'image-25-3.jpg'],
+  },
+  {
+    type: 'craft', chapter: 'Craft',
+    title: 'CG Environments',
+    body: 'At any scale, from full digital builds to set extensions and enhancements. We recreate real locations or design new spaces to match the project’s tone, with careful attention to scale, lighting, perspective, and atmosphere. Every environment is built for seamless integration across the sequence.',
+    layout: 'row', images: ['image-26-2.jpg', 'image-26-4.jpg', 'image-26-3.jpg'],
+  },
+  {
+    type: 'craft', chapter: 'Craft',
+    title: 'Compositing',
+    body: 'Live-action and rendered elements are unified through precise control of depth, exposure, color space, and optical response. Integration is refined at the pixel level to ensure visual continuity across the entire sequence.',
+    layout: 'hero-grid', images: ['image-27-4.jpg', 'image-27-2.jpg', 'image-27-7.jpg', 'image-27-6.jpg', 'image-27-5.jpg'],
+  },
+  {
+    type: 'craft', chapter: 'Craft',
+    title: 'Simulation and FX',
+    body: 'Physical motion and environmental interaction are developed using accurate scale, timing, and force behavior. Simulations are refined to respond naturally within the scene and remain consistent across camera perspective and integration.',
+    layout: 'hero-grid', images: ['image-28-4.jpg', 'image-28-8.jpg', 'image-28-5.jpg', 'image-28-3.jpg', 'image-28-6.jpg'],
+  },
+  {
+    type: 'craft', chapter: 'Craft',
+    title: 'Polish',
+    body: 'Cleanup, beauty work, and set extensions as part of finishing, refining continuity and removing distractions that pull focus. From subtle fixes to larger extensions, the result is a clean, cohesive finish that holds up across the sequence and delivers to spec.',
+    layout: 'grid6', images: ['image-29-7.jpg', 'image-29-4.jpg', 'image-29-5.jpg', 'image-29-6.jpg', 'image-29-2.jpg', 'image-29-3.jpg'],
+  },
+  {
+    type: 'craft', chapter: 'Craft',
+    title: 'AI-Assisted Workflow',
+    body: 'We integrate AI into live-action and CG workflows as a controlled extension of our process. It allows us to explore, iterate, and build imagery that would otherwise be difficult or time-intensive, while keeping every decision guided by artists. AI remains a tool, supporting realism, precision, and creative intent, never replacing it.',
+    layout: 'hero-grid', images: ['image-31-2.jpg', 'image-31-4.jpg', 'image-31-3.jpg'],
+  },
+  { type: 'divider', chapter: 'Full Production', nav: 'Full Production', no: '02', title: 'Full Production', image: 'image-6-1.webp' },
   {
     type: 'project', chapter: 'Full Production',
     client: 'Salomon', title: 'Speedcross 6', year: '2026', bg: 'image-7-2.jpg',
@@ -70,7 +99,7 @@ const DATA = [
     build: [['72%', 'CG'], ['20%', 'Motion Graphics'], ['7%', 'Live Action']],
     output: [['1009', 'Final Frames'], ['8', 'Hero Shots'], ['4', 'Environments']],
   },
-  { type: 'divider', chapter: 'Case Study', nav: 'Case Study', no: '02', title: 'Case Studies', image: 'image-10-1.webp' },
+  { type: 'divider', chapter: 'Case Study', nav: 'Case Study', no: '03', title: 'Case Studies', image: 'image-10-1.webp' },
   {
     type: 'case', chapter: 'Case Study — RBC Canadian Open',
     step: '01', title: 'Storyboard', meta: 'Rory McIlroy — RBC Canadian Open',
@@ -119,92 +148,6 @@ const DATA = [
     scope: ['Pre-Production', 'VFX', 'CG', 'Simulation', 'Clean Up', 'Compositing', 'Sound Design & Mix'],
     build: [['60%', 'Live Action'], ['40%', 'CG'], ['1', 'Environment']],
     output: [['992', 'Final Frames'], ['8', 'Hero Shots']],
-  },
-  { type: 'divider', chapter: 'Selected Work', nav: 'Selected Work', no: '03', title: 'Selected Work', image: 'image-19-3.jpg' },
-  {
-    type: 'project', chapter: 'Selected Work',
-    client: 'Toyota', title: 'Road To Palisades', year: '2026', bg: 'image-20-3.jpg',
-    director: 'Jack Botti',
-    scope: ['Creative Direction', 'VFX', 'CG', 'Animation', 'Clean Up', 'Compositing'],
-    build: [['90%', 'Live Action'], ['33%', 'AI'], ['7%', 'CGI']],
-    output: [['214', 'Final Frames'], ['5', 'Hero Shots']],
-  },
-  {
-    type: 'project', chapter: 'Selected Work',
-    client: 'Concacaf', title: 'Gold Cup', year: '2025', bg: 'image-21-1.jpg',
-    director: 'Toby Preyer',
-    scope: ['CGI', 'Crowd Simulation / Integration', 'Compositing', 'FX Simulation', 'Clean Up'],
-    build: [['80%', 'Live Action'], ['10%', 'CG'], ['10%', 'Motion Graphics']],
-    output: [['730', 'Final Frames'], ['12', 'Hero Shots']],
-  },
-  {
-    type: 'project', chapter: 'Selected Work',
-    client: 'Doritos', title: 'Doritos × Stranger Things', year: '2026', bg: 'image-22-2.jpg',
-    director: 'Dylan Bradshaw',
-    scope: ['Character Rigging', 'Animation', 'Texture', 'CG'],
-    build: [['100%', 'CG']],
-    output: [['214', 'Final Frames'], ['5', 'Hero Shots']],
-  },
-  { type: 'divider', chapter: 'Craft', nav: 'Craft', no: '04', title: 'Craft', image: 'image-23-2.jpg' },
-  {
-    type: 'craft', chapter: 'Craft',
-    title: 'Creative Development',
-    body: 'Visual direction, structure, and shot logic are established before production begins. Storyboards and early visual exploration define composition, pacing, and technical feasibility, ensuring clarity across production and post.',
-    layout: 'hero-grid', images: ['image-24-2.jpg', 'image-24-5.jpg', 'image-24-4.jpg', 'image-24-6.jpg', 'image-24-7.jpg', 'image-24-9.jpg', 'image-24-8.jpg'],
-  },
-  {
-    type: 'craft', chapter: 'Craft',
-    title: 'CG Integration',
-    body: 'CG elements are embedded into live-action plates using accurate camera tracking, lens calibration, and scene lighting. Surface interaction, shadow behavior, and material response are refined to ensure consistency across motion, grading, and final delivery.',
-    layout: 'row', images: ['image-25-4.jpg', 'image-25-2.jpg', 'image-25-3.jpg'],
-  },
-  {
-    type: 'craft', chapter: 'Craft',
-    title: 'CG Environments',
-    body: 'At any scale, from full digital builds to set extensions and enhancements. We recreate real locations or design new spaces to match the project’s tone, with careful attention to scale, lighting, perspective, and atmosphere. Every environment is built for seamless integration across the sequence.',
-    layout: 'row', images: ['image-26-2.jpg', 'image-26-4.jpg', 'image-26-3.jpg'],
-  },
-  {
-    type: 'craft', chapter: 'Craft',
-    title: 'Compositing',
-    body: 'Live-action and rendered elements are unified through precise control of depth, exposure, color space, and optical response. Integration is refined at the pixel level to ensure visual continuity across the entire sequence.',
-    layout: 'hero-grid', images: ['image-27-4.jpg', 'image-27-2.jpg', 'image-27-7.jpg', 'image-27-6.jpg', 'image-27-5.jpg'],
-  },
-  {
-    type: 'craft', chapter: 'Craft',
-    title: 'Simulation and FX',
-    body: 'Physical motion and environmental interaction are developed using accurate scale, timing, and force behavior. Simulations are refined to respond naturally within the scene and remain consistent across camera perspective and integration.',
-    layout: 'hero-grid', images: ['image-28-4.jpg', 'image-28-8.jpg', 'image-28-5.jpg', 'image-28-3.jpg', 'image-28-6.jpg'],
-  },
-  {
-    type: 'craft', chapter: 'Craft',
-    title: 'Polish',
-    body: 'Cleanup, beauty work, and set extensions as part of finishing, refining continuity and removing distractions that pull focus. From subtle fixes to larger extensions, the result is a clean, cohesive finish that holds up across the sequence and delivers to spec.',
-    layout: 'grid6', images: ['image-29-7.jpg', 'image-29-4.jpg', 'image-29-5.jpg', 'image-29-6.jpg', 'image-29-2.jpg', 'image-29-3.jpg'],
-  },
-  {
-    type: 'craft', chapter: 'Craft',
-    title: 'Sound',
-    body: 'Sound defines space, atmosphere, and emotional weight within the frame. From subtle environmental detail to full cinematic design, every layer is shaped to support the image and reinforce its presence.',
-    layout: 'hero-grid', images: ['image-30-7.jpg', 'image-30-4.jpg', 'image-30-5.jpg', 'image-30-3.jpg', 'image-30-6.jpg'],
-  },
-  {
-    type: 'craft', chapter: 'Craft',
-    title: 'AI-Assisted Workflow',
-    body: 'We integrate AI into live-action and CG workflows as a controlled extension of our process. It allows us to explore, iterate, and build imagery that would otherwise be difficult or time-intensive, while keeping every decision guided by artists. AI remains a tool, supporting realism, precision, and creative intent, never replacing it.',
-    layout: 'hero-grid', images: ['image-31-2.jpg', 'image-31-4.jpg', 'image-31-3.jpg'],
-  },
-  {
-    type: 'focus', chapter: 'Our Focus', nav: 'Our Focus',
-    title: 'Our Focus',
-    body: 'From early development and look exploration to full-shot execution and final polish.',
-    images: [
-      ['image-32-2.jpg', 'Early Development'],
-      ['image-32-5.jpg', 'Look Exploration'],
-      ['image-32-3.webp', 'Full-Shot Execution'],
-      ['image-32-6.webp', 'Matte & Isolation'],
-      ['image-32-4.webp', 'Final Polish'],
-    ],
   },
   {
     type: 'how', chapter: 'How We Work', nav: 'How We Work',
@@ -357,6 +300,13 @@ function tProject(d) {
   </div>`;
 }
 
+function metaLines(meta) {
+  return String(meta)
+    .split(/\s*[—–-]\s*/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
 function caseImages(layout, images) {
   if (layout === 'duo' || layout === 'duo-wide') {
     return `<div class="cs-media cs-duo${layout === 'duo-wide' ? ' wide' : ''}">${images.map((f) => `<div class="cs-cell">${img(f, 'fill')}</div>`).join('')}</div>`;
@@ -367,19 +317,26 @@ function caseImages(layout, images) {
   if (layout === 'mosaic') {
     return `<div class="cs-media cs-mosaic">${images.map((f) => `<div class="cs-cell">${img(f, 'fill')}</div>`).join('')}</div>`;
   }
-  // hero-grid: first image large, rest in a grid
   const [first, ...rest] = images;
+  if (rest.length === 3) {
+    const [a, b, c] = rest;
+    return `<div class="cs-media cs-ppt-grid">
+      <div class="cs-ppt-big cs-cell">${img(first, 'fill')}</div>
+      <div class="cs-ppt-mt cs-cell">${img(a, 'fill')}</div>
+      <div class="cs-ppt-mb cs-cell">${img(b, 'fill')}</div>
+      <div class="cs-ppt-tall cs-cell">${img(c, 'fill')}</div>
+    </div>`;
+  }
   return `<div class="cs-media cs-hero"><div class="cs-cell cs-big">${img(first, 'fill')}</div><div class="cs-rest n${rest.length}">${rest.map((f) => `<div class="cs-cell">${img(f, 'fill')}</div>`).join('')}</div></div>`;
 }
 
 function tCase(d) {
+  const meta = metaLines(d.meta);
   return `
   <div class="sl-case">
-    <div class="cs-head">
-      <div class="cs-headline">
-        <div class="mono lbl">${esc(d.meta)} — ${esc(d.step)}</div>
-        <h2 class="cs-title">${lines(d.title)}</h2>
-      </div>
+    <div class="cs-head-ppt">
+      <h2 class="cs-title">${esc(d.title)}</h2>
+      <div class="cs-meta-col">${meta.map((line) => `<div class="cs-meta">${esc(line)}</div>`).join('')}</div>
       ${d.body.length ? `<div class="cs-copy">${d.body.map((p) => `<p class="body">${esc(p)}</p>`).join('')}</div>` : ''}
     </div>
     ${caseImages(d.layout, d.images)}
@@ -397,11 +354,9 @@ function tCraft(d) {
   }
   return `
   <div class="sl-case sl-craft">
-    <div class="cs-head">
-      <div class="cs-headline">
-        <div class="mono lbl">Craft</div>
-        <h2 class="cs-title">${lines(d.title)}</h2>
-      </div>
+    <div class="cs-head-ppt">
+      <div class="mono cs-craft-lbl">Craft</div>
+      <h2 class="cs-title">${esc(d.title)}</h2>
       <div class="cs-copy"><p class="body">${esc(d.body)}</p></div>
     </div>
     ${media}
@@ -432,7 +387,7 @@ function tHow(d) {
   <div class="sl-how">
     <div class="how-media">${img(d.image, 'fill')}</div>
     <div class="how-copy">
-      <h2 class="cs-title">${lines(d.title)}</h2>
+      <h2 class="cs-title">${esc(d.title)}</h2>
       <div class="how-list">
         ${d.items.map((t, i) => `<div class="how-row"><span class="mono">${String(i + 1).padStart(2, '0')}</span><p>${esc(t)}</p></div>`).join('')}
       </div>
@@ -466,17 +421,6 @@ const TEMPLATES = {
 // ---------------------------------------------------------------------------
 
 const BLEED = new Set(['cover', 'divider', 'project', 'wall']);
-
-// Build index links from first occurrence of each `nav` section label
-const tocItems = [];
-const seenNav = new Set();
-DATA.forEach((d, i) => {
-  if (d.type === 'cover' || d.type === 'toc' || !d.nav || seenNav.has(d.nav)) return;
-  seenNav.add(d.nav);
-  tocItems.push([d.nav, i + 1]);
-});
-const tocEntry = DATA.find((d) => d.type === 'toc');
-if (tocEntry) tocEntry.items = tocItems;
 
 const slidesHtml = DATA.map((d, i) => {
   const inner = TEMPLATES[d.type](d);
