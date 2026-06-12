@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node serve.mjs",
     "dev": "node serve.mjs",
-    "build": "node scripts/prepare-github-pages.mjs",
+    "build": "node scripts/build-deck.mjs && node scripts/prepare-github-pages.mjs",
     "fetch:pitch": "node scripts/fetch-pitch-embed.mjs",
     "build:pitch-deck": "node scripts/build-pitch-deck-data.mjs && node scripts/render-pitch-deck.mjs",
     "merge:capabilities": "node scripts/merge-capabilities-deck.mjs",

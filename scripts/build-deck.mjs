@@ -428,10 +428,12 @@ const slidesHtml = DATA.map((d, i) => {
   return `<section class="${cls}" data-chapter="${esc(d.chapter)}" data-i="${i}">${inner}</section>`;
 }).join('\n');
 
+const buildStamp = new Date().toISOString().slice(0, 10);
 const html = fs
   .readFileSync(path.join(__dirname, 'deck-shell.html'), 'utf8')
   .replace('<!--SLIDES-->', slidesHtml)
-  .replace(/__TOTAL__/g, String(DATA.length));
+  .replace(/__TOTAL__/g, String(DATA.length))
+  .replace('<!--DECK-BUILD-->', `deck v${DATA.length} · ${buildStamp}`);
 
 fs.writeFileSync(OUT, html, 'utf8');
-console.log(`Wrote ${OUT} — ${DATA.length} slides`);
+console.log(`Wrote ${OUT} — ${DATA.length} slides (${buildStamp})`);

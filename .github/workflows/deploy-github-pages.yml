@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: "20"
       - name: Build static site
-        run: node scripts/prepare-github-pages.mjs
+        run: npm run build
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
