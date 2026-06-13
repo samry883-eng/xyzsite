@@ -6,46 +6,48 @@
 <title>XYZ Studios — Capabilities</title>
 <meta name="robots" content="noindex, nofollow">
 <style>
+  @font-face{font-family:'Micross';src:url('/assets/micross.ttf') format('truetype');font-weight:400 700;font-display:swap}
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  :root{--bg:#070707;--ink:#f4f4f2;--dim:rgba(244,244,242,.55);--faint:rgba(244,244,242,.3);--line:rgba(244,244,242,.12);--ease:cubic-bezier(.16,1,.3,1)}
-  html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  :root{--bg:#000;--ink:#fff;--dim:rgba(255,255,255,.5);--faint:rgba(255,255,255,.28);--line:rgba(255,255,255,.12);--ease:cubic-bezier(.16,1,.3,1)}
+  html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font-family:'Micross',Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
   html.deck-protect,html.deck-protect body{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
   img{-webkit-user-drag:none}
-  .chrome{position:absolute;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:26px 40px;pointer-events:none}
-  .chrome .brand{font-size:11px;font-weight:400;letter-spacing:.13em}
-  .chrome .meta{font-size:11px;color:var(--faint);letter-spacing:.06em}
+  .chrome{position:absolute;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:26px 34px;pointer-events:none}
+  .chrome .brand{font-size:10px;font-weight:700;letter-spacing:.24em;text-transform:uppercase}
+  .chrome .meta{font-size:10px;color:var(--faint);letter-spacing:.18em;text-transform:uppercase}
   .wrap{position:fixed;inset:0;display:flex}
-  .panel{position:relative;flex:1 1 50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:var(--ink);overflow:hidden;cursor:pointer;transition:flex-grow .7s var(--ease);background:#050505}
+  .panel{position:relative;flex:1 1 50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:var(--ink);overflow:hidden;cursor:pointer;transition:flex-grow .8s var(--ease);background:#050505}
   .panel+.panel{border-left:1px solid var(--line)}
-  .panel-bg{position:absolute;inset:0;z-index:0;background-size:cover;background-position:center;opacity:.32;transform:scale(1.05);transition:opacity .7s var(--ease),transform 1.3s var(--ease);filter:grayscale(.25)}
-  .panel-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,5,5,.5),rgba(5,5,5,.28) 45%,rgba(5,5,5,.78))}
-  .panel-inner{position:relative;z-index:2;text-align:center;display:flex;flex-direction:column;align-items:center;padding:0 24px;transition:transform .7s var(--ease)}
-  .kick{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--faint);margin-bottom:20px}
-  .title{font-size:clamp(46px,7.5vw,104px);font-weight:700;letter-spacing:-.03em;line-height:.9;text-transform:uppercase}
-  .sub{margin-top:18px;max-width:30ch;font-size:12.5px;font-weight:300;line-height:1.6;color:var(--dim)}
-  .cta{margin-top:28px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;display:inline-flex;align-items:center;gap:9px;opacity:0;transform:translateY(8px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
-  .cta .arr{transition:transform .5s var(--ease)}
+  .panel-bg{position:absolute;inset:0;z-index:0;background-size:cover;background-position:center;opacity:.3;transform:scale(1.06);transition:opacity .8s var(--ease),transform 1.4s var(--ease);filter:grayscale(.4)}
+  .panel-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,.3) 45%,rgba(0,0,0,.82))}
+  .panel-inner{position:relative;z-index:2;text-align:center;display:flex;flex-direction:column;align-items:center;padding:0 24px;transition:transform .8s var(--ease)}
+  .kick{font-size:9px;letter-spacing:.34em;text-transform:uppercase;color:var(--faint);margin-bottom:22px}
+  .title{font-size:clamp(52px,8vw,120px);font-weight:700;letter-spacing:-.04em;line-height:.86;text-transform:uppercase}
+  .sub{margin-top:22px;max-width:30ch;font-size:12px;font-weight:400;line-height:1.7;color:var(--dim)}
+  .cta{margin-top:30px;font-size:10px;letter-spacing:.24em;text-transform:uppercase;display:inline-flex;align-items:center;gap:10px;color:#fff;opacity:0;transform:translateY(8px);transition:opacity .55s var(--ease),transform .55s var(--ease)}
+  .cta .arr{transition:transform .55s var(--ease)}
   @media (hover:hover) and (min-width:880px){
-    .wrap:hover .panel{flex-grow:.85}
-    .wrap:hover .panel:hover{flex-grow:1.3}
-    .panel:hover .panel-bg{opacity:.6;transform:scale(1);filter:grayscale(0)}
+    .wrap:hover .panel{flex-grow:.82}
+    .wrap:hover .panel:hover{flex-grow:1.36}
+    .panel:hover .panel-bg{opacity:.62;transform:scale(1);filter:grayscale(0)}
     .panel:hover .cta{opacity:1;transform:translateY(0)}
-    .panel:hover .cta .arr{transform:translateX(5px)}
-    .panel:hover .panel-inner{transform:translateY(-4px)}
+    .panel:hover .cta .arr{transform:translateX(6px)}
+    .panel:hover .panel-inner{transform:translateY(-6px)}
   }
   @media (max-width:879px){
     .wrap{flex-direction:column}
     .panel+.panel{border-left:none;border-top:1px solid var(--line)}
     .cta{opacity:.85;transform:none}
-    .title{font-size:clamp(40px,13vw,72px)}
-    .chrome{padding:18px 22px}
+    .title{font-size:clamp(44px,15vw,80px)}
+    .panel-bg{opacity:.4}
+    .chrome{padding:18px 20px}
   }
 </style>
 </head>
 <body>
-  <div class="chrome"><span class="brand">XYZSTUDIOS</span><span class="meta">CAPABILITIES · 2026</span></div>
+  <div class="chrome"><span class="brand">XYZSTUDIOS</span><span class="meta">Capabilities &middot; 2026</span></div>
   <div class="wrap">
-    <a class="panel" href="/capabilities/vfx" aria-label="VFX capabilities">
+    <a class="panel" href="/capabilities/vfx" aria-label="VFX capabilities deck">
       <div class="panel-bg" style="background-image:url('/capabilities/vfx/media/cover-photo.jpg')"></div>
       <div class="panel-inner">
         <div class="kick">Post-Production</div>
@@ -54,8 +56,8 @@
         <span class="cta">View deck <span class="arr">&rarr;</span></span>
       </div>
     </a>
-    <a class="panel" href="/capabilities/sound" aria-label="Sound capabilities">
-      <div class="panel-bg" style="background-image:url('/capabilities/sound/slide-08.jpg')"></div>
+    <a class="panel" href="/capabilities/sound" aria-label="Sound capabilities deck">
+      <div class="panel-bg" style="background-image:url('https://cdn.prod.website-files.com/69174740184591f142f019c1/69c0b94d0ebe8f3b86741b7a_214a3ae2-01ca-4593-8949-98a7191f6548.mp4_snapshot_00.12.156.jpg')"></div>
       <div class="panel-inner">
         <div class="kick">Audio</div>
         <div class="title">Sound</div>
