@@ -632,5 +632,36 @@
     if (entries[0].isIntersecting) { credits.classList.add('revealed'); obs.disconnect(); }
   }, { threshold: 0.05 }).observe(credits);
 </script>
+<style id="xyz-center-play">
+  #pj-center-play{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); z-index:30;
+    width:76px; height:76px; border-radius:50%; padding:0; cursor:pointer;
+    border:1px solid rgba(255,255,255,.6); background:rgba(0,0,0,.4);
+    display:flex; align-items:center; justify-content:center; touch-action:manipulation;
+    -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px); transition:opacity .25s ease, background .2s ease; }
+  #pj-center-play svg{ width:26px; height:26px; fill:#fff; display:block; }
+  #pj-center-play.xyz-on{ opacity:.28; }
+  #pj-center-play.xyz-on:hover, #pj-center-play.xyz-on:active{ opacity:1; }
+</style>
+<script>
+(function(){
+  var PLAY='<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+  var PAUSE='<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
+  function init(){
+    var vid=document.getElementById('pj-video'); if(!vid) return false;
+    var wrap=vid.closest('.pj-video-frame')||vid.parentElement; if(!wrap) return false;
+    if(document.getElementById('pj-center-play')) return true;
+    if(getComputedStyle(wrap).position==='static') wrap.style.position='relative';
+    var b=document.createElement('button'); b.type='button'; b.id='pj-center-play'; b.setAttribute('aria-label','Play/pause');
+    b.innerHTML=PLAY; wrap.appendChild(b);
+    function sync(){ if(vid.paused){ b.classList.remove('xyz-on'); b.innerHTML=PLAY; } else { b.classList.add('xyz-on'); b.innerHTML=PAUSE; } }
+    b.addEventListener('click',function(e){ e.preventDefault(); e.stopPropagation();
+      if(vid.paused){ var p=vid.play(); if(p&&p.catch)p.catch(function(){}); } else { vid.pause(); } });
+    vid.addEventListener('play',sync); vid.addEventListener('pause',sync); vid.addEventListener('ended',sync); sync();
+    return true;
+  }
+  if(!init()){ var n=0,iv=setInterval(function(){ n++; if(init()||n>60)clearInterval(iv); },200); }
+  document.addEventListener('DOMContentLoaded',init); window.addEventListener('load',init);
+})();
+</script>
 </body>
 </html>
