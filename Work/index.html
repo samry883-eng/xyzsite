@@ -1706,7 +1706,7 @@
 </script>
 <style id="xyz-work-mobile">
 @media (max-width: 768px){
-  html, body{ overflow-y:auto !important; overflow-x:hidden !important; height:auto !important; }
+  html, body{ overflow-y:auto !important; overflow-x:hidden !important; height:auto !important; touch-action:pan-y !important; }
   #xyz-work-tabs{ position:fixed; left:0; right:0; z-index:1002;
     display:flex; justify-content:space-between; align-items:center;
     padding:16px 20px; background:transparent; transition:opacity .3s ease, transform .3s ease; }
@@ -1723,7 +1723,9 @@
   .work-row.xyz-hide{ display:none !important; }
   .work-row-scrub, .work-row-header{ display:none !important; }
   .work-row-cards{ display:block !important; height:auto !important; min-height:0 !important;
-    overflow:visible !important; padding:0 26px 48px !important; container-type:normal !important; }
+    overflow:visible !important; overflow-x:visible !important; overflow-y:visible !important;
+    touch-action:pan-y !important; overscroll-behavior:auto !important;
+    padding:0 26px 48px !important; container-type:normal !important; }
   .work-card-wrap{ display:flex !important; flex-direction:column !important; width:100% !important; max-width:100% !important;
     height:auto !important; max-height:none !important; flex:none !important; margin:0 0 32px !important;
     transform:none !important; scroll-snap-align:none !important; }
