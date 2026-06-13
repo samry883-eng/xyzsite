@@ -385,26 +385,27 @@
   </style>
   <link rel="prefetch" href="/projects/">
 <style id="xyz-contact-fix">
-  /* Tighten lines within a group; smaller heading; no input zoom */
-  .ct-phrase{ font-size: clamp(34px, 4.6vw, 46px) !important; }
-  .ct-section-links{ gap: 4px !important; }
-  .ct-section-label{ margin-bottom: 5px !important; }
-  .ct-section{ margin-bottom: 22px !important; }
-  form input, form textarea, .ct-right input, .ct-right textarea{ font-size:16px !important; }
-  /* Desktop: bring the form up (was pushed down by 221px) */
+  /* DESKTOP: only change — raise the form (was 221px, too low on laptops) */
   .ct-right{ padding-top: clamp(48px, 9vh, 120px) !important; }
-  /* Mobile: stacked, scrollable sections */
+  /* PHONE ONLY */
   @media (max-width: 768px){
     html, body{ height:auto !important; overflow-y:auto !important; overflow-x:hidden !important; }
     .ct-page{ height:auto !important; min-height:auto !important; display:block !important; padding-top:calc(var(--nav-h) + 6px) !important; }
     .ct-main{ display:block !important; }
-    .ct-left{ display:block !important; width:100% !important; padding:24px 22px 0 !important; }
-    .ct-right{ display:block !important; width:100% !important; padding:0 22px 36px !important; }
-    .ct-hero{ margin-bottom:30px !important; }
-    .ct-sections{ margin-bottom:36px !important; }
-    .ct-foot{ display:flex !important; flex-direction:column !important; gap:18px !important;
-      padding:30px 22px calc(40px + env(safe-area-inset-bottom,0px)) !important;
-      border-top:1px solid rgba(255,255,255,.12) !important; }
+    .ct-left{ display:block !important; width:100% !important; padding:22px 22px 0 !important; }
+    .ct-right{ display:block !important; width:100% !important; padding:6px 22px 40px !important; }
+    .ct-phrase{ font-size: clamp(30px, 9vw, 40px) !important; }
+    .ct-hero{ margin-bottom:26px !important; }
+    .ct-sections{ margin-bottom:30px !important; }
+    .ct-section{ margin-bottom:20px !important; }
+    .ct-section-links{ gap:4px !important; }
+    .ct-section-label{ margin-bottom:5px !important; }
+    form input, form textarea, .ct-right input, .ct-right textarea{ font-size:16px !important; }
+    .ct-foot{ display:none !important; }
+    .ct-moved{ margin-bottom:20px !important; }
+    .ct-moved .ct-foot-label{ font-size:8px !important; letter-spacing:.14em !important; text-transform:uppercase !important; color:rgba(255,255,255,.5) !important; margin-bottom:5px !important; }
+    .ct-moved .ct-foot-info{ display:flex !important; flex-direction:column !important; gap:4px !important; }
+    .ct-moved .ct-foot-loc{ font-size:9px !important; letter-spacing:.04em !important; color:rgba(255,255,255,.4) !important; margin-top:3px !important; }
   }
 </style>
 </head>
@@ -442,36 +443,13 @@
           </div>
         </div>
         <div class="ct-section">
-          <div class="anim-wrap"><div class="ct-section-label anim-item soft" id="an-ft1">Samry Yussuf</div></div>
-          <div class="ct-section-links">
-            <div class="anim-wrap"><a href="mailto:samry@xyzstudios.co" class="anim-item soft" id="an-ft2">samry@xyzstudios.co</a></div>
-            <div class="anim-wrap"><a href="tel:+15873405824" class="anim-item soft" id="an-ft3">+1 587 340 5824</a></div>
-            <div class="anim-wrap"><div class="anim-item soft" id="an-ft4" style="font-size:9px;letter-spacing:.04em;color:rgba(255,255,255,.4);margin-top:3px;">Canada</div></div>
-          </div>
-        </div>
-        <div class="ct-section">
-          <div class="anim-wrap"><div class="ct-section-label anim-item soft" id="an-ft5">Dris Yousif</div></div>
-          <div class="ct-section-links">
-            <div class="anim-wrap"><a href="mailto:dris@xyzstudios.co" class="anim-item soft" id="an-ft6">dris@xyzstudios.co</a></div>
-            <div class="anim-wrap"><a href="tel:+97471015571" class="anim-item soft" id="an-ft7">+974 7101 5571</a></div>
-            <div class="anim-wrap"><div class="anim-item soft" id="an-ft8" style="font-size:9px;letter-spacing:.04em;color:rgba(255,255,255,.4);margin-top:3px;">Qatar</div></div>
-          </div>
-        </div>
-        <div class="ct-section">
           <div class="anim-wrap"><div class="ct-section-label anim-item soft" id="an-s4">Join Us</div></div>
           <div class="ct-section-links">
             <div class="anim-wrap"><span class="anim-item soft" id="an-s5">Artists interested in working with us can submit their portfolio<br>and a brief introduction for future collaboration opportunities.</span></div>
             <div class="anim-wrap"><a href="mailto:careers@xyzstudios.co" class="anim-item soft" id="an-s6">careers@xyzstudios.co</a></div>
           </div>
         </div>
-      <div class="ct-section">
-          <div class="anim-wrap"><div class="ct-section-label anim-item soft" id="an-ft9">Follow Us</div></div>
-          <div class="ct-section-links">
-            <div class="anim-wrap"><a href="https://www.instagram.com/xyz__studios/" target="_blank" rel="noopener" class="anim-item soft" id="an-ft10">Instagram</a></div>
-            <div class="anim-wrap"><a href="https://www.linkedin.com/company/xyzstudioss/" target="_blank" rel="noopener" class="anim-item soft" id="an-ft11">LinkedIn</a></div>
-          </div>
-        </div>
-        </div>
+      </div>
 
     </div>
 
@@ -511,7 +489,33 @@
   </div>
 
   <!-- FOOTER -->
-  
+  <div class="ct-foot">
+    <div class="ct-foot-left">
+      <div>
+        <div class="anim-wrap"><div class="ct-foot-label anim-item soft" id="an-ft1">Samry Yussuf</div></div>
+        <div class="ct-foot-info">
+          <div class="anim-wrap"><a href="mailto:samry@xyzstudios.co" class="anim-item soft" id="an-ft2">samry@xyzstudios.co</a></div>
+          <div class="anim-wrap"><a href="tel:+15873405824" class="anim-item soft" id="an-ft3">+1 587 340 5824</a></div>
+        </div>
+        <div class="anim-wrap"><div class="ct-foot-loc anim-item soft" id="an-ft4">Canada</div></div>
+      </div>
+      <div>
+        <div class="anim-wrap"><div class="ct-foot-label anim-item soft" id="an-ft5">Dris Yousif</div></div>
+        <div class="ct-foot-info">
+          <div class="anim-wrap"><a href="mailto:dris@xyzstudios.co" class="anim-item soft" id="an-ft6">dris@xyzstudios.co</a></div>
+          <div class="anim-wrap"><a href="tel:+97471015571" class="anim-item soft" id="an-ft7">+974 7101 5571</a></div>
+        </div>
+        <div class="anim-wrap"><div class="ct-foot-loc anim-item soft" id="an-ft8">Qatar</div></div>
+      </div>
+    </div>
+    <div class="ct-foot-right">
+      <div class="anim-wrap"><div class="ct-foot-label anim-item soft" id="an-ft9">Follow Us</div></div>
+      <div class="ct-foot-info">
+        <div class="anim-wrap"><a href="https://www.instagram.com/xyz__studios/" target="_blank" rel="noopener" class="anim-item soft" id="an-ft10">Instagram</a></div>
+        <div class="anim-wrap"><a href="https://www.linkedin.com/company/xyzstudioss/" target="_blank" rel="noopener" class="anim-item soft" id="an-ft11">LinkedIn</a></div>
+      </div>
+    </div>
+  </div>
 
 </div>
 
@@ -1018,6 +1022,24 @@
     e.preventDefault();
     navigateTo(u.pathname+u.search+u.hash);
   },true);
+})();
+</script>
+<script id="xyz-contact-mobile">
+(function(){
+  if(!window.matchMedia('(max-width: 768px)').matches) return;
+  function go(){
+    var sections=document.querySelector('.ct-sections'); var foot=document.querySelector('.ct-foot');
+    if(!sections||!foot) return false; if(foot.dataset.moved) return true;
+    var joinSec=null;
+    sections.querySelectorAll('.ct-section').forEach(function(s){ var l=s.querySelector('.ct-section-label'); if(l && /join\s*us/i.test(l.textContent)) joinSec=s; });
+    if(!joinSec) return false;
+    var fl=foot.querySelector('.ct-foot-left'), fr=foot.querySelector('.ct-foot-right');
+    if(fl){ [].slice.call(fl.children).forEach(function(b){ b.classList.add('ct-moved'); sections.insertBefore(b, joinSec); }); }
+    if(fr){ fr.classList.add('ct-moved'); if(joinSec.nextSibling){ sections.insertBefore(fr, joinSec.nextSibling); } else { sections.appendChild(fr); } }
+    foot.dataset.moved='1'; return true;
+  }
+  if(!go()){ var n=0,iv=setInterval(function(){ n++; if(go()||n>40) clearInterval(iv); },150); }
+  document.addEventListener('DOMContentLoaded',go); window.addEventListener('load',go);
 })();
 </script>
 </body>
