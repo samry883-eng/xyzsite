@@ -343,6 +343,8 @@ function upd(item,node,idx){
   node.setAttribute('data-slide-index',idx);
   var t=node.querySelector('.text-block-61'); if(t)t.textContent=item.title||'';
   var cl=node.querySelector('.text-block-62'); if(cl)cl.textContent=item.client||'';
+  var hh=node.querySelector('.hero_content-heading'); if(hh)hh.textContent=item.title||'';
+  var hs=node.querySelector('.hero_content-subheading'); if(hs)hs.textContent=item.client||'';
   var s=sec(item.start);
   var ts=node.querySelector('.projects_item-timestamp'); if(ts)ts.textContent=String(s);
   var list=node.querySelector('.projects_tags .collection-list');
