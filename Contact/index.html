@@ -402,10 +402,13 @@
     .ct-section-label{ margin-bottom:5px !important; }
     form input, form textarea, .ct-right input, .ct-right textarea{ font-size:16px !important; }
     .ct-foot{ display:none !important; }
-    .ct-moved{ margin-bottom:20px !important; }
-    .ct-moved .ct-foot-label{ font-size:8px !important; letter-spacing:.14em !important; text-transform:uppercase !important; color:rgba(255,255,255,.5) !important; margin-bottom:5px !important; }
+    /* moved blocks */
+    .ct-foot-left.ct-moved{ display:grid !important; grid-template-columns:1fr 1fr !important; gap:16px !important; padding:0 !important; margin-bottom:20px !important; min-width:0 !important; }
+    .ct-foot-right.ct-moved{ display:block !important; padding:0 !important; margin-bottom:20px !important; }
+    .ct-moved .ct-foot-label{ font-size:8px !important; letter-spacing:.18em !important; color:#fff !important; margin-bottom:6px !important; }
     .ct-moved .ct-foot-info{ display:flex !important; flex-direction:column !important; gap:4px !important; }
-    .ct-moved .ct-foot-loc{ font-size:9px !important; letter-spacing:.04em !important; color:rgba(255,255,255,.4) !important; margin-top:3px !important; }
+    .ct-moved .ct-foot-info a{ font-size:13px !important; color:rgba(255,255,255,.32) !important; }
+    .ct-moved .ct-foot-loc{ font-size:8px !important; letter-spacing:.16em !important; color:rgba(255,255,255,.18) !important; margin-top:6px !important; }
   }
 </style>
 </head>
@@ -1034,7 +1037,7 @@
     sections.querySelectorAll('.ct-section').forEach(function(s){ var l=s.querySelector('.ct-section-label'); if(l && /join\s*us/i.test(l.textContent)) joinSec=s; });
     if(!joinSec) return false;
     var fl=foot.querySelector('.ct-foot-left'), fr=foot.querySelector('.ct-foot-right');
-    if(fl){ [].slice.call(fl.children).forEach(function(b){ b.classList.add('ct-moved'); sections.insertBefore(b, joinSec); }); }
+    if(fl){ fl.classList.add('ct-moved'); sections.insertBefore(fl, joinSec); }
     if(fr){ fr.classList.add('ct-moved'); if(joinSec.nextSibling){ sections.insertBefore(fr, joinSec.nextSibling); } else { sections.appendChild(fr); } }
     foot.dataset.moved='1'; return true;
   }
