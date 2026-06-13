@@ -622,5 +622,37 @@
     window.addEventListener('touchend', onTouchEnd, { passive: true });
   })();
 </script>
+<style id="xyz-center-play">
+  #pj-center-play{ position:absolute; left:50%; top:calc(var(--nav-h) + var(--pj-stage-h)/2); transform:translate(-50%,-50%);
+    z-index:30; width:76px; height:76px; border-radius:50%; padding:0; cursor:pointer;
+    border:1px solid rgba(255,255,255,.6); background:rgba(0,0,0,.4);
+    display:flex; align-items:center; justify-content:center; touch-action:manipulation;
+    -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px); transition:opacity .25s ease, background .2s ease; }
+  #pj-center-play svg{ width:26px; height:26px; fill:#fff; display:block; }
+  #pj-center-play.pj-hide{ opacity:0; pointer-events:none; }
+  .pj-video-wrap:fullscreen #pj-center-play, .pj-video-wrap:-webkit-full-screen #pj-center-play{ top:50%; }
+</style>
+<script>
+(function(){
+  function init(){
+    var wrap=document.getElementById('pj-video-wrap');
+    var vid=document.getElementById('pj-video');
+    if(!wrap||!vid){ return false; }
+    if(document.getElementById('pj-center-play')) return true;
+    var b=document.createElement('button'); b.type='button'; b.id='pj-center-play';
+    b.setAttribute('aria-label','Play/pause');
+    b.innerHTML='<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+    wrap.appendChild(b);
+    function sync(){ b.classList.toggle('pj-hide', !vid.paused); }
+    b.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation();
+      if(vid.paused){ var p=vid.play(); if(p&&p.catch)p.catch(function(){}); } else { vid.pause(); } });
+    vid.addEventListener('play', sync); vid.addEventListener('pause', sync); vid.addEventListener('ended', sync);
+    sync();
+    return true;
+  }
+  if(!init()){ var n=0, iv=setInterval(function(){ n++; if(init()||n>60) clearInterval(iv); },200); }
+  document.addEventListener('DOMContentLoaded', init); window.addEventListener('load', init);
+})();
+</script>
 </body>
 </html>
