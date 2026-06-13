@@ -1830,8 +1830,13 @@
       Object.keys(order.projects||{}).forEach(function(k){ if(normCat(k)===nc) keys=order.projects[k]; });
       if(!keys) return;
       var cw=row.querySelector('.work-row-cards'); if(!cw) return;
-      var byKey={}; [].slice.call(cw.querySelectorAll('.work-card-wrap:not([data-clone])')).forEach(function(w){ byKey[w.dataset.okey]=w; });
-      keys.forEach(function(k){ if(byKey[k]) cw.appendChild(byKey[k]); });
+      var cards=[].slice.call(cw.querySelectorAll('.work-card-wrap'));
+      var origs=cards.filter(function(c){return !c.dataset.clone;}); if(!origs.length) return;
+      var leftC=[], rightC=[], seen=false;
+      cards.forEach(function(c){ if(!c.dataset.clone){ seen=true; return; } if(!seen) leftC.push(c); else rightC.push(c); });
+      function ordered(group){ var byk={}; group.forEach(function(w){ byk[w.dataset.okey]=w; }); var out=[]; keys.forEach(function(k){ if(byk[k]){ out.push(byk[k]); delete byk[k]; } }); group.forEach(function(w){ if(out.indexOf(w)<0) out.push(w); }); return out; }
+      var seq=ordered(leftC).concat(ordered(origs)).concat(ordered(rightC));
+      seq.forEach(function(node){ cw.appendChild(node); });
     });
     if(order.categories){ var byCat={}; rows.forEach(function(r){ var c=r.querySelector('.work-row-cat'); if(c) byCat[normCat(c.textContent)]=r; });
       order.categories.forEach(function(lab){ var r=byCat[normCat(lab)]; if(r) showcase.appendChild(r); }); }
