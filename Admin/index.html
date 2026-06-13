@@ -31,7 +31,9 @@
 
   .sec{margin-bottom:16px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,#101013,#0d0d10);overflow:hidden;box-shadow:0 1px 0 rgba(255,255,255,.02) inset}
   .sec-head{display:flex;align-items:center;gap:11px;padding:15px 17px}
-  .sec-head .cat-grip{color:var(--dim2);font-size:14px;cursor:grab;line-height:1;letter-spacing:-3px}
+  .sec-head .cat-grip{color:var(--dim2);font-size:18px;cursor:grab;line-height:1;padding:8px 8px;margin:-8px -2px;border-radius:6px;touch-action:none;-webkit-user-select:none;user-select:none;transition:color .15s,background .15s}
+  .sec-head .cat-grip:hover{color:#fff;background:rgba(255,255,255,.05)}
+  .sec-head .cat-grip:active{cursor:grabbing}
   .sec-head .lbl{font-size:12.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#fff}
   .sec-head .count{font-size:10px;color:var(--dim2);background:var(--card2);border:1px solid var(--line);border-radius:20px;padding:2px 9px;letter-spacing:.04em}
   .sec-head .hint{margin-left:auto;font-size:10px;color:var(--dim2);letter-spacing:.04em}
@@ -41,8 +43,9 @@
   .row:hover{border-color:var(--line2)}
   .row.sortable-ghost{opacity:.3}
   .row.sortable-chosen{background:#1a1a1f;border-color:#34343c}
-  .row .grip{color:var(--dim2);cursor:grab;font-size:16px;line-height:1;letter-spacing:-3px;flex:0 0 auto;padding:0 1px;transition:color .15s}
-  .row .grip:hover{color:var(--dim)}
+  .row .grip{color:var(--dim2);cursor:grab;font-size:19px;line-height:1;flex:0 0 auto;padding:10px 8px;margin:-6px 0;border-radius:6px;flex:0 0 auto;transition:color .15s,background .15s;touch-action:none;-webkit-user-select:none;user-select:none}
+  .row .grip:hover{color:#fff;background:rgba(255,255,255,.05)}
+  .row .grip:active{cursor:grabbing}
   .row .num{width:16px;flex:0 0 auto;font-size:10px;color:var(--dim2);text-align:center;font-variant-numeric:tabular-nums}
   .thumb{flex:0 0 auto;width:72px;height:41px;border-radius:7px;overflow:hidden;position:relative;background:#000;border:1px solid var(--line)}
   .thumb img{width:100%;height:100%;object-fit:cover;display:block}
@@ -101,7 +104,7 @@
       <h1>XYZ Studios — Admin</h1>
       <button class="logout" id="logoutBtn">Log out</button>
     </div>
-    <div class="sub">Drag to reorder &middot; type to rename &middot; publish when ready</div>
+    <div class="sub">Drag the \u2261 handle to reorder &middot; type to rename &middot; on phone, press &amp; hold then drag</div>
     <div id="sections"></div>
   </div>
 </div>
@@ -163,7 +166,7 @@ function render(){
       var m=projMeta(cat,key); if(!m) return;
       var ov=(ORDER.meta||{})[m.mkey]||{};
       var r=el('div','row'); r.dataset.key=key; r.dataset.mkey=m.mkey;
-      r.appendChild(el('span','grip','\u2237'));
+      r.appendChild(el('span','grip','\u2261'));
       r.appendChild(thumb(m.poster));
       var f=el('div','fld');
       f.appendChild(inp('brand',ov.client!=null?ov.client:m.client));
@@ -177,10 +180,10 @@ function render(){
       body.appendChild(mb);
     }
     sec.appendChild(body); catWrap.appendChild(sec);
-    new Sortable(pl,{animation:160,handle:'.grip',ghostClass:'sortable-ghost',chosenClass:'sortable-chosen',onSort:dirty});
+    new Sortable(pl,{animation:160,handle:'.grip',draggable:'.row',filter:'input',preventOnFilter:false,ghostClass:'sortable-ghost',chosenClass:'sortable-chosen',forceFallback:true,fallbackTolerance:5,delay:160,delayOnTouchOnly:true,touchStartThreshold:6,onSort:dirty});
   });
   root.appendChild(catWrap);
-  new Sortable(catWrap,{animation:160,handle:'.cat-grip',ghostClass:'sortable-ghost',onSort:dirty});
+  new Sortable(catWrap,{animation:160,handle:'.cat-grip',draggable:'.cat-section',ghostClass:'sortable-ghost',forceFallback:true,fallbackTolerance:5,delay:160,delayOnTouchOnly:true,touchStartThreshold:6,onSort:dirty});
 
   var gs=el('div','sec'); gs.appendChild(headEl('Capabilities Deck Access','who can open the deck',false));
   var gb=el('div','sec-body'); gb.id='grantsBody'; gs.appendChild(gb); root.appendChild(gs);
@@ -189,7 +192,7 @@ function render(){
 function catLabelDisplay(c){ return c==='Visual Effects'?'VFX':c; }
 function headEl(label,count,drag){
   var h=el('div','sec-head');
-  if(drag) h.appendChild(el('span','cat-grip','\u2237'));
+  if(drag) h.appendChild(el('span','cat-grip','\u2261'));
   h.appendChild(el('span','lbl',label));
   h.appendChild(el('span','count',count));
   h.appendChild(el('span','hint',drag?'drag \u2237 to reorder':''));
