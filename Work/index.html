@@ -1706,21 +1706,26 @@
 </script>
 <style id="xyz-work-mobile">
 @media (max-width: 768px){
+  html, body{ overflow-y:auto !important; height:auto !important; }
   #xyz-work-tabs{ position:sticky; z-index:60; display:flex; gap:26px;
     justify-content:center; align-items:center; padding:12px 16px; background:#0b0b0b; }
   #xyz-work-tabs button{ background:none; border:0; cursor:pointer; padding:2px;
     color:rgba(255,255,255,.38); font:400 11px/1 Micross,Arial,sans-serif;
     letter-spacing:.18em; text-transform:uppercase; transition:color .25s; }
   #xyz-work-tabs button.active{ color:#fff; }
-  .work-showcase{ padding-top:0 !important; }
-  .work-row{ opacity:1 !important; transform:none !important; will-change:auto !important; margin:0 !important; }
+  .work-showcase{ display:block !important; position:relative !important; top:auto !important;
+    height:auto !important; max-height:none !important; min-height:0 !important; padding-top:0 !important; }
+  .work-row{ display:block !important; flex:none !important; height:auto !important; min-height:0 !important;
+    opacity:1 !important; transform:none !important; will-change:auto !important; margin:0 !important; }
   .work-row.xyz-hide{ display:none !important; }
   .work-row-scrub, .work-row-header{ display:none !important; }
-  .work-row-cards{ display:block !important; overflow:visible !important; padding:0 16px 32px !important; container-type:normal !important; }
+  .work-row-cards{ display:block !important; height:auto !important; min-height:0 !important;
+    overflow:visible !important; padding:0 16px 32px !important; container-type:normal !important; }
   .work-card-wrap{ display:flex !important; flex-direction:column !important; width:100% !important; max-width:100% !important;
     height:auto !important; max-height:none !important; flex:none !important; margin:0 0 26px !important;
     transform:none !important; scroll-snap-align:none !important; }
-  .work-card-wrap .wc-tilt{ order:1 !important; transform:none !important; width:100% !important; height:auto !important; display:block !important; }
+  .work-card-wrap .wc-tilt{ order:1 !important; flex:0 0 auto !important; transform:none !important;
+    width:100% !important; height:auto !important; display:block !important; }
   .work-card{ position:relative !important; width:100% !important; height:auto !important;
     aspect-ratio:16/9 !important; flex:none !important; min-height:0 !important; overflow:hidden !important; }
   .work-card .wc-card-poster, .work-card .wc-hover-video{ position:absolute !important; inset:0 !important;
@@ -1731,6 +1736,7 @@
     white-space:normal !important; color:rgba(255,255,255,.85) !important;
     font:400 11px/1.35 Micross,Arial,sans-serif !important; letter-spacing:.06em !important; }
   .work-card-wrap[data-clone]{ display:none !important; }
+  .work-fade-right{ display:none !important; }
 }
 </style>
 <script>
