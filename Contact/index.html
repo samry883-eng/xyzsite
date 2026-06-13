@@ -384,6 +384,23 @@
     }
   </style>
   <link rel="prefetch" href="/projects/">
+<style id="xyz-contact-fix">
+  /* Desktop: bring the form up (was pushed down by 221px) */
+  .ct-right{ padding-top: clamp(48px, 9vh, 120px) !important; }
+  /* Mobile: stacked, scrollable sections */
+  @media (max-width: 768px){
+    html, body{ height:auto !important; overflow-y:auto !important; overflow-x:hidden !important; }
+    .ct-page{ height:auto !important; min-height:auto !important; display:block !important; padding-top:calc(var(--nav-h) + 6px) !important; }
+    .ct-main{ display:block !important; }
+    .ct-left{ display:block !important; width:100% !important; padding:24px 22px 0 !important; }
+    .ct-right{ display:block !important; width:100% !important; padding:0 22px 36px !important; }
+    .ct-hero{ margin-bottom:30px !important; }
+    .ct-sections{ margin-bottom:36px !important; }
+    .ct-foot{ display:flex !important; flex-direction:column !important; gap:18px !important;
+      padding:30px 22px calc(40px + env(safe-area-inset-bottom,0px)) !important;
+      border-top:1px solid rgba(255,255,255,.12) !important; }
+  }
+</style>
 </head>
 <body>
 <div id="page-out" style="position:fixed;inset:0;z-index:9999;background:#fff;pointer-events:none;transform:translateY(0);"><img id="page-out-logo" src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt=""></div>
