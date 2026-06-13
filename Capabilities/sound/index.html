@@ -45,7 +45,7 @@
   </div>
 <script>
   var TOTAL=15;
-  var PATH=function(i){return "slides/slide-"+String(i+1).padStart(2,"0")+".jpg";};
+  var PATH=function(i){return "slide-"+String(i+1).padStart(2,"0")+".jpg";};
   var stage=document.getElementById("stage"),dotsEl=document.getElementById("dots"),ct=document.getElementById("ct");
   var pad=function(n){return String(n).padStart(2,"0");},cur=0,slides=[];
   for(var i=0;i<TOTAL;i++){
