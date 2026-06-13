@@ -77,6 +77,12 @@
   .morebtn{display:block;width:calc(100% - 6px);margin:6px 3px 2px;padding:10px;background:transparent;border:1px dashed var(--line2);border-radius:10px;color:var(--dim);font-size:11px;letter-spacing:.1em;text-transform:uppercase;transition:.15s}
   .morebtn:hover{border-color:#3a3a42;color:#fff;background:rgba(255,255,255,.02)}
   .cat-section.collapsed .plist .row:nth-child(n+4){display:none}
+  .arrows{display:flex;flex-direction:column;gap:3px;flex:0 0 auto;margin-left:6px}
+  .arrows .ar,.catarrows .ar{width:30px;height:20px;line-height:1;font-size:9px;background:var(--card);border:1px solid var(--line2);color:var(--dim);border-radius:6px;display:flex;align-items:center;justify-content:center;padding:0;touch-action:manipulation}
+  .arrows .ar:hover,.catarrows .ar:hover{color:#fff;border-color:#3a3a42;background:rgba(255,255,255,.05)}
+  .arrows .ar:active,.catarrows .ar:active{background:rgba(107,138,253,.18)}
+  .catarrows{display:flex;gap:5px;margin-left:auto}
+  .catarrows .ar{width:32px;height:24px;font-size:10px}
   .bar{position:fixed;left:0;right:0;bottom:0;background:rgba(8,8,9,.86);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:13px 18px;z-index:50}
   .bar .inner{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:14px}
   .pill{display:inline-flex;align-items:center;gap:7px;font-size:11px;color:var(--dim)}
@@ -104,7 +110,7 @@
       <h1>XYZ Studios — Admin</h1>
       <button class="logout" id="logoutBtn">Log out</button>
     </div>
-    <div class="sub">Drag the \u2261 handle to reorder &middot; type to rename &middot; on phone, press &amp; hold then drag</div>
+    <div class="sub">Reorder with \u25b2\u25bc arrows (or drag the \u2261 handle) &middot; type to rename &middot; Publish saves instantly \u2014 no deploy needed</div>
     <div id="sections"></div>
   </div>
 </div>
@@ -159,7 +165,11 @@ function render(){
   ORDER.categories.forEach(function(cat){
     var list=ORDER.projects[cat]||[];
     var sec=el('div','sec cat-section'); sec.dataset.cat=cat;
-    sec.appendChild(headEl(catLabelDisplay(cat),list.length+' projects',true));
+    var chead=headEl(catLabelDisplay(cat),list.length+' projects',true);
+    var caw=el('div','catarrows'); caw.innerHTML='<button class="ar up" title="Move up">\u25b2</button><button class="ar dn" title="Move down">\u25bc</button>';
+    caw.querySelector('.up').onclick=(function(s){return function(){moveCat(s,-1);};})(sec);
+    caw.querySelector('.dn').onclick=(function(s){return function(){moveCat(s,1);};})(sec);
+    chead.appendChild(caw); sec.appendChild(chead);
     var body=el('div','sec-body'); body.appendChild(fldLabels(false));
     var pl=el('div','plist'); pl.dataset.cat=cat;
     list.forEach(function(key){
@@ -171,7 +181,11 @@ function render(){
       var f=el('div','fld');
       f.appendChild(inp('brand',ov.client!=null?ov.client:m.client));
       f.appendChild(inp('ttl',ov.title!=null?ov.title:m.title));
-      r.appendChild(f); pl.appendChild(r);
+      r.appendChild(f);
+      var raw=el('div','arrows'); raw.innerHTML='<button class="ar up" title="Move up">\u25b2</button><button class="ar dn" title="Move down">\u25bc</button>';
+      raw.querySelector('.up').onclick=(function(rr){return function(){moveRow(rr,-1);};})(r);
+      raw.querySelector('.dn').onclick=(function(rr){return function(){moveRow(rr,1);};})(r);
+      r.appendChild(raw); pl.appendChild(r);
     });
     body.appendChild(pl);
     if(list.length>3){ sec.classList.add('collapsed');
@@ -180,10 +194,10 @@ function render(){
       body.appendChild(mb);
     }
     sec.appendChild(body); catWrap.appendChild(sec);
-    new Sortable(pl,{animation:160,handle:'.grip',draggable:'.row',filter:'input',preventOnFilter:false,ghostClass:'sortable-ghost',chosenClass:'sortable-chosen',forceFallback:true,fallbackTolerance:5,delay:160,delayOnTouchOnly:true,touchStartThreshold:6,onSort:dirty});
+    new Sortable(pl,{animation:160,handle:'.grip',draggable:'.row',filter:'input',preventOnFilter:false,ghostClass:'sortable-ghost',chosenClass:'sortable-chosen',delay:160,delayOnTouchOnly:true,touchStartThreshold:6,onSort:dirty});
   });
   root.appendChild(catWrap);
-  new Sortable(catWrap,{animation:160,handle:'.cat-grip',draggable:'.cat-section',ghostClass:'sortable-ghost',forceFallback:true,fallbackTolerance:5,delay:160,delayOnTouchOnly:true,touchStartThreshold:6,onSort:dirty});
+  new Sortable(catWrap,{animation:160,handle:'.cat-grip',draggable:'.cat-section',ghostClass:'sortable-ghost',delay:160,delayOnTouchOnly:true,touchStartThreshold:6,onSort:dirty});
 
   var gs=el('div','sec'); gs.appendChild(headEl('Capabilities Deck Access','who can open the deck',false));
   var gb=el('div','sec-body'); gb.id='grantsBody'; gs.appendChild(gb); root.appendChild(gs);
@@ -220,6 +234,8 @@ function renderGrants(){
   var cb=el('div','copybox'); cb.id='grantCopy'; gb.appendChild(cb);
 }
 
+function moveRow(r,dir){ var sib=dir<0?r.previousElementSibling:r.nextElementSibling; if(!sib)return; var p=r.parentNode; if(dir<0)p.insertBefore(r,sib); else p.insertBefore(sib,r); var sec=r.closest('.cat-section'); if(sec)sec.classList.remove('collapsed'); r.style.background='rgba(107,138,253,.16)'; setTimeout(function(){r.style.background='';},300); dirty(); }
+function moveCat(sec,dir){ var sib=dir<0?sec.previousElementSibling:sec.nextElementSibling; if(!sib||!sib.classList.contains('cat-section'))return; var p=sec.parentNode; if(dir<0)p.insertBefore(sec,sib); else p.insertBefore(sib,sec); dirty(); }
 var dirtyFlag=false;
 function dirty(){ if(!dirtyFlag){ dirtyFlag=true; var d=document.getElementById('statDot'),m=document.getElementById('saveMsg'); if(d){d.className='dot unsaved';} if(m)m.textContent='Unpublished changes'; } }
 function setLive(txt){ var d=document.getElementById('statDot'),m=document.getElementById('saveMsg'); if(d)d.className='dot live'; if(m)m.textContent=txt||'All published'; }
