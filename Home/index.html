@@ -341,10 +341,12 @@
 var LEN=8;
 function parseTC(x){x=String(x||'').trim();if(!x)return 0;if(x.indexOf(':')>=0){var p=x.split(':');return (parseInt(p[0],10)||0)*60+(parseFloat(p[1])||0);}return parseFloat(x)||0;}
 function windowLoop(v,start){
-  if(v.__xyzLoop) return; v.__xyzLoop=1;
-  function toStart(){ try{ v.currentTime=(v.duration&&start<v.duration)?start:0; }catch(e){} }
+  if(v.__xyzLoop){ v.__xyzStart=start; return; } v.__xyzLoop=1; v.__xyzStart=start;
+  function pin(){ var s=v.__xyzStart||0; var hasDur=!!v.duration; var st=(hasDur&&s<v.duration)?s:0; var end=st+LEN; try{ if(v.currentTime>=end||v.currentTime<st-0.4||(hasDur&&v.currentTime>=v.duration-0.15)){ v.currentTime=st; } }catch(e){} }
+  function toStart(){ var s=v.__xyzStart||0; try{ v.currentTime=(v.duration&&s<v.duration)?s:0; }catch(e){} }
   if(v.readyState>=1) toStart(); else v.addEventListener('loadedmetadata',toStart,{once:true});
-  v.addEventListener('timeupdate',function(){ var end=start+LEN; if(v.currentTime>=end||(v.duration&&v.currentTime>=v.duration-0.15)){ toStart(); } });
+  v.addEventListener('timeupdate',pin);
+  v.addEventListener('seeked',function(){ var s=v.__xyzStart||0; var st=(v.duration&&s<v.duration)?s:0; if(v.currentTime<st-0.6){ try{v.currentTime=st;}catch(e){} } });
 }
 function upd(node,item){
   var t=node.querySelector('.text-block-61'); if(t)t.textContent=item.title||'';
