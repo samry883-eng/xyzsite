@@ -6,193 +6,181 @@
 <title>XYZ Studios — Sound Capabilities</title>
 <meta name="robots" content="noindex, nofollow">
 <style>
-  @font-face{font-family:'Micross';src:url('/assets/micross.ttf') format('truetype');font-weight:400 700;font-display:swap}
+  @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&display=swap');
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  :root{--bg:#000;--ink:#fff;--dim:rgba(255,255,255,.55);--dim2:rgba(255,255,255,.32);--dim3:rgba(255,255,255,.14);--line:rgba(255,255,255,.1);--line2:rgba(255,255,255,.2);--ease:cubic-bezier(.16,1,.3,1)}
-  html,body{background:var(--bg);color:var(--ink);font-family:'Micross',Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  :root{--bg:#ece9e0;--ink:#15140f;--dim:rgba(21,20,15,.52);--dim2:rgba(21,20,15,.34);--line:rgba(21,20,15,.16);--panel:#d6d2c6;--ease:cubic-bezier(.16,1,.3,1)}
+  html,body{background:var(--bg);color:var(--ink);font-family:'Geist',Arial,sans-serif;-webkit-font-smoothing:antialiased}
   html.deck-protect,html.deck-protect body{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
   img{-webkit-user-drag:none}
   @media print{html.deck-protect body{display:none!important}}
+  .serif{font-family:'Instrument Serif',Georgia,serif;font-weight:400}
+  .it{font-style:italic}
   .deck{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory;scroll-behavior:smooth}
   .deck::-webkit-scrollbar{display:none}.deck{scrollbar-width:none}
-  .slide{height:100vh;scroll-snap-align:start;position:relative;display:flex;flex-direction:column;justify-content:center;padding:96px 7vw 84px;overflow:hidden}
-  .chrome{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;align-items:center;justify-content:space-between;padding:24px 7vw;pointer-events:none;mix-blend-mode:difference}
-  .chrome .brand{font-size:10px;font-weight:700;letter-spacing:.24em;text-transform:uppercase}
-  .chrome .sec{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
-  .botbar{position:fixed;bottom:0;left:0;right:0;z-index:60;display:flex;align-items:center;justify-content:space-between;padding:24px 7vw;pointer-events:none;mix-blend-mode:difference}
-  .counter{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);font-variant-numeric:tabular-nums}
-  .scrollhint{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim2)}
-  .dots{position:fixed;right:24px;top:50%;transform:translateY(-50%);z-index:60;display:flex;flex-direction:column;gap:9px}
-  .dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.25);border:0;padding:0;cursor:pointer;transition:.3s}
-  .dot.on{background:#fff;transform:scale(1.5)}
-  .kick{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--dim2);margin-bottom:26px}
-  .big{font-size:clamp(40px,7vw,92px);font-weight:700;letter-spacing:-.035em;line-height:.92}
-  .big .l2{color:var(--dim)}
-  .lead{font-size:clamp(15px,1.5vw,19px);color:var(--ink);margin-top:24px;max-width:24ch;line-height:1.4}
-  .body{font-size:13.5px;line-height:1.7;color:var(--dim);max-width:46ch;margin-top:18px}
-  .bgimg{position:absolute;inset:0;z-index:0;background-size:cover;background-position:center;opacity:.18;filter:grayscale(.3)}
-  .bgimg::after{content:'';position:absolute;inset:0;background:linear-gradient(120deg,rgba(0,0,0,.85),rgba(0,0,0,.5))}
-  .z{position:relative;z-index:2}
-  .meta-foot{position:absolute;left:7vw;right:7vw;bottom:84px;display:flex;justify-content:space-between;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim2)}
+  .slide{height:100vh;scroll-snap-align:start;position:relative;padding:3.4vw 3.6vw;display:flex;flex-direction:column}
+  /* corner chrome */
+  .c-tl,.c-tr,.c-bl,.c-br,.c-pg{position:absolute;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+  .c-tl{top:3.4vw;left:3.6vw}.c-tr{top:3.4vw;right:3.6vw}.c-bl{bottom:3.4vw;left:3.6vw}.c-br{bottom:3.4vw;right:3.6vw;color:var(--dim2)}
+  .c-pg{bottom:3.4vw;left:3.6vw;color:var(--dim)}
+  .c-tl b{color:var(--ink);font-weight:600}
+  .lab{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);font-weight:500}
+  .labk{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);font-weight:600}
+  .body{font-family:'Geist';font-size:13px;line-height:1.65;color:var(--dim);font-weight:400}
+  .note{font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(17px,1.7vw,24px);line-height:1.35;color:var(--ink)}
+  .fill{flex:1}
+  .hr{height:1px;background:var(--line);width:100%}
+  /* title */
+  .T{font-family:'Instrument Serif',serif;line-height:.92;letter-spacing:-.005em}
   /* cover */
-  .cover .big{font-size:clamp(54px,11vw,150px)}
-  .cover .tagline{margin-top:30px;font-size:clamp(14px,1.4vw,17px);color:var(--dim);max-width:34ch;line-height:1.5}
-  /* about caps */
-  .caps{display:flex;flex-wrap:wrap;gap:8px;margin-top:34px}
-  .cap{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);border:1px solid var(--line2);border-radius:40px;padding:9px 16px}
+  .cover .T{font-size:clamp(70px,13vw,200px)}
+  .cover .right{position:absolute;right:3.6vw;top:50%;width:30ch;max-width:34vw}
+  .cover .right .note{font-size:clamp(16px,1.5vw,22px)}
+  .cover .right .sub{margin-top:14px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+  .cover .contact{position:absolute;left:3.6vw;bottom:7.5vw}
+  .cover .contact .a{font-size:11px;color:var(--ink)}.cover .contact .b{font-size:10px;color:var(--dim);margin-top:4px;letter-spacing:.04em}
+  /* about */
+  .about .T{font-size:clamp(46px,7vw,104px)}
+  .about .lead{font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(20px,2vw,30px);margin-top:22px;color:var(--ink)}
+  .about .body{margin-top:16px;max-width:52ch}
+  .caplist{margin-top:auto;display:flex;gap:0;border-top:1px solid var(--line)}
+  .caplist .ci{flex:1;padding:16px 0 0;border-right:1px solid var(--line)}
+  .caplist .ci:last-child{border-right:0}
+  .caplist .cn{font-size:10px;color:var(--dim2);letter-spacing:.1em}
+  .caplist .ct{font-family:'Instrument Serif',serif;font-size:clamp(17px,1.7vw,23px);margin-top:8px}
   /* divider */
-  .divider{align-items:center;text-align:center}
-  .divider .big{font-size:clamp(54px,12vw,150px)}
-  /* layout split */
-  .split{display:grid;grid-template-columns:1.05fr .95fr;gap:6vw;align-items:center}
-  .col-r{display:flex;flex-direction:column;gap:18px}
-  .panel{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:rgba(255,255,255,.02)}
-  .panel-img{aspect-ratio:16/10;background:#0a0a0a;background-size:cover;background-position:center}
-  .imgrow{display:grid;gap:10px}
-  .imgrow.n2{grid-template-columns:1fr 1fr}.imgrow.n3{grid-template-columns:1fr 1fr 1fr}
-  .imgrow .ph{aspect-ratio:4/3;background:#0a0a0a;background-size:cover;background-position:center;border:1px solid var(--line);border-radius:10px}
+  .divider{align-items:center;justify-content:center;text-align:center}
+  .divider .T{font-size:clamp(64px,14vw,220px)}
+  .divider .kick{margin-bottom:22px}
   /* project */
-  .stat-row{display:flex;gap:26px;margin-top:30px}
-  .stat .v{font-size:clamp(26px,3vw,40px);font-weight:700;letter-spacing:-.03em}
-  .stat .l{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim2);margin-top:4px}
-  .specs{margin-top:26px;display:grid;grid-template-columns:1fr;gap:0}
-  .spec{display:flex;gap:16px;padding:9px 0;border-top:1px solid var(--line);font-size:11.5px}
-  .spec .k{flex:0 0 32%;letter-spacing:.1em;text-transform:uppercase;color:var(--dim2)}
-  .spec .vv{flex:1;color:var(--ink)}
-  .scopewrap{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px}
-  .scope-i{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);border:1px solid var(--line);border-radius:30px;padding:7px 13px}
+  .project .top{display:flex;gap:4vw;align-items:flex-start;margin-top:5vh}
+  .project .pleft{flex:0 0 30%}
+  .project .pname1{font-family:'Instrument Serif',serif;font-size:clamp(30px,3.4vw,52px);line-height:1.02}
+  .project .pname2{font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(40px,4.6vw,72px);line-height:1;margin-top:2px}
+  .project .pimg{flex:1;aspect-ratio:16/8.4;background:#0c0c0c;background-size:cover;background-position:center}
+  .project .bot{display:grid;grid-template-columns:1fr 1.1fr 1.2fr;gap:4vw;margin-top:30px;padding-top:0}
+  .scopelist{margin-top:10px;font-family:'Instrument Serif',serif;font-size:clamp(14px,1.4vw,18px);line-height:1.5}
+  .build-row{display:flex;align-items:baseline;gap:22px;padding:14px 0;border-top:1px solid var(--line)}
+  .build-row .bv{font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(24px,2.6vw,38px);flex:0 0 auto}
+  .build-row .bl{font-size:12px;color:var(--ink)}
+  .spec-row{display:flex;gap:16px;padding:12px 0;border-top:1px solid var(--line)}
+  .spec-row .sk{flex:0 0 26%;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+  .spec-row .sv{flex:1}.spec-row .sv .v{font-size:13px;color:var(--ink)}.spec-row .sv .sub{font-family:'Instrument Serif',serif;font-style:italic;font-size:12px;color:var(--dim);margin-top:3px}
   /* before/after */
-  .ba{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:30px}
-  .ba-card{border:1px solid var(--line);border-radius:14px;padding:18px;background:rgba(255,255,255,.02)}
-  .ba-card.aft{border-color:var(--line2)}
-  .ba-lbl{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim2);margin-bottom:14px}
-  .trk{display:flex;align-items:center;gap:12px;padding:7px 0;border-top:1px solid var(--line)}
-  .trk .tn{flex:0 0 34px;font-size:10px;letter-spacing:.1em;color:var(--dim);text-transform:uppercase}
-  .trk .bar{flex:1;height:14px;border-radius:3px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.4) 0 2px,transparent 2px 4px)}
-  .trk .bar.off{background:none;border-bottom:1px dashed var(--line2);height:1px}
-  .trk .tt{flex:0 0 auto;font-size:10px;color:var(--dim2);font-variant-numeric:tabular-nums}
-  .ba-note{font-size:11px;color:var(--dim);line-height:1.55;margin-top:14px}
+  .ba .T{font-size:clamp(40px,6vw,92px)}
+  .ba .head{display:flex;justify-content:space-between;align-items:flex-start;gap:5vw}
+  .ba .head .note{flex:0 0 42%;max-width:46ch}
+  .lanes{display:grid;grid-template-columns:1fr 1fr;gap:5vw;margin-top:5vh}
+  .lane-head{display:flex;justify-content:space-between;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+  .lane-head b{color:var(--ink);font-weight:600}
+  .lane{display:flex;align-items:center;gap:14px;padding:8px 0;border-top:1px solid var(--line)}
+  .lane .ln{flex:0 0 30px;font-size:10px;letter-spacing:.08em;color:var(--dim);text-transform:uppercase}
+  .lane .trk{flex:1;display:flex;gap:5px;height:14px}
+  .seg{height:100%;border-radius:2px}
+  .seg.g{background:rgba(21,20,15,.28)}.seg.k{background:var(--ink)}
+  .lane .tt{flex:0 0 auto;font-size:10px;color:var(--dim2)}
+  .baimgs{display:grid;grid-template-columns:1fr 1fr;gap:5vw;margin-top:auto;padding-top:24px}
+  .baimg{aspect-ratio:16/8;background:#0c0c0c;background-size:cover;background-position:center}
   /* pipeline */
-  .steps{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:30px}
-  .step{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);border:1px solid var(--line);border-radius:30px;padding:8px 14px}
-  .step .sn{color:var(--dim2);margin-right:7px}
-  .arrowx{color:var(--dim3)}
-  .gallery{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:26px}
-  .gcell{aspect-ratio:3/4;background:#0a0a0a;background-size:cover;background-position:center;border:1px solid var(--line);border-radius:10px;position:relative;overflow:hidden}
-  .gcap{position:absolute;left:0;right:0;bottom:0;padding:8px;font-size:8px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);background:linear-gradient(transparent,rgba(0,0,0,.85))}
+  .pipeline .T{font-size:clamp(42px,6vw,96px)}
+  .pipeline .body{max-width:60ch;margin-top:16px}
+  .tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:auto}
+  .tile{aspect-ratio:3/3.4;background:#0c0c0c;background-size:cover;background-position:center;position:relative;overflow:hidden}
+  .tile .cap{position:absolute;left:0;right:0;bottom:0;padding:8px 9px;font-size:8.5px;letter-spacing:.05em;text-transform:uppercase;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.8))}
+  .steps{display:flex;align-items:center;gap:12px;margin-top:22px;flex-wrap:wrap}
+  .step{display:flex;align-items:baseline;gap:8px}
+  .step .sn{font-family:'Instrument Serif',serif;font-style:italic;font-size:15px;color:var(--dim)}
+  .step .st{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}
+  .step-ar{color:var(--dim2)}
   /* packages */
-  .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:34px}
-  .tier{border:1px solid var(--line);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:12px;background:rgba(255,255,255,.02)}
-  .tier.rec{border-color:#fff}
-  .tier-tag{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim2)}
-  .tier-name{font-size:24px;font-weight:700;letter-spacing:-.02em}
-  .tier-desc{font-size:12px;color:var(--dim);line-height:1.5;flex:1}
-  .tier-inc{font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim2);line-height:1.6;border-top:1px solid var(--line);padding-top:12px}
-  .tier-from{font-size:11px;color:var(--dim2);text-transform:uppercase;letter-spacing:.1em}
-  .tier-price{font-size:30px;font-weight:700;letter-spacing:-.02em}
-  .tier-for{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim2)}
+  .packages{flex-direction:row;gap:4vw;align-items:stretch}
+  .pk-left{flex:0 0 34%;display:flex;flex-direction:column;justify-content:center}
+  .pk-left .T{font-size:clamp(50px,7vw,116px)}
+  .pk-left .body{margin-top:24px;font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(15px,1.5vw,21px);color:var(--ink);max-width:30ch}
+  .pk-right{flex:1;display:flex;flex-direction:column;justify-content:center;gap:18px}
+  .tier{background:var(--panel);padding:30px 34px;display:grid;grid-template-columns:13% 1fr auto;gap:24px;align-items:center}
+  .tier.rec{outline:1px solid var(--ink);outline-offset:-1px}
+  .tier .tag{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+  .tier .tname{font-family:'Instrument Serif',serif;font-size:clamp(26px,2.6vw,40px);line-height:1}
+  .tier .tdesc{font-size:12px;color:var(--ink);margin-top:8px}
+  .tier .tinc{font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin-top:8px}
+  .tier .tright{text-align:right}
+  .tier .tfrom{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+  .tier .tprice{font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(34px,3.6vw,56px);line-height:1}
+  .tier .tfor{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-top:6px}
   /* crew */
-  .people{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:34px}
-  .person{border-top:1px solid var(--line2);padding-top:14px}
-  .p-role{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim2)}
-  .p-name{font-size:22px;font-weight:700;letter-spacing:-.02em;margin:6px 0 8px}
-  .p-desc{font-size:11.5px;color:var(--dim);line-height:1.5;max-width:34ch}
+  .crew .T{font-size:clamp(44px,6.5vw,100px)}
+  .crew .body{max-width:50ch;margin-top:14px}
+  .people{display:grid;grid-template-columns:1fr 1fr;gap:0 5vw;margin-top:auto}
+  .person{padding:20px 0;border-top:1px solid var(--line)}
+  .person .pr{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+  .person .pn{font-family:'Instrument Serif',serif;font-size:clamp(24px,2.4vw,34px);margin:6px 0 8px}
+  .person .pd{font-size:11.5px;color:var(--dim);line-height:1.5;max-width:38ch}
   /* contact */
-  .contact .big{font-size:clamp(54px,11vw,140px)}
-  .c-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px 50px;margin-top:44px;max-width:760px}
-  .c-block .cl{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim2);margin-bottom:8px}
-  .c-block .cv{font-size:15px;color:#fff}
-  .c-block .cs{font-size:11px;color:var(--dim);margin-top:3px}
-  @media (max-width:820px){
-    .slide{padding:88px 26px 76px}
-    .split,.ba,.tiers,.people,.c-grid{grid-template-columns:1fr;gap:22px}
-    .gallery{grid-template-columns:repeat(3,1fr)}
-    .dots{display:none}
-    .stat-row{flex-wrap:wrap;gap:18px}
-    .chrome,.botbar{padding:16px 22px}
+  .contact .T{font-size:clamp(56px,10vw,170px)}
+  .cgrid{display:grid;grid-template-columns:1fr 1fr;gap:34px 5vw;margin-top:auto;max-width:60%}
+  .cb .cl{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
+  .cb .cv{font-size:16px;color:var(--ink)}.cb .cs{font-size:11px;color:var(--dim);margin-top:3px}
+  @media (max-width:860px){
+    .slide{padding:64px 22px}
+    .project .top,.packages{flex-direction:column;gap:22px}
+    .project .pleft,.pk-left{flex:auto}
+    .project .bot,.lanes,.baimgs,.cgrid,.people{grid-template-columns:1fr;gap:18px}
+    .tiles{grid-template-columns:repeat(3,1fr)}
+    .tier{grid-template-columns:1fr;gap:10px}.tier .tright{text-align:left}
+    .cgrid{max-width:100%}
+    .cover .right{position:static;width:auto;max-width:none;margin-top:30px}
+    .cover .contact{position:static;margin-top:24px}
   }
 </style>
 </head>
 <body>
-<div class="chrome"><span class="brand">XYZSTUDIOS</span><span class="sec" id="secLabel">Sound · Capabilities</span></div>
-<div class="botbar"><span class="counter" id="counter">01</span><span class="scrollhint">Scroll ↓</span></div>
-<div class="dots" id="dots"></div>
 <div class="deck" id="deck"></div>
 <script>
-var DEFAULT_DECK = {"meta": {"studio": "XYZSTUDIOS", "year": "2026", "email": "inquiries@xyzstudios.co", "site": "xyzstudios.co/sound"}, "slides": [{"type": "cover", "kicker": "Studios \u2014 Sound \u00b7 Capabilities \u00b7 2026", "titleA": "Sound,", "titleB": "practiced.", "tagline": "A practice built through close creative collaboration \u2014 from spotting to print master.", "foot": "Capabilities Deck \u00b7 2026"}, {"type": "about", "kicker": "About the practice", "titleA": "We build worlds", "titleB": "you can hear.", "lead": "Cohesive, cinematic, felt.", "body": "A sound practice built through close creative collaboration. Working directly with directors and editors, staying closely involved through to the print master. Each project evolves differently \u2014 the approach is shaped to serve the work.", "caps": ["Sound Design", "Foley", "Dialogue & Editorial", "Mix & Master", "Original Score"]}, {"type": "divider", "kicker": "Featured Work", "title": "Featured Work", "num": "03"}, {"type": "project", "kicker": "Featured Work \u00b7 Brand \u00b7 Commercial", "client": "Salomon", "title": "SS26 Trailer", "disciplines": "Sound Design \u00b7 Foley \u00b7 Mix", "year": "2026", "scope": ["Sonic Branding", "Hype Audio", "Sound Design", "Mix", "Stems Prep", "Multi-Asset"], "breakdown": [["62%", "Sound Design"], ["22%", "Foley & Editorial"], ["16%", "Composition"]], "specs": [["Director", "Anthony Princeleslie"], ["Format", "Commercial \u00b7 60s \u00b7 Web / Broadcast"], ["Stems", "5 \u2014 DX / FX / BG / FOL / MX"], ["Masters", "5.1 \u00b7 Stereo \u00b7 Web \u00b7 Broadcast"], ["Turnaround", "2 weeks"]], "images": ["media/image-4-1.jpg", "media/image-8-1.jpg", "media/image-8-2.jpg"]}, {"type": "beforeafter", "kicker": "Capability \u00b7 Sound Design", "num": "07 / 13", "titleA": "Sound", "titleB": "Design.", "body": "From picture-lock to a layered, decisive world. We build textures, ambience and effects to carry every cut, then thin everything that distracts.", "before": {"label": "Production Audio \u00b7 SD \u00b7 V01", "rows": [["DX", "02:14"], ["SFX", "\u2014"], ["AMB", "\u2014"], ["FOL", "\u2014"], ["MX", "\u2014"]], "note": "Production audio only \u2014 dialogue and a handful of camera-side effects. Flat, no ambience, no design pass."}, "after": {"label": "Designed \u00b7 SD \u00b7 V07", "rows": [["DX", "02:14"], ["SFX", "02:14"], ["AMB", "02:14"], ["FOL", "02:14"], ["MX", "02:14"]], "note": "Full design pass \u2014 ambience bed under every scene, performance-matched foley and designed effects, mix bus printed."}, "images": ["media/image-9-1.jpg", "media/image-9-2.jpg"]}, {"type": "beforeafter", "kicker": "Capability \u00b7 Mix & Master", "num": "08 / 13", "titleA": "Mix &", "titleB": "Master.", "body": "A rough cut of stems becomes a balanced, broadcast-ready master. Loudness inside spec, dialogue intelligible at every level, dynamics intact.", "before": {"label": "Pre-Mix \u00b7 MX \u00b7 V00", "rows": [], "note": "Unbalanced stems, inconsistent loudness, dialogue fighting the bed."}, "after": {"label": "Final Mix \u00b7 MX \u00b7 V05", "rows": [], "note": "Balanced and broadcast-ready \u2014 spec loudness, intelligible dialogue, dynamics intact."}, "images": ["media/image-10-1.jpg", "media/image-10-2.jpg"]}, {"type": "pipeline", "kicker": "Capability \u00b7 Foley", "num": "09 / 13", "titleA": "Foley,", "titleB": "Performed.", "label": "Performance-Based Foley", "body": "Footsteps, cloth, props and body interactions, recorded to picture on a custom foley stage. Performance matched to weight, rhythm and intent \u2014 every move on screen earns its sound.", "captions": ["(301) Stage A \u00b7 Wide", "(312) Surface \u00b7 Gravel Pit", "(327) Cloth \u00b7 Linen + Denim", "(338) Props Bench", "(344) Boots"], "steps": ["Spotting", "Surface & Prop Build", "Capture", "Editorial", "Delivery (FOL)"], "images": ["media/image-11-1.jpg", "media/image-11-2.jpg", "media/image-11-3.jpg", "media/image-11-4.jpg", "media/image-11-5.jpg"]}, {"type": "pipeline", "kicker": "Capability \u00b7 Original Score", "num": "10 / 13", "titleA": "Score,", "titleB": "Written.", "label": "Original Score \u00b7 Composition", "body": "Music written to picture \u2014 themes, motifs and the emotional spine. Composed in-house with a small ensemble of session players, built bespoke around the world the film lives in.", "captions": ["(402) Live Room \u00b7 Strings", "(415) Score \u00b7 Pencil Sketch", "(424) Piano \u00b7 1962 Steinway", "(431) Console \u00b7 Session Day"], "steps": ["Spotting & Direction", "Themes & Sketches", "Arrangement", "Tracking", "Mix & Delivery"], "images": ["media/image-12-1.jpg", "media/image-12-2.jpg", "media/image-12-3.jpg", "media/image-12-4.jpg", "media/image-12-5.jpg"]}, {"type": "packages", "kicker": "Packages \u00b7 Three points of entry", "titleA": "Packages,", "titleB": "simply.", "body": "Pick the one that matches the work \u2014 every package can be tailored, and pieces can be bought \u00e0 la carte. All prices are starting points.", "tiers": [{"tag": "01 \u00b7 Lean", "name": "Design Pass", "desc": "A single, focused sound design pass on a finished cut.", "includes": "Spotting + Design \u00b7 Stereo Print \u00b7 2 revision rounds", "from": "$3.5k", "for": "Shorts \u00b7 30\u201390s"}, {"tag": "02 \u00b7 Recommended", "name": "Full Post", "desc": "End-to-end audio post \u2014 design, foley, dialogue and mix.", "includes": "Design + Foley \u00b7 Dialogue \u00b7 Stereo + 5.1 \u00b7 M&E + Stems \u00b7 4 rev rounds", "from": "$12k", "for": "Brand Films \u00b7 Commercials"}, {"tag": "03 \u00b7 Complete", "name": "Score & Post", "desc": "Original score and the full post pipeline, built together.", "includes": "Original Composition \u00b7 Live Tracking \u00b7 Everything in full post", "from": "$24k", "for": "Features \u00b7 Long-form"}]}, {"type": "crew", "kicker": "Crew \u00b7 The team", "titleA": "The", "titleB": "crew.", "body": "One producer fronts the project. Specialists move through the work in sequence \u2014 the same hands, every time.", "people": [{"role": "01 / Sound Designer", "name": "Ken Palsm", "desc": "Owns the sonic world of every project \u2014 spots picture, designs to it, hands off a clean session."}, {"role": "02 / Mix Engineer", "name": "William", "desc": "Delivers final mix in 5.1 and stereo. Stems, M&E and masters to spec \u2014 broadcast-ready every time."}, {"role": "03 / Composer", "name": "Ady", "desc": "Writes and produces score to picture \u2014 themes, motifs and the emotional spine."}, {"role": "04 / Composer", "name": "Yanker", "desc": "Arrangement, voicing and tracking \u2014 works alongside Ady through the score build."}]}, {"type": "contact", "kicker": "Contact", "titleA": "Let's", "titleB": "make sound.", "email": "inquiries@xyzstudios.co", "site": "xyzstudios.co/sound", "founders": [{"role": "Co-Founder \u00b7 Post Producer", "name": "Samry Yussuf", "email": "samry@xyzstudios.co"}, {"role": "Co-Founder \u00b7 Post Producer", "name": "Dris Yousif", "email": "dris@xyzstudios.co"}], "social": ["Instagram", "LinkedIn"]}]};
-function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function bg(src){return src?(" style=\"background-image:url('"+esc(src)+"')\""):"";}
-function R(d){
-  var s=d.slides, h='';
-  s.forEach(function(sl,i){
-    h+='<section class="slide '+sl.type+'" data-i="'+i+'" data-sec="'+esc(sl.kicker||'')+'">';
-    if(sl.images&&sl.images[0]&&(sl.type==='project'||sl.type==='cover')) h+='<div class="bgimg"'+bg(sl.images[0])+'></div>';
-    h+='<div class="z">'+SL[sl.type](sl,d)+'</div>';
-    h+='</section>';
-  });
-  document.getElementById('deck').innerHTML=h;
-  var dots=''; s.forEach(function(_,i){dots+='<button class="dot" data-d="'+i+'"></button>';});
-  document.getElementById('dots').innerHTML=dots;
-}
-function title2(a,b){return '<h1 class="big">'+esc(a)+'<br><span class="l2">'+esc(b)+'</span></h1>';}
-var SL={
-  cover:function(s){return '<div class="cover"><div class="kick">'+esc(s.kicker)+'</div>'+title2(s.titleA,s.titleB)+'<p class="tagline">'+esc(s.tagline)+'</p></div>'
-    +'<div class="meta-foot"><span>'+esc(s.foot)+'</span><span>XYZ Studios — Sound</span></div>';},
-  about:function(s){var caps=(s.caps||[]).map(function(c){return '<span class="cap">'+esc(c)+'</span>';}).join('');
-    return '<div class="kick">'+esc(s.kicker)+'</div>'+title2(s.titleA,s.titleB)+'<p class="lead">'+esc(s.lead)+'</p><p class="body">'+esc(s.body)+'</p><div class="caps">'+caps+'</div>';},
-  divider:function(s){return '<div class="divider"><div class="kick">'+esc(s.kicker)+'</div><h1 class="big">'+esc(s.title)+'</h1></div>';},
-  project:function(s){
-    var scope=(s.scope||[]).map(function(x){return '<span class="scope-i">'+esc(x)+'</span>';}).join('');
-    var stats=(s.breakdown||[]).map(function(b){return '<div class="stat"><div class="v">'+esc(b[0])+'</div><div class="l">'+esc(b[1])+'</div></div>';}).join('');
-    var specs=(s.specs||[]).map(function(sp){return '<div class="spec"><span class="k">'+esc(sp[0])+'</span><span class="vv">'+esc(sp[1])+'</span></div>';}).join('');
-    var imgs=(s.images||[]).slice(0,3);
-    var imgrow=imgs.map(function(im){return '<div class="ph"'+bg(im)+'></div>';}).join('');
-    return '<div class="kick">'+esc(s.kicker)+'</div>'
-      +'<div class="split"><div class="col-l">'+title2(s.client, s.title)
-      +'<div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim2);margin-top:14px">'+esc(s.disciplines)+'</div>'
-      +'<div class="stat-row">'+stats+'</div><div class="scopewrap">'+scope+'</div></div>'
-      +'<div class="col-r"><div class="imgrow n'+(imgs.length||1)+'">'+imgrow+'</div>'+specs+'</div></div>';
-  },
-  beforeafter:function(s){
-    function card(c,cls){var rows=(c.rows||[]).map(function(r){var off=r[1]==='—';return '<div class="trk"><span class="tn">'+esc(r[0])+'</span><span class="bar'+(off?' off':'')+'"></span><span class="tt">'+esc(r[1])+'</span></div>';}).join('');
-      return '<div class="ba-card '+cls+'"><div class="ba-lbl">'+esc(c.label)+'</div>'+rows+'<div class="ba-note">'+esc(c.note)+'</div></div>';}
-    var imgs=(s.images||[]).map(function(im){return '<div class="ph"'+bg(im)+'></div>';}).join('');
-    return '<div class="kick">'+esc(s.kicker)+'</div><div class="split"><div class="col-l">'+title2(s.titleA,s.titleB)+'<p class="body">'+esc(s.body)+'</p>'
-      +'<div class="imgrow n2" style="margin-top:24px">'+imgs+'</div></div>'
-      +'<div class="col-r"><div class="ba">'+card(s.before,'bef')+card(s.after,'aft')+'</div></div></div>';
-  },
-  pipeline:function(s){
-    var g=(s.images||[]).map(function(im,i){return '<div class="gcell"'+bg(im)+'><span class="gcap">'+esc((s.captions||[])[i]||'')+'</span></div>';}).join('');
-    var steps=(s.steps||[]).map(function(st,i){return '<span class="step"><span class="sn">0'+(i+1)+'</span>'+esc(st)+'</span>'+(i<s.steps.length-1?'<span class="arrowx">→</span>':'');}).join('');
-    return '<div class="kick">'+esc(s.kicker)+'</div>'+title2(s.titleA,s.titleB)+'<p class="body">'+esc(s.body)+'</p>'
-      +'<div class="gallery">'+g+'</div><div class="steps">'+steps+'</div>';
-  },
-  packages:function(s){
-    var t=(s.tiers||[]).map(function(t){return '<div class="tier'+(/recommend/i.test(t.tag)?' rec':'')+'"><div class="tier-tag">'+esc(t.tag)+'</div><div class="tier-name">'+esc(t.name)+'</div><div class="tier-desc">'+esc(t.desc)+'</div><div class="tier-inc">'+esc(t.includes)+'</div><div><div class="tier-from">From</div><div class="tier-price">'+esc(t.from)+'</div></div><div class="tier-for">'+esc(t.for)+'</div></div>';}).join('');
-    return '<div class="kick">'+esc(s.kicker)+'</div>'+title2(s.titleA,s.titleB)+'<p class="body">'+esc(s.body)+'</p><div class="tiers">'+t+'</div>';
-  },
-  crew:function(s){
-    var p=(s.people||[]).map(function(p){return '<div class="person"><div class="p-role">'+esc(p.role)+'</div><div class="p-name">'+esc(p.name)+'</div><div class="p-desc">'+esc(p.desc)+'</div></div>';}).join('');
-    return '<div class="kick">'+esc(s.kicker)+'</div>'+title2(s.titleA,s.titleB)+'<p class="body">'+esc(s.body)+'</p><div class="people">'+p+'</div>';
-  },
-  contact:function(s){
-    var f=(s.founders||[]).map(function(x){return '<div class="c-block"><div class="cl">'+esc(x.role)+'</div><div class="cv">'+esc(x.name)+'</div><div class="cs">'+esc(x.email)+'</div></div>';}).join('');
-    return '<div class="contact"><div class="kick">'+esc(s.kicker)+'</div>'+title2(s.titleA,s.titleB)
-      +'<div class="c-grid"><div class="c-block"><div class="cl">Email</div><div class="cv">'+esc(s.email)+'</div><div class="cs">For new project enquiries</div></div>'
-      +'<div class="c-block"><div class="cl">Website</div><div class="cv">'+esc(s.site)+'</div></div>'+f+'</div></div>';
-  }
+var D = {"studio": "XYZ", "year": "2026", "slides": [{"type": "cover", "tl": "XYZ \u00b7 Studios \u2014 Sound", "tr": "Capabilities \u00b7 2026", "foot": "Cover \u00b7 01 of 13", "pg": "01", "title": [{"t": "Sound,", "i": true}, {"t": "practiced.", "i": false}], "note": "A practice built through close creative collaboration from spotting to print master.", "noteSub": "Capabilities Deck \u00b7 2026", "contact": "XYZ Studios \u2014 Sound", "contactSub": "sound@xyzstudios.co \u00b7 xyzstudios.co/sound"}, {"type": "about", "tl": "XYZ \u00b7 About the Practice", "tr": "02 / 13", "foot": "About \u00b7 02 of 13", "pg": "02", "title": [{"t": "We build worlds", "i": false}, {"t": "you can hear.", "i": true}], "lead": "Cohesive, cinematic, felt.", "body": "A sound practice built through close creative collaboration. Working directly with directors and editors, staying closely involved through to the print master. Each project evolves differently \u2014 the approach is shaped to serve the work.", "caps": [["01", "Sound Design"], ["02", "Foley"], ["03", "Dialogue & Editorial"], ["04", "Mix & Master"], ["05", "Original Score"]]}, {"type": "divider", "tl": "XYZ \u00b7 Featured Work", "tr": "03 / 13", "foot": "Featured \u00b7 03 of 13", "pg": "03", "kick": "Featured Work", "title": [{"t": "Selected", "i": false}, {"t": "projects.", "i": true}]}, {"type": "project", "tl": "XYZ \u00b7 Featured Work", "tr": "Brand \u00b7 Commercial", "trYear": "2026", "foot": "Project \u00b7 Salomon SS26", "pg": "03", "label": "Project", "client": [{"t": "Louis Vitton", "i": false}], "name": [{"t": "SS26 Trailer", "i": true}], "disc": "Sound Design \u00b7 Foley \u00b7 Mix", "img": "media/image-4-1.jpg", "scope": ["Sonic Branding", "Hype Audio", "Sound Design", "Mix", "Stems Prep", "Multi-Asset"], "director": "Anthony Princeleslie", "build": [["62%", "Sound Design"], ["22%", "Foley & Editorial"], ["16%", "Composition"]], "specs": [["Format", "Commercial | 60s", "WEB / BROADCAST"], ["Stems", "5 (DX / FX / BG / FOL / MX)", "Organized delivery for mix flexibility and platform adaptation"], ["Masters", "5.1 \u00b7 Stereo \u00b7 Web \u00b7 Broadcast", "Broadcast-ready masters optimized for digital and commercial delivery"], ["Turnaround", "2 weeks", "Flexible timelines based on scope and production needs"]]}, {"type": "beforeafter", "tl": "XYZ \u00b7 Capability \u00b7 Sound Design", "tr": "07 / 13", "foot": "Sound Design \u00b7 Before / After", "pg": "07", "title": [{"t": "Sound", "i": false}, {"t": "Design.", "i": true}], "note": "From picture-lock to a layered, decisive world. We build textures, ambience and effects to carry every cut, then thin everything that distracts.", "before": {"label": "Production Audio \u00b7 SD \u00b7 V01", "rows": [["DX", 1, "02:14"], ["SFX", 0, "\u2014"], ["AMB", 0, "\u2014"], ["FOL", 0, "\u2014"], ["MX", 0, "\u2014"]]}, "after": {"label": "Designed \u00b7 SD \u00b7 V07", "rows": [["DX", 1, "02:14"], ["SFX", 1, "02:14"], ["AMB", 1, "02:14"], ["FOL", 1, "02:14"], ["MX", 1, "02:14"]]}, "imgBefore": "media/image-9-1.jpg", "imgAfter": "media/image-9-2.jpg"}, {"type": "beforeafter", "tl": "XYZ \u00b7 Capability \u00b7 Mix & Master", "tr": "08 / 13", "foot": "Mix & Master \u00b7 Before / After", "pg": "08", "title": [{"t": "Mix &", "i": false}, {"t": "Master.", "i": true}], "note": "A rough cut of stems becomes a balanced, broadcast-ready master. Loudness inside spec, dialogue intelligible at every level, dynamics intact.", "before": {"label": "Pre-Mix \u00b7 MX \u00b7 V00", "rows": [["L", 0, ""], ["R", 0, ""], ["C", 0, ""], ["LFE", 0, ""], ["BUS", 0, ""]]}, "after": {"label": "Final Mix \u00b7 MX \u00b7 V05", "rows": [["L", 1, ""], ["R", 1, ""], ["C", 1, ""], ["LFE", 1, ""], ["BUS", 1, ""]]}, "imgBefore": "media/image-10-1.jpg", "imgAfter": "media/image-10-2.jpg"}, {"type": "pipeline", "tl": "XYZ \u00b7 Capability \u00b7 Foley", "tr": "09 / 13", "foot": "Foley \u00b7 Pipeline", "pg": "09", "kick": "Performance-Based Foley", "title": [{"t": "Foley,", "i": false}, {"t": "Performed.", "i": true}], "body": "Footsteps, cloth, props and body interactions, recorded to picture on a custom foley stage. Performance matched to weight, rhythm and intent \u2014 every move on screen earns its sound.", "tiles": [["media/image-11-1.jpg", "(301) Stage A \u00b7 Wide"], ["media/image-11-2.jpg", "(312) Surface \u00b7 Gravel Pit"], ["media/image-11-3.jpg", "(327) Cloth \u00b7 Linen + Denim"], ["media/image-11-4.jpg", "(338) Props Bench"], ["media/image-11-5.jpg", "(344) Boots"]], "steps": ["Spotting", "Surface & Prop Build", "Capture", "Editorial", "Delivery (FOL)"]}, {"type": "pipeline", "tl": "XYZ \u00b7 Capability \u00b7 Original Score", "tr": "10 / 13", "foot": "Score \u00b7 Pipeline", "pg": "10", "kick": "Original Score \u00b7 Composition", "title": [{"t": "Score,", "i": false}, {"t": "Written.", "i": true}], "body": "Music written to picture \u2014 themes, motifs and the emotional spine. Composed in-house with a small ensemble of session players, built bespoke around the world the film lives in.", "tiles": [["media/image-12-1.jpg", "(402) Live Room \u00b7 Strings"], ["media/image-12-2.jpg", "(415) Score \u00b7 Pencil Sketch"], ["media/image-12-3.jpg", "(424) Piano \u00b7 1962 Steinway"], ["media/image-12-4.jpg", "(431) Console \u00b7 Session Day"], ["media/image-12-5.jpg", "(440) Mix \u00b7 Stems"]], "steps": ["Spotting & Direction", "Themes & Sketches", "Arrangement", "Tracking", "Mix & Delivery"]}, {"type": "packages", "tl": "XYZ \u00b7 Packages", "tr": "11 / 13", "foot": "Pricing \u00b7 Starting Points", "pg": "11", "kick": "Three Points of Entry", "title": [{"t": "Packages,", "i": false}, {"t": "simply.", "i": true}], "body": "Pick the one that matches the work \u2014 every package can be tailored, and pieces can be bought \u00e1 la carte. All prices are starting points.", "tiers": [{"tag": "01 \u00b7 Lean", "name": [{"t": "Design", "i": true}, {"t": " Pass", "i": false}], "desc": "A single, focused sound design pass on a finished cut.", "inc": "Spotting + Design \u00b7 Stereo Print \u00b7 2 Revision Rounds", "price": "$3.5k", "for": "Shorts \u00b7 30\u201390s", "rec": false}, {"tag": "02 \u00b7 Recommended", "name": [{"t": "Full", "i": true}, {"t": " Post", "i": false}], "desc": "End-to-end audio post \u2014 design, foley, dialogue and mix.", "inc": "Design + Foley \u00b7 Dialogue \u00b7 Stereo + 5.1 \u00b7 M&E + Stems \u00b7 4 Rev Rounds", "price": "$12k", "for": "Brand Films \u00b7 Commercials", "rec": true}, {"tag": "03 \u00b7 Complete", "name": [{"t": "Score", "i": false}, {"t": " & Post", "i": false}], "desc": "Original score and the full post pipeline, built together.", "inc": "Original Composition \u00b7 Live Tracking \u00b7 Everything in Full Post", "price": "$24k", "for": "Features \u00b7 Long-form", "rec": false}]}, {"type": "crew", "tl": "XYZ \u00b7 Crew", "tr": "12 / 13", "foot": "Crew \u00b7 Sound + Score", "pg": "12", "kick": "The Team", "title": [{"t": "The", "i": false}, {"t": "crew.", "i": true}], "body": "One producer fronts the project. Specialists move through the work in sequence \u2014 the same hands, every time.", "people": [["01 / Sound Designer", "Ken Palsm", "Owns the sonic world of every project \u2014 spots picture, designs to it, hands off a clean session."], ["02 / Mix Engineer", "William", "Delivers final mix in 5.1 and stereo. Stems, M&E and masters to spec \u2014 broadcast-ready every time."], ["03 / Composer", "Ady", "Writes and produces score to picture \u2014 themes, motifs and the emotional spine."], ["04 / Composer", "Yanker", "Arrangement, voicing and tracking \u2014 works alongside Ady through the score build."]]}, {"type": "contact", "tl": "XYZ \u00b7 Contact", "tr": "13 / 13", "foot": "Thank You", "pg": "13", "title": [{"t": "Let's", "i": false}, {"t": "make sound.", "i": true}], "email": "inquiries@xyzstudios.co", "site": "xyzstudios.co/sound", "founders": [["Co-Founder \u00b7 Post Producer", "Samry Yussuf", "samry@xyzstudios.co"], ["Co-Founder \u00b7 Post Producer", "Dris Yousif", "dris@xyzstudios.co"]], "social": ["Instagram", "LinkedIn"]}]};
+function e(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function T(parts,cls){return '<div class="T '+(cls||'')+'">'+parts.map(function(p,i){return '<span class="'+(p.i?'it':'')+'">'+e(p.t)+'</span>'+(i<parts.length-1?'<br>':'');}).join('')+'</div>';}
+function Tinline(parts){return parts.map(function(p){return '<span class="'+(p.i?'it':'')+'">'+e(p.t)+'</span>';}).join('');}
+function bg(src){return src?(" style=\"background-image:url('"+e(src)+"')\""):"";}
+function corners(s){return '<div class="c-tl">'+e(s.tl).replace(/^([^·]+)·/,'<b>$1</b>·')+'</div>'
+  +'<div class="c-tr">'+e(s.tr)+(s.trYear?'<span style="margin-left:30px">'+e(s.trYear)+'</span>':'')+'</div>'
+  +'<div class="c-pg">'+e(s.pg)+'</div><div class="c-br">'+e(s.foot)+'</div>';}
+function segs(on,kind){ if(!on) return ''; var w=[18,12,22,9,16,11,20]; var h=''; for(var i=0;i<w.length;i++){ if(kind==='before'&&i>3) break; h+='<span class="seg '+(kind==='before'?'g':'k')+'" style="flex:0 0 '+w[i]+'%"></span>'; } return h; }
+var R={
+ cover:function(s){return '<div class="fill"></div>'+T(s.title)
+   +'<div class="right"><div class="note">'+e(s.note)+'</div><div class="sub">'+e(s.noteSub)+'</div></div>'
+   +'<div class="contact"><div class="a">↗ '+e(s.contact)+'</div><div class="b">'+e(s.contactSub)+'</div></div><div class="fill"></div>';},
+ about:function(s){var caps=s.caps.map(function(c){return '<div class="ci"><div class="cn">'+e(c[0])+'</div><div class="ct">'+e(c[1])+'</div></div>';}).join('');
+   return '<div style="margin-top:8vh">'+T(s.title)+'<div class="lead">'+e(s.lead)+'</div><div class="body">'+e(s.body)+'</div></div><div class="fill"></div><div class="caplist">'+caps+'</div>';},
+ divider:function(s){return '<div class="kick labk">'+e(s.kick)+'</div>'+T(s.title);},
+ project:function(s){
+   var scope=s.scope.map(function(x){return e(x);}).join('<br>');
+   var build=s.build.map(function(b){return '<div class="build-row"><span class="bv">'+e(b[0])+'</span><span class="bl">'+e(b[1])+'</span></div>';}).join('');
+   var specs=s.specs.map(function(sp){return '<div class="spec-row"><span class="sk">'+e(sp[0])+'</span><span class="sv"><div class="v">'+e(sp[1])+'</div><div class="sub">'+e(sp[2])+'</div></span></div>';}).join('');
+   return '<div class="top"><div class="pleft"><div class="lab">'+e(s.label)+'</div><div class="pname1">'+Tinline(s.client)+'</div><div class="pname2">'+Tinline(s.name)+'</div><div class="lab" style="margin-top:14px">'+e(s.disc)+'</div></div><div class="pimg"'+bg(s.img)+'></div></div>'
+    +'<div class="fill"></div><div class="hr"></div>'
+    +'<div class="bot"><div><div class="lab">Scope</div><div class="scopelist">'+scope+'</div><div class="lab" style="margin-top:18px">Director</div><div style="margin-top:6px;font-size:13px">'+e(s.director)+'</div></div>'
+    +'<div><div class="lab">Build</div>'+build+'</div><div>'+specs+'</div></div>';},
+ beforeafter:function(s){
+   function lanes(side,kind){var rows=side.rows.map(function(r){return '<div class="lane"><span class="ln">'+e(r[0])+'</span><span class="trk">'+segs(r[1],kind)+'</span><span class="tt">'+e(r[2])+'</span></div>';}).join('');
+     return '<div><div class="lane-head"><b>'+(kind==='before'?'↑ Before':'→ After')+'</b><span>'+e(side.label)+'</span></div>'+rows+'</div>';}
+   return '<div class="labk" style="margin-top:5vh">↗ Before → After</div><div class="head" style="margin-top:14px">'+T(s.title)+'<div class="note">'+e(s.note)+'</div></div>'
+     +'<div class="lanes">'+lanes(s.before,'before')+lanes(s.after,'after')+'</div>'
+     +'<div class="baimgs"><div class="baimg"'+bg(s.imgBefore)+'></div><div class="baimg"'+bg(s.imgAfter)+'></div></div>';},
+ pipeline:function(s){
+   var tiles=s.tiles.map(function(t){return '<div class="tile"'+bg(t[0])+'><span class="cap">'+e(t[1])+'</span></div>';}).join('');
+   var steps=s.steps.map(function(st,i){return '<span class="step"><span class="sn">0'+(i+1)+'</span><span class="st">'+e(st)+'</span></span>'+(i<s.steps.length-1?'<span class="step-ar">→</span>':'');}).join('');
+   return '<div style="margin-top:6vh"><div class="lab">'+e(s.kick)+'</div>'+T(s.title)+'<div class="body">'+e(s.body)+'</div></div><div class="fill"></div><div class="tiles">'+tiles+'</div><div class="steps">'+steps+'</div>';},
+ packages:function(s){
+   var tiers=s.tiers.map(function(t){return '<div class="tier'+(t.rec?' rec':'')+'"><div class="tag">'+e(t.tag)+'</div><div><div class="tname">'+Tinline(t.name)+'</div><div class="tdesc">'+e(t.desc)+'</div><div class="tinc">'+e(t.inc)+'</div></div><div class="tright"><div class="tfrom">From</div><div class="tprice">'+e(t.price)+'</div><div class="tfor">'+e(t.for)+'</div></div></div>';}).join('');
+   return '<div class="pk-left"><div class="labk">'+e(s.kick)+'</div>'+T(s.title)+'<div class="body">'+e(s.body)+'</div></div><div class="pk-right">'+tiers+'</div>';},
+ crew:function(s){var ppl=s.people.map(function(p){return '<div class="person"><div class="pr">'+e(p[0])+'</div><div class="pn">'+e(p[1])+'</div><div class="pd">'+e(p[2])+'</div></div>';}).join('');
+   return '<div style="margin-top:7vh"><div class="labk">'+e(s.kick)+'</div>'+T(s.title)+'<div class="body">'+e(s.body)+'</div></div><div class="fill"></div><div class="people">'+ppl+'</div>';},
+ contact:function(s){var f=s.founders.map(function(x){return '<div class="cb"><div class="cl">'+e(x[0])+'</div><div class="cv">'+e(x[1])+'</div><div class="cs">'+e(x[2])+'</div></div>';}).join('');
+   return '<div style="margin-top:8vh">'+T(s.title)+'</div><div class="fill"></div><div class="cgrid"><div class="cb"><div class="cl">Email</div><div class="cv">'+e(s.email)+'</div><div class="cs">For new project enquiries</div></div><div class="cb"><div class="cl">Website</div><div class="cv">'+e(s.site)+'</div><div class="cs">'+e(s.social.join(' · '))+'</div></div>'+f+'</div>';}
 };
-function setup(){
-  var deck=document.getElementById('deck'); var slides=[].slice.call(deck.querySelectorAll('.slide'));
-  var counter=document.getElementById('counter'), sec=document.getElementById('secLabel'), dots=[].slice.call(document.querySelectorAll('.dot'));
-  function pad(n){return String(n).padStart(2,'0');}
-  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){var i=+e.target.dataset.i;counter.textContent=pad(i+1)+' / '+pad(slides.length);sec.textContent=e.target.dataset.sec||'Sound · Capabilities';dots.forEach(function(d,j){d.classList.toggle('on',j===i);});}});},{threshold:.55});
-  slides.forEach(function(s){io.observe(s);});
-  dots.forEach(function(d){d.addEventListener('click',function(){slides[+d.dataset.d].scrollIntoView();});});
-}
-fetch('/api/site-order',{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
-  var d=(j&&j.order&&j.order.soundDeck&&j.order.soundDeck.slides)?j.order.soundDeck:DEFAULT_DECK; R(d); setup();
-}).catch(function(){ R(DEFAULT_DECK); setup(); });
+function render(D){var h='';D.slides.forEach(function(s,i){h+='<section class="slide '+s.type+'" data-i="'+i+'">'+corners(s)+'<div class="inr" style="flex:1;display:flex;flex-direction:column">'+R[s.type](s)+'</div></section>';});
+  document.getElementById('deck').innerHTML=h;}
+fetch('/api/site-order',{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){var d=(j&&j.order&&j.order.soundDeck&&j.order.soundDeck.slides)?j.order.soundDeck:D;render(d);}).catch(function(){render(D);});
 </script>
 </body>
 </html>
