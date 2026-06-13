@@ -663,5 +663,6 @@
   document.addEventListener('DOMContentLoaded',init); window.addEventListener('load',init);
 })();
 </script>
+<script>/* xyz-meta-override */(function(){fetch('/api/site-order').then(function(r){return r.json();}).then(function(d){var o=d&&d.order;if(!o||!o.meta)return;var p=location.pathname.replace(/^\/work\//i,'').replace(/\/+$/,'').split('/');var key=p.slice(0,2).join('/');var m=o.meta[key];if(!m)return;function s(sel,v){if(v==null||v==='')return;var ns=document.querySelectorAll(sel);for(var i=0;i<ns.length;i++)ns[i].textContent=v;}s('#pj-ui-titles .projects_item-title:not(.company)',m.title);s('.pj-cr-title',m.title);s('#pj-ui-titles .projects_item-title.company',m.client);s('.pj-cr-sub',m.client);if(m.client&&m.title)document.title=m.client+' \u2014 '+m.title+' \u2014 XYZ Studios';}).catch(function(){});})();</script>
 </body>
 </html>
