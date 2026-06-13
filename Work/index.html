@@ -1794,22 +1794,48 @@
 <script id="xyz-work-order">
 (function(){
   function slug(s){ return ((s||'')).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,''); }
-  function key(c,t){ return slug((c||'')+' '+(t||'')); }
+  function okey(c,t){ return slug((c||'')+' '+(t||'')); }
   function normCat(l){ l=(l||'').trim().toLowerCase(); if(l==='vfx'||l==='visual effects') return 'visual effects'; return l; }
+  function catSlug(l){ var nc=normCat(l); return nc==='visual effects'?'visual-effects':slug(nc); }
+  function mkey(catLabel,t){ return catSlug(catLabel)+'/'+slug(t); }
+  function stamp(card,catLabel){
+    if(card.dataset.okey) return;
+    var c=card.querySelector('.wc-label-client'), t=card.querySelector('.wc-label-title');
+    var cv=(c&&c.textContent||'').trim(), tv=(t&&t.textContent||'').trim();
+    card.dataset.okey=okey(cv,tv);
+    card.dataset.mkey=mkey(catLabel,tv);
+  }
+  function stampAll(){
+    document.querySelectorAll('.work-row').forEach(function(row){
+      var catEl=row.querySelector('.work-row-cat'); if(!catEl) return;
+      row.querySelectorAll('.work-card-wrap').forEach(function(card){ stamp(card,catEl.textContent); });
+    });
+  }
+  function applyMeta(order){
+    if(!order.meta) return;
+    document.querySelectorAll('.work-card-wrap').forEach(function(card){
+      var m=order.meta[card.dataset.mkey]; if(!m) return;
+      var c=card.querySelector('.wc-label-client'), t=card.querySelector('.wc-label-title');
+      if(c&&m.client!=null&&m.client!=='') c.textContent=m.client;
+      if(t&&m.title!=null&&m.title!=='') t.textContent=m.title;
+    });
+  }
   function apply(order){
     var showcase=document.getElementById('showcase'); if(!showcase||!order) return false;
     var rows=[].slice.call(document.querySelectorAll('.work-row')); if(!rows.length) return false;
+    stampAll();
     rows.forEach(function(row){
       var catEl=row.querySelector('.work-row-cat'); if(!catEl) return;
       var nc=normCat(catEl.textContent); var keys=null;
       Object.keys(order.projects||{}).forEach(function(k){ if(normCat(k)===nc) keys=order.projects[k]; });
       if(!keys) return;
       var cw=row.querySelector('.work-row-cards'); if(!cw) return;
-      var byKey={}; [].slice.call(cw.querySelectorAll('.work-card-wrap:not([data-clone])')).forEach(function(w){ var c=w.querySelector('.wc-label-client'),t=w.querySelector('.wc-label-title'); byKey[key(c&&c.textContent,t&&t.textContent)]=w; });
+      var byKey={}; [].slice.call(cw.querySelectorAll('.work-card-wrap:not([data-clone])')).forEach(function(w){ byKey[w.dataset.okey]=w; });
       keys.forEach(function(k){ if(byKey[k]) cw.appendChild(byKey[k]); });
     });
     if(order.categories){ var byCat={}; rows.forEach(function(r){ var c=r.querySelector('.work-row-cat'); if(c) byCat[normCat(c.textContent)]=r; });
       order.categories.forEach(function(lab){ var r=byCat[normCat(lab)]; if(r) showcase.appendChild(r); }); }
+    applyMeta(order);
     return true;
   }
   fetch('/api/site-order').then(function(r){return r.json();}).then(function(d){

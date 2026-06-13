@@ -5,115 +5,262 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title>XYZ Studios — Admin</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
 <style>
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  body{background:#0b0b0b;color:#f4f4f2;font-family:Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh;padding:40px 20px}
-  .wrap{max-width:680px;margin:0 auto}
-  h1{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:30px}
-  #login{max-width:320px;margin:14vh auto 0}
-  #login input{width:100%;padding:12px 14px;background:#161616;border:1px solid #2a2a2a;border-radius:6px;color:#fff;font-size:16px;margin-bottom:12px}
+  :root{--bg:#080809;--card:#0f0f11;--card2:#141417;--line:#1f1f23;--line2:#2a2a30;--txt:#f4f4f5;--dim:rgba(255,255,255,.5);--dim2:rgba(255,255,255,.3);--accent:#6b8afd}
+  body{background:radial-gradient(1100px 600px at 50% -120px,#16161c 0%,var(--bg) 60%);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh;padding:30px 18px 130px}
+  .wrap{max-width:780px;margin:0 auto}
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  h1{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);font-weight:600}
+  .sub{font-size:12px;color:var(--dim2);margin-bottom:26px}
+  .logout{background:none;border:0;color:var(--dim2);font-size:10px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:color .2s}
+  .logout:hover{color:var(--dim)}
   button{cursor:pointer;font-family:inherit}
-  .btn{background:#fff;color:#000;border:0;border-radius:6px;padding:11px 18px;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
-  .btn.ghost{background:none;color:rgba(255,255,255,.55);border:1px solid #2a2a2a}
-  .msg{font-size:12px;margin-top:12px;min-height:16px;color:rgba(255,255,255,.5)}
-  .tabs{display:flex;gap:8px;margin-bottom:24px;border-bottom:1px solid #1e1e1e;padding-bottom:0}
-  .tab{background:none;border:0;color:rgba(255,255,255,.4);font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:8px 4px 12px;border-bottom:2px solid transparent}
-  .tab.active{color:#fff;border-bottom-color:#fff}
-  .cat{border:1px solid #1e1e1e;border-radius:8px;margin-bottom:10px;overflow:hidden}
-  .cat-head{display:flex;align-items:center;gap:10px;padding:12px 14px;background:#131313}
-  .cat-head .name{flex:1;font-size:13px;font-weight:600;letter-spacing:.02em}
-  .ord{display:flex;gap:4px}
-  .ord button{width:26px;height:26px;background:#202020;border:1px solid #2e2e2e;border-radius:5px;color:#ccc;font-size:13px;line-height:1}
-  .ord button:hover{background:#2c2c2c;color:#fff}
-  .toggle{background:none;border:0;color:rgba(255,255,255,.4);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
-  .proj-list{display:none;padding:6px 14px 12px;border-top:1px solid #1e1e1e}
-  .cat.open .proj-list{display:block}
-  .proj{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #161616}
-  .proj:last-child{border-bottom:0}
-  .proj .pl{flex:1;font-size:12.5px;color:rgba(255,255,255,.78)}
-  .proj .pl b{color:#fff;font-weight:600}
-  .bar{position:sticky;bottom:0;background:#0b0b0b;padding:18px 0 4px;margin-top:20px;display:flex;align-items:center;gap:14px;border-top:1px solid #1e1e1e}
+  #login{max-width:330px;margin:17vh auto 0;text-align:center}
+  #login .mark{font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim);margin-bottom:24px}
+  #login input{width:100%;padding:13px 15px;background:var(--card);border:1px solid var(--line2);border-radius:10px;color:#fff;font-size:16px;margin-bottom:12px;text-align:center}
+  #login input:focus{outline:none;border-color:var(--accent)}
+  .btn{background:#fff;color:#000;border:0;border-radius:10px;padding:12px 20px;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;transition:transform .12s,opacity .2s}
+  .btn:hover{transform:translateY(-1px)}
+  .btn:active{transform:translateY(0)}
+  .btn:disabled{opacity:.5;cursor:default;transform:none}
+  .btn.ghost{background:none;color:var(--dim);border:1px solid var(--line2)}
+  .btn.ghost:hover{color:#fff;border-color:#3a3a42}
+  .msg{font-size:12px;color:var(--dim)}
+
+  .sec{margin-bottom:16px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,#101013,#0d0d10);overflow:hidden;box-shadow:0 1px 0 rgba(255,255,255,.02) inset}
+  .sec-head{display:flex;align-items:center;gap:11px;padding:15px 17px}
+  .sec-head .cat-grip{color:var(--dim2);font-size:14px;cursor:grab;line-height:1;letter-spacing:-3px}
+  .sec-head .lbl{font-size:12.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#fff}
+  .sec-head .count{font-size:10px;color:var(--dim2);background:var(--card2);border:1px solid var(--line);border-radius:20px;padding:2px 9px;letter-spacing:.04em}
+  .sec-head .hint{margin-left:auto;font-size:10px;color:var(--dim2);letter-spacing:.04em}
+  .sec-body{padding:4px 9px 11px}
+
+  .row{display:flex;align-items:center;gap:12px;padding:8px;border-radius:12px;background:var(--card2);border:1px solid var(--line);margin:7px 3px;transition:border-color .15s,background .15s}
+  .row:hover{border-color:var(--line2)}
+  .row.sortable-ghost{opacity:.3}
+  .row.sortable-chosen{background:#1a1a1f;border-color:#34343c}
+  .row .grip{color:var(--dim2);cursor:grab;font-size:16px;line-height:1;letter-spacing:-3px;flex:0 0 auto;padding:0 1px;transition:color .15s}
+  .row .grip:hover{color:var(--dim)}
+  .row .num{width:16px;flex:0 0 auto;font-size:10px;color:var(--dim2);text-align:center;font-variant-numeric:tabular-nums}
+  .thumb{flex:0 0 auto;width:72px;height:41px;border-radius:7px;overflow:hidden;position:relative;background:#000;border:1px solid var(--line)}
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .thumb::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 55%,rgba(0,0,0,.35));pointer-events:none}
+  .thumb .pl{position:absolute;left:50%;top:50%;width:18px;height:18px;transform:translate(-50%,-50%);background:rgba(0,0,0,.4);border-radius:50%;display:flex;align-items:center;justify-content:center;opacity:.85}
+  .thumb .pl svg{width:8px;height:8px;fill:#fff;margin-left:1px}
+  .fld{flex:1;display:flex;gap:9px;min-width:0;align-items:center}
+  .fld input{min-width:0;background:transparent;border:1px solid transparent;border-radius:7px;color:var(--txt);font-size:13.5px;padding:8px 10px;font-family:inherit;transition:background .15s,border-color .15s}
+  .fld input:hover{background:rgba(255,255,255,.025)}
+  .fld input:focus{outline:none;border-color:var(--accent);background:rgba(107,138,253,.06)}
+  .fld input.brand{flex:0 0 36%;color:#fff;font-weight:600}
+  .fld input.ttl{flex:1;color:rgba(255,255,255,.72)}
+  .fld input.tc{flex:0 0 70px;text-align:center;color:var(--dim);font-variant-numeric:tabular-nums}
+  .fldlabels{display:flex;gap:9px;padding:3px 10px 1px 0;margin-left:118px;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim2)}
+  .fldlabels .a{flex:0 0 36%}.fldlabels .b{flex:1}.fldlabels .c{flex:0 0 70px;text-align:center}
+
+  .grant{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;background:var(--card2);border:1px solid var(--line);margin:7px 3px}
+  .grant .av{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#2a2a32,#3a3a44);flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;text-transform:uppercase;font-weight:600}
+  .grant .em{flex:1;font-size:13px;color:rgba(255,255,255,.88);word-break:break-all}
+  .grant .src{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim2);flex:0 0 auto;border:1px solid var(--line);border-radius:20px;padding:3px 9px}
+  .grant .rm{background:none;border:1px solid var(--line2);color:var(--dim);border-radius:7px;font-size:11px;padding:6px 11px;flex:0 0 auto;transition:.15s}
+  .grant .rm:hover{border-color:#5a2a2a;color:#ff8b8b}
+  .addrow{display:flex;gap:9px;padding:9px 3px 3px}
+  .addrow input{flex:1;background:var(--card);border:1px solid var(--line2);border-radius:9px;color:#fff;font-size:14px;padding:11px 13px;font-family:inherit}
+  .addrow input:focus{outline:none;border-color:var(--accent)}
+  .note{font-size:11px;color:var(--dim);margin:4px 6px 8px;line-height:1.5}
+  .copybox{margin:6px 3px;padding:10px 12px;background:var(--card);border:1px solid var(--line2);border-radius:8px;font-size:11px;color:var(--dim);word-break:break-all;display:none}
+
+  .bar{position:fixed;left:0;right:0;bottom:0;background:rgba(8,8,9,.86);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:13px 18px;z-index:50}
+  .bar .inner{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:14px}
+  .pill{display:inline-flex;align-items:center;gap:7px;font-size:11px;color:var(--dim)}
+  .dot{width:7px;height:7px;border-radius:50%;background:#3a3a42;transition:background .2s}
+  .dot.live{background:#43d17a;box-shadow:0 0 8px rgba(67,209,122,.5)}
+  .dot.unsaved{background:#f5c451}
+  .spacer{flex:1}
+  @media(max-width:600px){
+    .fld{flex-wrap:wrap}.fld input.brand{flex:1 1 100%}.fld input.ttl{flex:1 1 100%}
+    .fldlabels{display:none}
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>XYZ Studios — Admin</h1>
   <div id="login">
+    <div class="mark">XYZ Studios</div>
     <input id="pw" type="password" placeholder="Password" autocomplete="current-password">
     <button class="btn" id="loginBtn" style="width:100%">Sign in</button>
-    <div class="msg" id="loginMsg"></div>
+    <div class="msg" id="loginMsg" style="margin-top:14px"></div>
   </div>
+
   <div id="app" style="display:none">
-    <div class="tabs"><button class="tab active" data-tab="order">Project Order</button></div>
-    <div id="order"></div>
-    <div class="bar">
-      <button class="btn" id="saveBtn">Publish order</button>
-      <button class="btn ghost" id="resetBtn">Reset to current</button>
-      <span class="msg" id="saveMsg"></span>
+    <div class="topbar">
+      <h1>XYZ Studios — Admin</h1>
+      <button class="logout" id="logoutBtn">Log out</button>
     </div>
+    <div class="sub">Drag to reorder \u00b7 type to rename \u00b7 publish when ready</div>
+    <div id="sections"></div>
   </div>
 </div>
+
+<div class="bar" id="bar" style="display:none">
+  <div class="inner">
+    <span class="pill"><span class="dot live" id="statDot"></span><span id="saveMsg">All published</span></span>
+    <span class="spacer"></span>
+    <button class="btn ghost" id="resetBtn">Reset</button>
+    <button class="btn" id="saveBtn">Publish changes</button>
+  </div>
+</div>
+
 <script>
-var DATA = {"categories": ["Visual Effects", "Sound", "AI", "Making Of"], "projects": {"Visual Effects": [{"key": "atomic-into-the-void", "client": "Atomic", "title": "Into the Void"}, {"key": "nike-france-world-cup", "client": "Nike", "title": "France World Cup"}, {"key": "cara-delevingne-i-forgot-out-of-my-head", "client": "Cara Delevingne", "title": "I Forgot & Out of My Head"}, {"key": "salomon-speedcross-3", "client": "Salomon", "title": "Speedcross 3"}, {"key": "salomon-s-lab-manifesto", "client": "Salomon", "title": "s/lab Manifesto"}, {"key": "toyota-road-to-palisades", "client": "Toyota", "title": "Road to Palisades"}, {"key": "rbc-canadian-open", "client": "RBC", "title": "Canadian Open"}, {"key": "jennair-the-flip", "client": "JennAir", "title": "The Flip"}, {"key": "fanatics-nba-store", "client": "Fanatics", "title": "NBA Store"}, {"key": "fanatics-nhl-store", "client": "Fanatics", "title": "NHL Store"}, {"key": "chino-pacas-modo-capone-ft-drake", "client": "Chino Pacas", "title": "Modo Capone ft. Drake"}, {"key": "marc-jacobs-the-essentials", "client": "Marc Jacobs", "title": "The Essentials"}, {"key": "fuerza-regida-tu-sancho", "client": "Fuerza Regida", "title": "Tu Sancho"}, {"key": "fuerza-regida-secreto-victoria", "client": "Fuerza Regida", "title": "Secreto Victoria"}, {"key": "tokischa-de-maravisha", "client": "Tokischa", "title": "De Maravisha"}], "Sound": [{"key": "sumsub-ai-awareness", "client": "Sumsub", "title": "AI Awareness"}, {"key": "louis-vuitton-ss26-teaser", "client": "Louis Vuitton", "title": "SS26 Teaser"}, {"key": "beats-open", "client": "Beats", "title": "Open"}], "AI": [{"key": "chanel-sous-la-lune", "client": "Chanel", "title": "Sous La Lune"}, {"key": "mercedes-benz-a-cold-wall", "client": "Mercedes-Benz", "title": "A Cold Wall"}, {"key": "bmw-concept-rr", "client": "BMW", "title": "Concept RR"}, {"key": "nike-ai", "client": "Nike", "title": "AI"}, {"key": "ducati-ai", "client": "Ducati", "title": "AI"}], "Making Of": [{"key": "mls-rating-reloaded", "client": "MLS", "title": "Rating Reloaded"}, {"key": "toyota-road-to-palisades", "client": "Toyota", "title": "Road to Palisades"}, {"key": "concacaf-gold-cup", "client": "Concacaf", "title": "Gold Cup"}, {"key": "rbc-canadian-open", "client": "RBC", "title": "Canadian Open"}, {"key": "doritos-stranger-things", "client": "Doritos", "title": "Stranger Things"}, {"key": "pura-hands-on", "client": "Pura", "title": "Hands On"}, {"key": "chris-brown-city-of-dreams", "client": "Chris Brown", "title": "City of Dreams"}, {"key": "square-released", "client": "Square", "title": "Released"}, {"key": "jasmin-savoy-august", "client": "Jasmin Savoy", "title": "August"}, {"key": "barskih-someone-new", "client": "Barskih", "title": "Someone New"}, {"key": "max-barskh-mine", "client": "Max Barskh", "title": "Mine"}]}};
-var state = null; // {categories:[], projects:{label:[keys]}}
-function deepDefault(){ return { categories: DATA.categories.slice(), projects: (function(){ var o={}; DATA.categories.forEach(function(c){ o[c]=DATA.projects[c].map(function(p){return p.key;}); }); return o; })() }; }
-function projMeta(cat,key){ var arr=DATA.projects[cat]||[]; for(var i=0;i<arr.length;i++){ if(arr[i].key===key) return arr[i]; } return {key:key,client:key,title:''}; }
+var DATA = {"categories": ["Visual Effects", "Sound", "AI"], "projects": {"Visual Effects": [{"key": "atomic-into-the-void", "client": "Atomic", "title": "Into the Void", "mkey": "visual-effects/into-the-void", "poster": "https://cdn.prod.website-files.com/69174740184591f142f019c1/69c0bbd38bf9e9ecfb7c293b_final%20test1.mp4_snapshot_00.27.567.jpg"}, {"key": "nike-france-world-cup", "client": "Nike", "title": "France World Cup", "mkey": "visual-effects/france-world-cup", "poster": "/work/visual-effects/france-world-cup/poster.jpg"}, {"key": "cara-delevingne-i-forgot-out-of-my-head", "client": "Cara Delevingne", "title": "I Forgot & Out of My Head", "mkey": "visual-effects/i-forgot-out-of-my-head", "poster": "/work/visual-effects/i-forgot-out-of-my-head/poster.jpg"}, {"key": "salomon-speedcross-3", "client": "Salomon", "title": "Speedcross 3", "mkey": "visual-effects/speedcross-3", "poster": "https://cdn.prod.website-files.com/69174740184591f142f019c1/69c1bf43294738d67f86e3fd_salomon_speedcross_6_2160p.mp4_snapshot_00.04.796.jpg"}, {"key": "salomon-s-lab-manifesto", "client": "Salomon", "title": "s/lab Manifesto", "mkey": "visual-effects/s-lab-manifesto", "poster": "https://cdn.prod.website-files.com/69174740184591f142f019c1/69c0bd3537dcd96b5f0fbd99_original%20(1).mp4_snapshot_00.17.054.jpg"}, {"key": "toyota-road-to-palisades", "client": "Toyota", "title": "Road to Palisades", "mkey": "visual-effects/road-to-palisades", "poster": "https://cdn.prod.website-files.com/69174740184591f142f019c1/69c0babb3eeeb38dec9e84a6_original.mp4_snapshot_00.54.027.jpg"}, {"key": "rbc-canadian-open", "client": "RBC", "title": "Canadian Open", "mkey": "visual-effects/canadian-open", "poster": "https://cdn.prod.website-files.com/69174740184591f142f019c1/69c0c7c957a69405e8a00817_original%20(2).mp4_snapshot_00.00.000.jpg"}, {"key": "jennair-the-flip", "client": "JennAir", "title": "The Flip", "mkey": "visual-effects/the-flip", "poster": "https://cdn.prod.website-files.com/69174740184591f142f019c1/6983f7b1aa7c8344aa96cd3f_Jenair6.avif"}, {"key": "fanatics-nba-store", "client": "Fanatics", "title": "NBA Store", "mkey": "visual-effects/nba-store", "poster": "https://cdn.prod.website-files.com/69174740184591f142f019c1/6983f49d3e2baf7fbfa333cd_nba%20store.avif"}, {"key": "fanatics-nhl-store", "client": "Fanatics", "title": "NHL Store", "mkey": "visual-effects/nhl-store", "poster": "https://cdn.prod.website-files.com/69174740184591f142f019c1/6983f4429ddf0f1817061bef_NHL%20Store.avif"}, {"key": "chino-pacas-modo-capone-ft-drake", "client": "Chino Pacas", "title": "Modo Capone ft. Drake", "mkey": "visual-effects/modo-capone-ft-drake", "poster": "https://cdn.prod.website-files.com/69174740184591f142f019c1/6986330ccc8c7a06461fdc31_drake%203.avif"}, {"key": "marc-jacobs-the-essentials", "client": "Marc Jacobs", "title": "The Essentials", "mkey": "visual-effects/the-essentials", "poster": "https://cdn.prod.website-files.com/69174740184591f142f019c1/698632e07d024cbdc50976fa_Marc%20Jacobs.avif"}, {"key": "fuerza-regida-tu-sancho", "client": "Fuerza Regida", "title": "Tu Sancho", "mkey": "visual-effects/tu-sancho", "poster": "https://cdn.prod.website-files.com/69174740184591f142f019c1/69863392ec9c14012747b8de_drake%202.avif"}, {"key": "fuerza-regida-secreto-victoria", "client": "Fuerza Regida", "title": "Secreto Victoria", "mkey": "visual-effects/secreto-victoria", "poster": "https://cdn.prod.website-files.com/69174740184591f142f019c1/698633cf9aa1fa498d7e8cac_Fuerza%20Secreto%202.avif"}, {"key": "tokischa-de-maravisha", "client": "Tokischa", "title": "De Maravisha", "mkey": "visual-effects/de-maravisha", "poster": "https://cdn.prod.website-files.com/69174740184591f142f019c1/698b9b4e9009c8f8fd33f65b_tokischa%201.avif"}], "Sound": [{"key": "sumsub-ai-awareness", "client": "Sumsub", "title": "AI Awareness", "mkey": "sound/ai-awareness", "poster": "/work/sound/ai-awareness/poster.jpg"}, {"key": "louis-vuitton-ss26-teaser", "client": "Louis Vuitton", "title": "SS26 Teaser", "mkey": "sound/ss26-teaser", "poster": "https://cdn.prod.website-files.com/69174740184591f142f019c1/69c0b94d0ebe8f3b86741b7a_214a3ae2-01ca-4593-8949-98a7191f6548.mp4_snapshot_00.12.156.jpg"}, {"key": "beats-open", "client": "Beats", "title": "Open", "mkey": "sound/open", "poster": "https://cdn.prod.website-files.com/69174740184591f142f019c1/69c0c86dee76a67f51f3ccbb_17e77d71-3bca-4d42-8275-71deb05724d1.mp4_snapshot_00.11.787.jpg"}], "AI": [{"key": "chanel-sous-la-lune", "client": "Chanel", "title": "Sous La Lune", "mkey": "ai/sous-la-lune", "poster": "https://cdn.prod.website-files.com/69174740184591f142f019c1/6983f5143e88d686965c096c_Chanel4.avif"}, {"key": "mercedes-benz-a-cold-wall", "client": "Mercedes-Benz", "title": "A Cold Wall", "mkey": "ai/a-cold-wall", "poster": "https://cdn.prod.website-files.com/69174740184591f142f019c1/6983eefa0636bab507bca7c9_Mercedes3.avif"}, {"key": "bmw-concept-rr", "client": "BMW", "title": "Concept RR", "mkey": "ai/concept-rr", "poster": "https://cdn.prod.website-files.com/69174740184591f142f019c1/6983f254ccb964933dda7ef8_Bmw2.avif"}, {"key": "nike-ai", "client": "Nike", "title": "AI", "mkey": "ai/ai-nike", "poster": "https://cdn.prod.website-files.com/69174740184591f142f019c1/6983eea79630e3e88e1faeac_nike2.avif"}, {"key": "ducati-ai", "client": "Ducati", "title": "AI", "mkey": "ai/ai-ducati", "poster": "https://cdn.prod.website-files.com/69174740184591f142f019c1/6983ee69415b04b87b4162d5_Ducati%202.avif"}]}};
+var HOME = [{"client": "Nike", "title": "France World Cup", "hkey": "nike-france-world-cup", "poster": "/work/visual-effects/france-world-cup/poster.jpg"}, {"client": "Atomic", "title": "Into the void", "hkey": "atomic-into-the-void", "poster": "https://cdn.prod.website-files.com/69174740184591f142f019c1/69c0bbd38bf9e9ecfb7c293b_final%20test1.mp4_snapshot_00.27.567.jpg"}, {"client": "Salomon", "title": "Speedcross 3", "hkey": "salomon-speedcross-3", "poster": "https://cdn.prod.website-files.com/69174740184591f142f019c1/69c1bf43294738d67f86e3fd_salomon_speedcross_6_2160p.mp4_snapshot_00.04.796.jpg"}, {"client": "Toyota", "title": "Road to Palisades", "hkey": "toyota-road-to-palisades", "poster": "https://cdn.prod.website-files.com/69174740184591f142f019c1/69c0babb3eeeb38dec9e84a6_original.mp4_snapshot_00.54.027.jpg"}, {"client": "Lucid", "title": "Compromise Nothing", "hkey": "lucid-compromise-nothing", "poster": "https://cdn.prod.website-files.com/69174740184591f142f019c1/69c0bed5350817015931b808_6c66aad7-7df3-4809-a8d7-1f92a377fa5e.mp4_snapshot_00.15.452.jpg"}, {"client": "Salomon", "title": "s/lab Manifesto", "hkey": "salomon-s-lab-manifesto", "poster": "https://cdn.prod.website-files.com/69174740184591f142f019c1/69c0bd3537dcd96b5f0fbd99_original%20(1).mp4_snapshot_00.17.054.jpg"}, {"client": "Prime Video", "title": "Good Sports", "hkey": "prime-video-good-sports", "poster": "/work/sound/good-sports/poster.jpg"}];
+var ORDER = null, GRANTS = [], GRANT_MODE = null;
+var PLAY = '<span class="pl"><svg viewBox="0 0 10 10"><path d="M2 1l6 4-6 4z"/></svg></span>';
+
+function el(tag,cls,html){ var e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e; }
+function projMeta(cat,key){ var a=DATA.projects[cat]||[]; for(var i=0;i<a.length;i++) if(a[i].key===key) return a[i]; return null; }
+function thumb(poster){ var d=el('div','thumb'); var img=el('img'); img.loading='lazy'; img.src=poster||''; img.onerror=function(){this.style.display='none';}; d.appendChild(img); d.insertAdjacentHTML('beforeend',PLAY); return d; }
+
+function defaultOrder(){ var o={categories:DATA.categories.slice(),projects:{},meta:{},home:{}}; DATA.categories.forEach(function(c){ o.projects[c]=DATA.projects[c].map(function(p){return p.key;}); }); return o; }
 function mergeOrder(saved){
-  var base=deepDefault();
-  if(!saved) return base;
-  // categories: saved order first (those that still exist), then any new
+  var base=defaultOrder(); if(!saved) return base;
   var cats=(saved.categories||[]).filter(function(c){return base.categories.indexOf(c)>=0;});
   base.categories.forEach(function(c){ if(cats.indexOf(c)<0) cats.push(c); });
   var projects={};
-  cats.forEach(function(c){
-    var validKeys=base.projects[c]||[];
-    var savedKeys=((saved.projects||{})[c]||[]).filter(function(k){return validKeys.indexOf(k)>=0;});
-    validKeys.forEach(function(k){ if(savedKeys.indexOf(k)<0) savedKeys.push(k); });
-    projects[c]=savedKeys;
-  });
-  return { categories:cats, projects:projects };
+  cats.forEach(function(c){ var valid=base.projects[c]||[]; var sv=((saved.projects||{})[c]||[]).filter(function(k){return valid.indexOf(k)>=0;}); valid.forEach(function(k){ if(sv.indexOf(k)<0) sv.push(k); }); projects[c]=sv; });
+  return {categories:cats,projects:projects,meta:saved.meta||{},home:saved.home||{}};
 }
+
 function render(){
-  var root=document.getElementById('order'); root.innerHTML='';
-  state.categories.forEach(function(cat,ci){
-    var div=document.createElement('div'); div.className='cat';
-    var head=document.createElement('div'); head.className='cat-head';
-    head.innerHTML='<span class="name">'+cat+'</span><div class="ord"><button data-cu>\u2191</button><button data-cd>\u2193</button></div><button class="toggle">Edit</button>';
-    div.appendChild(head);
-    var list=document.createElement('div'); list.className='proj-list';
-    state.projects[cat].forEach(function(key,pi){
-      var m=projMeta(cat,key);
-      var p=document.createElement('div'); p.className='proj';
-      p.innerHTML='<span class="pl"><b>'+m.client+'</b> \u2014 '+m.title+'</span><div class="ord"><button data-pu>\u2191</button><button data-pd>\u2193</button></div>';
-      p.querySelector('[data-pu]').onclick=function(){ if(pi>0){ var a=state.projects[cat]; a.splice(pi-1,0,a.splice(pi,1)[0]); render(); div.classList.add('open'); } };
-      p.querySelector('[data-pd]').onclick=function(){ var a=state.projects[cat]; if(pi<a.length-1){ a.splice(pi+1,0,a.splice(pi,1)[0]); render(); div.classList.add('open'); } };
-      list.appendChild(p);
-    });
-    div.appendChild(list);
-    head.querySelector('.toggle').onclick=function(){ div.classList.toggle('open'); };
-    head.querySelector('[data-cu]').onclick=function(){ if(ci>0){ state.categories.splice(ci-1,0,state.categories.splice(ci,1)[0]); render(); } };
-    head.querySelector('[data-cd]').onclick=function(){ if(ci<state.categories.length-1){ state.categories.splice(ci+1,0,state.categories.splice(ci,1)[0]); render(); } };
-    root.appendChild(div);
+  var root=document.getElementById('sections'); root.innerHTML='';
+
+  var hs=el('div','sec'); hs.appendChild(headEl('Home',HOME.length+' reel videos',false));
+  var hb=el('div','sec-body'); hb.appendChild(fldLabels(true));
+  HOME.forEach(function(h){
+    var ov=(ORDER.home||{})[h.hkey]||{};
+    var r=el('div','row'); r.dataset.hkey=h.hkey;
+    r.appendChild(thumb(h.poster));
+    var f=el('div','fld');
+    f.appendChild(inp('brand',ov.client!=null?ov.client:h.client));
+    f.appendChild(inp('ttl',ov.title!=null?ov.title:h.title));
+    f.appendChild(inp('tc',ov.start!=null?ov.start:'','0:00'));
+    r.appendChild(f); hb.appendChild(r);
   });
+  hs.appendChild(hb); root.appendChild(hs);
+
+  var catWrap=el('div'); catWrap.id='catWrap';
+  ORDER.categories.forEach(function(cat){
+    var list=ORDER.projects[cat]||[];
+    var sec=el('div','sec cat-section'); sec.dataset.cat=cat;
+    sec.appendChild(headEl(catLabelDisplay(cat),list.length+' projects',true));
+    var body=el('div','sec-body'); body.appendChild(fldLabels(false));
+    var pl=el('div','plist'); pl.dataset.cat=cat;
+    list.forEach(function(key){
+      var m=projMeta(cat,key); if(!m) return;
+      var ov=(ORDER.meta||{})[m.mkey]||{};
+      var r=el('div','row'); r.dataset.key=key; r.dataset.mkey=m.mkey;
+      r.appendChild(el('span','grip','\u2237'));
+      r.appendChild(thumb(m.poster));
+      var f=el('div','fld');
+      f.appendChild(inp('brand',ov.client!=null?ov.client:m.client));
+      f.appendChild(inp('ttl',ov.title!=null?ov.title:m.title));
+      r.appendChild(f); pl.appendChild(r);
+    });
+    body.appendChild(pl); sec.appendChild(body); catWrap.appendChild(sec);
+    new Sortable(pl,{animation:160,handle:'.grip',ghostClass:'sortable-ghost',chosenClass:'sortable-chosen',onSort:dirty});
+  });
+  root.appendChild(catWrap);
+  new Sortable(catWrap,{animation:160,handle:'.cat-grip',ghostClass:'sortable-ghost',onSort:dirty});
+
+  var gs=el('div','sec'); gs.appendChild(headEl('Capabilities Deck Access','who can open the deck',false));
+  var gb=el('div','sec-body'); gb.id='grantsBody'; gs.appendChild(gb); root.appendChild(gs);
+  renderGrants();
 }
-function loadOrder(cb){ fetch('/api/site-order').then(function(r){return r.json();}).then(function(d){ state=mergeOrder(d&&d.order); cb&&cb(); }).catch(function(){ state=deepDefault(); cb&&cb(); }); }
+function catLabelDisplay(c){ return c==='Visual Effects'?'VFX':c; }
+function headEl(label,count,drag){
+  var h=el('div','sec-head');
+  if(drag) h.appendChild(el('span','cat-grip','\u2237'));
+  h.appendChild(el('span','lbl',label));
+  h.appendChild(el('span','count',count));
+  h.appendChild(el('span','hint',drag?'drag \u2237 to reorder':''));
+  return h;
+}
+function fldLabels(third){ var d=el('div','fldlabels'); d.appendChild(el('span','a','Brand')); d.appendChild(el('span','b','Project name')); if(third) d.appendChild(el('span','c','Start')); return d; }
+function inp(cls,val,ph){ var i=el('input',cls); i.type='text'; i.value=val||''; if(ph)i.placeholder=ph; i.oninput=dirty; return i; }
+
+function renderGrants(){
+  var gb=document.getElementById('grantsBody'); if(!gb) return; gb.innerHTML='';
+  if(GRANT_MODE==='copy_env') gb.appendChild(el('div','note','Live save isn\u2019t enabled on this deployment, so new emails appear below to paste into Vercel \u2192 CAPABILITIES_ALLOWED_EMAILS, then redeploy.'));
+  GRANTS.forEach(function(g){
+    var r=el('div','grant');
+    r.appendChild(el('span','av',(g.email||'?').charAt(0)));
+    r.appendChild(el('span','em',g.email));
+    r.appendChild(el('span','src',(g.source||'grant').indexOf('allowlist')>=0?'allowlist':'invited'));
+    if((g.source||'').indexOf('allowlist')<0){ var b=el('button','rm','Remove'); b.onclick=function(){ revoke(g.email); }; r.appendChild(b); }
+    gb.appendChild(r);
+  });
+  var add=el('div','addrow');
+  var i=el('input'); i.id='grantEmail'; i.type='email'; i.placeholder='Add email\u2026  name@email.com'; i.autocomplete='off';
+  var b=el('button','btn'); b.textContent='Grant'; b.onclick=function(){ grant(i.value); };
+  i.addEventListener('keydown',function(e){ if(e.key==='Enter') grant(i.value); });
+  add.appendChild(i); add.appendChild(b); gb.appendChild(add);
+  var cb=el('div','copybox'); cb.id='grantCopy'; gb.appendChild(cb);
+}
+
+var dirtyFlag=false;
+function dirty(){ if(!dirtyFlag){ dirtyFlag=true; var d=document.getElementById('statDot'),m=document.getElementById('saveMsg'); if(d){d.className='dot unsaved';} if(m)m.textContent='Unpublished changes'; } }
+function setLive(txt){ var d=document.getElementById('statDot'),m=document.getElementById('saveMsg'); if(d)d.className='dot live'; if(m)m.textContent=txt||'All published'; }
+
+function collect(){
+  var out={categories:[],projects:{},meta:{},home:{}};
+  document.querySelectorAll('#catWrap .cat-section').forEach(function(sec){
+    var cat=sec.dataset.cat; out.categories.push(cat); out.projects[cat]=[];
+    sec.querySelectorAll('.plist .row').forEach(function(r){ out.projects[cat].push(r.dataset.key); var ins=r.querySelectorAll('input'); out.meta[r.dataset.mkey]={client:ins[0].value.trim(),title:ins[1].value.trim()}; });
+  });
+  document.querySelectorAll('.row[data-hkey]').forEach(function(r){ var ins=r.querySelectorAll('input'); out.home[r.dataset.hkey]={client:ins[0].value.trim(),title:ins[1].value.trim(),start:ins[2].value.trim()}; });
+  return out;
+}
+
+function loadAll(cb){
+  var done=0; function step(){ done++; if(done>=2) cb&&cb(); }
+  fetch('/api/site-order').then(function(r){return r.json();}).then(function(d){ ORDER=mergeOrder(d&&d.order); step(); }).catch(function(){ ORDER=defaultOrder(); step(); });
+  fetch('/api/capabilities/admin/list').then(function(r){return r.json();}).then(function(d){ if(d&&d.ok){ GRANTS=d.grants||[]; GRANT_MODE=d.canPersistGrants?null:'copy_env'; } step(); }).catch(function(){ step(); });
+}
+function showApp(){ document.getElementById('login').style.display='none'; document.getElementById('app').style.display='block'; document.getElementById('bar').style.display='block'; loadAll(function(){ render(); setLive('All published'); }); }
+
+fetch('/api/capabilities/admin/list').then(function(r){ if(r.ok) showApp(); }).catch(function(){});
+
 document.getElementById('loginBtn').onclick=function(){
-  var pw=document.getElementById('pw').value; var msg=document.getElementById('loginMsg'); msg.textContent='Signing in...';
+  var pw=document.getElementById('pw').value; var msg=document.getElementById('loginMsg'); msg.textContent='Signing in\u2026';
   fetch('/api/capabilities/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pw})})
-   .then(function(r){return r.json();}).then(function(d){
-     if(d&&d.ok){ document.getElementById('login').style.display='none'; document.getElementById('app').style.display='block'; loadOrder(render); }
-     else { msg.textContent=(d&&d.error)||'Wrong password'; }
-   }).catch(function(){ msg.textContent='Network error'; });
+   .then(function(r){return r.json();}).then(function(d){ if(d&&d.ok){ showApp(); } else { msg.textContent=(d&&d.error)||'Wrong password'; } }).catch(function(){ msg.textContent='Network error'; });
 };
 document.getElementById('pw').addEventListener('keydown',function(e){ if(e.key==='Enter') document.getElementById('loginBtn').click(); });
+document.getElementById('logoutBtn').onclick=function(){ fetch('/api/capabilities/admin/logout',{method:'POST'}).then(function(){ location.reload(); }).catch(function(){ location.reload(); }); };
+
 document.getElementById('saveBtn').onclick=function(){
-  var msg=document.getElementById('saveMsg'); msg.textContent='Publishing...';
-  fetch('/api/site-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({order:state})})
-   .then(function(r){return r.json();}).then(function(d){
-     if(d&&d.ok){ msg.textContent='Published \u2713 (live now)'; } else { msg.textContent=(d&&d.error)||'Save failed'; }
-   }).catch(function(){ msg.textContent='Network error'; });
+  var btn=this; btn.disabled=true; var m=document.getElementById('saveMsg'); if(m)m.textContent='Publishing\u2026';
+  fetch('/api/site-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({order:collect()})})
+   .then(function(r){return r.json();}).then(function(d){ btn.disabled=false; if(d&&d.ok){ dirtyFlag=false; setLive('Published \u2713 live now'); } else { if(m)m.textContent=(d&&d.error)||'Save failed'; } })
+   .catch(function(){ btn.disabled=false; if(m)m.textContent='Network error'; });
 };
-document.getElementById('resetBtn').onclick=function(){ state=deepDefault(); render(); document.getElementById('saveMsg').textContent='Reset (not yet published)'; };
+document.getElementById('resetBtn').onclick=function(){ loadAll(function(){ render(); dirtyFlag=false; setLive('Reverted to last published'); }); };
+
+function grant(email){
+  email=(email||'').trim(); if(!email||email.indexOf('@')<0) return;
+  fetch('/api/capabilities/admin/grant',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email})})
+   .then(function(r){return r.json();}).then(function(d){
+     if(d&&d.ok&&d.mode==='saved'){ loadAll(renderGrants); }
+     else if(d&&d.ok&&d.mode==='copy_env'){ GRANT_MODE='copy_env'; renderGrants(); var c=document.getElementById('grantCopy'); c.style.display='block'; c.textContent=d.suggestedAllowedEmails||''; }
+     else { alert((d&&d.error)||'Grant failed'); }
+   }).catch(function(){ alert('Network error'); });
+}
+function revoke(email){
+  if(!confirm('Remove access for '+email+'?')) return;
+  fetch('/api/capabilities/admin/revoke',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email})})
+   .then(function(r){return r.json();}).then(function(d){ if(d&&d.ok){ loadAll(renderGrants); } else { alert((d&&d.error)||'Revoke failed'); } }).catch(function(){ alert('Network error'); });
+}
 </script>
 </body>
 </html>
