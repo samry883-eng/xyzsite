@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>XYZ Studios — Capabilities 2026</title>
+deck v26 · 2026-06-12
+<style>
+  :root {
+    --bg: #050505;
+    --ink: #f4f4f2;
+    --dim: rgba(244, 244, 242, .58);
+    --faint: rgba(244, 244, 242, .22);
+    --line: rgba(244, 244, 242, .11);
+    --ease: cubic-bezier(.16, 1, .3, 1);
+    --aw: 1280px;
+    --ah: 720px;
+    --m: 52px;
+    --safe-t: max(env(safe-area-inset-top, 0px), 8px);
+    --safe-b: max(env(safe-area-inset-bottom, 0px), 8px);
+    --safe-l: max(env(safe-area-inset-left, 0px), 8px);
+    --safe-r: max(env(safe-area-inset-right, 0px), 8px);
+    /* PPTX pt → artboard px (1280 / 720) */
+    --t-7: 12px;
+    --t-6: 11px;
+    --t-5: 9px;
+    --t-14: 25px;
+    --t-18: 32px;
+    --t-30: 53px;
+    --t-68: 121px;
+    --t-75: 133px;
+    --t-109: 194px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 100%; height: 100%; overflow: hidden; background: var(--bg);
+    overscroll-behavior: none;
+  }
+  body {
+    font-family: Helvetica, 'Helvetica Neue', Arial, sans-serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    font-size: var(--t-7);
+    line-height: 1.45;
+  }
+  .mono {
+    font-family: Helvetica, 'Helvetica Neue', Arial, sans-serif;
+    font-size: var(--t-6);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+  img, video { user-select: none; -webkit-user-drag: none; }
+  .fill { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .lbl { margin-bottom: 6px; font-size: var(--t-5); }
+  .body { font-size: var(--t-7); line-height: 1.45; color: var(--dim); max-width: none; }
+  .body + .body { margin-top: .85em; }
+
+  /* atmosphere */
+  #grain {
+    position: fixed; inset: -120px; z-index: 95; pointer-events: none; opacity: .045; mix-blend-mode: soft-light;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation: grain 800ms steps(5) infinite;
+  }
+  @keyframes grain {
+    0%,100% { transform: translate(0,0); } 25% { transform: translate(-24px,18px); }
+    50% { transform: translate(16px,-22px); } 75% { transform: translate(-12px,28px); }
+  }
+  #vignette {
+    position: fixed; inset: 0; z-index: 94; pointer-events: none;
+    background: radial-gradient(ellipse 120% 90% at 50% 50%, transparent 55%, rgba(0,0,0,.35) 100%);
+  }
+
+  /* artboard — fixed 16:9 PPTX canvas, scaled to cover viewport */
+  #stage { position: fixed; inset: 0; overflow: hidden; background: var(--bg); }
+  #artboard {
+    position: absolute; width: var(--aw); height: var(--ah);
+    left: 50%; top: 50%; transform-origin: center center; will-change: transform;
+  }
+
+  /* HUD */
+  #bar { position: fixed; left: 0; top: 0; height: 1px; width: 100%; z-index: 88; background: rgba(255,255,255,.06); }
+  #bar i { display: block; height: 100%; width: 0; background: var(--ink); transition: width .55s var(--ease); }
+  #hud { position: fixed; inset: 0; z-index: 86; pointer-events: none; }
+  .hud-top, .hud-bot {
+    position: absolute; left: calc(var(--safe-l) + 16px); right: calc(var(--safe-r) + 36px);
+    display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+  }
+  .hud-top { top: var(--safe-t); padding-top: 6px; }
+  .hud-bot { bottom: var(--safe-b); padding-bottom: 6px; }
+  #hud .wordmark {
+    color: var(--ink); font-weight: 400; letter-spacing: .08em; font-size: var(--t-6);
+    pointer-events: auto; cursor: pointer; transition: opacity .3s;
+  }
+  #hud .wordmark:hover { opacity: .55; }
+  #hud-chapter { transition: opacity .35s; text-align: center; flex: 1; }
+  #hud-counter { font-variant-numeric: tabular-nums; }
+  #hud-hint { display: flex; align-items: center; gap: 8px; }
+  #hud-hint .tick {
+    display: inline-block; width: 1px; height: 11px; background: var(--dim);
+    animation: drip 1.8s var(--ease) infinite;
+  }
+  @keyframes drip {
+    0% { transform: scaleY(0); transform-origin: top; }
+    45% { transform: scaleY(1); transform-origin: top; }
+    55% { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  /* rail */
+  #rail {
+    position: fixed; right: calc(var(--safe-r) + 10px); top: 50%; transform: translateY(-50%);
+    z-index: 87; display: flex; flex-direction: column; gap: 5px; pointer-events: auto;
+  }
+  .rail-dot {
+    width: 5px; height: 5px; border: 0; padding: 0; border-radius: 50%;
+    background: rgba(255,255,255,.14); cursor: pointer; transition: transform .35s var(--ease), background .35s;
+  }
+  .rail-dot:hover { background: rgba(255,255,255,.35); transform: scale(1.35); }
+  .rail-dot.on { background: var(--ink); transform: scale(1.2); }
+
+  /* slides — 1280×720 artboard, vertical push transitions */
+  #deck { position: relative; width: var(--aw); height: var(--ah); overflow: hidden; background: var(--bg); }
+  .slide {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    visibility: hidden; transform: translateY(100%); z-index: 1;
+    transition: transform .72s var(--ease), visibility 0s linear .72s;
+    will-change: transform;
+  }
+  .slide:not(.active) { pointer-events: none; }
+  .slide.is-before { transform: translateY(-100%); }
+  .slide.active {
+    visibility: visible; transform: translateY(0); z-index: 2;
+    transition: transform .72s var(--ease), visibility 0s;
+  }
+  .slide > div { height: 100%; width: 100%; }
+  .slide--inset { padding: var(--m); }
+  .slide--bleed { padding: 0; }
+
+  /* reveals */
+  .rl { display: block; overflow: hidden; }
+  .rl-i { display: inline-block; transform: translateY(108%); transition: transform .95s var(--ease); }
+  .active .rl-i { transform: translateY(0); }
+  .active .rl:nth-child(2) .rl-i { transition-delay: .07s; }
+  .active .rl:nth-child(3) .rl-i { transition-delay: .12s; }
+  .slide img, .slide .cs-cell, .slide .wall-cell, .slide .prj-video {
+    opacity: 0; transform: scale(1.03);
+    transition: opacity .85s var(--ease), transform 1.1s var(--ease);
+  }
+  .slide.active img, .slide.active .cs-cell, .slide.active .wall-cell,
+  .slide.active .prj-video,
+  .sl-cover .cover-horse {
+    opacity: 1; transform: scale(1);
+  }
+  .slide .body, .slide .lbl, .slide .svc, .slide .toc-row, .slide .stat,
+  .slide .how-row, .slide .person, .slide .clink, .slide .cover-meta,
+  .slide .prj-block, .slide .prj-foot {
+    opacity: 0; transform: translateY(12px);
+    transition: opacity .65s var(--ease), transform .65s var(--ease);
+  }
+  .slide.active .body, .slide.active .lbl, .slide.active .svc, .slide.active .toc-row,
+  .slide.active .stat, .slide.active .how-row, .slide.active .person, .slide.active .clink,
+  .slide.active .cover-meta, .slide.active .prj-block, .slide.active .prj-foot {
+    opacity: 1; transform: translateY(0);
+  }
+
+  /* cover — PPTX slide 1 proportions */
+  .sl-cover { position: relative; overflow: hidden; background: var(--bg); }
+  .cover-bg {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 0;
+    height: 258px; overflow: hidden;
+  }
+  .cover-horse {
+    width: 100%; height: 100%; object-fit: cover; object-position: 50% 38%;
+    transform: scale(1.04); transition: transform 8s linear;
+  }
+  .slide.active .cover-horse { transform: scale(1); }
+  .cover-shade {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background:
+      linear-gradient(180deg, var(--bg) 0%, rgba(5,5,5,.55) 42%, rgba(5,5,5,.25) 68%, rgba(5,5,5,.85) 100%);
+  }
+  .cover-year {
+    position: absolute; right: 52px; top: 120px;
+    font-size: var(--t-109); font-weight: 400; letter-spacing: -.045em;
+    color: rgba(255,255,255,.045); line-height: 1; z-index: 1; pointer-events: none; user-select: none;
+  }
+  .cover-inner {
+    position: relative; z-index: 2; height: 100%;
+    display: flex; flex-direction: column; justify-content: center; align-items: stretch;
+    padding: var(--m);
+    padding-bottom: 280px;
+    gap: 28px;
+  }
+  .cover-meta {
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 24px;
+    width: 100%;
+  }
+  .cover-meta--btm { margin-top: auto; padding-top: 8px; }
+  .cover-line {
+    font-size: 8px; letter-spacing: .14em; text-transform: uppercase;
+    color: rgba(244,244,242,.42); line-height: 1.5; max-width: 220px;
+  }
+  .cover-mail { color: rgba(244,244,242,.42); text-decoration: none; transition: color .3s; }
+  .cover-mail:hover { color: var(--ink); }
+  .cover-title {
+    font-size: var(--t-68); line-height: .92; font-weight: 400;
+    letter-spacing: -.02em; align-self: flex-start;
+  }
+
+  /* toc */
+  .sl-toc { display: grid; grid-template-columns: 420px 1fr; gap: 48px; align-items: end; height: 100%; }
+  .toc-title { font-size: 71px; font-weight: 630; letter-spacing: -.042em; text-transform: uppercase; line-height: .92; }
+  .toc-list { display: flex; flex-direction: column; }
+  .toc-row {
+    display: grid; grid-template-columns: 44px 1fr auto; align-items: baseline; gap: 14px;
+    padding: 11px 0; border: 0; border-bottom: 1px solid var(--line);
+    background: none; color: var(--ink); text-align: left; cursor: pointer; font: inherit;
+  }
+  .toc-row:first-child { border-top: 1px solid var(--line); }
+  .toc-label { font-size: 21px; font-weight: 530; letter-spacing: -.015em; transition: transform .4s var(--ease); }
+  .toc-row:hover .toc-label { transform: translateX(10px); }
+  .toc-row .toc-no, .toc-row .toc-pg { color: var(--faint); }
+
+  /* about */
+  .sl-about { display: grid; grid-template-columns: .92fr 1.08fr; gap: 40px; align-items: stretch; height: 100%; }
+  .about-media { min-height: 100%; overflow: hidden; border-radius: 1px; }
+  .about-media .fill { height: 100%; min-height: 520px; object-position: 50% 20%; }
+  .about-copy { display: flex; flex-direction: column; justify-content: center; padding-right: 8px; }
+  .about-lead { font-size: var(--t-18); font-weight: 400; letter-spacing: -.01em; line-height: 1.12; margin-bottom: 18px; max-width: 28ch; }
+
+  /* wall — scaled grid */
+  .sl-wall {
+    display: flex; align-items: center; justify-content: center;
+    height: 100%; padding: calc(var(--m) + 8px) var(--m);
+  }
+  .wall-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr);
+    gap: 3px; width: 100%; max-width: 980px; height: 100%; max-height: 560px;
+  }
+  .wall-cell { overflow: hidden; position: relative; }
+  .wall-cell .fill { transition: transform 1s var(--ease), filter .5s; }
+  .wall-cell:hover .fill { transform: scale(1.05); filter: brightness(1.08); }
+
+  /* services */
+  .sl-services { display: flex; flex-direction: column; gap: 18px; height: 100%; }
+  .svc-title { font-size: 64px; font-weight: 630; letter-spacing: -.038em; text-transform: uppercase; line-height: .92; }
+  .svc-grid {
+    flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+    background: var(--line); border: 1px solid var(--line); min-height: 0; overflow: hidden;
+  }
+  .svc { background: var(--bg); padding: 14px; display: flex; flex-direction: column; gap: 5px; min-height: 0; transition: background .35s; }
+  .svc:hover { background: rgba(255,255,255,.03); }
+  .svc-no { color: var(--faint); }
+  .svc-t { font-size: 14px; font-weight: 600; letter-spacing: -.012em; }
+  .svc-b { font-size: 10px; line-height: 1.48; color: var(--dim); overflow: hidden; }
+
+  /* divider — full bleed chapter */
+  .sl-divider { display: flex; flex-direction: column; justify-content: flex-end; position: relative; overflow: hidden; }
+  .div-media { position: absolute; inset: 0; z-index: 0; }
+  .div-media .fill { filter: brightness(.38) saturate(.85); transform: scale(1.08); transition: transform 7s linear; }
+  .slide.active .div-media .fill { transform: scale(1); }
+  .div-shade {
+    position: absolute; inset: 0; z-index: 1;
+    background: linear-gradient(0deg, rgba(5,5,5,.94) 0%, rgba(5,5,5,.25) 55%, rgba(5,5,5,.5) 100%);
+  }
+  .div-copy { position: relative; z-index: 2; padding: 0 var(--m) 44px; }
+  .div-no { margin-bottom: 6px; color: var(--faint); }
+  .div-title { font-size: var(--t-68); font-weight: 630; letter-spacing: -.02em; text-transform: uppercase; line-height: .88; }
+
+  /* project — sidebar + video stage (PPTX layout) */
+  .sl-project {
+    display: grid; grid-template-columns: 248px 1fr; height: 100%; background: var(--bg);
+  }
+  .prj-sidebar {
+    display: flex; flex-direction: column; gap: 0;
+    padding: calc(var(--m) - 4px) 24px calc(var(--m) - 4px) var(--m);
+    border-right: 1px solid var(--line); background: var(--bg); z-index: 2; min-height: 0;
+  }
+  .prj-brand { font-size: var(--t-5); color: var(--dim); margin-bottom: 10px; }
+  .prj-title {
+    font-size: var(--t-14); font-weight: 400; letter-spacing: .03em;
+    text-transform: uppercase; line-height: 1.05;
+    padding-bottom: 18px; margin-bottom: 20px; border-bottom: 1px solid var(--line);
+  }
+  .prj-block { margin-bottom: 16px; }
+  .prj-block .lbl { margin-bottom: 8px; }
+  .prj-list { list-style: none; font-size: 8px; line-height: 1.65; color: var(--dim); letter-spacing: .04em; text-transform: uppercase; }
+  .prj-list li + li { margin-top: 2px; }
+  .prj-stat { font-size: 8px; line-height: 1.65; color: var(--dim); letter-spacing: .04em; text-transform: uppercase; }
+  .prj-stat-v { color: rgba(244,244,242,.72); }
+  .prj-foot { margin-top: auto; padding-top: 12px; }
+  .prj-foot-name { font-size: var(--t-6); letter-spacing: .06em; text-transform: uppercase; }
+  .prj-stage { position: relative; overflow: hidden; background: #0a0a0a; min-width: 0; }
+  .prj-stage-media { position: absolute; inset: 0; z-index: 0; }
+  .prj-stage-media .fill { transform: scale(1.04); transition: transform 8s linear, filter .45s var(--ease); filter: saturate(.94); }
+  .slide.active .prj-stage-media .fill { transform: scale(1); }
+  .prj-stage-media--video { cursor: none; }
+  .prj-stage-media--video .prj-video { transform: scale(1); }
+  .prj-stage-shade {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: linear-gradient(90deg, rgba(5,5,5,.18) 0%, transparent 28%);
+  }
+  .prj-stage-tag {
+    position: absolute; right: 36px; bottom: 36px; z-index: 2; pointer-events: none; text-align: right;
+  }
+  .prj-stage-tag .prj-brand { margin: 0; font-size: var(--t-6); color: rgba(244,244,242,.55); }
+  .prj-cursor {
+    position: fixed; z-index: 92; pointer-events: none;
+    font: 400 8px/1 Helvetica, 'Helvetica Neue', Arial, sans-serif;
+    letter-spacing: .16em; text-transform: uppercase; color: rgba(255,255,255,.88);
+    transform: translate(14px, 14px);
+    padding: 7px 11px; border: 1px solid rgba(255,255,255,.22);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    opacity: 0; transition: opacity .25s, border-color .25s, background .25s;
+  }
+  .prj-stage-media--video:hover .prj-cursor { opacity: 1; }
+  .prj-stage-media--video:hover .prj-video { filter: saturate(1) brightness(1.04); }
+
+  /* case / craft — PPTX slide 14 layout */
+  .sl-case { position: relative; width: 100%; height: 100%; box-sizing: border-box; }
+  .cs-head-ppt { position: relative; height: 149px; }
+  .cs-head-ppt .cs-title,
+  .sl-craft .cs-title {
+    position: absolute; left: 0; top: 38px;
+    font-size: var(--t-30); font-weight: 400; letter-spacing: -.01em;
+    line-height: .95; max-width: 390px;
+  }
+  .cs-meta-col { position: absolute; left: 410px; top: 59px; }
+  .cs-meta { font-size: var(--t-7); line-height: 1.35; color: var(--dim); letter-spacing: -.01em; }
+  .cs-copy { position: absolute; left: 549px; top: 57px; width: 597px; }
+  .cs-craft-lbl { position: absolute; left: 0; top: 0; }
+  .sl-craft .cs-title { top: 24px; }
+  .sl-craft .cs-copy { top: 72px; }
+  .cs-media { position: absolute; left: 0; top: 201px; width: 1176px; height: 345px; }
+  .cs-cell { overflow: hidden; min-height: 0; }
+  .cs-ppt-grid { position: relative; }
+  .cs-ppt-big { position: absolute; left: 0; top: 0; width: 613px; height: 345px; }
+  .cs-ppt-mt { position: absolute; left: 624px; top: 0; width: 302px; height: 170px; }
+  .cs-ppt-mb { position: absolute; left: 624px; top: 178px; width: 302px; height: 167px; }
+  .cs-ppt-tall { position: absolute; left: 938px; top: 0; width: 238px; height: 345px; }
+  .cs-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .cs-duo.wide { grid-template-columns: 1.35fr 1fr; }
+  .cs-strip { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 8px; }
+  .cs-grid6 { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: 1fr 1fr; gap: 8px; }
+  .cs-mosaic { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: 1fr 1fr; gap: 8px; }
+  .cs-mosaic .cs-cell:nth-child(3) { grid-row: span 2; }
+  .cs-hero { display: grid; grid-template-columns: 613px 1fr; gap: 11px; }
+  .cs-rest { display: grid; gap: 8px; grid-template-columns: 1fr 1fr; min-height: 0; }
+  .cs-rest.n1 { grid-template-columns: 1fr; }
+  .cs-rest.n2 { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+  .cs-rest.n3 .cs-cell:first-child { grid-column: span 2; }
+
+  /* focus */
+  .sl-focus { display: flex; flex-direction: column; gap: 18px; height: 100%; }
+  .focus-strip { flex: 1; display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; min-height: 0; }
+  .focus-cell { position: relative; overflow: hidden; display: flex; flex-direction: column; min-height: 0; }
+  .focus-cell img { flex: 1; min-height: 0; object-fit: cover; width: 100%; }
+  .focus-cell figcaption { display: flex; gap: 8px; padding-top: 8px; font-size: 9px; }
+  .focus-cell figcaption span { color: var(--faint); }
+  .focus-cap { max-width: 640px; }
+
+  /* how */
+  .sl-how { display: grid; grid-template-columns: .82fr 1.18fr; gap: 48px; align-items: center; height: 100%; }
+  .how-media { height: 400px; overflow: hidden; }
+  .how-list { margin-top: 24px; }
+  .sl-how .cs-title { font-size: var(--t-30); font-weight: 400; letter-spacing: -.01em; line-height: .95; margin-bottom: 8px; }
+  .how-row { display: grid; grid-template-columns: 40px 1fr; gap: 12px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .how-row:first-child { border-top: 1px solid var(--line); }
+  .how-row .mono { color: var(--faint); }
+  .how-row p { font-size: var(--t-7); font-weight: 400; line-height: 1.45; max-width: 40ch; }
+
+  /* contact */
+  .sl-contact { display: flex; flex-direction: column; height: 100%; }
+  .contact-title { font-size: var(--t-75); font-weight: 400; letter-spacing: -.02em; text-transform: uppercase; line-height: .9; }
+  .contact-grid {
+    flex: 1; display: grid; grid-template-columns: 1fr .75fr 1.05fr;
+    gap: 40px; align-items: end; margin-top: 24px; min-height: 0;
+  }
+  .person { padding: 12px 0; border-top: 1px solid var(--line); }
+  .person-n { font-size: var(--t-7); font-weight: 400; }
+  .person-r { margin: 3px 0 7px; }
+  .person-e { color: var(--dim); text-decoration: none; font-size: var(--t-7); border-bottom: 1px solid var(--line); transition: color .3s; }
+  .person-e:hover { color: var(--ink); }
+  .contact-links { display: flex; flex-direction: column; }
+  .clink { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 11px 0; border-top: 1px solid var(--line); color: var(--ink); text-decoration: none; font-size: var(--t-7); transition: opacity .3s; }
+  .clink:hover { opacity: .55; }
+  .contact-media { height: 220px; overflow: hidden; align-self: end; }
+  .contact-foot { display: flex; justify-content: space-between; margin-top: 14px; flex-wrap: wrap; gap: 8px; }
+
+  @media (max-width: 900px), (max-height: 580px) {
+    #rail { display: none; }
+    #hud-chapter { display: none; }
+    .hud-top, .hud-bot { right: calc(var(--safe-r) + 16px); }
+  }
+</style>
+</head>
+<body>
+<div id="bar"><i></i></div>
+<div id="vignette"></div>
+<div id="grain"></div>
+<nav id="rail" aria-hidden="true"></nav>
+<div id="hud">
+  <div class="hud-top">
+    <span class="wordmark" id="home-btn">XYZSTUDIOS<sup>&reg;</sup></span>
+    <span class="mono" id="hud-chapter">Capabilities</span>
+    <span class="mono">2026</span>
+  </div>
+  <div class="hud-bot">
+    <span class="mono" id="hud-counter">01 — 26</span>
+    <span class="mono" id="hud-hint"><span class="tick"></span>Scroll</span>
+  </div>
+</div>
+<main id="stage">
+  <div id="artboard">
+    <div id="deck">
+<section class="slide slide--bleed" data-chapter="Capabilities" data-i="0">
+  <div class="sl-cover">
+    <div class="cover-bg"><img class="cover-horse" src="deck-media/cover-strip.jpg" alt="" fetchpriority="high" draggable="false"></div>
+    <div class="cover-shade"></div>
+    <div class="cover-year" aria-hidden="true">2026</div>
+    <div class="cover-inner">
+      <div class="cover-meta cover-meta--top">
+        <span class="cover-line">International creative post production studio</span>
+        <a class="cover-line cover-mail" href="mailto:Inquiries@xyzstudios.co">Inquiries@xyzstudios.co</a>
+      </div>
+      <h1 class="cover-title"><span class="rl "><span class="rl-i">Capabilities Deck</span></span></h1>
+      <div class="cover-meta cover-meta--btm">
+        <span class="cover-line">XYZSTUDIOS &copy; 2026</span>
+        <span class="cover-line">VFX &middot; CG &middot; Sound</span>
+      </div>
+    </div>
+  </div></section>
+<section class="slide slide--inset" data-chapter="About" data-i="1">
+  <div class="sl-about">
+    <div class="about-media"><img class="fill" src="deck-media/image-3-2.jpg" alt="" loading="lazy" draggable="false"></div>
+    <div class="about-copy">
+      <h2 class="about-lead"><span class="rl "><span class="rl-i">a post-production studio built through close creative collaboration.</span></span></h2>
+      <p class="body">Working with production teams, agencies, and directors to carry projects through post, supporting where needed and staying closely involved through final delivery.</p><p class="body">Each project evolves differently, and the approach is shaped to serve the work and its intended outcome.</p>
+    </div>
+  </div></section>
+<section class="slide slide--bleed" data-chapter="Highlighted Work" data-i="2">
+  <div class="sl-wall">
+    <div class="wall-grid"><div class="wall-cell"><img class="fill" src="deck-media/image-4-7.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-5.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-9.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-10.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-3.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-1.jpg" alt="" loading="lazy" draggable="false"></div><div class="wall-cell"><img class="fill" src="deck-media/image-4-6.jpg" alt="" loading="lazy" draggable="false"></div></div>
+  </div></section>
+<section class="slide slide--bleed" data-chapter="Full Production" data-i="3">
+  <div class="sl-divider">
+    <div class="div-media"><img class="fill" src="deck-media/image-6-1.webp" alt="" loading="lazy" draggable="false"></div>
+    <div class="div-shade"></div>
+    <div class="div-copy">
+      
+      <h2 class="div-title"><span class="rl "><span class="rl-i">Full Production</span></span></h2>
+    </div>
+  </div></section>
+<section class="slide slide--bleed" data-chapter="Full Production" data-i="4">
+  <div class="sl-project">
+    <aside class="prj-sidebar">
+      <h2 class="prj-title">Speedcross 6</h2>
+      <div class="prj-block"><div class="mono lbl">Scope</div><ul class="prj-list"><li>Concept to Final Delivery</li><li>Creative Direction</li><li>Production</li><li>VFX</li><li>CG</li><li>AI</li><li>Compositing</li><li>Editing</li><li>Sound Design &amp; Mix</li></ul></div>
+      <div class="prj-block"><div class="mono lbl">Build</div><div class="prj-list"><div class="prj-stat"><span class="prj-stat-v">60%</span> Live Action</div><div class="prj-stat"><span class="prj-stat-v">33%</span> AI</div><div class="prj-stat"><span class="prj-stat-v">7%</span> CGI</div></div></div>
+      <div class="prj-block"><div class="mono lbl">Output</div><div class="prj-list"><div class="prj-stat"><span class="prj-stat-v">214</span> Final Frames</div><div class="prj-stat"><span class="prj-stat-v">2</span> Hero Shots</div></div></div>
+      <div class="prj-foot"><div class="mono lbl">Director</div><div class="prj-foot-name">Lenn Anton</div></div>
+    </aside>
+    <div class="prj-stage">
+      <div class="prj-stage-media prj-stage-media--video">
+        <video class="fill prj-video" src="https://r2.vidzflow.com/source/ef1dc602-5a95-4973-a0ea-82794726bc4a.mp4" poster="deck-media/image-7-2.jpg" playsinline loop preload="metadata"></video>
+        <span class="prj-cursor" aria-hidden="true">Play</span>
+      </div>
+      <div class="prj-stage-shade"></div>
+      <div class="prj-stage-tag"><div class="mono prj-brand">Salomon</div></div>
+    </div>
+  </div></section>
+<section class="slide slide--bleed" data-chapter="Full Production" data-i="5">
+  <div class="sl-project">
+    <aside class="prj-sidebar">
+      <h2 class="prj-title">Into The Void</h2>
+      <div class="prj-block"><div class="mono lbl">Scope</div><ul class="prj-list"><li>Concept to Final Delivery</li><li>Creative Direction</li><li>Production</li><li>CG</li><li>Simulation</li><li>Compositing</li><li>Editing</li><li>Sound Design &amp; Mix</li></ul></div>
+      <div class="prj-block"><div class="mono lbl">Build</div><div class="prj-list"><div class="prj-stat"><span class="prj-stat-v">92%</span> CG</div><div class="prj-stat"><span class="prj-stat-v">8%</span> AI</div><div class="prj-stat"><span class="prj-stat-v">1</span> Environment</div></div></div>
+      <div class="prj-block"><div class="mono lbl">Output</div><div class="prj-list"><div class="prj-stat"><span class="prj-stat-v">1400</span> Final Frames</div><div class="prj-stat"><span class="prj-stat-v">10</span> Hero Shots</div></div></div>
+      <div class="prj-foot"><div class="mono lbl">Director</div><div class="prj-foot-name">Dris Yousif</div></div>
+    </aside>
+    <div class="prj-stage">
+      <div class="prj-stage-media prj-stage-media--video">
+        <video class="fill prj-video" src="https://r2.vidzflow.com/source/cbf82991-c743-4045-8898-b6ee78efd9b4.mp4" poster="deck-media/image-8-3.jpg" playsinline loop preload="metadata"></video>
+        <span class="prj-cursor" aria-hidden="true">Play</span>
+      </div>
+      <div class="prj-stage-shade"></div>
+      <div class="prj-stage-tag"><div class="mono prj-brand">Atomic</div></div>
+    </div>
+  </div></section>
+<section class="slide slide--bleed" data-chapter="Full Production" data-i="6">
+  <div class="sl-project">
+    <aside class="prj-sidebar">
+      <h2 class="prj-title">RBC Canadian Open</h2>
+      <div class="prj-block"><div class="mono lbl">Scope</div><ul class="prj-list"><li>Concept to Final Delivery</li><li>Creative Direction</li><li>Production</li><li>VFX</li><li>CG</li><li>Compositing</li><li>Editing</li><li>Sound Design &amp; Mix</li></ul></div>
+      <div class="prj-block"><div class="mono lbl">Build</div><div class="prj-list"><div class="prj-stat"><span class="prj-stat-v">72%</span> CG</div><div class="prj-stat"><span class="prj-stat-v">20%</span> Motion Graphics</div><div class="prj-stat"><span class="prj-stat-v">7%</span> Live Action</div></div></div>
+      <div class="prj-block"><div class="mono lbl">Output</div><div class="prj-list"><div class="prj-stat"><span class="prj-stat-v">1009</span> Final Frames</div><div class="prj-stat"><span class="prj-stat-v">8</span> Hero Shots</div><div class="prj-stat"><span class="prj-stat-v">4</span> Environments</div></div></div>
+      <div class="prj-foot"><div class="mono lbl">Director</div><div class="prj-foot-name">Samry Yussuf</div></div>
+    </aside>
+    <div class="prj-stage">
+      <div class="prj-stage-media prj-stage-media--video">
+        <video class="fill prj-video" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/85D_It6HUS/original" poster="deck-media/image-9-2.jpg" playsinline loop preload="metadata"></video>
+        <span class="prj-cursor" aria-hidden="true">Play</span>
+      </div>
+      <div class="prj-stage-shade"></div>
+      <div class="prj-stage-tag"><div class="mono prj-brand">Rory McIlroy</div></div>
+    </div>
+  </div></section>
+<section class="slide slide--bleed" data-chapter="Craft" data-i="7">
+  <div class="sl-divider">
+    <div class="div-media"><img class="fill" src="deck-media/image-23-2.jpg" alt="" loading="lazy" draggable="false"></div>
+    <div class="div-shade"></div>
+    <div class="div-copy">
+      <div class="div-no mono">Chapter 02</div>
+      <h2 class="div-title"><span class="rl "><span class="rl-i">Craft</span></span></h2>
+    </div>
+  </div></section>
+<section class="slide slide--inset" data-chapter="Craft" data-i="8">
+  <div class="sl-case sl-craft">
+    <div class="cs-head-ppt">
+      <div class="mono cs-craft-lbl">Craft</div>
+      <h2 class="cs-title">Creative Development</h2>
+      <div class="cs-copy"><p class="body">Visual direction, structure, and shot logic are established before production begins. Storyboards and early visual exploration define composition, pacing, and technical feasibility, ensuring clarity across production and post.</p></div>
+    </div>
+    <div class="cs-media cs-hero"><div class="cs-cell cs-big"><img class="fill" src="deck-media/image-24-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-rest n6"><div class="cs-cell"><img class="fill" src="deck-media/image-24-5.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-24-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-24-6.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-24-7.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-24-9.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-24-8.jpg" alt="" loading="lazy" draggable="false"></div></div></div>
+  </div></section>
+<section class="slide slide--inset" data-chapter="Craft" data-i="9">
+  <div class="sl-case sl-craft">
+    <div class="cs-head-ppt">
+      <div class="mono cs-craft-lbl">Craft</div>
+      <h2 class="cs-title">CG Integration</h2>
+      <div class="cs-copy"><p class="body">CG elements are embedded into live-action plates using accurate camera tracking, lens calibration, and scene lighting. Surface interaction, shadow behavior, and material response are refined to ensure consistency across motion, grading, and final delivery.</p></div>
+    </div>
+    <div class="cs-media cs-strip"><div class="cs-cell"><img class="fill" src="deck-media/image-25-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-25-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-25-3.jpg" alt="" loading="lazy" draggable="false"></div></div>
+  </div></section>
+<section class="slide slide--inset" data-chapter="Craft" data-i="10">
+  <div class="sl-case sl-craft">
+    <div class="cs-head-ppt">
+      <div class="mono cs-craft-lbl">Craft</div>
+      <h2 class="cs-title">CG Environments</h2>
+      <div class="cs-copy"><p class="body">At any scale, from full digital builds to set extensions and enhancements. We recreate real locations or design new spaces to match the project’s tone, with careful attention to scale, lighting, perspective, and atmosphere. Every environment is built for seamless integration across the sequence.</p></div>
+    </div>
+    <div class="cs-media cs-strip"><div class="cs-cell"><img class="fill" src="deck-media/image-26-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-26-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-26-3.jpg" alt="" loading="lazy" draggable="false"></div></div>
+  </div></section>
+<section class="slide slide--inset" data-chapter="Craft" data-i="11">
+  <div class="sl-case sl-craft">
+    <div class="cs-head-ppt">
+      <div class="mono cs-craft-lbl">Craft</div>
+      <h2 class="cs-title">Compositing</h2>
+      <div class="cs-copy"><p class="body">Live-action and rendered elements are unified through precise control of depth, exposure, color space, and optical response. Integration is refined at the pixel level to ensure visual continuity across the entire sequence.</p></div>
+    </div>
+    <div class="cs-media cs-hero"><div class="cs-cell cs-big"><img class="fill" src="deck-media/image-27-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-rest n4"><div class="cs-cell"><img class="fill" src="deck-media/image-27-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-27-7.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-27-6.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-27-5.jpg" alt="" loading="lazy" draggable="false"></div></div></div>
+  </div></section>
+<section class="slide slide--inset" data-chapter="Craft" data-i="12">
+  <div class="sl-case sl-craft">
+    <div class="cs-head-ppt">
+      <div class="mono cs-craft-lbl">Craft</div>
+      <h2 class="cs-title">Simulation and FX</h2>
+      <div class="cs-copy"><p class="body">Physical motion and environmental interaction are developed using accurate scale, timing, and force behavior. Simulations are refined to respond naturally within the scene and remain consistent across camera perspective and integration.</p></div>
+    </div>
+    <div class="cs-media cs-hero"><div class="cs-cell cs-big"><img class="fill" src="deck-media/image-28-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-rest n4"><div class="cs-cell"><img class="fill" src="deck-media/image-28-8.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-28-5.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-28-3.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-28-6.jpg" alt="" loading="lazy" draggable="false"></div></div></div>
+  </div></section>
+<section class="slide slide--inset" data-chapter="Craft" data-i="13">
+  <div class="sl-case sl-craft">
+    <div class="cs-head-ppt">
+      <div class="mono cs-craft-lbl">Craft</div>
+      <h2 class="cs-title">Polish</h2>
+      <div class="cs-copy"><p class="body">Cleanup, beauty work, and set extensions as part of finishing, refining continuity and removing distractions that pull focus. From subtle fixes to larger extensions, the result is a clean, cohesive finish that holds up across the sequence and delivers to spec.</p></div>
+    </div>
+    <div class="cs-media cs-grid6"><div class="cs-cell"><img class="fill" src="deck-media/image-29-7.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-29-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-29-5.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-29-6.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-29-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-29-3.jpg" alt="" loading="lazy" draggable="false"></div></div>
+  </div></section>
+<section class="slide slide--inset" data-chapter="Craft" data-i="14">
+  <div class="sl-case sl-craft">
+    <div class="cs-head-ppt">
+      <div class="mono cs-craft-lbl">Craft</div>
+      <h2 class="cs-title">AI-Assisted Workflow</h2>
+      <div class="cs-copy"><p class="body">We integrate AI into live-action and CG workflows as a controlled extension of our process. It allows us to explore, iterate, and build imagery that would otherwise be difficult or time-intensive, while keeping every decision guided by artists. AI remains a tool, supporting realism, precision, and creative intent, never replacing it.</p></div>
+    </div>
+    <div class="cs-media cs-hero"><div class="cs-cell cs-big"><img class="fill" src="deck-media/image-31-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-rest n2"><div class="cs-cell"><img class="fill" src="deck-media/image-31-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-31-3.jpg" alt="" loading="lazy" draggable="false"></div></div></div>
+  </div></section>
+<section class="slide slide--bleed" data-chapter="Case Study" data-i="15">
+  <div class="sl-divider">
+    <div class="div-media"><img class="fill" src="deck-media/image-10-1.webp" alt="" loading="lazy" draggable="false"></div>
+    <div class="div-shade"></div>
+    <div class="div-copy">
+      <div class="div-no mono">Chapter 03</div>
+      <h2 class="div-title"><span class="rl "><span class="rl-i">Case Studies</span></span></h2>
+    </div>
+  </div></section>
+<section class="slide slide--inset" data-chapter="Case Study — RBC Canadian Open" data-i="16">
+  <div class="sl-case">
+    <div class="cs-head-ppt">
+      <h2 class="cs-title">Storyboard</h2>
+      <div class="cs-meta-col"><div class="cs-meta">Rory McIlroy</div><div class="cs-meta">RBC Canadian Open</div></div>
+      <div class="cs-copy"><p class="body">With no live shoot possible, the client asked us to develop the creative direction and bring the concept to life.</p><p class="body">We crafted a stylized 3D hype reel, taking the project from concept art through to final execution. Throughout the process, the client remained closely involved, providing notes and feedback as we shaped the visuals to capture Rory’s momentum and the anticipation around the tournament.</p></div>
+    </div>
+    <div class="cs-media cs-duo wide"><div class="cs-cell"><img class="fill" src="deck-media/image-11-2.webp" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-11-3.jpg" alt="" loading="lazy" draggable="false"></div></div>
+  </div></section>
+<section class="slide slide--inset" data-chapter="Case Study — RBC Canadian Open" data-i="17">
+  <div class="sl-case">
+    <div class="cs-head-ppt">
+      <h2 class="cs-title">Pre-visualization</h2>
+      <div class="cs-meta-col"><div class="cs-meta">Rory McIlroy</div><div class="cs-meta">RBC Canadian Open</div></div>
+      <div class="cs-copy"><p class="body">Before moving into final production, we built a full pre-vis to map out pacing, camera moves, and overall flow. This stage gave the client a clear first look at how the story would unfold on screen.</p><p class="body">By reviewing timing, framing, and energy early on, they were able to provide detailed notes and shape the direction with us. The pre-vis ensured everyone was aligned creatively before resources went into final rendering and polish.</p></div>
+    </div>
+    <div class="cs-media cs-hero"><div class="cs-cell cs-big"><img class="fill" src="deck-media/image-12-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-rest n4"><div class="cs-cell"><img class="fill" src="deck-media/image-12-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-12-3.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-12-5.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-12-6.jpg" alt="" loading="lazy" draggable="false"></div></div></div>
+  </div></section>
+<section class="slide slide--inset" data-chapter="Case Study — RBC Canadian Open" data-i="18">
+  <div class="sl-case">
+    <div class="cs-head-ppt">
+      <h2 class="cs-title">Asset Prep</h2>
+      <div class="cs-meta-col"><div class="cs-meta">Rory McIlroy</div><div class="cs-meta">RBC Canadian Open</div></div>
+      <div class="cs-copy"><p class="body">The client asked that specific elements be featured within the reel to tie back to Rory and the tournament.</p><p class="body">We developed 3D assets for the Osprey bird (a nod to the course), Rory’s championship ring, the custom Rory gold ball, and the RBC Canadian Open trophy. Each was designed and integrated to enhance the narrative while aligning with the overall creative direction.</p></div>
+    </div>
+    <div class="cs-media cs-strip"><div class="cs-cell"><img class="fill" src="deck-media/image-13-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-13-5.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-13-6.webp" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-13-3.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-13-4.jpg" alt="" loading="lazy" draggable="false"></div></div>
+  </div></section>
+<section class="slide slide--inset" data-chapter="Case Study — RBC Canadian Open" data-i="19">
+  <div class="sl-case">
+    <div class="cs-head-ppt">
+      <h2 class="cs-title">Environment</h2>
+      <div class="cs-meta-col"><div class="cs-meta">Rory McIlroy</div><div class="cs-meta">RBC Canadian Open</div></div>
+      <div class="cs-copy"><p class="body">Since no shoot was possible, we relied on archival footage of Rory and rebuilt the tournament setting digitally.</p><p class="body">Using detailed golf course maps as a base, we laid out and modeled the landscapes of Osprey Valley. From there, we re-created and enhanced the textures, rebuilt surfaces, and scattered nature elements to bring the environments to life. The result was a set of realistic, fully CG environments that replicated the real course while still supporting the stylized, cinematic direction of the reel.</p></div>
+    </div>
+    <div class="cs-media cs-ppt-grid">
+      <div class="cs-ppt-big cs-cell"><img class="fill" src="deck-media/image-14-6.jpg" alt="" loading="lazy" draggable="false"></div>
+      <div class="cs-ppt-mt cs-cell"><img class="fill" src="deck-media/image-14-2.jpg" alt="" loading="lazy" draggable="false"></div>
+      <div class="cs-ppt-mb cs-cell"><img class="fill" src="deck-media/image-14-4.jpg" alt="" loading="lazy" draggable="false"></div>
+      <div class="cs-ppt-tall cs-cell"><img class="fill" src="deck-media/image-14-3.jpg" alt="" loading="lazy" draggable="false"></div>
+    </div>
+  </div></section>
+<section class="slide slide--inset" data-chapter="Case Study — RBC Canadian Open" data-i="20">
+  <div class="sl-case">
+    <div class="cs-head-ppt">
+      <h2 class="cs-title">Reference</h2>
+      <div class="cs-meta-col"><div class="cs-meta">Rory McIlroy</div><div class="cs-meta">RBC Canadian Open</div></div>
+      <div class="cs-copy"><p class="body">The client provided detailed references of Osprey Valley, which we used as the foundation for the build.</p><p class="body">These materials ensured the environments were accurate to the real course and helped us deliver a CG space that feels authentic and true to the tournament setting.</p></div>
+    </div>
+    <div class="cs-media cs-hero"><div class="cs-cell cs-big"><img class="fill" src="deck-media/image-15-8.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-rest n6"><div class="cs-cell"><img class="fill" src="deck-media/image-15-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-15-3.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-15-4.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-15-7.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-15-6.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-15-5.jpg" alt="" loading="lazy" draggable="false"></div></div></div>
+  </div></section>
+<section class="slide slide--bleed" data-chapter="Case Study" data-i="21">
+  <div class="sl-project">
+    <aside class="prj-sidebar">
+      <h2 class="prj-title">Spritz Vibe</h2>
+      <div class="prj-block"><div class="mono lbl">Scope</div><ul class="prj-list"><li>Pre-Production</li><li>VFX</li><li>CG</li><li>Simulation</li><li>Clean Up</li><li>Compositing</li><li>Sound Design &amp; Mix</li></ul></div>
+      <div class="prj-block"><div class="mono lbl">Build</div><div class="prj-list"><div class="prj-stat"><span class="prj-stat-v">60%</span> Live Action</div><div class="prj-stat"><span class="prj-stat-v">40%</span> CG</div><div class="prj-stat"><span class="prj-stat-v">1</span> Environment</div></div></div>
+      <div class="prj-block"><div class="mono lbl">Output</div><div class="prj-list"><div class="prj-stat"><span class="prj-stat-v">992</span> Final Frames</div><div class="prj-stat"><span class="prj-stat-v">8</span> Hero Shots</div></div></div>
+      
+    </aside>
+    <div class="prj-stage">
+      <div class="prj-stage-media prj-stage-media--video">
+        <video class="fill prj-video" src="https://r2.vidzflow.com/source/c5bfdb30-f5d1-4f1d-a96f-b736b4ab1fcf.mp4" poster="deck-media/image-16-3.jpg" playsinline loop preload="metadata"></video>
+        <span class="prj-cursor" aria-hidden="true">Play</span>
+      </div>
+      <div class="prj-stage-shade"></div>
+      <div class="prj-stage-tag"><div class="mono prj-brand">Celsius</div></div>
+    </div>
+  </div></section>
+<section class="slide slide--inset" data-chapter="Case Study — Celsius" data-i="22">
+  <div class="sl-case">
+    <div class="cs-head-ppt">
+      <h2 class="cs-title">Live Action Plate</h2>
+      <div class="cs-meta-col"><div class="cs-meta">Celsius</div><div class="cs-meta">Spritz Vibe</div></div>
+      
+    </div>
+    <div class="cs-media cs-duo"><div class="cs-cell"><img class="fill" src="deck-media/image-18-3.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-18-2.jpg" alt="" loading="lazy" draggable="false"></div></div>
+  </div></section>
+<section class="slide slide--inset" data-chapter="Case Study — Celsius" data-i="23">
+  <div class="sl-case">
+    <div class="cs-head-ppt">
+      <h2 class="cs-title">On Location References</h2>
+      <div class="cs-meta-col"><div class="cs-meta">Celsius</div><div class="cs-meta">Spritz Vibe</div></div>
+      
+    </div>
+    <div class="cs-media cs-mosaic"><div class="cs-cell"><img class="fill" src="deck-media/image-17-3.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-2.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-11.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-1.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-5.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-6.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-8.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-10.jpg" alt="" loading="lazy" draggable="false"></div><div class="cs-cell"><img class="fill" src="deck-media/image-17-9.jpg" alt="" loading="lazy" draggable="false"></div></div>
+  </div></section>
+<section class="slide slide--inset" data-chapter="How We Work" data-i="24">
+  <div class="sl-how">
+    <div class="how-media"><img class="fill" src="deck-media/image-33-3.webp" alt="" loading="lazy" draggable="false"></div>
+    <div class="how-copy">
+      <h2 class="cs-title">How We Work</h2>
+      <div class="how-list">
+        <div class="how-row"><span class="mono">01</span><p>Each collaboration begins with alignment and develops through shared intent and consistent execution.</p></div><div class="how-row"><span class="mono">02</span><p>Our involvement adapts to the needs of each project.</p></div><div class="how-row"><span class="mono">03</span><p>Some collaborations last a single project. Others continue for years.</p></div>
+      </div>
+    </div>
+  </div></section>
+<section class="slide slide--inset" data-chapter="Contact" data-i="25">
+  <div class="sl-contact">
+    <h2 class="contact-title"><span class="rl "><span class="rl-i">Contact</span></span></h2>
+    <div class="contact-grid">
+      <div class="contact-people">
+        <div class="person"><div class="person-n">Samry Yussuf</div><div class="mono person-r">Post Producer, Co-Founder</div><a class="person-e" href="mailto:Samry@xyzstudios.co">Samry@xyzstudios.co</a></div><div class="person"><div class="person-n">Dris Yousif</div><div class="mono person-r">Post Producer, Co-Founder</div><a class="person-e" href="mailto:Dris@xyzstudios.co">Dris@xyzstudios.co</a></div>
+      </div>
+      <div class="contact-links">
+        <a class="clink" href="mailto:Inquiries@xyzstudios.co" target="_blank" rel="noopener"><span class="mono lbl">Email</span><span>Inquiries@xyzstudios.co</span></a><a class="clink" href="https://xyzstudios.co" target="_blank" rel="noopener"><span class="mono lbl">Website</span><span>xyzstudios.co</span></a><a class="clink" href="https://www.instagram.com/xyz__studios/" target="_blank" rel="noopener"><span class="mono lbl">Instagram</span><span>@xyz__studios</span></a><a class="clink" href="https://www.linkedin.com/company/xyzstudioss/" target="_blank" rel="noopener"><span class="mono lbl">LinkedIn</span><span>XYZ Studios</span></a>
+      </div>
+      <div class="contact-media"><img class="fill" src="deck-media/image-34-2.jpg" alt="" loading="lazy" draggable="false"></div>
+    </div>
+    <div class="contact-foot mono"><span>XYZSTUDIOS &copy; 2026</span><span>International creative post production studio</span></div>
+  </div></section>
+    </div>
+  </div>
+</main>
+<script>
+(function () {
+  var artboard = document.getElementById('artboard');
+  var AW = 1280, AH = 720;
+
+  function fitArtboard() {
+    var s = Math.max(window.innerWidth / AW, window.innerHeight / AH);
+    artboard.style.transform = 'translate(-50%, -50%) scale(' + s + ')';
+  }
+  window.addEventListener('resize', fitArtboard);
+  fitArtboard();
+
+  if (location.pathname === '/capabilities') {
+    try { history.replaceState(null, '', '/capabilities/' + location.search + location.hash); } catch (e) {}
+  }
+
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var total = slides.length;
+  var counter = document.getElementById('hud-counter');
+  var chapter = document.getElementById('hud-chapter');
+  var bar = document.querySelector('#bar i');
+  var rail = document.getElementById('rail');
+  var idx = -1, lock = 0;
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  slides.forEach(function (_, i) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'rail-dot';
+    b.title = 'Slide ' + (i + 1);
+    b.addEventListener('click', function () { show(i); });
+    rail.appendChild(b);
+  });
+  var dots = rail.querySelectorAll('.rail-dot');
+
+  function pauseVideos(exceptSlide) {
+    slides.forEach(function (s) {
+      if (s === exceptSlide) return;
+      s.querySelectorAll('video').forEach(function (v) { v.pause(); });
+    });
+  }
+
+  function show(n) {
+    n = Math.max(0, Math.min(total - 1, n));
+    if (n === idx) return;
+    pauseVideos(slides[n]);
+    slides.forEach(function (s, i) {
+      s.classList.remove('active', 'is-before');
+      if (i < n) s.classList.add('is-before');
+      else if (i === n) s.classList.add('active');
+    });
+    idx = n;
+    counter.textContent = pad(idx + 1) + ' \u2014 ' + pad(total);
+    chapter.style.opacity = 0;
+    setTimeout(function () {
+      chapter.textContent = slides[idx].getAttribute('data-chapter');
+      chapter.style.opacity = 1;
+    }, 180);
+    bar.style.width = ((idx + 1) / total * 100) + '%';
+    dots.forEach(function (d, i) { d.classList.toggle('on', i === idx); });
+    try { history.replaceState(null, '', '/capabilities/#' + (idx + 1)); } catch (e) {}
+    [idx + 1, idx + 2, idx - 1].forEach(function (i) {
+      if (i < 0 || i >= total) return;
+      slides[i].querySelectorAll('img[loading]').forEach(function (im) { im.removeAttribute('loading'); });
+    });
+  }
+
+  function step(d) {
+    var now = Date.now();
+    if (now - lock < 720) return;
+    lock = now;
+    show(idx + d);
+  }
+
+  window.addEventListener('keydown', function (e) {
+    if (['ArrowDown', 'ArrowRight', 'PageDown', ' '].indexOf(e.key) > -1) { e.preventDefault(); step(1); }
+    else if (['ArrowUp', 'ArrowLeft', 'PageUp'].indexOf(e.key) > -1) { e.preventDefault(); step(-1); }
+    else if (e.key === 'Home') { e.preventDefault(); show(0); }
+    else if (e.key === 'End') { e.preventDefault(); show(total - 1); }
+  });
+
+  var acc = 0, accTs = 0;
+  window.addEventListener('wheel', function (e) {
+    e.preventDefault();
+    var now = Date.now();
+    if (now - accTs > 280) acc = 0;
+    accTs = now;
+    acc += e.deltaY;
+    if (Math.abs(acc) > 65) { step(acc > 0 ? 1 : -1); acc = 0; }
+  }, { passive: false });
+
+  var ty = null;
+  window.addEventListener('touchstart', function (e) { ty = e.touches[0].clientY; }, { passive: true });
+  window.addEventListener('touchend', function (e) {
+    if (ty == null) return;
+    var dy = ty - e.changedTouches[0].clientY;
+    if (Math.abs(dy) > 42) step(dy > 0 ? 1 : -1);
+    ty = null;
+  }, { passive: true });
+
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-goto]');
+    if (b) show(parseInt(b.getAttribute('data-goto'), 10) - 1);
+  });
+  document.getElementById('home-btn').addEventListener('click', function () { show(0); });
+  window.addEventListener('hashchange', function () {
+    var h = parseInt(location.hash.slice(1), 10);
+    if (!isNaN(h) && h - 1 !== idx) show(h - 1);
+  });
+
+  var start = parseInt((location.hash || '').slice(1), 10);
+  show(isNaN(start) ? 0 : start - 1);
+
+  document.querySelectorAll('.prj-stage-media--video').forEach(function (wrap) {
+    var vid = wrap.querySelector('video');
+    var cur = wrap.querySelector('.prj-cursor');
+    if (!vid || !cur) return;
+    function syncCursor() {
+      cur.textContent = vid.paused ? 'Play' : 'Pause';
+    }
+    wrap.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (vid.paused) vid.play().catch(function () {}); else vid.pause();
+    });
+    wrap.addEventListener('mousemove', function (e) {
+      cur.style.left = e.clientX + 'px';
+      cur.style.top = e.clientY + 'px';
+    });
+    vid.addEventListener('play', syncCursor);
+    vid.addEventListener('pause', syncCursor);
+    syncCursor();
+  });
+})();
+</script>
+</body>
+</html>
