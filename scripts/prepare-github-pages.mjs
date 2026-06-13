@@ -51,6 +51,7 @@ copyFile(path.join(root, 'Contact', 'versions2.html'), path.join(dist, 'contact-
 
 copyDir(path.join(root, 'Services'), path.join(dist, 'services'));
 copyDir(path.join(root, 'Capabilities'), path.join(dist, 'capabilities'));
+copyDir(path.join(root, 'Admin'), path.join(dist, 'admin'));
 
 const rootExtras = ['capabilitiesdeck.html'];
 for (const f of rootExtras) {

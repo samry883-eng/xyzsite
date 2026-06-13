@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>XYZ Studios — Admin</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{background:#0b0b0b;color:#f4f4f2;font-family:Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh;padding:40px 20px}
+  .wrap{max-width:680px;margin:0 auto}
+  h1{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:30px}
+  #login{max-width:320px;margin:14vh auto 0}
+  #login input{width:100%;padding:12px 14px;background:#161616;border:1px solid #2a2a2a;border-radius:6px;color:#fff;font-size:16px;margin-bottom:12px}
+  button{cursor:pointer;font-family:inherit}
+  .btn{background:#fff;color:#000;border:0;border-radius:6px;padding:11px 18px;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+  .btn.ghost{background:none;color:rgba(255,255,255,.55);border:1px solid #2a2a2a}
+  .msg{font-size:12px;margin-top:12px;min-height:16px;color:rgba(255,255,255,.5)}
+  .tabs{display:flex;gap:8px;margin-bottom:24px;border-bottom:1px solid #1e1e1e;padding-bottom:0}
+  .tab{background:none;border:0;color:rgba(255,255,255,.4);font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:8px 4px 12px;border-bottom:2px solid transparent}
+  .tab.active{color:#fff;border-bottom-color:#fff}
+  .cat{border:1px solid #1e1e1e;border-radius:8px;margin-bottom:10px;overflow:hidden}
+  .cat-head{display:flex;align-items:center;gap:10px;padding:12px 14px;background:#131313}
+  .cat-head .name{flex:1;font-size:13px;font-weight:600;letter-spacing:.02em}
+  .ord{display:flex;gap:4px}
+  .ord button{width:26px;height:26px;background:#202020;border:1px solid #2e2e2e;border-radius:5px;color:#ccc;font-size:13px;line-height:1}
+  .ord button:hover{background:#2c2c2c;color:#fff}
+  .toggle{background:none;border:0;color:rgba(255,255,255,.4);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .proj-list{display:none;padding:6px 14px 12px;border-top:1px solid #1e1e1e}
+  .cat.open .proj-list{display:block}
+  .proj{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #161616}
+  .proj:last-child{border-bottom:0}
+  .proj .pl{flex:1;font-size:12.5px;color:rgba(255,255,255,.78)}
+  .proj .pl b{color:#fff;font-weight:600}
+  .bar{position:sticky;bottom:0;background:#0b0b0b;padding:18px 0 4px;margin-top:20px;display:flex;align-items:center;gap:14px;border-top:1px solid #1e1e1e}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>XYZ Studios — Admin</h1>
+  <div id="login">
+    <input id="pw" type="password" placeholder="Password" autocomplete="current-password">
+    <button class="btn" id="loginBtn" style="width:100%">Sign in</button>
+    <div class="msg" id="loginMsg"></div>
+  </div>
+  <div id="app" style="display:none">
+    <div class="tabs"><button class="tab active" data-tab="order">Project Order</button></div>
+    <div id="order"></div>
+    <div class="bar">
+      <button class="btn" id="saveBtn">Publish order</button>
+      <button class="btn ghost" id="resetBtn">Reset to current</button>
+      <span class="msg" id="saveMsg"></span>
+    </div>
+  </div>
+</div>
+<script>
+var DATA = {"categories": ["Visual Effects", "Sound", "AI", "Making Of"], "projects": {"Visual Effects": [{"key": "atomic-into-the-void", "client": "Atomic", "title": "Into the Void"}, {"key": "nike-france-world-cup", "client": "Nike", "title": "France World Cup"}, {"key": "cara-delevingne-i-forgot-out-of-my-head", "client": "Cara Delevingne", "title": "I Forgot & Out of My Head"}, {"key": "salomon-speedcross-3", "client": "Salomon", "title": "Speedcross 3"}, {"key": "salomon-s-lab-manifesto", "client": "Salomon", "title": "s/lab Manifesto"}, {"key": "toyota-road-to-palisades", "client": "Toyota", "title": "Road to Palisades"}, {"key": "rbc-canadian-open", "client": "RBC", "title": "Canadian Open"}, {"key": "jennair-the-flip", "client": "JennAir", "title": "The Flip"}, {"key": "fanatics-nba-store", "client": "Fanatics", "title": "NBA Store"}, {"key": "fanatics-nhl-store", "client": "Fanatics", "title": "NHL Store"}, {"key": "chino-pacas-modo-capone-ft-drake", "client": "Chino Pacas", "title": "Modo Capone ft. Drake"}, {"key": "marc-jacobs-the-essentials", "client": "Marc Jacobs", "title": "The Essentials"}, {"key": "fuerza-regida-tu-sancho", "client": "Fuerza Regida", "title": "Tu Sancho"}, {"key": "fuerza-regida-secreto-victoria", "client": "Fuerza Regida", "title": "Secreto Victoria"}, {"key": "tokischa-de-maravisha", "client": "Tokischa", "title": "De Maravisha"}], "Sound": [{"key": "sumsub-ai-awareness", "client": "Sumsub", "title": "AI Awareness"}, {"key": "louis-vuitton-ss26-teaser", "client": "Louis Vuitton", "title": "SS26 Teaser"}, {"key": "beats-open", "client": "Beats", "title": "Open"}], "AI": [{"key": "chanel-sous-la-lune", "client": "Chanel", "title": "Sous La Lune"}, {"key": "mercedes-benz-a-cold-wall", "client": "Mercedes-Benz", "title": "A Cold Wall"}, {"key": "bmw-concept-rr", "client": "BMW", "title": "Concept RR"}, {"key": "nike-ai", "client": "Nike", "title": "AI"}, {"key": "ducati-ai", "client": "Ducati", "title": "AI"}], "Making Of": [{"key": "mls-rating-reloaded", "client": "MLS", "title": "Rating Reloaded"}, {"key": "toyota-road-to-palisades", "client": "Toyota", "title": "Road to Palisades"}, {"key": "concacaf-gold-cup", "client": "Concacaf", "title": "Gold Cup"}, {"key": "rbc-canadian-open", "client": "RBC", "title": "Canadian Open"}, {"key": "doritos-stranger-things", "client": "Doritos", "title": "Stranger Things"}, {"key": "pura-hands-on", "client": "Pura", "title": "Hands On"}, {"key": "chris-brown-city-of-dreams", "client": "Chris Brown", "title": "City of Dreams"}, {"key": "square-released", "client": "Square", "title": "Released"}, {"key": "jasmin-savoy-august", "client": "Jasmin Savoy", "title": "August"}, {"key": "barskih-someone-new", "client": "Barskih", "title": "Someone New"}, {"key": "max-barskh-mine", "client": "Max Barskh", "title": "Mine"}]}};
+var state = null; // {categories:[], projects:{label:[keys]}}
+function deepDefault(){ return { categories: DATA.categories.slice(), projects: (function(){ var o={}; DATA.categories.forEach(function(c){ o[c]=DATA.projects[c].map(function(p){return p.key;}); }); return o; })() }; }
+function projMeta(cat,key){ var arr=DATA.projects[cat]||[]; for(var i=0;i<arr.length;i++){ if(arr[i].key===key) return arr[i]; } return {key:key,client:key,title:''}; }
+function mergeOrder(saved){
+  var base=deepDefault();
+  if(!saved) return base;
+  // categories: saved order first (those that still exist), then any new
+  var cats=(saved.categories||[]).filter(function(c){return base.categories.indexOf(c)>=0;});
+  base.categories.forEach(function(c){ if(cats.indexOf(c)<0) cats.push(c); });
+  var projects={};
+  cats.forEach(function(c){
+    var validKeys=base.projects[c]||[];
+    var savedKeys=((saved.projects||{})[c]||[]).filter(function(k){return validKeys.indexOf(k)>=0;});
+    validKeys.forEach(function(k){ if(savedKeys.indexOf(k)<0) savedKeys.push(k); });
+    projects[c]=savedKeys;
+  });
+  return { categories:cats, projects:projects };
+}
+function render(){
+  var root=document.getElementById('order'); root.innerHTML='';
+  state.categories.forEach(function(cat,ci){
+    var div=document.createElement('div'); div.className='cat';
+    var head=document.createElement('div'); head.className='cat-head';
+    head.innerHTML='<span class="name">'+cat+'</span><div class="ord"><button data-cu>\u2191</button><button data-cd>\u2193</button></div><button class="toggle">Edit</button>';
+    div.appendChild(head);
+    var list=document.createElement('div'); list.className='proj-list';
+    state.projects[cat].forEach(function(key,pi){
+      var m=projMeta(cat,key);
+      var p=document.createElement('div'); p.className='proj';
+      p.innerHTML='<span class="pl"><b>'+m.client+'</b> \u2014 '+m.title+'</span><div class="ord"><button data-pu>\u2191</button><button data-pd>\u2193</button></div>';
+      p.querySelector('[data-pu]').onclick=function(){ if(pi>0){ var a=state.projects[cat]; a.splice(pi-1,0,a.splice(pi,1)[0]); render(); div.classList.add('open'); } };
+      p.querySelector('[data-pd]').onclick=function(){ var a=state.projects[cat]; if(pi<a.length-1){ a.splice(pi+1,0,a.splice(pi,1)[0]); render(); div.classList.add('open'); } };
+      list.appendChild(p);
+    });
+    div.appendChild(list);
+    head.querySelector('.toggle').onclick=function(){ div.classList.toggle('open'); };
+    head.querySelector('[data-cu]').onclick=function(){ if(ci>0){ state.categories.splice(ci-1,0,state.categories.splice(ci,1)[0]); render(); } };
+    head.querySelector('[data-cd]').onclick=function(){ if(ci<state.categories.length-1){ state.categories.splice(ci+1,0,state.categories.splice(ci,1)[0]); render(); } };
+    root.appendChild(div);
+  });
+}
+function loadOrder(cb){ fetch('/api/site-order').then(function(r){return r.json();}).then(function(d){ state=mergeOrder(d&&d.order); cb&&cb(); }).catch(function(){ state=deepDefault(); cb&&cb(); }); }
+document.getElementById('loginBtn').onclick=function(){
+  var pw=document.getElementById('pw').value; var msg=document.getElementById('loginMsg'); msg.textContent='Signing in...';
+  fetch('/api/capabilities/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pw})})
+   .then(function(r){return r.json();}).then(function(d){
+     if(d&&d.ok){ document.getElementById('login').style.display='none'; document.getElementById('app').style.display='block'; loadOrder(render); }
+     else { msg.textContent=(d&&d.error)||'Wrong password'; }
+   }).catch(function(){ msg.textContent='Network error'; });
+};
+document.getElementById('pw').addEventListener('keydown',function(e){ if(e.key==='Enter') document.getElementById('loginBtn').click(); });
+document.getElementById('saveBtn').onclick=function(){
+  var msg=document.getElementById('saveMsg'); msg.textContent='Publishing...';
+  fetch('/api/site-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({order:state})})
+   .then(function(r){return r.json();}).then(function(d){
+     if(d&&d.ok){ msg.textContent='Published \u2713 (live now)'; } else { msg.textContent=(d&&d.error)||'Save failed'; }
+   }).catch(function(){ msg.textContent='Network error'; });
+};
+document.getElementById('resetBtn').onclick=function(){ state=deepDefault(); render(); document.getElementById('saveMsg').textContent='Reset (not yet published)'; };
+</script>
+</body>
+</html>

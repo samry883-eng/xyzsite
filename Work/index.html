@@ -1791,5 +1791,31 @@
   document.addEventListener('DOMContentLoaded',build); window.addEventListener('load',build);
 })();
 </script>
+<script id="xyz-work-order">
+(function(){
+  function slug(s){ return ((s||'')).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,''); }
+  function key(c,t){ return slug((c||'')+' '+(t||'')); }
+  function normCat(l){ l=(l||'').trim().toLowerCase(); if(l==='vfx'||l==='visual effects') return 'visual effects'; return l; }
+  function apply(order){
+    var showcase=document.getElementById('showcase'); if(!showcase||!order) return false;
+    var rows=[].slice.call(document.querySelectorAll('.work-row')); if(!rows.length) return false;
+    rows.forEach(function(row){
+      var catEl=row.querySelector('.work-row-cat'); if(!catEl) return;
+      var nc=normCat(catEl.textContent); var keys=null;
+      Object.keys(order.projects||{}).forEach(function(k){ if(normCat(k)===nc) keys=order.projects[k]; });
+      if(!keys) return;
+      var cw=row.querySelector('.work-row-cards'); if(!cw) return;
+      var byKey={}; [].slice.call(cw.querySelectorAll('.work-card-wrap:not([data-clone])')).forEach(function(w){ var c=w.querySelector('.wc-label-client'),t=w.querySelector('.wc-label-title'); byKey[key(c&&c.textContent,t&&t.textContent)]=w; });
+      keys.forEach(function(k){ if(byKey[k]) cw.appendChild(byKey[k]); });
+    });
+    if(order.categories){ var byCat={}; rows.forEach(function(r){ var c=r.querySelector('.work-row-cat'); if(c) byCat[normCat(c.textContent)]=r; });
+      order.categories.forEach(function(lab){ var r=byCat[normCat(lab)]; if(r) showcase.appendChild(r); }); }
+    return true;
+  }
+  fetch('/api/site-order').then(function(r){return r.json();}).then(function(d){
+    if(d&&d.ok&&d.order){ var n=0,iv=setInterval(function(){ n++; if(apply(d.order)||n>80) clearInterval(iv); },200); window.addEventListener('load',function(){apply(d.order);}); }
+  }).catch(function(){});
+})();
+</script>
 </body>
 </html>

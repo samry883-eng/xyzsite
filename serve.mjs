@@ -323,7 +323,7 @@ function getStaticFilePath(urlPath) {
   } else if (p === '/capabilities/admin' || p === '/capabilities/admin/' || p === '/capabilities/admin.html') {
     filePath = path.join(__dirname, 'Capabilities', 'admin.html');
   } else if (p === '/admin' || p === '/admin/' || p === '/admin.html') {
-    filePath = path.join(__dirname, 'Capabilities', 'admin.html');
+    filePath = path.join(__dirname, 'Admin', 'index.html');
   } else if (p === '/capabilities' || p === '/capabilities/' || p === '/Capabilities' || p === '/Capabilities/') {
     filePath = path.join(__dirname, 'Capabilities', 'index.html');
   } else if (p === '/project' || p === '/project/') {
