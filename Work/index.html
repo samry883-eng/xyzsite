@@ -1742,13 +1742,6 @@
     font:400 11px/1.35 Micross,Arial,sans-serif !important; letter-spacing:.06em !important; }
   .work-card-wrap[data-clone]{ display:none !important; }
   .work-fade-right{ display:none !important; }
-  .work-card .xyz-play{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
-    z-index:6; width:56px; height:56px; border-radius:50%; padding:0; cursor:pointer;
-    background:rgba(0,0,0,.42); border:1px solid rgba(255,255,255,.55);
-    display:flex; align-items:center; justify-content:center; touch-action:manipulation;
-    transition:opacity .25s ease, background .2s ease; -webkit-backdrop-filter:blur(2px); backdrop-filter:blur(2px); }
-  .work-card .xyz-play svg{ width:18px; height:18px; fill:#fff; display:block; }
-  .work-card.xyz-playing .xyz-play{ opacity:.28; background:rgba(0,0,0,.3); }
 }
 </style>
 <script>
@@ -1759,24 +1752,6 @@
   function align(bar){ var nav=document.querySelector('nav'); if(!nav) return;
     var cs=getComputedStyle(nav); bar.style.top=nav.offsetHeight+'px';
     bar.style.paddingLeft=cs.paddingLeft; bar.style.paddingRight=cs.paddingRight; }
-  var PLAY='<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
-  var PAUSE='<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
-  function setupPlay(card){
-    var v=card.querySelector('.wc-hover-video'); if(!v) return;
-    if(card.querySelector('.xyz-play')) return;
-    var poster=card.querySelector('.wc-card-poster');
-    var btn=document.createElement('button'); btn.type='button'; btn.className='xyz-play'; btn.innerHTML=PLAY;
-    card.appendChild(btn);
-    function play(){
-      if(!v.getAttribute('src')){ var ds=v.getAttribute('data-src'); if(ds) v.src=ds; }
-      v.loop=true; v.muted=false; v.playsInline=true; v.setAttribute('playsinline',''); v.setAttribute('webkit-playsinline','');
-      document.querySelectorAll('.work-card.xyz-playing').forEach(function(c){ if(c!==card){ var ov=c.querySelector('.wc-hover-video'); if(ov)ov.pause(); c.classList.remove('xyz-playing'); var ob=c.querySelector('.xyz-play'); if(ob)ob.innerHTML=PLAY; var op=c.querySelector('.wc-card-poster'); if(op)op.style.opacity=''; } });
-      var p=v.play(); if(p&&p.catch)p.catch(function(){});
-      card.classList.add('xyz-playing'); btn.innerHTML=PAUSE; if(poster) poster.style.opacity='0';
-    }
-    function pause(){ v.pause(); card.classList.remove('xyz-playing'); btn.innerHTML=PLAY; }
-    btn.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); if(v.paused) play(); else pause(); });
-  }
   function build(){
     var rows=document.querySelectorAll('.work-row');
     if(!rows.length) return false;
@@ -1798,7 +1773,6 @@
       window.scrollTo(0,0);
     }
     show(tabs[0].key, bar.querySelector('button'));
-    document.querySelectorAll('.work-card').forEach(setupPlay);
     var lastY=0;
     window.addEventListener('scroll', function(){
       var y=window.pageYOffset||document.documentElement.scrollTop||0;
