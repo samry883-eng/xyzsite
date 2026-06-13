@@ -642,6 +642,7 @@
 </style>
 <script>
 (function(){
+  if(!window.matchMedia('(max-width: 768px)').matches) return;
   var PLAY='<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
   function init(){
     var vid=document.getElementById('pj-video'); if(!vid) return false;
