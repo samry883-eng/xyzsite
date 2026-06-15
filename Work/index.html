@@ -1476,14 +1476,16 @@
 
     if (isMobileWorkLayout()) return;
 
-    // Infinite strip: clone right and left so snap motion is continuous.
-    originals.forEach(orig => {
-      const c = orig.cloneNode(true); c.dataset.clone='1'; rowCards.appendChild(c);
-    });
-    [...originals].reverse().forEach(orig => {
-      const c = orig.cloneNode(true); c.dataset.clone='1';
-      rowCards.insertBefore(c, rowCards.firstChild);
-    });
+    // Infinite strip: clone enough sets each side that the viewport stays filled while wrapping. Wide categories keep 1 set each side (no DOM bloat); sparse ones get more.
+    var __vw = window.innerWidth || (document.documentElement && document.documentElement.clientWidth) || 1200;
+    var __setW = originals.length * 276;
+    var __need = Math.ceil(__vw / Math.max(__setW, 1));
+    var __side = Math.min(8, __need <= 1 ? 1 : __need + 1);
+    rowCards.dataset.side = String(__side);
+    for (var __s = 0; __s < __side; __s++) {
+      originals.forEach(orig => { var c = orig.cloneNode(true); c.dataset.clone='1'; rowCards.appendChild(c); });
+      [...originals].reverse().forEach(orig => { var c = orig.cloneNode(true); c.dataset.clone='1'; rowCards.insertBefore(c, rowCards.firstChild); });
+    }
 
     rowCards.querySelectorAll('[data-clone]').forEach(c => {
       c.style.transition = 'none';
@@ -1522,22 +1524,21 @@
 
     function easeInOut(t) { return 1 - Math.pow(1 - t, 4); }
     function wrapPos() {
-      if (pos < loopW * 0.1) { pos += loopW; target += loopW; animFrom += loopW; }
-      if (pos > loopW * (WORK_SCRUB_LOOPS + 0.95)) { pos -= loopW; target -= loopW; animFrom -= loopW; }
+      if (!loopW) return;
+      var maxS = rowCards.scrollWidth - rowCards.clientWidth;
+      var hi = maxS - loopW * 0.5;
+      var lo = loopW * 0.5;
+      var guard = 0;
+      while (pos > hi && guard++ < 128) { pos -= loopW; target -= loopW; animFrom -= loopW; }
+      guard = 0;
+      while (pos < lo && guard++ < 128) { pos += loopW; target += loopW; animFrom += loopW; }
     }
     function applySnapBar(eased, final) {
       if (!loopState.loopW) return;
       var den = loopState.scrubCycleLen ? loopState.scrubCycleLen() : loopW * WORK_SCRUB_LOOPS;
       var raw = snapBarFrom + snapBarStep * eased;
-      if (final) {
-        loopState.barTravel = raw;
-        if (loopState.normalizeBarTravel) loopState.normalizeBarTravel();
-      } else if (snapBarStep >= 0) {
-        loopState.barTravel = Math.min(den, Math.max(0, raw));
-      } else {
-        loopState.barTravel = Math.max(0, raw);
-        if (loopState.normalizeBarTravel) loopState.normalizeBarTravel();
-      }
+      loopState.barTravel = raw;
+      if (loopState.normalizeBarTravel) loopState.normalizeBarTravel();
     }
     function snapTick() {
       const t = Math.min((performance.now() - animStart) / DURATION, 1);
@@ -1632,11 +1633,12 @@
     }, { passive: true });
 
     requestAnimationFrame(() => {
-      loopW = rowCards.scrollWidth / 3;
+      var __sideN = parseInt(rowCards.dataset.side, 10) || 1;
+      loopW = rowCards.scrollWidth / (2 * __sideN + 1);
       const cardEl = rowCards.querySelector('.work-card-wrap');
       const cardW = cardEl ? cardEl.offsetWidth + 16 : 260;
       loopState.snapStep = cardW * 2;
-      pos = loopW; target = loopW; animFrom = loopW;
+      pos = loopW * __sideN; target = pos; animFrom = pos;
       loopState.loopW = loopW;
       loopState.pos = pos;
       loopState.target = target;
