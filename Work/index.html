@@ -97,15 +97,19 @@
       --wc-scroll-release-dur: 0.42s;
     }
 
-    html, body {
-      background: #000; color: #fff;
+    html {
+      background: #000;
+      color: #fff;
+      overflow-x: hidden;
+      overflow-y: hidden;
+      height: 100%;
+    }
+
+    body {
       font-family: Micross, Arial, sans-serif;
       font-size: clamp(9.6px, 1vw, 11.2px);
       line-height: 1.3;
       -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-      overflow-y: hidden;
-      height: 100%;
       user-select: none;
       -webkit-user-select: none;
       -moz-user-select: none;
