@@ -49,7 +49,15 @@ try {
   if (homeList && homeList.length) {
     const idxFile = path.join(dist, 'index.html');
     let s = fs.readFileSync(idxFile, 'utf8');
-    const slim = homeList.map(x => ({ key: x.key, client: x.client, title: x.title, start: x.start, video: x.video, cat: x.cat }));
+    const previewDir = path.join(root, 'Home', 'assets', 'home-previews');
+    const slim = homeList.map(x => {
+      const row = { key: x.key, client: x.client, title: x.title, start: x.start, video: x.video, cat: x.cat };
+      const prev = path.join(previewDir, `${x.key}.mp4`);
+      if (fs.existsSync(prev) && fs.statSync(prev).size > 1000) {
+        row.preview = `/assets/home-previews/${x.key}.mp4`;
+      }
+      return row;
+    });
     const payload = JSON.stringify({ homeList: slim }).replace(/</g, '\\u003c');
     s = s.replace(/window\.__HOME_ORDER=[\s\S]*?;\/\*XYZ_BUILD_ORDER\*\//, 'window.__HOME_ORDER=' + payload + ';/*XYZ_BUILD_ORDER*/');
     fs.writeFileSync(idxFile, s);

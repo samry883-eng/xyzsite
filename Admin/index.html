@@ -158,7 +158,7 @@ function mergeOrder(saved){
   base.categories.forEach(function(c){ if(cats.indexOf(c)<0) cats.push(c); });
   var projects={};
   cats.forEach(function(c){ var valid=base.projects[c]||[]; var sv=((saved.projects||{})[c]||[]).filter(function(k){return valid.indexOf(k)>=0;}); valid.forEach(function(k){ if(sv.indexOf(k)<0) sv.push(k); }); projects[c]=sv; });
-  return {categories:cats,projects:projects,meta:saved.meta||{},home:saved.home||{}};
+  return {categories:cats,projects:projects,meta:saved.meta||{},homeList:saved.homeList||[]};
 }
 
 
