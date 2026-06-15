@@ -34,6 +34,29 @@ fs.mkdirSync(dist, { recursive: true });
 fs.writeFileSync(path.join(dist, '.nojekyll'), '');
 
 copyFile(path.join(root, 'Home', 'index.html'), path.join(dist, 'index.html'));
+
+// --- Inject latest home hero order at build time (page ships static-correct; no runtime fetch/race) ---
+try {
+  let order = null;
+  const EC = process.env.EDGE_CONFIG_ID, RT = process.env.EDGE_CONFIG_READ_TOKEN;
+  if (EC && RT) {
+    try { const r = await fetch(`https://edge-config.vercel.com/${EC}/item/workOrder?token=${RT}`); if (r.ok) order = await r.json(); } catch {}
+  }
+  if (!order) {
+    try { const r = await fetch('https://www.xyzstudios.co/api/site-order'); if (r.ok) { const j = await r.json(); order = j && j.order; } } catch {}
+  }
+  const homeList = order && order.homeList;
+  if (homeList && homeList.length) {
+    const idxFile = path.join(dist, 'index.html');
+    let s = fs.readFileSync(idxFile, 'utf8');
+    const slim = homeList.map(x => ({ key: x.key, client: x.client, title: x.title, start: x.start, video: x.video, cat: x.cat }));
+    const payload = JSON.stringify({ homeList: slim }).replace(/</g, '\\u003c');
+    s = s.replace(/window\.__HOME_ORDER=[\s\S]*?;\/\*XYZ_BUILD_ORDER\*\//, 'window.__HOME_ORDER=' + payload + ';/*XYZ_BUILD_ORDER*/');
+    fs.writeFileSync(idxFile, s);
+    console.log('[home-order] injected', homeList.length, 'videos');
+  } else { console.warn('[home-order] no order fetched; using baked default'); }
+} catch (e) { console.warn('[home-order] inject failed:', e && e.message); }
+
 copyDir(path.join(root, 'Home', 'assets'), path.join(dist, 'assets'));
 
 copyDir(path.join(root, 'Work'), path.join(dist, 'work'));
