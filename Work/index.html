@@ -1158,9 +1158,9 @@
 
     function getFrac() {
       if (loopState && loopState.loopW) {
+        if (loopState.normalizeBarTravel) loopState.normalizeBarTravel();
         var den = scrubCycleLen();
         var travel = loopState.barTravel || 0;
-        if (travel >= den - 0.5) return 1;
         var frac = den > 0 ? travel / den : 0;
         if (frac < 0.008) frac = 0;
         return Math.max(0, Math.min(1, frac));
@@ -1622,6 +1622,7 @@
       pos = nextPos;
       loopState.pos = pos;
       wrapPos();
+      if (loopState.normalizeBarTravel) loopState.normalizeBarTravel();
       loopState.lastPos = pos;
       rowCards.scrollLeft = pos;
       scheduleResumeWorkHover();
