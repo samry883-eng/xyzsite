@@ -22,7 +22,7 @@ Operational notes for working on this project. Read this first.
 Three coordinated, additive, reversible changes fixed: wrong/first video on load, missing/flashing UI, "order resets to original", and stuck/multiple videos playing at once:
 
 1. **Gate Slater init** until the `/api/site-order` rebuild finishes (injector sets `window.__xyzReelReady` and dispatches `xyz-reel-ready`; the Slater loader waits for it, max 2.5s fallback). Prevents Slater binding to stale/static DOM.
-2. **Single-video playback** (`/* xyz-hero-playback-fix */`): only the active hero video plays; all others are paused. Also briefly holds slide 0 so the page lands on the first admin video.
+2. **Single-video playback** (`/* xyz-hero-playback-fix */`): only *visible* hero videos play - the active slide, plus the outgoing slide during a crossfade - while fully hidden slides are paused. This prevents all 8 videos playing at once (perf/stutter) WITHOUT pausing the outgoing video mid-transition (keeps slides smooth). Also briefly holds slide 0 so the page lands on the first admin video.
 3. **Intro loader hold**: the white `#xyz-wl` loader waits for `__xyzReelReady` (max +2.5s) before exiting, so the hero is ready before reveal (fixes refresh UI flash/stuck).
 
 Root cause was a **race**: Slater initialized the slider on the static videos, then the `/api/site-order` script swapped the DOM out from under it.
