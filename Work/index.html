@@ -67,10 +67,11 @@
     /* Thumbnails load with <img loading="lazy"> — do not preload every poster in <head> (was ~40+ parallel requests and major jank). */
   })(window.__WORK_DATA);
   </script>
+  <link rel="stylesheet" href="/assets/xyz-nav-font.css">
   <style>
     @font-face {
       font-family: 'Micross';
-      src: url('/assets/micross.ttf') format('truetype');
+      src: url('https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/697ad8d7e20ca4c6f2870246_micross.ttf') format('truetype');
       font-weight: 400;
       font-style: normal;
       font-display: swap;
@@ -124,9 +125,6 @@
     .nav-links a {
       text-decoration: none;
       color: rgba(250,250,250,0.35);
-      font: 400 10px/1 Micross, Arial, sans-serif;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
       transition: color 0.2s ease;
     }
     .nav-links a.active,
@@ -487,7 +485,6 @@
       }
       .nav-logo img { height: 24px; }
       .nav-links { gap: 18px; }
-      .nav-links a { font-size: 10px; letter-spacing: 0.16em; }
 
       .work-fade-text,
       .work-fade-right { display: none; }
