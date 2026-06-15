@@ -5,8 +5,7 @@
   "scripts": {
     "start": "node serve.mjs",
     "dev": "node serve.mjs",
-    "build": "node scripts/build-home-previews.mjs && node scripts/prepare-github-pages.mjs",
-    "build:home-previews": "node scripts/build-home-previews.mjs",
+    "build": "node scripts/prepare-github-pages.mjs",
     "fetch:pitch": "node scripts/fetch-pitch-embed.mjs",
     "build:pitch-deck": "node scripts/build-pitch-deck-data.mjs && node scripts/render-pitch-deck.mjs",
     "merge:capabilities": "node scripts/merge-capabilities-deck.mjs",
@@ -26,8 +25,7 @@
     "pdfjs-dist": "^5.6.205",
     "puppeteer": "^24.41.0",
     "puppeteer-core": "^24.41.0",
-    "sharp": "^0.35.1",
-    "ffmpeg-static": "^5.2.0"
+    "sharp": "^0.35.1"
   },
   "dependencies": {
     "@upstash/redis": "^1.37.0",
