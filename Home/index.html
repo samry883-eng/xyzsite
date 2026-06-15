@@ -195,7 +195,7 @@
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
 
 
-<script>document.addEventListener("DOMContentLoaded",function(){function loadxyz(e){var t=document.createElement("script");t.setAttribute("src",e);t.setAttribute("type","module");document.body.appendChild(t)}var src=window.location.host.includes("webflow.io")?"https://slater.app/17909.js":"https://assets.slater.app/slater/17909.js?v=1.0";loadxyz(src);})</script>
+<script>document.addEventListener("DOMContentLoaded",function(){function loadxyz(e){var t=document.createElement("script");t.setAttribute("src",e);t.setAttribute("type","module");document.body.appendChild(t)}var src=window.location.host.includes("webflow.io")?"https://slater.app/17909.js":"https://assets.slater.app/slater/17909.js?v=1.0";var started=false;function go(){if(started)return;started=true;loadxyz(src);}if(window.__xyzReelReady){go();}else{document.addEventListener("xyz-reel-ready",go,{once:true});setTimeout(go,2500);}})</script>
 
 <script async type="module" src="https://cdn.jsdelivr.net/npm/@finsweet/attributes@2/attributes.js" fs-mirrorclick fs-list></script>
 
@@ -337,7 +337,7 @@
   }, { passive: true, once: true });
 })();
 </script>
-<script>/* xyz-home-reel */(function(){
+<script>/* xyz-home-reel */(function(){function __reelDone(){try{window.__xyzReelReady=true;document.dispatchEvent(new Event("xyz-reel-ready"));}catch(e){}}
 function sec(x){x=String(x==null?'':x).trim();if(!x)return 0;if(x.indexOf(':')>=0){var p=x.split(':');return Math.round((parseInt(p[0],10)||0)*60+(parseFloat(p[1])||0));}return Math.round(parseFloat(x)||0);}
 function upd(item,node,idx){
   node.setAttribute('data-slide-index',idx);
@@ -365,6 +365,7 @@ fetch('/api/site-order').then(function(r){return r.json();}).then(function(d){
   for(var i=0;i<L.length;i++){ var node=items[i]||tpl.cloneNode(true); upd(L[i],node,i); nodes.push(node); }
   for(var j=L.length;j<items.length;j++){ if(items[j].parentNode) items[j].parentNode.removeChild(items[j]); }
   nodes.forEach(function(node){ parent.appendChild(node); });
-}).catch(function(){});
+}).then(__reelDone).catch(__reelDone);
 })();</script>
+<script>/* xyz-hero-playback-fix */(function(){function loaderUp(){var wl=document.getElementById("xyz-wl");return (wl&&getComputedStyle(wl).display!=="none")||document.documentElement.classList.contains("xyz-wl-pending");}var snapped=false;function tick(){try{var items=[].slice.call(document.querySelectorAll(".hero_item"));if(items.length<2)return;if(loaderUp()){items.forEach(function(it){var v=it.querySelector("video");if(v&&!v.paused){try{v.pause();}catch(e){}}});return;}if(!snapped&&window.__xyzReelReady){snapped=true;if(window.gsap){try{items.forEach(function(it,i){var vc=it.querySelector(".hero_vid-container");gsap.set(it,{zIndex:i===0?20:0});if(vc)gsap.set(vc,{autoAlpha:i===0?1:0});});}catch(e){}}}var idx=0,mz=-1;items.forEach(function(it,i){var z=parseInt(getComputedStyle(it).zIndex,10)||0;if(z>mz){mz=z;idx=i;}});items.forEach(function(it,i){var v=it.querySelector("video");if(!v)return;if(i===idx){if(v.paused){var p=v.play();if(p&&p.catch)p.catch(function(){});}}else if(!v.paused){try{v.pause();}catch(e){}}});}catch(e){}}setInterval(tick,150);})();</script>
 </body></html>
