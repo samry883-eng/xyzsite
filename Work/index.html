@@ -67,7 +67,6 @@
     /* Thumbnails load with <img loading="lazy"> — do not preload every poster in <head> (was ~40+ parallel requests and major jank). */
   })(window.__WORK_DATA);
   </script>
-  <link rel="stylesheet" href="/assets/xyz-nav.css">
   <style>
     @font-face {
       font-family: 'Micross';
@@ -122,6 +121,16 @@
     }
     .nav-logo img { height: 29px; width: auto; display: block; }
     .nav-links { display: flex; gap: 47px; list-style: none; }
+    .nav-links a {
+      text-decoration: none;
+      color: rgba(250,250,250,0.35);
+      font: 400 10px/1 Micross, Arial, sans-serif;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      transition: color 0.2s ease;
+    }
+    .nav-links a.active,
+    .nav-links a:hover { color: rgb(250,250,250); }
 
     /* ── SHOWCASE — 4 rows always fit in viewport (no vertical page scroll) ─ */
     .work-showcase {
@@ -478,6 +487,7 @@
       }
       .nav-logo img { height: 24px; }
       .nav-links { gap: 18px; }
+      .nav-links a { font-size: 10px; letter-spacing: 0.16em; }
 
       .work-fade-text,
       .work-fade-right { display: none; }
