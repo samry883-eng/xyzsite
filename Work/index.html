@@ -1559,6 +1559,7 @@
       }
       raf = null;
       locked = false;
+      if (loopState.normalizeBarTravel) loopState.normalizeBarTravel();
       if (scrubElRef) scrubElRef.classList.remove('is-snapping');
       finishScrollSnapHover();
     }
