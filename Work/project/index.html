@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Project — XYZ Studios</title>
+  <link rel="stylesheet" href="/assets/xyz-nav.css">
   <style>
     @font-face {
       font-family: 'Micross';
@@ -26,6 +27,8 @@
     html, body {
       background: #000; color: #fff;
       font-family: Micross, Arial, sans-serif;
+      font-size: clamp(.6rem, 1vw, min(.4rem + .4vw, .7rem));
+      line-height: 1.3;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
@@ -39,17 +42,6 @@
       background: linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, transparent 100%);
     }
     .nav-logo img { height: 29px; width: auto; display: block; }
-    .nav-links { display: flex; gap: 47px; list-style: none; }
-    .nav-links a {
-      text-decoration: none;
-      color: rgba(250,250,250,0.35);
-      font-family: Micross, Arial, sans-serif;
-      font-size: 10.64px; font-weight: 400;
-      letter-spacing: normal; text-transform: uppercase;
-      transition: color 0.2s ease;
-    }
-    .nav-links a.active,
-    .nav-links a:hover { color: rgb(250,250,250); }
 
     /* ── VIDEO PAGE — fills viewport below nav ───────────── */
     .pj-video-wrap {

@@ -67,6 +67,7 @@
     /* Thumbnails load with <img loading="lazy"> — do not preload every poster in <head> (was ~40+ parallel requests and major jank). */
   })(window.__WORK_DATA);
   </script>
+  <link rel="stylesheet" href="/assets/xyz-nav.css">
   <style>
     @font-face {
       font-family: 'Micross';
@@ -99,7 +100,7 @@
     html, body {
       background: #000; color: #fff;
       font-family: Micross, Arial, sans-serif;
-      font-size: clamp(9.6px, 1vw, 11.2px);
+      font-size: clamp(.6rem, 1vw, min(.4rem + .4vw, .7rem));
       line-height: 1.3;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
@@ -120,17 +121,6 @@
       background: transparent !important;
     }
     .nav-logo img { height: 29px; width: auto; display: block; }
-    .nav-links { display: flex; gap: 47px; list-style: none; }
-    .nav-links a {
-      text-decoration: none;
-      color: rgba(250,250,250,0.35);
-      font: 400 10px/1 Micross, Arial, sans-serif;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      transition: color 0.2s ease;
-    }
-    .nav-links a.active,
-    .nav-links a:hover { color: rgb(250,250,250); }
 
     /* ── SHOWCASE — 4 rows always fit in viewport (no vertical page scroll) ─ */
     .work-showcase {
@@ -486,8 +476,6 @@
         padding: 14px 20px 16px;
       }
       .nav-logo img { height: 24px; }
-      .nav-links { gap: 18px; }
-      .nav-links a { font-size: 10px; letter-spacing: 0.16em; }
 
       .work-fade-text,
       .work-fade-right { display: none; }
