@@ -821,12 +821,15 @@
       });
       return;
     }
-    // xyzstudios.co/projects: 0.1s base + stagger from top; wider gaps for 4 rows.
-    var baseDelayMs = 100;
-    var staggerMs = 180;
+    // The page-out overlay slides UP, so the page is revealed bottom->top. Animate each row as it
+    // is uncovered (bottom row first, top row last) so EVERY row (VFX, Sound, AI) gets a visible,
+    // smooth slide-up + fade, scaled to the overlay duration.
+    var nRows = rows.length;
+    var dur = durMs || 600;
     Array.prototype.forEach.call(rows, function (row, rowIdx) {
       if (row.classList.contains('wc-row-in')) return;
-      var delay = baseDelayMs + rowIdx * staggerMs;
+      var frac = (nRows > 1) ? (0.12 + 0.82 * ((nRows - 1 - rowIdx) / (nRows - 1))) : 0.2;
+      var delay = Math.round(frac * dur);
       setTimeout(function () {
         row.classList.add('wc-row-in');
         row.addEventListener('transitionend', function cleanup(e) {
