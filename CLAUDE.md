@@ -29,4 +29,35 @@ This was rebuilt to kill a whole class of bugs. How it works now:
 ## Gotchas
 
 - The original pre-reel home (commit ~`8db77a4`) was a clean static Slater slideshow with no reel JS - that is the behavioral baseline.
-- `Capabilities/` admin + `api/capabilities/*` are a separate system (deck access grants), unrelated to the home hero.
+- `Capabilities/` admin + `api/capabilities/*` are a separate system (deck access grants), unrelated to the home hero.\n
+
+---
+
+## OPEN ISSUE — home hero 2nd-video goes black (handoff for Claude Code)
+
+### What we want (the goal)
+The home hero is a Slater slideshow of N full-length videos. Each slide shows a ~7-8s SECTION starting at a curated timestamp (`homeList[i].start`, e.g. 11s, 15s, 25s, 26s). Desired:
+- NO black / loading frames when a slide appears — **especially the 2nd slide**.
+- Loader should feel near-instant; remaining videos load **gradually while viewing**.
+- KEEP curated start timestamps. Do **NOT** play videos from 0.
+
+### Core problem (root cause)
+Hero videos are full-length files on `r2.vidzflow.com` / `supabase` (`homeList[i].video`). The hero **seeks deep** into each (e.g. 25s). On a **cold load**, when the slideshow reaches slide 2 that video hasn't buffered enough *forward* from its deep offset, so playback **stalls → long black → then jumps in**. It's **positional** (whatever video is in slot 2), proven by reordering.
+
+### Symptoms
+- 1st video fine; 2nd video black/loading-circle for a long time, then plays. Same on scroll. Warm/cached browsers do NOT reproduce (must test COLD).
+
+### Fixes applied & state
+1. Hid orphaned `.background-load` Webflow loader (dark backdrop + spinner, z-index 1, always display:flex, nothing hid it) that peeked through during the crossfade = the "loading circle". Now display:none. KEEP.
+2. Frame-gate (rejected): waited for `readyState>=2` (one frame) → frame showed but playback stalled = "black even longer".
+3. Runway-gate (current, commit `64baca6`): `/* xyz-video-preload */` sequentially seeks each early video to start and waits for ~7.5s forward buffer (`start→start+7.5s` or `readyState>=4`), then sets `preload="metadata"` so only the ~7-8s SECTION loads (not the full file). Gates loader on first 2 slides, background-buffers the rest. Cap 12s. Sets `window.__xyzHeroSettled`; `#xyz-wl` loader exits on that or cap. NOT yet confirmed fixed on cold loads.
+
+### Hard constraints (do NOT reintroduce)
+- No play-from-0. No `preload="auto"` on all (froze tab). No runtime `preload="none"`+`load()` release (black/thumbnail-freeze). Slater = transitions only.
+
+### Next ideas
+- **Pre-trimmed ~7-8s clips per slide** (owner preference): tiny files, instant, no deep seek. Needs hosting (same-origin Vercel `public/` fastest), an ffmpeg trim step (`-ss start -t 8`), and must handle videos added via admin (ideally automated, else new videos fall back to slow path).
+- **Gate the slideshow ADVANCE** (not the loader): enter when slide 1 ready, hold Slater from advancing to slide N+1 until its section is buffered. Harder — Slater drives timing.
+
+### Key hooks
+`Home/index.html`: `/* xyz-video-preload */` (section/readiness gate, sets `__xyzHeroSettled`), `/* xyz-hero-playback-fix */` (plays active, pauses rest), `#xyz-wl` loader, `/* xyz-hero-flash-fix */` style. Order in Edge Config `workOrder` via admin `POST /api/site-order` (writes + redeploys); baked to `window.__HOME_ORDER`. Deep offset = `homeList[i].start`.
