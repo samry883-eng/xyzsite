@@ -1,47 +1,25 @@
-/* Sitewide nav links — matches home .link-block / .div-block-14 styling */
-nav .nav-links {
-  display: flex;
-  gap: clamp(3em, 5vw, 4.2em);
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-nav .nav-links li {
-  list-style: none;
-}
-
+/* Nav link font only — matches home .link-block text */
 nav .nav-links a {
-  text-decoration: none;
-  color: inherit;
-  opacity: 1;
   font-family: Micross, Arial, sans-serif;
-  font-size: 0.95em;
+  font-size: 11px;
   font-weight: 400;
   letter-spacing: normal;
   text-transform: uppercase;
-  transition: all 0.4s;
-  -webkit-text-stroke-width: 0;
-  -webkit-text-stroke-color: transparent;
-}
-
-nav .nav-links a:hover {
-  opacity: 1;
-  -webkit-text-stroke-width: 0.01em;
-  -webkit-text-stroke-color: currentColor;
+  color: #fff;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
 }
 
 nav .nav-links a.active {
   opacity: 0.8;
 }
 
-nav .nav-links a.active:hover {
+nav .nav-links a:hover {
   opacity: 1;
 }
 
 @media (max-width: 991px) {
-  nav .nav-links {
-    gap: clamp(1.4em, 3.5vw, 2em);
-    font-size: 0.8em;
+  nav .nav-links a {
+    font-size: 10px;
   }
 }
