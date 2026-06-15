@@ -1,13 +1,24 @@
 /* Nav link font only — matches home .link-block text */
+nav .nav-links {
+  align-items: center;
+}
+
+nav .nav-links li {
+  display: flex;
+  align-items: center;
+}
+
 nav .nav-links a {
-  font-family: Micross, Arial, sans-serif;
-  font-size: 11px;
-  font-weight: 400;
+  font: 400 11px/1 Micross, Arial, sans-serif;
   letter-spacing: normal;
   text-transform: uppercase;
   color: #fff;
   text-decoration: none;
+  display: inline-flex;
+  align-items: center;
   transition: opacity 0.2s ease;
+  position: relative;
+  top: 1px;
 }
 
 nav .nav-links a.active {
