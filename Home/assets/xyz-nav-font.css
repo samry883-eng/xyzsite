@@ -54,13 +54,14 @@ nav .nav-links a.active:hover {
   opacity: 1;
 }
 
-@media (max-width: 991px) {
+@media (max-width: 767px) {
+  /* Home: body .8rem + .div-block-14 .8em + .link-block .95em */
   nav .nav-links {
-    font-size: clamp(7.68px, 0.8vw, min(calc(5.12px + 0.32vw), 8.96px));
+    font-size: 12.8px;
     gap: clamp(1.4em, 3.5vw, 2em);
   }
 
   nav .nav-links a {
-    font-size: clamp(7.3px, 0.76vw, min(calc(4.86px + 0.304vw), 8.51px));
+    font-size: 0.76em;
   }
 }
