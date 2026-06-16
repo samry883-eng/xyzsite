@@ -92,6 +92,8 @@
       --wc-hover-max: 1.12;
       --work-divider: rgba(255, 255, 255, 0.14);
       --work-row-edge-pad: clamp(16px, 4vw, 48px);
+      --work-index-size: clamp(9.6px, 1vw, 11.2px);
+      --work-index-color: rgba(255, 255, 255, 0.38);
       --wc-hover-ease: cubic-bezier(0.33, 1, 0.68, 1);
       --wc-hover-dur: 0.68s;
       --wc-scroll-release-dur: 0.42s;
@@ -165,10 +167,10 @@
       min-width: 0;
     }
     .work-row-num {
-      font: 400 1em/1 Micross, Arial, sans-serif;
+      font: 400 var(--work-index-size)/1 Micross, Arial, sans-serif;
       letter-spacing: 0;
       text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.38);
+      color: var(--work-index-color);
       font-variant-numeric: tabular-nums;
       flex-shrink: 0;
     }
@@ -360,7 +362,7 @@
       overflow: visible;
     }
     .wc-label {
-      font: 400 1em/1.3 Micross, Arial, sans-serif;
+      font: 400 var(--work-index-size)/1.3 Micross, Arial, sans-serif;
       letter-spacing: 0;
       white-space: nowrap;
       overflow: hidden;
@@ -375,14 +377,13 @@
       white-space: normal;
     }
     .wc-label-client {
-      opacity: 0.6;
-      color: #fff;
+      color: var(--work-index-color);
     }
-    .wc-label-sep { opacity: 0.35; color: #fff; }
+    .wc-label-sep { color: var(--work-index-color); }
     .wc-label-title {
       color: #fff;
       font-weight: 400;
-      -webkit-text-stroke-width: 0.01em;
+      font-size: inherit;
     }
 
     /* ── CARD THUMBNAIL ─────────────────────────────────── */
@@ -519,7 +520,7 @@
       }
       .work-row-header__left { gap: 12px; }
       .work-row-num {
-        font-size: 0.85em;
+        font-size: calc(var(--work-index-size) * 0.85);
         letter-spacing: 0;
       }
       .work-row-cat {
@@ -570,13 +571,13 @@
         justify-content: flex-start;
       }
       .wc-label {
-        font-size: 0.85em;
+        font-size: calc(var(--work-index-size) * 0.85);
         letter-spacing: 0;
         text-align: left;
         white-space: normal;
       }
       .wc-label-client {
-        opacity: 0.4;
+        color: var(--work-index-color);
       }
       .work-card-wrap:hover .wc-label {
         white-space: normal;
@@ -1772,8 +1773,10 @@
   .wc-header{ order:2 !important; display:block !important; text-align:center !important;
     padding:12px 6px 0 !important; white-space:normal !important; }
   .wc-header .wc-label{ display:inline !important; overflow:visible !important; text-overflow:clip !important;
-    white-space:normal !important; color:rgba(255,255,255,.85) !important;
-    font:400 11px/1.35 Micross,Arial,sans-serif !important; letter-spacing:.06em !important; }
+    white-space:normal !important;
+    font:400 var(--work-index-size)/1.35 Micross,Arial,sans-serif !important; letter-spacing:0 !important; }
+  .wc-header .wc-label-client{ color:var(--work-index-color) !important; }
+  .wc-header .wc-label-title{ color:#fff !important; font-size:inherit !important; }
   .work-card-wrap[data-clone]{ display:none !important; }
   .work-fade-right{ display:none !important; }
 }

@@ -1,5 +1,5 @@
 /**
- * Build ~8s 720p-max hero preview clips from homeList (ffmpeg).
+ * Build ~8s 1080p-max hero preview clips from homeList (ffmpeg).
  * Output: Home/assets/home-previews/{key}.mp4
  */
 import fs from 'fs';
@@ -13,6 +13,7 @@ const root = path.join(__dirname, '..');
 const homeHtml = path.join(root, 'Home', 'index.html');
 const outDir = path.join(root, 'Home', 'assets', 'home-previews');
 const CLIP_SEC = 8;
+const FORCE = process.argv.includes('--force');
 
 function sec(x) {
   const s = String(x == null ? '' : x).trim();
@@ -61,7 +62,7 @@ function runFfmpeg(args) {
 
 async function buildOne(item) {
   const dest = path.join(outDir, `${item.key}.mp4`);
-  if (fs.existsSync(dest) && fs.statSync(dest).size > 10000) {
+  if (!FORCE && fs.existsSync(dest) && fs.statSync(dest).size > 10000) {
     console.log('[skip]', item.key);
     return dest;
   }
@@ -76,8 +77,8 @@ async function buildOne(item) {
     '-i', url,
     '-t', String(CLIP_SEC),
     '-an',
-    '-vf', 'scale=-2:720',
-    '-c:v', 'libx264', '-preset', 'fast', '-crf', '23',
+    '-vf', 'scale=-2:1080',
+    '-c:v', 'libx264', '-preset', 'medium', '-crf', '20',
     '-movflags', '+faststart',
     dest,
   ];
