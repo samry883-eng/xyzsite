@@ -548,17 +548,12 @@
 
     .proj-header-block { width: 100%; }
     .proj-eyebrow {
-      display: flex; align-items: baseline; justify-content: space-between;
+      display: flex; align-items: baseline;
     }
     .proj-eyebrow .proj-client {
       font-size: 11px; font-weight: 600;
       letter-spacing: 0.08em; text-transform: uppercase;
       color: var(--pt-color);
-    }
-    .proj-eyebrow .proj-year {
-      font-size: 8px; font-weight: 500;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      color: var(--pm-color);
     }
     .proj-title {
       font-size: 32px; font-weight: 300;
@@ -566,9 +561,22 @@
       line-height: 1; color: var(--pt-color);
       margin-top: 10px;
     }
+    .proj-title-rule {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 14px;
+    }
     .proj-header-divider {
-      height: 1px; background: var(--pm-color);
-      margin-top: 14px; width: 100%;
+      flex: 0 0 auto;
+      width: min(148px, 34%);
+      height: 1px;
+      background: var(--pm-color);
+    }
+    .proj-title-rule .proj-year {
+      font-size: 8px; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--pm-color);
     }
 
     .proj-info-block { width: 100%; }
@@ -1151,10 +1159,12 @@
         <div class="proj-header-block">
           <div class="proj-eyebrow">
             <span class="proj-client">SALOMON</span>
-            <span class="proj-year">2025</span>
           </div>
           <div class="proj-title">SPEEDCROSS 6</div>
-          <div class="proj-header-divider"></div>
+          <div class="proj-title-rule">
+            <span class="proj-header-divider" aria-hidden="true"></span>
+            <span class="proj-year">2025</span>
+          </div>
         </div>
         <div class="proj-info-block">
           <div class="proj-info-label">SCOPE</div>
@@ -1206,10 +1216,12 @@
         <div class="proj-header-block">
           <div class="proj-eyebrow">
             <span class="proj-client">ATOMIC</span>
-            <span class="proj-year">2025</span>
           </div>
           <div class="proj-title">INTO THE VOID</div>
-          <div class="proj-header-divider"></div>
+          <div class="proj-title-rule">
+            <span class="proj-header-divider" aria-hidden="true"></span>
+            <span class="proj-year">2025</span>
+          </div>
         </div>
         <div class="proj-info-block">
           <div class="proj-info-label">SCOPE</div>
@@ -1261,10 +1273,12 @@
         <div class="proj-header-block">
           <div class="proj-eyebrow">
             <span class="proj-client">RORY MCILROY</span>
-            <span class="proj-year">2025</span>
           </div>
           <div class="proj-title">RBC CANADIAN OPEN</div>
-          <div class="proj-header-divider"></div>
+          <div class="proj-title-rule">
+            <span class="proj-header-divider" aria-hidden="true"></span>
+            <span class="proj-year">2025</span>
+          </div>
         </div>
         <div class="proj-info-block">
           <div class="proj-info-label">SCOPE</div>
@@ -1455,10 +1469,12 @@
         <div class="proj-header-block">
           <div class="proj-eyebrow">
             <span class="proj-client">TOYOTA</span>
-            <span class="proj-year">2026</span>
           </div>
           <div class="proj-title">ROAD TO PALISADES</div>
-          <div class="proj-header-divider"></div>
+          <div class="proj-title-rule">
+            <span class="proj-header-divider" aria-hidden="true"></span>
+            <span class="proj-year">2026</span>
+          </div>
         </div>
         <div class="proj-info-block">
           <div class="proj-info-label">SCOPE</div>
@@ -1509,10 +1525,12 @@
         <div class="proj-header-block">
           <div class="proj-eyebrow">
             <span class="proj-client">CONCACAF</span>
-            <span class="proj-year">2025</span>
           </div>
           <div class="proj-title">GOLD CUP</div>
-          <div class="proj-header-divider"></div>
+          <div class="proj-title-rule">
+            <span class="proj-header-divider" aria-hidden="true"></span>
+            <span class="proj-year">2025</span>
+          </div>
         </div>
         <div class="proj-info-block">
           <div class="proj-info-label">SCOPE</div>
@@ -1562,10 +1580,12 @@
         <div class="proj-header-block">
           <div class="proj-eyebrow">
             <span class="proj-client">DORITOS X</span>
-            <span class="proj-year">2025</span>
           </div>
           <div class="proj-title">STRANGER THINGS</div>
-          <div class="proj-header-divider"></div>
+          <div class="proj-title-rule">
+            <span class="proj-header-divider" aria-hidden="true"></span>
+            <span class="proj-year">2025</span>
+          </div>
         </div>
         <div class="proj-info-block">
           <div class="proj-info-label">SCOPE</div>
@@ -1779,10 +1799,12 @@
         <div class="proj-header-block">
           <div class="proj-eyebrow">
             <span class="proj-client">CELSIUS</span>
-            <span class="proj-year">2025</span>
           </div>
           <div class="proj-title">SPRITZ VIBE</div>
-          <div class="proj-header-divider"></div>
+          <div class="proj-title-rule">
+            <span class="proj-header-divider" aria-hidden="true"></span>
+            <span class="proj-year">2025</span>
+          </div>
         </div>
         <div class="proj-info-block">
           <div class="proj-info-label">SCOPE</div>

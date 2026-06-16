@@ -168,6 +168,28 @@
     display: none !important;
   }
 
+  /* Home reel: hide stale project metadata; title comes from banner chrome only */
+  .hero_item .hero_vid-content:not(.align-bottom-copy) {
+    display: none !important;
+  }
+
+  /* Center control-bar titles duplicate the overlay banner — hide to avoid mismatched text */
+  .hero_list-wrapper .projects_item-titles {
+    display: none !important;
+  }
+
+  /* Only the active slide may show the info footer (prevents double footer on last reel item) */
+  .hero_item .hero_content-footer {
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+  .hero_item.xyz-active-slide .hero_content-footer {
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
   /* Hidden: XYZ/Services nav link */
   a.link-block[href="/services/"] {
     display: none !important;
@@ -358,6 +380,8 @@ function upd(item,node,idx){
   var cl=node.querySelector('.text-block-62'); if(cl)cl.textContent=item.client||'';
   var hh=node.querySelector('.hero_content-heading'); if(hh)hh.textContent=item.title||'';
   var hs=node.querySelector('.hero_content-subheading'); if(hs)hs.textContent=item.client||'';
+  var pt=node.querySelector('.projects_item-titles .projects_item-title:not(.company)'); if(pt)pt.textContent=item.title||'';
+  var pc=node.querySelector('.projects_item-titles .projects_item-title.company'); if(pc)pc.textContent=item.client||'';
   var s=sec(item.start);
   var ts=node.querySelector('.projects_item-timestamp'); if(ts)ts.textContent=String(s);
   var list=node.querySelector('.projects_tags .collection-list');
@@ -386,15 +410,28 @@ try{
 })();</script>
 <style>/* xyz-hero-flash-fix */.hero_list-wrapper{opacity:0!important}html.xyz-hero-ready .hero_list-wrapper{opacity:1!important;transition:opacity .3s ease}.background-load{display:none!important}</style>
 <script>/* xyz-hero-playback-fix */(function(){
-  function activeIdx(items){var a=0,mz=-1;items.forEach(function(it,i){var z=parseInt(getComputedStyle(it).zIndex,10)||0;if(z>mz){mz=z;a=i;}});return a;}
-  function setFooters(items,a){items.forEach(function(it,i){var ft=it.querySelector(".hero_content-footer");if(ft)ft.style.visibility=(i===a?"":"hidden");});}
   function vis(it){var vc=it.querySelector(".hero_vid-container");if(!vc)return 0;return parseFloat(getComputedStyle(vc).opacity)||0;}
+  function activeIdx(items){
+    var mz=-1, a=0;
+    items.forEach(function(it,i){
+      var z=parseInt(getComputedStyle(it).zIndex,10)||0;
+      if(z>mz){mz=z;a=i;}
+      else if(z===mz && i>a){a=i;}
+    });
+    return a;
+  }
+  var footerIdx=-1, pending=-1, pendingN=0;
   function tick(){
     try{
       var items=[].slice.call(document.querySelectorAll(".hero_item"));
       if(items.length<2)return;
       var a=activeIdx(items);
-      setFooters(items,a);
+      if(a===pending){pendingN++;}
+      else{pending=a;pendingN=1;}
+      if(footerIdx<0 || (pendingN>=3 && footerIdx!==pending)){
+        footerIdx=pending;
+        items.forEach(function(it,i){it.classList.toggle("xyz-active-slide",i===footerIdx);});
+      }
       items.forEach(function(it,i){
         var v=it.querySelector("video"); if(!v)return;
         if(vis(it)>0.01){ if(v.paused){ var p=v.play(); if(p&&p.catch)p.catch(function(){}); } }
