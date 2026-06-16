@@ -15,6 +15,9 @@
       --ct-nav-size: clamp(9.12px, 0.95vw, min(calc(6.08px + 0.38vw), 10.64px));
       --ct-body-size: clamp(10.5px, 1.1vw, 12.8px);
       --ct-head-size: clamp(34px, 5vw, 56px);
+      --ct-stack-tight: clamp(6px, 0.75vh, 9px);
+      --ct-stack: clamp(10px, 1.1vh, 14px);
+      --ct-stack-section: clamp(26px, 3.2vh, 34px);
     }
 
     html, body {
@@ -68,13 +71,13 @@
       line-height: 1.08;
       letter-spacing: -0.03em;
       color: #fff;
-      margin-bottom: 22px;
+      margin-bottom: var(--ct-stack);
       text-transform: uppercase;
     }
 
     /* Sections */
     .ct-sections { flex-shrink: 0; margin-top: 0; }
-    .ct-section { margin-bottom: 40px; }
+    .ct-section { margin-bottom: var(--ct-stack-section); }
     .ct-section:last-child { margin-bottom: 0; }
     .ct-section-label {
       font-family: var(--ct-font);
@@ -84,9 +87,13 @@
       letter-spacing: normal;
       text-transform: uppercase;
       color: #fff;
-      margin-bottom: 14px;
+      margin-bottom: var(--ct-stack-tight);
     }
-    .ct-section-links { display: flex; flex-direction: column; gap: 18px; }
+    .ct-section-links {
+      display: flex;
+      flex-direction: column;
+      gap: var(--ct-stack-tight);
+    }
     .ct-section-links a,
     .ct-section-links span {
       font-family: var(--ct-font);
@@ -100,8 +107,14 @@
     }
     .ct-section-links .ct-intro {
       font-size: var(--ct-body-size);
-      line-height: 1.55;
+      line-height: 1.5;
       max-width: 28em;
+      display: block;
+      margin-bottom: 0;
+    }
+    .ct-section-links .ct-action {
+      display: block;
+      margin-top: 0;
     }
     .ct-section-links span { cursor: default; }
     .ct-section-links a:hover { color: #fff; }
@@ -480,11 +493,11 @@
     .ct-main{ display:block !important; }
     .ct-left{ display:block !important; width:100% !important; padding:22px 22px 0 !important; }
     .ct-right{ display:block !important; width:100% !important; padding:6px 22px 40px !important; }
-    .ct-headline{ font-size: clamp(28px, 8vw, 42px) !important; margin-bottom: 18px !important; }
+    .ct-headline{ font-size: clamp(28px, 8vw, 42px) !important; margin-bottom: 14px !important; }
     .ct-sections{ margin-bottom:30px !important; }
-    .ct-section{ margin-bottom:28px !important; }
-    .ct-section-links{ gap:12px !important; }
-    .ct-section-label{ margin-bottom:10px !important; font-size:12.8px !important; }
+    .ct-section{ margin-bottom:24px !important; }
+    .ct-section-links{ gap:8px !important; }
+    .ct-section-label{ margin-bottom:8px !important; font-size:12.8px !important; }
     .ct-section-links a,
     .ct-section-links span,
     .ct-section-links .ct-intro{ font-size:16px !important; }
