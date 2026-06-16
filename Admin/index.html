@@ -163,8 +163,9 @@ function mergeOrder(saved){
 
 
 function homeKeysInUse(){ var s={}; document.querySelectorAll('#homeList .row').forEach(function(r){ s[r.dataset.key]=1; }); return s; }
+function homeMkey(cat,key){ var m=projMeta(cat,key); return m?m.mkey:''; }
 function homeRow(item){
-  var r=el('div','row'); r.dataset.key=item.key; r.dataset.video=item.video||''; r.dataset.poster=item.poster||''; r.dataset.cat=item.cat||'';
+  var r=el('div','row'); r.dataset.key=item.key; r.dataset.video=item.video||''; r.dataset.poster=item.poster||''; r.dataset.cat=item.cat||''; r.dataset.mkey=item.mkey||homeMkey(item.cat,item.key)||'';
   r.appendChild(el('span','grip','≡'));
   r.appendChild(thumb(item.poster));
   var f=el('div','fld');
@@ -214,7 +215,8 @@ function refreshPicker(){ var p=document.getElementById('homePicker'); if(p&&p.s
 function addHome(key){
   var c=CATALOG[key]; if(!c) return;
   var list=document.getElementById('homeList');
-  var r=homeRow({key:key,client:c.client,title:c.title,video:c.video,poster:c.poster,cat:c.cat,start:''});
+  var m=null; DATA.categories.forEach(function(c){ var pm=projMeta(c,key); if(pm) m=pm; });
+  var r=homeRow({key:key,client:c.client,title:c.title,video:c.video,poster:c.poster,cat:c.cat,start:'',mkey:m?m.mkey:''});
   list.appendChild(r); dirty(); refreshPicker(); updateHomeCount();
   r.scrollIntoView({block:'nearest'});
 }
@@ -309,7 +311,7 @@ function collect(){
     var cat=sec.dataset.cat; out.categories.push(cat); out.projects[cat]=[];
     sec.querySelectorAll('.plist .row').forEach(function(r){ out.projects[cat].push(r.dataset.key); var ins=r.querySelectorAll('input'); out.meta[r.dataset.mkey]={client:ins[0].value.trim(),title:ins[1].value.trim()}; });
   });
-  document.querySelectorAll('#homeList .row').forEach(function(r){ var ins=r.querySelectorAll('input'); out.homeList.push({key:r.dataset.key,client:ins[0].value.trim(),title:ins[1].value.trim(),start:ins[2].value.trim(),video:r.dataset.video,poster:r.dataset.poster,cat:r.dataset.cat}); });
+  document.querySelectorAll('#homeList .row').forEach(function(r){ var ins=r.querySelectorAll('input'); out.homeList.push({key:r.dataset.key,client:ins[0].value.trim(),title:ins[1].value.trim(),start:ins[2].value.trim(),video:r.dataset.video,poster:r.dataset.poster,cat:r.dataset.cat,mkey:r.dataset.mkey||homeMkey(r.dataset.cat,r.dataset.key)}); });
   return out;
 }
 

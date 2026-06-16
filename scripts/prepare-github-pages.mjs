@@ -4,6 +4,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { loadMkeyMap, slimHomeRow } from './home-order-lib.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
@@ -49,7 +50,9 @@ try {
   if (homeList && homeList.length) {
     const idxFile = path.join(dist, 'index.html');
     let s = fs.readFileSync(idxFile, 'utf8');
-    const slim = homeList.map(x => ({ key: x.key, client: x.client, title: x.title, start: x.start, video: x.video, cat: x.cat }));
+    const previewDir = path.join(root, 'Home', 'assets', 'home-previews');
+    const mkeyMap = loadMkeyMap(root);
+    const slim = homeList.map((x) => slimHomeRow(x, previewDir, mkeyMap));
     const payload = JSON.stringify({ homeList: slim }).replace(/</g, '\\u003c');
     s = s.replace(/window\.__HOME_ORDER=[\s\S]*?;\/\*XYZ_BUILD_ORDER\*\//, 'window.__HOME_ORDER=' + payload + ';/*XYZ_BUILD_ORDER*/');
     fs.writeFileSync(idxFile, s);
