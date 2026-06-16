@@ -804,8 +804,30 @@
     }, true);
   }
 
-  function startRowStagger(durMs) {
+  var rowStaggerTimers = [];
+
+  function clearRowStaggerTimers() {
+    rowStaggerTimers.forEach(function (id) { clearTimeout(id); });
+    rowStaggerTimers = [];
+  }
+
+  function resetRowEntrance() {
+    clearRowStaggerTimers();
+    if (!showcase) return;
+    showcase.querySelectorAll('.work-row').forEach(function (row) {
+      row.classList.remove('wc-row-in');
+      row.style.transition = 'none';
+      row.style.opacity = '';
+      row.style.transform = '';
+      row.style.willChange = 'transform, opacity';
+      void row.offsetHeight;
+      row.style.transition = '';
+    });
+  }
+
+  function startRowStagger() {
     var rows = showcase ? showcase.querySelectorAll('.work-row') : [];
+    clearRowStaggerTimers();
     if (isMobileWorkLayout()) {
       Array.prototype.forEach.call(rows, function (row) {
         row.classList.add('wc-row-in');
@@ -813,22 +835,19 @@
       });
       return;
     }
-    // Start the cascade AFTER the page-out overlay has fully lifted (so no row is still hidden),
-    // then stagger TOP->BOTTOM in document order: VFX -> Sound -> AI. Every row gets a visible
-    // slide-up + fade in the intended order.
-    var baseDelayMs = (durMs || 600) + 60;
+    // Stagger TOP->BOTTOM after the page-out overlay is gone (VFX -> Sound -> AI).
+    var baseDelayMs = 48;
     var staggerMs = 180;
     Array.prototype.forEach.call(rows, function (row, rowIdx) {
-      if (row.classList.contains('wc-row-in')) return;
       var delay = baseDelayMs + rowIdx * staggerMs;
-      setTimeout(function () {
+      rowStaggerTimers.push(setTimeout(function () {
         row.classList.add('wc-row-in');
         row.addEventListener('transitionend', function cleanup(e) {
           if (e.propertyName !== 'opacity') return;
           row.style.willChange = 'auto';
           row.removeEventListener('transitionend', cleanup);
         });
-      }, delay);
+      }, delay));
     });
   }
 
@@ -858,8 +877,9 @@
   }
 
   function slideAwayPanel(fromCacheRestore) {
+    resetRowEntrance();
     if (!pageOut) {
-      startRowStagger(null);
+      startRowStagger();
       markWorkPageOpen();
       return;
     }
@@ -874,6 +894,7 @@
       pageOut.removeEventListener('transitionend', onEnd);
       clearTimeout(fallback);
       markWorkPageOpen();
+      startRowStagger();
     }
     function onEnd(e) {
       if (e.target !== pageOut || e.propertyName !== 'transform') return;
@@ -881,13 +902,10 @@
     }
     pageOut.addEventListener('transitionend', onEnd);
     const fallback = setTimeout(finishOpen, parseFloat(dur) * 1000 + 120);
-    const durMs = parseFloat(dur) * 1000;
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         pageOut.style.transition = 'transform ' + dur + ' cubic-bezier(0.76,0,0.24,1)';
         pageOut.style.transform = 'translateY(-100%)';
-        // Schedule each row to animate the moment the overlay edge passes it.
-        startRowStagger(durMs);
       });
     });
   }
@@ -1697,10 +1715,24 @@
   }, true);
   }
 
+  var workOpenStarted = false;
+  function openWorkPage() {
+    if (workOpenStarted) return;
+    workOpenStarted = true;
+    slideAwayPanel();
+  }
+  window.__xyzOnWorkOrderApplied = openWorkPage;
+
   buildWorkGrid();
-  slideAwayPanel();
+  // Wait for admin order to land before the category entrance — reordering mid-animation cuts it off.
+  setTimeout(openWorkPage, 1000);
   waitForGridReady().catch(function () {});
-  window.addEventListener('pageshow', function (e) { if (e.persisted) slideAwayPanel(true); });
+  window.addEventListener('pageshow', function (e) {
+    if (!e.persisted) return;
+    workOpenStarted = false;
+    document.body.classList.remove('work-page-open');
+    openWorkPage();
+  });
 </script>
 <style id="xyz-work-mobile">
 @media (max-width: 768px){
@@ -1841,9 +1873,23 @@
     applyMeta(order);
     return true;
   }
+  var orderApplied = false;
+  function notifyOrderReady() {
+    if (orderApplied) return;
+    orderApplied = true;
+    if (window.__xyzOnWorkOrderApplied) window.__xyzOnWorkOrderApplied();
+  }
   fetch('/api/site-order').then(function(r){return r.json();}).then(function(d){
-    if(d&&d.ok&&d.order){ var n=0,iv=setInterval(function(){ n++; if(apply(d.order)||n>80) clearInterval(iv); },200); window.addEventListener('load',function(){apply(d.order);}); }
-  }).catch(function(){});
+    if (!d || !d.ok || !d.order) { notifyOrderReady(); return; }
+    var n = 0;
+    var iv = setInterval(function () {
+      n++;
+      if (apply(d.order) || n > 80) {
+        clearInterval(iv);
+        notifyOrderReady();
+      }
+    }, 200);
+  }).catch(function () { notifyOrderReady(); });
 })();
 </script>
 </body>
