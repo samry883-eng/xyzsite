@@ -1,183 +1,1160 @@
 <!DOCTYPE html>
 <html lang="en" class="deck-protect">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>XYZ Studios — Sound Capabilities</title>
-<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Beats/open - Find your Beat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="/assets/xyz-studio-dev.webflow.shared.6e9159a05.css" rel="stylesheet" type="text/css" />
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&display=swap');
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  :root{--bg:#ece9e0;--ink:#15140f;--dim:rgba(21,20,15,.5);--dim2:rgba(21,20,15,.33);--line:rgba(21,20,15,.15);--panel:#d6d2c6}
-  html,body{background:#dedad0;color:var(--ink);font-family:'Geist',Arial,sans-serif;-webkit-font-smoothing:antialiased;height:100%}
-  html.deck-protect,html.deck-protect body{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
-  img{-webkit-user-drag:none}
-  @media print{html.deck-protect body{display:none!important}}
-  .it{font-style:italic}
-  .deck{height:100vh;overflow-y:scroll;scroll-snap-type:y proximity;scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
-  .deck::-webkit-scrollbar{display:none}.deck{scrollbar-width:none}
-  .slide{min-height:100vh;scroll-snap-align:center;display:flex;align-items:center;justify-content:center;padding:3vh 2vw}
-  .stage{width:min(96vw,170.6vh);aspect-ratio:16/9;container-type:size;position:relative;background:var(--bg);overflow:hidden;box-shadow:0 2cqw 6cqw rgba(0,0,0,.14)}
-  /* corner chrome */
-  .c{position:absolute;font-size:.78cqw;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
-  .c-tl{top:3.5cqh;left:3.2cqw}.c-tr{top:3.5cqh;right:3.2cqw}.c-pg{bottom:4cqh;left:3.2cqw;color:var(--dim)}.c-br{bottom:4cqh;right:3.2cqw;color:var(--dim2)}
-  .c-tl b{color:var(--ink);font-weight:600}
-  .inr{position:absolute;inset:0;padding:6.5cqh 3.2cqw;display:flex;flex-direction:column}
-  .fill{flex:1}
-  .hr{height:1px;background:var(--line);width:100%}
-  .lab{font-size:.78cqw;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);font-weight:500}
-  .labk{font-size:.82cqw;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);font-weight:600}
-  .body{font-size:1.05cqw;line-height:1.6;color:var(--dim);font-weight:400}
-  .note{font-family:'Instrument Serif',serif;font-style:italic;font-size:1.7cqw;line-height:1.32;color:var(--ink)}
-  .T{font-family:'Instrument Serif',serif;line-height:.9;letter-spacing:-.005em;font-weight:400}
-  /* cover */
-  .cover .T{font-size:16.5cqw;line-height:.86}
-  .cover .right{position:absolute;right:3.2cqw;top:52cqh;width:24cqw}
-  .cover .right .note{font-size:1.55cqw}
-  .cover .right .sub{margin-top:1.4cqh;font-size:.78cqw;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
-  .cover .contact{position:absolute;left:3.2cqw;bottom:13cqh}
-  .cover .contact .a{font-size:.95cqw;color:var(--ink)}.cover .contact .b{font-size:.8cqw;color:var(--dim);margin-top:.5cqh;letter-spacing:.04em}
-  /* about */
-  .about .T{font-size:8.4cqw}
-  .about .lead{font-family:'Instrument Serif',serif;font-style:italic;font-size:2.2cqw;margin-top:2.4cqh;color:var(--ink)}
-  .about .body{margin-top:1.6cqh;max-width:50cqw}
-  .caplist{margin-top:auto;display:flex;border-top:1px solid var(--line)}
-  .caplist .ci{flex:1;padding:1.8cqh 0 0;border-right:1px solid var(--line)}
-  .caplist .ci:last-child{border-right:0}
-  .caplist .cn{font-size:.78cqw;color:var(--dim2);letter-spacing:.1em}
-  .caplist .ct{font-family:'Instrument Serif',serif;font-size:1.7cqw;margin-top:1cqh}
-  /* divider */
-  .divider .inr{align-items:center;justify-content:center;text-align:center}
-  .divider .T{font-size:15cqw}.divider .labk{margin-bottom:2.4cqh}
-  /* project */
-  .project .top{display:flex;gap:3.5cqw;align-items:flex-start;margin-top:2cqh}
-  .project .pleft{flex:0 0 30%}
-  .project .pname1{font-family:'Instrument Serif',serif;font-size:3.4cqw;line-height:1.02}
-  .project .pname2{font-family:'Instrument Serif',serif;font-style:italic;font-size:4.7cqw;line-height:1;margin-top:.3cqh}
-  .project .lab{margin-top:1.5cqh}
-  .project .pimg{flex:1;aspect-ratio:16/8.4;background:#0c0c0c;background-size:cover;background-position:center}
-  .project .bot{display:grid;grid-template-columns:1fr 1.05fr 1.15fr;gap:3cqw;margin-top:2.4cqh}
-  .scopelist{margin-top:1cqh;font-family:'Instrument Serif',serif;font-size:1.45cqw;line-height:1.5}
-  .build-row{display:flex;align-items:baseline;gap:1.6cqw;padding:1.5cqh 0;border-top:1px solid var(--line)}
-  .build-row .bv{font-family:'Instrument Serif',serif;font-style:italic;font-size:2.6cqw}
-  .build-row .bl{font-size:1cqw;color:var(--ink)}
-  .spec-row{display:flex;gap:1.2cqw;padding:1.2cqh 0;border-top:1px solid var(--line)}
-  .spec-row .sk{flex:0 0 26%;font-size:.76cqw;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
-  .spec-row .sv .v{font-size:1.05cqw;color:var(--ink)}.spec-row .sv .sub{font-family:'Instrument Serif',serif;font-style:italic;font-size:.95cqw;color:var(--dim);margin-top:.4cqh}
-  /* before/after */
-  .ba .T{font-size:6.2cqw}
-  .ba .head{display:flex;justify-content:space-between;align-items:flex-start;gap:4cqw;margin-top:1cqh}
-  .ba .head .note{flex:0 0 42%}
-  .lanes{display:grid;grid-template-columns:1fr 1fr;gap:4cqw;margin-top:3.5cqh}
-  .lane-head{display:flex;justify-content:space-between;font-size:.78cqw;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:1cqh}
-  .lane-head b{color:var(--ink);font-weight:600}
-  .lane{display:flex;align-items:center;gap:1.2cqw;padding:.85cqh 0;border-top:1px solid var(--line)}
-  .lane .ln{flex:0 0 2.6cqw;font-size:.8cqw;letter-spacing:.08em;color:var(--dim);text-transform:uppercase}
-  .lane .trk{flex:1;display:flex;gap:.4cqw;height:1.4cqw}
-  .seg{height:100%;border-radius:2px}.seg.g{background:rgba(21,20,15,.26)}.seg.k{background:var(--ink)}
-  .lane .tt{font-size:.8cqw;color:var(--dim2)}
-  .baimgs{display:grid;grid-template-columns:1fr 1fr;gap:4cqw;margin-top:auto}
-  .baimg{aspect-ratio:16/8;background:#0c0c0c;background-size:cover;background-position:center}
-  /* pipeline */
-  .pipeline .T{font-size:6.4cqw}.pipeline .body{max-width:58cqw;margin-top:1.4cqh}
-  .pipeline .lab{margin-bottom:.6cqh}
-  .tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:1.1cqw;margin-top:auto}
-  .tile{aspect-ratio:3/3.5;background:#0c0c0c;background-size:cover;background-position:center;position:relative;overflow:hidden}
-  .tile .cap{position:absolute;left:0;right:0;bottom:0;padding:.8cqh .7cqw;font-size:.66cqw;letter-spacing:.05em;text-transform:uppercase;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.78))}
-  .steps{display:flex;align-items:center;gap:1cqw;margin-top:2cqh;flex-wrap:wrap}
-  .step{display:flex;align-items:baseline;gap:.55cqw}
-  .step .sn{font-family:'Instrument Serif',serif;font-style:italic;font-size:1.3cqw;color:var(--dim)}
-  .step .st{font-size:.8cqw;letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}
-  .step-ar{color:var(--dim2)}
-  /* packages */
-  .packages .inr{flex-direction:row;gap:3.5cqw;align-items:stretch}
-  .pk-left{flex:0 0 33%;display:flex;flex-direction:column;justify-content:center}
-  .pk-left .T{font-size:9.6cqw}
-  .pk-left .body{margin-top:2.2cqh;font-family:'Instrument Serif',serif;font-style:italic;font-size:1.5cqw;color:var(--ink);max-width:26cqw}
-  .pk-right{flex:1;display:flex;flex-direction:column;justify-content:center;gap:1.6cqh}
-  .tier{background:var(--panel);padding:3cqh 2.6cqw;display:grid;grid-template-columns:13% 1fr auto;gap:2cqw;align-items:center}
-  .tier.rec{outline:1px solid var(--ink);outline-offset:-1px}
-  .tier .tag{font-size:.72cqw;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
-  .tier .tname{font-family:'Instrument Serif',serif;font-size:2.6cqw;line-height:1}
-  .tier .tdesc{font-size:1cqw;color:var(--ink);margin-top:1cqh}
-  .tier .tinc{font-size:.72cqw;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin-top:1cqh}
-  .tier .tright{text-align:right}
-  .tier .tfrom{font-size:.72cqw;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
-  .tier .tprice{font-family:'Instrument Serif',serif;font-style:italic;font-size:3.6cqw;line-height:1}
-  .tier .tfor{font-size:.72cqw;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-top:.6cqh}
-  /* crew */
-  .crew .T{font-size:6.6cqw}.crew .body{max-width:48cqw;margin-top:1.4cqh}
-  .people{display:grid;grid-template-columns:1fr 1fr;gap:0 4cqw;margin-top:auto}
-  .person{padding:2cqh 0;border-top:1px solid var(--line)}
-  .person .pr{font-size:.78cqw;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
-  .person .pn{font-family:'Instrument Serif',serif;font-size:2.4cqw;margin:.6cqh 0 .8cqh}
-  .person .pd{font-size:1cqw;color:var(--dim);line-height:1.5;max-width:34cqw}
-  /* contact */
-  .contact .T{font-size:13cqw}
-  .cgrid{display:grid;grid-template-columns:1fr 1fr;gap:3.4cqh 4cqw;margin-top:auto;max-width:60%}
-  .cb .cl{font-size:.78cqw;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:.8cqh}
-  .cb .cv{font-size:1.35cqw;color:var(--ink)}.cb .cs{font-size:.95cqw;color:var(--dim);margin-top:.4cqh}
-  @media (max-width:760px){
-    .stage{width:96vw;aspect-ratio:auto;min-height:88vh;container-type:inline-size}
-    .inr{position:static;padding:64px 22px;min-height:88vh}
-    .slide{padding:1.5vh 2vw}
-    .cover .T,.about .T,.divider .T,.ba .T,.pipeline .T,.pk-left .T,.crew .T,.contact .T{font-size:13vw}
-    .project .top,.packages .inr{flex-direction:column;gap:18px}
-    .project .bot,.lanes,.baimgs,.cgrid,.people,.tiles{grid-template-columns:1fr;gap:14px}
-    .cover .right,.cover .contact{position:static;margin-top:18px;width:auto}
-    .tier{grid-template-columns:1fr;gap:8px}.tier .tright{text-align:left}
-    .body,.note,.lab{font-size:initial}
+  @font-face {
+    font-family: 'Micross';
+    src: url('/assets/micross.ttf') format('truetype');
+    font-weight: 400; font-style: normal; font-display: swap;
   }
+  :root{
+    --bg:        #14120d;
+    --paper:     #1e1a13;
+    --ink:       #f0ece1;
+    --ink-dim:   #ada494;
+    --muted:     #756f62;
+    --line:      #34302a;
+    --accent:    #f0ece1;
+    --display:   "Instrument Serif", "Times New Roman", serif;
+    --sans:      "Geist", system-ui, sans-serif;
+    --mono:      "JetBrains Mono", ui-monospace, monospace;
+  }
+  html, body { margin:0; padding:0; background:var(--bg); color:var(--ink); font-family:var(--sans); overflow:hidden; height:100%; }
+  html.deck-protect, html.deck-protect body {
+    user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; touch-action:manipulation;
+    -webkit-text-size-adjust:100%; text-size-adjust:100%;
+  }
+  html.deck-protect img, html.deck-protect video { -webkit-user-drag:none; user-select:none; }
+  @media print { html.deck-protect body { display:none !important; } }
+  section.sound-artboard{
+    width:1920px; height:1080px; position:relative; overflow:hidden;
+    background:var(--bg); color:var(--ink); font-family:var(--sans);
+  }
+
+  /* coordinate-positioned children */
+  .abs{ position:absolute; box-sizing:border-box; }
+
+  /* shared type */
+  .lbl{
+    font-family:var(--mono); font-size:13px; letter-spacing:.2em;
+    text-transform:uppercase; color:var(--ink); font-weight:600;
+  }
+  .lbl.dim{ color:var(--muted); font-weight:500; }
+  .disp{ font-family:var(--display); font-weight:400; color:var(--ink); line-height:.9; letter-spacing:-.02em; }
+  .disp em{ font-style:italic; }
+  .ital{ font-family:var(--display); font-style:italic; color:var(--ink); line-height:1; }
+  .copy{ font-family:var(--sans); font-size:16px; line-height:1.55; color:var(--ink-dim); }
+  .copy em{ font-family:var(--display); font-style:italic; color:var(--ink); }
+  .rule{ background:var(--line); height:1px; }
+
+  /* corner meta — exact coords */
+  .m-tl{ left:64px; top:48px; }
+  .m-tr{ right:64px; top:48px; text-align:right; }
+  .m-bl{ left:64px; bottom:44px; }
+  .m-br{ right:64px; bottom:44px; text-align:right; }
+  .m-tl, .m-tr, .m-bl, .m-br{
+    position:absolute; font-family:var(--mono); font-size:13px;
+    letter-spacing:.2em; text-transform:uppercase; font-weight:600; color:var(--ink);
+  }
+  .m-tl .d, .m-tr .d, .m-bl .d, .m-br .d{ color:var(--muted); font-weight:500; }
+
+  /* image-slot defaults */
+  image-slot{ --is-bg: var(--bg); --is-border: var(--line); --is-text: var(--muted); --is-radius: 0; }
+  .photo image-slot{ width:100%; height:100%; }
+  /* video/photo placement boxes blend into the bg — thin outline only */
+  .photo{ outline:1px solid var(--line); outline-offset:0; }
+  .deck-hero-wrap{ overflow:hidden; display:flex; flex-direction:column; }
+  .deck-hero-inner{
+    position:relative; width:100%; height:100%; display:flex; flex-direction:column;
+    background:var(--bg);
+  }
+  .deck-hero-inner .featured-hero-video{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover; display:block; background:var(--bg); cursor:none;
+  }
+  .deck-hero-wrap{ filter:none; }
+  .deck-hero-volume-row{
+    display:flex; justify-content:center; align-items:center;
+    width:min(420px, 72%); pointer-events:none;
+    padding:10px 20px 4px;
+  }
+  .deck-hero-volume-slider{
+    -webkit-appearance:none; appearance:none;
+    width:100%; height:3px; margin:0; padding:0;
+    border-radius:2px; background:rgba(255,255,255,0.22); cursor:pointer;
+    pointer-events:auto;
+  }
+  .deck-hero-volume-slider::-webkit-slider-thumb{
+    -webkit-appearance:none; width:10px; height:10px; border-radius:50%;
+    background:#fff; box-shadow:0 0 1px rgba(0,0,0,0.18);
+  }
+  .deck-hero-volume-slider::-moz-range-thumb{
+    width:10px; height:10px; border:0; border-radius:50%;
+    background:#fff; box-shadow:0 0 1px rgba(0,0,0,0.18);
+  }
+  .deck-hero-player-ui{
+    position:absolute; inset:0; z-index:3;
+    display:flex; align-items:flex-end; justify-content:center;
+    pointer-events:none;
+    background:none !important; padding:0 14px 12px !important;
+  }
+  #pj-cursor{
+    position:fixed; pointer-events:none; z-index:300;
+    transform:translate(-50%, -50%);
+    opacity:0; transition:opacity .18s ease;
+    flex:none; width:0; height:0; overflow:visible;
+  }
+  #pj-cursor.visible{ opacity:1; }
+  #pj-cursor svg{ display:block; }
+  /* Neutralize shared Webflow player chrome if any class leaks in */
+  #fw-salomon-hero .hero_video-scrub,
+  #fw-salomon-hero .hero_video-controls_inner,
+  #fw-salomon-hero .hero_video-time,
+  #fw-salomon-hero .hero_video-toggle,
+  #fw-salomon-hero [hero_video-text],
+  #fw-lucid-hero .hero_video-scrub,
+  #fw-lucid-hero .hero_video-controls_inner,
+  #fw-lucid-hero .hero_video-time,
+  #fw-lucid-hero .hero_video-toggle,
+  #fw-lucid-hero [hero_video-text],
+  #fw-beats-hero .hero_video-scrub,
+  #fw-beats-hero .hero_video-controls_inner,
+  #fw-beats-hero .hero_video-time,
+  #fw-beats-hero .hero_video-toggle,
+  #fw-beats-hero [hero_video-text]{ display:none !important; }
+  .videoframe{ outline:1px dashed var(--line); }
+  .photo .cap{
+    position:absolute; top:-22px; left:0; white-space:nowrap;
+    font-family:var(--mono); font-size:11px; letter-spacing:.1em;
+    color:var(--muted); text-transform:uppercase;
+  }
+  .photo .cap b{ color:var(--ink); font-weight:600; margin-right:6px; }
+
+  /* ===== ABOUT caps list ===== */
+  .caps .it{ position:absolute; left:960px; width:838px; }
+  .caps .it .ix{ position:absolute; left:3px; top:6px; font-family:var(--mono); font-size:11px; letter-spacing:.14em; color:var(--muted); font-weight:500; }
+  .caps .it .nm{ margin-left:44px; font-family:var(--display); font-size:29px; line-height:1; color:var(--ink); letter-spacing:-.01em; }
+  .caps .it .nm em{ font-style:italic; }
+  .caps .it .dx{ margin-left:44px; margin-top:6px; font-size:13px; line-height:1.45; color:var(--ink-dim); }
+  .caps .ln{ position:absolute; left:960px; width:838px; height:1px; background:var(--line); }
+
+  /* ===== FEATURED (case) bottom band ===== */
+  .scopelist{ display:grid; grid-template-columns:1fr 1fr; gap:8px 24px; margin-top:16px; }
+  .scopelist .s{ display:flex; align-items:baseline; gap:10px; font-size:15px; color:var(--ink); }
+  .scopelist .s::before{ content:""; width:14px; height:1px; background:var(--ink); transform:translateY(-5px); flex:none; }
+  .donut{ width:118px; height:118px; border-radius:50%; position:relative; flex:none;
+    background: conic-gradient(var(--ink) 0 62%, var(--muted) 62% 84%, var(--line) 84% 100%); }
+  .donut::after{ content:""; position:absolute; inset:30px; border-radius:50%; background:var(--bg); }
+  .legend .l{ display:flex; align-items:baseline; gap:9px; font-size:13px; color:var(--ink); margin-bottom:9px; }
+  .legend .l .sw{ width:11px; height:11px; flex:none; transform:translateY(1px); }
+  .legend .l .pct{ font-family:var(--mono); font-weight:600; min-width:38px; }
+  .spec .r{ border-bottom:1px solid var(--line); padding:9px 0; }
+  .spec .r .top{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; }
+  .spec .r .k{ font-family:var(--mono); font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); font-weight:500; }
+  .spec .r .v{ font-size:14px; color:var(--ink); text-align:right; }
+  .spec .r .dd{ font-size:11px; color:var(--ink-dim); line-height:1.4; margin-top:4px; }
+
+  /* ===== before/after diptych (SD + Mix) ===== */
+  .frame{ position:absolute; width:840px; }
+  .slbl, .frame .slbl{ display:flex; justify-content:space-between; align-items:baseline;
+    font-family:var(--mono); font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink); }
+  .slbl b, .frame .slbl b{ font-weight:600; color:var(--accent); }
+  .frame.before .slbl b, section.ba .abs[style*="left:64px"] .slbl b{ color:var(--muted); }
+  .frame.after .slbl b{ color:var(--accent); }
+  .slbl .d, .frame .slbl .d{ color:var(--muted); font-weight:500; }
+  .tracks{ display:flex; flex-direction:column; gap:9px; margin-top:18px; }
+  .tracks .tk{ display:grid; grid-template-columns:58px 1fr 58px; gap:12px; align-items:center; }
+  .tracks .tk .nm{ font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-dim); font-weight:500; }
+  .tracks .tk .bar{ height:14px; position:relative; border-bottom:1px solid var(--line); }
+  .tracks .tk .bar .seg{ position:absolute; top:0; bottom:0; background:var(--ink); }
+  .frame.before .tracks .tk .bar .seg{ opacity:.2; } .frame.after .tracks .tk .bar .seg{ opacity:.85; }
+  .tracks .tk .tm{ font-family:var(--mono); font-size:11px; color:var(--muted); text-align:right; }
+  .wave{ height:150px; display:flex; align-items:center; gap:3px; margin-top:14px; }
+  .wave .b{ flex:1; background:var(--ink); min-width:2px; }
+  .frame.before .wave .b{ opacity:.25; } .frame.before .wave .b.q{ opacity:.08; }
+  .frame.after .wave .b{ opacity:.9; } .frame.after .wave .b.q{ opacity:.35; }
+  .readouts{ display:flex; gap:26px; align-items:baseline; margin-top:16px; }
+  .readouts .k{ font-family:var(--mono); font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); }
+  .readouts .v{ font-family:var(--display); font-style:italic; font-size:54px; line-height:.95; color:var(--ink); display:block; margin-top:4px; }
+  .readouts .v small{ font-family:var(--mono); font-size:12px; color:var(--muted); font-style:normal; margin-left:4px; letter-spacing:.12em; text-transform:uppercase; }
+  .frame.before .readouts .v{ color:var(--muted); }
+  .note{ font-size:13px; line-height:1.5; color:var(--ink-dim); margin-top:14px; }
+  /* video frame (SD + Mix before/after) */
+  .videoframe{ overflow:hidden; background:var(--paper); border:1px solid var(--line); }
+  .videoframe .vbadge{ position:absolute; left:14px; top:14px; z-index:2; font-family:var(--mono); font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink); background:rgba(243,240,230,.94); padding:5px 9px; font-weight:600; border:1px solid var(--ink); }
+  .videoframe .vcap{ position:absolute; left:0; right:0; bottom:0; z-index:2; padding:36px 18px 16px; font-size:13px; line-height:1.45; color:#fff; background:linear-gradient(to top, rgba(0,0,0,.80), rgba(0,0,0,0)); }
+  .videoframe .vcap b{ display:block; font-family:var(--mono); font-size:10px; letter-spacing:.16em; text-transform:uppercase; margin-bottom:6px; color:#fff; }
+  .videoframe{ position:relative; }
+  .videoframe video{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover; object-position:center center;
+    display:block; background:var(--bg);
+  }
+  .videoframe.deck-hero-wrap{
+    display:flex; flex-direction:column; overflow:hidden;
+  }
+  .videoframe.deck-hero-wrap .deck-hero-inner{
+    position:relative; width:100%; height:100%; flex:1; min-height:0;
+  }
+  .videoframe.deck-hero-wrap .featured-hero-video{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover; display:block; background:var(--bg); cursor:none;
+  }
+  /* mix B/A slide — match featured hero frames (thin outline, no paper box) */
+  #mx-before-hero,
+  #mx-after-hero{
+    background:transparent; border:none;
+  }
+
+  /* ===== pipeline footer row (foley/score) ===== */
+  .pipe{ position:absolute; left:64px; bottom:46px; display:flex; gap:26px; align-items:baseline; }
+  .pipe .step{ font-family:var(--mono); font-size:12px; letter-spacing:.16em; color:var(--ink-dim); text-transform:uppercase; font-weight:500; display:flex; gap:8px; align-items:baseline; }
+  .pipe .step b{ color:var(--ink); font-weight:700; }
+  .pipe .arrow{ color:var(--muted); }
+
+  /* ===== pricing tiers ===== */
+  .tier{ position:absolute; left:788px; right:64px; display:grid; grid-template-columns:150px 1fr 300px; gap:32px; align-items:baseline; padding:0; border-bottom:1px solid var(--line); }
+  .tier .ix{ font-family:var(--mono); font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); font-weight:500; }
+  .tier.feature .ix{ color:var(--ink); font-weight:700; }
+  .tier .nm{ font-family:var(--display); font-size:48px; line-height:.95; color:var(--ink); letter-spacing:-.015em; }
+  .tier .nm em{ font-style:italic; }
+  .tier .nm .desc{ display:block; font-family:var(--sans); font-style:normal; font-size:13px; line-height:1.5; color:var(--ink-dim); margin-top:10px; max-width:42ch; letter-spacing:0; }
+  .tier .nm .incl{ display:block; font-family:var(--mono); font-style:normal; font-size:10px; letter-spacing:.12em; color:var(--ink-dim); margin-top:12px; line-height:1.6; text-transform:uppercase; }
+  .tier .price{ text-align:right; }
+  .tier .price .from{ font-family:var(--mono); font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); display:block; }
+  .tier .price .num{ font-family:var(--display); font-style:italic; font-size:88px; line-height:.9; color:var(--ink); }
+  .tier .price .for{ font-family:var(--mono); font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); display:block; margin-top:6px; }
+
+  /* ===== crew ===== */
+  .crewgrp{ position:absolute; width:760px; }
+  .crewgrp .glabel{ display:flex; align-items:baseline; gap:12px; padding-bottom:12px; border-bottom:1px solid var(--line);
+    font-family:var(--mono); font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); font-weight:500; }
+  .crewgrp .glabel .ix{ font-family:var(--display); font-style:italic; font-size:28px; color:var(--ink); letter-spacing:-.01em; }
+  .crewgrp .glabel .t1{ color:var(--ink); font-weight:600; }
+  .crewgrp .row{ display:grid; grid-template-columns:1fr 1fr; gap:48px; padding-top:22px; }
+  .crewgrp .p .role{ font-family:var(--mono); font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); font-weight:500; }
+  .crewgrp .p .nm{ font-family:var(--display); font-style:italic; font-size:60px; line-height:.94; color:var(--ink); letter-spacing:-.015em; margin-top:8px; }
+  .crewgrp .p .bio{ font-size:13px; line-height:1.55; color:var(--ink-dim); margin-top:12px; max-width:34ch; }
+
+  /* ===== contact bottom band ===== */
+  .cblock{ position:absolute; }
+  .cblock .k{ font-family:var(--mono); font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); font-weight:500; }
+  .cblock .v{ font-family:var(--sans); font-size:21px; color:var(--ink); margin-top:8px; }
+  .cblock .v.em{ font-family:var(--display); font-style:italic; font-size:24px; }
+  .cblock .s{ font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); margin-top:6px; }
+
+
+  :root{ --dur:.88s; --ease:cubic-bezier(.76,0,.24,1); --deck-pad-x:64px; --deck-pad-y:56px; --pt:32px; --p:var(--deck-pad-x); }
+  #deck-viewport{ position:fixed; inset:0; z-index:1; background:var(--bg); }
+  #deck-stage{ position:absolute; inset:0; overflow:hidden; background:var(--bg); }
+  #deck{ position:absolute; inset:0; overflow:hidden; background:var(--bg); }
+  .slide{ position:absolute; inset:0; background:var(--bg); transform:translateY(100%); transition:transform var(--dur) var(--ease); will-change:transform; overflow:hidden; display:flex; align-items:center; justify-content:center; z-index:0; }
+  .slide.active{ transform:translateY(0); }
+  .slide-inner{ width:100%; height:100%; display:flex; align-items:center; justify-content:center; opacity:0; transform:translateY(8px); transition:opacity .7s cubic-bezier(.22,1,.36,1) .12s, transform .75s cubic-bezier(.22,1,.36,1) .12s; }
+  .slide.active .slide-inner{ opacity:1; transform:translateY(0); }
+  .artboard-scaler{ width:1920px; height:1080px; transform-origin:center center; flex-shrink:0; will-change:transform; }
+  #progress{ position:absolute; bottom:0; left:0; height:2px; background:rgba(240,236,225,.35); transition:width var(--dur) var(--ease); z-index:200; }
+  #nav-dots{ position:absolute; right:max(10px,1.1vw); top:50%; transform:translateY(-50%); display:flex; flex-direction:column; gap:7px; z-index:200; pointer-events:auto; }
+  .dot{ width:4px; height:4px; border-radius:50%; background:rgba(240,236,225,.2); cursor:pointer; transition:background .3s, transform .3s; }
+  .dot.active{ background:rgba(240,236,225,.75); transform:scale(1.6); }
+  #hint{ position:absolute; bottom:calc(var(--deck-pad-y) + 40px); left:50%; transform:translateX(-50%); font-size:10px; letter-spacing:.15em; color:rgba(240,236,225,.22); text-transform:uppercase; z-index:200; transition:opacity 1s; pointer-events:none; }
+  /* fixed slide index — artboard .m-tr coords, never moves with .slide translate */
+  #deck-slide-number{
+    position:absolute; z-index:210; pointer-events:none; text-align:right;
+    font-family:var(--mono); font-size:13px; letter-spacing:.2em; text-transform:uppercase;
+    font-weight:500; color:var(--muted); opacity:0; transition:opacity .15s ease;
+  }
+  #deck-slide-number.visible{ opacity:1; }
+  /* fixed slide label — artboard .m-tl coords, never moves with .slide translate */
+  #deck-slide-label{
+    position:absolute; z-index:210; pointer-events:none;
+    font-family:var(--mono); font-size:13px; letter-spacing:.2em; text-transform:uppercase;
+    font-weight:600; color:var(--ink); opacity:0; transition:opacity .15s ease;
+  }
+  #deck-slide-label.visible{ opacity:1; }
+  #deck-slide-label .d{ color:var(--muted); font-weight:500; }
+  .sound-artboard:not(.cover) .m-tr .d{ visibility:hidden; }
+  .sound-artboard:not(.cover) .m-tl{ visibility:hidden; }
+
+  /* featured slides 4/5 — consistent left-column title rhythm */
+  .fw-project-col .fw-proj-lbl{ font-size:11px; }
+  .fw-project-col .fw-brand{ font-size:32px; margin-top:8px; }
+  .fw-project-col .fw-title-slot{ margin-top:10px; min-height:128px; }
+  .fw-project-col .fw-title-single{ font-size:100px; line-height:1.0; white-space:nowrap; }
+  .fw-project-col .fw-title-stack{ font-size:72px; line-height:.88; }
+  .fw-project-col .fw-dir-lbl{ font-size:10px; margin-top:34px; }
+  .fw-project-col .fw-dir{ font-size:26px; margin-top:6px; }
+
+  @media (max-width:900px){ :root{ --deck-pad-x:24px; --deck-pad-y:24px; --pt:20px; } #nav-dots{ right:8px; gap:9px; } .dot{ width:6px; height:6px; } }
+
+  @media print, (prefers-reduced-motion: reduce){ *{ animation:none !important; } }
 </style>
 </head>
 <body>
-<div class="deck" id="deck"></div>
+<div id="deck-viewport">
+<div id="deck-stage">
+<div id="deck">
+
+  <!-- ============ 01 — COVER ============ -->
+  <div class="slide active"><div class="slide-inner"><div class="artboard-scaler"><section class="cover sound-artboard" data-screen-label="01 Cover">
+    <span class="m-tl"><b>XYZ</b> <span class="d">· Studios — Sound</span></span>
+    <span class="m-tr"><span class="d">Capabilities ·</span> 2026</span>
+
+    <div class="abs" style="left:64px; top:150px; width:1180px; text-align:center;">
+      <div class="disp" style="font-size:360px; line-height:.84; white-space:nowrap;"><em>Sound,</em><br/>practiced.</div>
+    </div>
+
+    <div class="abs" style="left:1285px; top:486px; width:551px; text-align:center;">
+      <div class="ital" style="font-size:36px; line-height:1.2; color:var(--ink-dim);">A practice built through close creative collaboration <span style="color:var(--ink);">from spotting to print master.</span></div>
+    </div>
+
+    <div class="abs lbl" style="left:64px; bottom:92px; font-size:12px;">↗ &nbsp;inquiries@xyzstudios.co</div>
+    <div class="abs lbl dim" style="right:64px; bottom:92px; font-size:12px;">xyzstudios.co/sound</div>
+
+    <span class="m-bl"></span>
+    <span class="m-br"></span>
+  </section></div></div></div>
+
+
+  <!-- ============ 02 — ABOUT ============ -->
+  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="about sound-artboard" data-screen-label="02 About" id="about-section">
+    <span class="m-tl"><b>XYZ</b> <span class="d">· About the practice</span></span>
+    <span class="m-tr"><span class="d">02 / 14</span></span>
+
+    <div class="abs" style="left:64px; top:224px; width:760px;">
+      <div class="disp" style="font-size:104px; line-height:1.0;">We build <em>worlds</em> you can <em>hear.</em> <span style="color:var(--muted);">Cohesive, cinematic, felt.</span></div>
+    </div>
+
+    <div class="abs lead-body" style="left:64px; top:706px; width:580px;">
+      <p class="copy" style="margin:0;">A sound practice built through close creative collaboration. Working with directors, agencies, and post teams to carry projects through final delivery — <em>staying closely involved through to the print master.</em></p>
+      <p class="copy" style="margin:14px 0 0;">Each project evolves differently. The approach is shaped to serve the work and its intended outcome — from a single sound design pass to the full audio post pipeline, with original score when called for.</p>
+    </div>
+
+    <div class="caps">
+      <div class="ln" style="top:125px;"></div>
+      <div class="it" style="top:150px;"><span class="ix">01</span><div class="nm"><em>Sound</em> Design</div><div class="dx">Worlds, textures, ambience and effects.</div></div>
+      <div class="ln" style="top:262px;"></div>
+      <div class="it" style="top:288px;"><span class="ix">02</span><div class="nm"><em>Original</em> Score</div><div class="dx">Themes, motifs, the emotional spine.</div></div>
+      <div class="ln" style="top:400px;"></div>
+      <div class="it" style="top:425px;"><span class="ix">03</span><div class="nm"><em>Mix</em> &amp; Master</div><div class="dx">Stereo and 5.1, broadcast-ready.</div></div>
+      <div class="ln" style="top:538px;"></div>
+      <div class="it" style="top:563px;"><span class="ix">04</span><div class="nm"><em>Foley</em></div><div class="dx">Performance-based, on a custom stage.</div></div>
+      <div class="ln" style="top:675px;"></div>
+      <div class="it" style="top:700px;"><span class="ix">05</span><div class="nm"><em>Dialogue</em> Edit</div><div class="dx">Cleanup, consistency, ADR.</div></div>
+      <div class="ln" style="top:813px;"></div>
+      <div class="it" style="top:838px;"><span class="ix">06</span><div class="nm"><em>Sonic</em> Branding</div><div class="dx">Audio identity that scales.</div></div>
+      <div class="ln" style="top:951px;"></div>
+    </div>
+
+    <span class="m-bl"></span>
+    <span class="m-br"></span>
+  </section></div></div></div>
+
+
+  <!-- ============ 03 — FEATURED WORK (divider) ============ -->
+  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="divider sound-artboard" data-screen-label="03 Featured Work">
+    <span class="m-tl"><b>XYZ</b> <span class="d">· Selected work</span></span>
+    <span class="m-tr"><span class="d">03 / 14</span></span>
+
+    <div class="abs" style="left:64px; bottom:80px; width:900px;">
+      <div class="disp" style="font-size:248px; line-height:.84;"><em>Featured</em><br/>Work</div>
+    </div>
+
+    <span class="m-bl"></span>
+    <span class="m-br"></span>
+  </section></div></div></div>
+
+
+  <!-- ============ 04 — FEATURED · 01 (Salomon) ============ -->
+  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="featured sound-artboard" data-screen-label="04 Featured · Salomon">
+    <span class="m-tl"><b>XYZ</b> <span class="d">· Selected work · 01</span></span>
+    <span class="m-tr"><span class="d">2026 · 04 / 14</span></span>
+
+    <!-- left: title + director -->
+    <div class="abs fw-project-col" style="left:64px; top:300px; width:560px;">
+      <div class="lbl dim fw-proj-lbl">Project</div>
+      <div class="ital fw-brand">Salomon</div>
+      <div class="fw-title-slot">
+        <div class="disp fw-title-single"><em>SS26</em> Trailer</div>
+      </div>
+      <div class="lbl dim fw-dir-lbl">Director</div>
+      <div class="ital fw-dir">Anthony Princeleslie</div>
+    </div>
+
+    <!-- top-right hero video (SS26 trailer) — Work page player UI -->
+    <div class="abs photo deck-hero-wrap" id="fw-salomon-hero" style="left:700px; top:124px; width:1140px; height:612px;">
+      <div class="deck-hero-inner">
+        <video class="featured-hero-video" id="fw-salomon-video" playsinline preload="metadata"
+          poster="https://cdn.prod.website-files.com/69174740184591f142f019c1/69c0b94d0ebe8f3b86741b7a_214a3ae2-01ca-4593-8949-98a7191f6548.mp4_snapshot_00.12.156.jpg"
+          src="https://r2.vidzflow.com/source/214a3ae2-01ca-4593-8949-98a7191f6548.mp4"></video>
+        <div class="deck-hero-player-ui" id="fw-salomon-player">
+          <div class="deck-hero-volume-row">
+            <input type="range" class="deck-hero-volume-slider" id="fw-salomon-volume" min="0" max="100" value="50" aria-label="Volume">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- full-width rule -->
+    <div class="abs rule" style="left:64px; right:64px; top:786px;"></div>
+
+    <!-- bottom band: 3 columns -->
+    <div class="abs" style="left:64px; top:806px; width:560px;">
+      <div class="lbl dim fw-scope-header" style="font-size:10px; padding-bottom:9px; border-bottom:1px solid var(--line);">Build · Scope</div>
+      <div class="scopelist">
+        <span class="s">Trail Pulse</span><span class="s">Alpine Texture</span><span class="s">Peak Hype</span>
+        <span class="s">Broadcast Mix</span><span class="s">Cutdown Ladder</span><span class="s">Sonic Lockup</span>
+      </div>
+    </div>
+    <div class="abs spec" style="left:685px; top:806px; width:500px;">
+      <div class="r"><div class="top"><span class="k">Deliverable</span><span class="v">90s Hero + :15s Cutdowns</span></div></div>
+      <div class="r"><div class="top"><span class="k">Ready for</span><span class="v">Cinema · Stream · Retail</span></div></div>
+      <div class="r" style="border-bottom:none;"><div class="top"><span class="k">Timeline</span><span class="v">6 days · rush lane</span></div></div>
+    </div>
+
+    <div class="abs" style="left:1266px; top:806px; width:570px;">
+      <div class="lbl dim fw-approach-header" style="font-size:10px; padding-bottom:9px; border-bottom:1px solid var(--line);">Approach</div>
+      <p class="copy" style="font-size:15px; line-height:1.55; margin:16px 0 0;">Vestibulum ante ipsum primis in faucibus — a forward-momentum sonic palette built around percussive trail hits and wide alpine beds, mixed for every cutdown variant.</p>
+    </div>
+
+    <span class="m-bl"></span>
+    <span class="m-br"></span>
+  </section></div></div></div>
+
+
+  <!-- ============ 05 — FEATURED · 02 (Lucid Motors) ============ -->
+  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="featured sound-artboard" data-screen-label="05 Featured · Lucid Motors">
+    <span class="m-tl"><b>XYZ</b> <span class="d">· Selected work · 02</span></span>
+    <span class="m-tr"><span class="d">2025 · 05 / 14</span></span>
+
+    <!-- left: title + director -->
+    <div class="abs fw-project-col" style="left:64px; top:300px; width:560px;">
+      <div class="lbl dim fw-proj-lbl">Project</div>
+      <div class="ital fw-brand">Lucid Motors</div>
+      <div class="fw-title-slot">
+        <div class="disp fw-title-stack"><em>Compromise</em><br/>Nothing</div>
+      </div>
+      <div class="lbl dim fw-dir-lbl">Director</div>
+      <div class="ital fw-dir">Lachlan McClellan</div>
+    </div>
+
+    <!-- top-right hero video (Lucid commercial) — Work page player UI -->
+    <div class="abs photo deck-hero-wrap" id="fw-lucid-hero" style="left:700px; top:124px; width:1140px; height:612px;">
+      <div class="deck-hero-inner">
+        <video class="featured-hero-video" id="fw-lucid-video" playsinline preload="metadata"
+          poster="https://cdn.prod.website-files.com/69174740184591f142f019c1/69c0bed5350817015931b808_6c66aad7-7df3-4809-a8d7-1f92a377fa5e.mp4_snapshot_00.15.452.jpg"
+          src="https://r2.vidzflow.com/source/6c66aad7-7df3-4809-a8d7-1f92a377fa5e.mp4"></video>
+        <div class="deck-hero-player-ui" id="fw-lucid-player">
+          <div class="deck-hero-volume-row">
+            <input type="range" class="deck-hero-volume-slider" id="fw-lucid-volume" min="0" max="100" value="50" aria-label="Volume">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- full-width rule -->
+    <div class="abs rule" style="left:64px; right:64px; top:786px;"></div>
+
+    <!-- bottom band: 3 columns -->
+    <div class="abs" style="left:64px; top:806px; width:560px;">
+      <div class="lbl dim fw-scope-header" style="font-size:10px; padding-bottom:9px; border-bottom:1px solid var(--line);">Build · Scope</div>
+      <div class="scopelist">
+        <span class="s">Engine Synth</span><span class="s">Cabin Detail</span><span class="s">Road Texture</span>
+        <span class="s">5.1 Print</span><span class="s">M&amp;E Stems</span><span class="s">Launch Suite</span>
+      </div>
+    </div>
+    <div class="abs spec" style="left:685px; top:806px; width:500px;">
+      <div class="r"><div class="top"><span class="k">Deliverable</span><span class="v">45s Launch Spot + :06s Bumpers</span></div></div>
+      <div class="r"><div class="top"><span class="k">Ready for</span><span class="v">Digital · OLA · Event Loop</span></div></div>
+      <div class="r" style="border-bottom:none;"><div class="top"><span class="k">Timeline</span><span class="v">11 days · phased review</span></div></div>
+    </div>
+
+    <div class="abs" style="left:1266px; top:806px; width:570px;">
+      <div class="lbl dim fw-approach-header" style="font-size:10px; padding-bottom:9px; border-bottom:1px solid var(--line);">Approach</div>
+      <p class="copy" style="font-size:15px; line-height:1.55; margin:16px 0 0;">Maecenas sed diam eget risus varius — electric-forward sound design with performance-matched cabin foley, tuned for premium playback on every launch surface.</p>
+    </div>
+
+    <span class="m-bl"></span>
+    <span class="m-br"></span>
+  </section></div></div></div>
+
+
+  <!-- ============ 06 — FEATURED · 03 (Beats · Open) ============ -->
+  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="featured sound-artboard" data-screen-label="06 Featured · Beats Open">
+    <span class="m-tl"><b>XYZ</b> <span class="d">· Selected work · 03</span></span>
+    <span class="m-tr"><span class="d">2025 · 06 / 14</span></span>
+
+    <!-- left: title + director -->
+    <div class="abs fw-project-col" style="left:64px; top:300px; width:560px;">
+      <div class="lbl dim fw-proj-lbl">Project</div>
+      <div class="ital fw-brand">Beats</div>
+      <div class="fw-title-slot">
+        <div class="disp fw-title-single"><em>Find your</em> Beat</div>
+      </div>
+      <div class="lbl dim fw-dir-lbl">Director</div>
+      <div class="ital fw-dir">Aidan Cullen</div>
+    </div>
+
+    <!-- top-right hero video (Beats Open) — Work page player UI -->
+    <div class="abs photo deck-hero-wrap" id="fw-beats-hero" style="left:700px; top:124px; width:1140px; height:612px;">
+      <div class="deck-hero-inner">
+        <video class="featured-hero-video" id="fw-beats-video" playsinline preload="metadata"
+          poster="https://cdn.prod.website-files.com/69174740184591f142f019c1/69c0c86dee76a67f51f3ccbb_17e77d71-3bca-4d42-8275-71deb05724d1.mp4_snapshot_00.11.787.jpg"
+          src="https://r2.vidzflow.com/source/17e77d71-3bca-4d42-8275-71deb05724d1.mp4"></video>
+        <div class="deck-hero-player-ui" id="fw-beats-player">
+          <div class="deck-hero-volume-row">
+            <input type="range" class="deck-hero-volume-slider" id="fw-beats-volume" min="0" max="100" value="50" aria-label="Volume">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- full-width rule -->
+    <div class="abs rule" style="left:64px; right:64px; top:786px;"></div>
+
+    <!-- bottom band: 3 columns -->
+    <div class="abs" style="left:64px; top:806px; width:560px;">
+      <div class="lbl dim fw-scope-header" style="font-size:10px; padding-bottom:9px; border-bottom:1px solid var(--line);">Build · Scope</div>
+      <div class="scopelist">
+        <span class="s">Headphone Detail</span><span class="s">Urban Texture</span><span class="s">Beat Pulse</span>
+        <span class="s">Stereo Print</span><span class="s">Social Cutdowns</span><span class="s">Launch Suite</span>
+      </div>
+    </div>
+    <div class="abs spec" style="left:685px; top:806px; width:500px;">
+      <div class="r"><div class="top"><span class="k">Deliverable</span><span class="v">60s Hero + :15s / :06s Cutdowns</span></div></div>
+      <div class="r"><div class="top"><span class="k">Ready for</span><span class="v">Digital · Retail · OOH</span></div></div>
+      <div class="r" style="border-bottom:none;"><div class="top"><span class="k">Timeline</span><span class="v">9 days · launch lane</span></div></div>
+    </div>
+
+    <div class="abs" style="left:1266px; top:806px; width:570px;">
+      <div class="lbl dim fw-approach-header" style="font-size:10px; padding-bottom:9px; border-bottom:1px solid var(--line);">Approach</div>
+      <p class="copy" style="font-size:15px; line-height:1.55; margin:16px 0 0;">Pellentesque habitant morbi tristique — bass-forward sound design with tight headphone foley and rhythm-matched urban beds, mixed for punch on every Beats playback surface.</p>
+    </div>
+
+    <span class="m-bl"></span>
+    <span class="m-br"></span>
+  </section></div></div></div>
+
+
+  <!-- ============ 08 — SOUND DESIGN before/after ============ -->
+  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="ba sound-artboard" data-screen-label="08 Sound Design B/A">
+    <span class="m-tl"><b>XYZ</b> <span class="d">· Capability · Sound Design</span></span>
+    <span class="m-tr"><span class="d">08 / 14</span></span>
+
+    <div class="abs" style="left:64px; top:122px;">
+      <div class="lbl" style="font-size:12px;">↗ Before → After</div>
+      <div class="disp" style="font-size:104px; line-height:.9; margin-top:14px; white-space:nowrap;">Sound <em>Design.</em></div>
+    </div>
+    <div class="abs ital" style="left:884px; top:150px; width:892px; font-size:24px; line-height:1.3; color:var(--ink-dim);">From picture-lock to a layered, decisive world. We build textures, ambience and effects to carry every cut, then thin everything that distracts.</div>
+
+    <!-- before column — meters -->
+    <div class="abs" style="left:64px; top:330px; width:880px;">
+      <div class="slbl"><b>↑ Before</b><span class="d">Production Audio · SD · v01</span></div>
+      <div class="tracks" style="margin-top:14px;">
+        <div class="tk"><span class="nm">DX</span><span class="bar"><span class="seg" style="left:4%;width:24%"></span><span class="seg" style="left:36%;width:18%"></span><span class="seg" style="left:62%;width:30%"></span></span><span class="tm">02:14</span></div>
+        <div class="tk"><span class="nm">SFX</span><span class="bar"><span class="seg" style="left:18%;width:8%"></span></span><span class="tm">—</span></div>
+        <div class="tk"><span class="nm">AMB</span><span class="bar"></span><span class="tm">—</span></div>
+        <div class="tk"><span class="nm">FOL</span><span class="bar"></span><span class="tm">—</span></div>
+        <div class="tk"><span class="nm">MX</span><span class="bar"></span><span class="tm">—</span></div>
+      </div>
+    </div>
+
+    <!-- after column — meters -->
+    <div class="abs" style="left:976px; top:330px; width:880px;">
+      <div class="slbl"><b>→ After</b><span class="d">Designed · SD · v07</span></div>
+      <div class="tracks" style="margin-top:14px;">
+        <div class="tk"><span class="nm">DX</span><span class="bar"><span class="seg" style="left:4%;width:24%"></span><span class="seg" style="left:36%;width:18%"></span><span class="seg" style="left:62%;width:30%"></span></span><span class="tm">02:14</span></div>
+        <div class="tk"><span class="nm">SFX</span><span class="bar"><span class="seg" style="left:6%;width:14%"></span><span class="seg" style="left:30%;width:8%"></span><span class="seg" style="left:48%;width:22%"></span><span class="seg" style="left:78%;width:14%"></span></span><span class="tm">02:14</span></div>
+        <div class="tk"><span class="nm">AMB</span><span class="bar"><span class="seg" style="left:0%;width:100%"></span></span><span class="tm">02:14</span></div>
+        <div class="tk"><span class="nm">FOL</span><span class="bar"><span class="seg" style="left:8%;width:18%"></span><span class="seg" style="left:42%;width:14%"></span><span class="seg" style="left:64%;width:22%"></span></span><span class="tm">02:14</span></div>
+        <div class="tk"><span class="nm">MX</span><span class="bar"><span class="seg" style="left:0%;width:100%"></span></span><span class="tm">02:14</span></div>
+      </div>
+    </div>
+
+    <!-- VIDEO frames -->
+    <div class="photo videoframe" style="position:absolute; left:64px; top:566px; width:880px; height:418px;">
+      <image-slot id="sd-before" placeholder="Before — scene clip / video"></image-slot>
+      <span class="vbadge">▶ Before · 02:14</span>
+      <div class="vcap"><b>↑ Before · Production Audio</b>Dialogue and a handful of camera-side effects. Flat — no ambience, no design pass.</div>
+    </div>
+    <div class="photo videoframe" style="position:absolute; left:976px; top:566px; width:880px; height:418px;">
+      <image-slot id="sd-after" placeholder="After — scene clip / video"></image-slot>
+      <span class="vbadge">▶ After · 02:14</span>
+      <div class="vcap"><b>→ After · Designed</b>Ambience bed under every scene, performance-matched foley and designed effects, mix bus printed.</div>
+    </div>
+
+    <span class="m-bl"></span>
+    <span class="m-br"></span>
+  </section></div></div></div>
+
+
+  <!-- ============ 09 — MIX before/after ============ -->
+  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="ba sound-artboard" data-screen-label="09 Mix B/A">
+    <span class="m-tl"><b>XYZ</b> <span class="d">· Capability · Mix &amp; Master</span></span>
+    <span class="m-tr"><span class="d">09 / 14</span></span>
+
+    <div class="abs" style="left:64px; top:122px;">
+      <div class="lbl" style="font-size:12px;">↗ Before → After</div>
+      <div class="disp" style="font-size:104px; line-height:.9; margin-top:14px; white-space:nowrap;">Mix &amp; <em>Master.</em></div>
+    </div>
+    <div class="abs ital" style="left:884px; top:150px; width:892px; font-size:24px; line-height:1.3; color:var(--ink-dim);">A rough cut of stems becomes a balanced, broadcast-ready master. Loudness inside spec, dialogue intelligible at every level, dynamics intact.</div>
+
+    <!-- before column — waveform -->
+    <div class="abs" style="left:64px; top:320px; width:880px;">
+      <div class="slbl"><b>↑ Non-mixed</b><span class="d">Pre-Mix · MX · v00</span></div>
+      <div class="wave" style="height:118px; margin-top:12px;">
+        <div class="b" style="height:60%"></div><div class="b q" style="height:14%"></div><div class="b" style="height:72%"></div><div class="b" style="height:90%"></div><div class="b q" style="height:8%"></div><div class="b" style="height:52%"></div><div class="b q" style="height:20%"></div><div class="b" style="height:84%"></div><div class="b" style="height:96%"></div><div class="b q" style="height:12%"></div><div class="b" style="height:46%"></div><div class="b" style="height:78%"></div><div class="b" style="height:94%"></div><div class="b q" style="height:10%"></div><div class="b" style="height:62%"></div><div class="b" style="height:88%"></div><div class="b q" style="height:6%"></div><div class="b" style="height:70%"></div><div class="b" style="height:54%"></div><div class="b q" style="height:18%"></div><div class="b" style="height:82%"></div><div class="b" style="height:36%"></div>
+      </div>
+    </div>
+
+    <!-- after column — waveform -->
+    <div class="abs" style="left:976px; top:320px; width:880px;">
+      <div class="slbl"><b>→ Timerland</b><span class="d">Final Mix · MX · v05</span></div>
+      <div class="wave" style="height:118px; margin-top:12px;">
+        <div class="b" style="height:62%"></div><div class="b q" style="height:54%"></div><div class="b" style="height:70%"></div><div class="b" style="height:76%"></div><div class="b q" style="height:48%"></div><div class="b" style="height:66%"></div><div class="b q" style="height:52%"></div><div class="b" style="height:72%"></div><div class="b" style="height:78%"></div><div class="b q" style="height:50%"></div><div class="b" style="height:64%"></div><div class="b" style="height:74%"></div><div class="b" style="height:80%"></div><div class="b q" style="height:46%"></div><div class="b" style="height:68%"></div><div class="b" style="height:76%"></div><div class="b q" style="height:42%"></div><div class="b" style="height:70%"></div><div class="b" style="height:66%"></div><div class="b q" style="height:54%"></div><div class="b" style="height:72%"></div><div class="b" style="height:60%"></div>
+      </div>
+    </div>
+
+    <!-- VIDEO frames -->
+    <div class="photo deck-hero-wrap" id="mx-before-hero" style="position:absolute; left:64px; top:566px; width:880px; height:418px;">
+      <div class="deck-hero-inner">
+        <video class="featured-hero-video" id="mx-before-video" playsinline muted loop preload="metadata"
+          src="https://r2.vidzflow.com/source/2c0ce742-618b-42c2-aa9a-fd7795bd429c.mp4"></video>
+        <div class="deck-hero-player-ui" id="mx-before-player">
+          <div class="deck-hero-volume-row">
+            <input type="range" class="deck-hero-volume-slider" id="mx-before-volume" min="0" max="100" value="50" aria-label="Volume">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="photo deck-hero-wrap" id="mx-after-hero" style="position:absolute; left:976px; top:566px; width:880px; height:418px;">
+      <div class="deck-hero-inner">
+        <video class="featured-hero-video" id="mx-after-video" playsinline muted loop preload="metadata"
+          src="https://r2.vidzflow.com/source/123bbb0c-4196-4103-a680-527652853702.mp4"></video>
+        <div class="deck-hero-player-ui" id="mx-after-player">
+          <div class="deck-hero-volume-row">
+            <input type="range" class="deck-hero-volume-slider" id="mx-after-volume" min="0" max="100" value="50" aria-label="Volume">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <span class="m-bl"></span>
+    <span class="m-br"></span>
+  </section></div></div></div>
+
+
+  <!-- ============ 11 — FOLEY ============ -->
+  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="show foley sound-artboard" data-screen-label="11 Foley">
+    <span class="m-tl"><b>XYZ</b> <span class="d">· Capability · Foley</span></span>
+    <span class="m-tr"><span class="d">11 / 15</span></span>
+
+    <div class="abs" style="left:64px; top:130px; width:611px;">
+      <div class="lbl dim" style="font-size:12px;">Performance-based foley</div>
+      <div class="disp" style="font-size:168px; line-height:.9; margin-top:18px;"><em>Foley,</em><br/>Performed.</div>
+      <div class="copy" style="margin-top:26px; max-width:36ch;">Footsteps, cloth, props and body interactions, recorded to picture on a <em>custom foley stage.</em> Performance matched to weight, rhythm and intent — every move on screen earns its sound.</div>
+    </div>
+
+    <div class="photo" style="position:absolute; left:1405px; top:132px; width:378px; height:499px;">
+      <image-slot id="foley-1" placeholder="Stage A — wide"></image-slot>
+    </div>
+    <div class="photo" style="position:absolute; left:909px; top:237px; width:290px; height:361px;">
+      <image-slot id="foley-2" placeholder="Surface pit"></image-slot>
+    </div>
+    <div class="photo" style="position:absolute; left:540px; top:620px; width:306px; height:220px;">
+      <image-slot id="foley-3" placeholder="Cloth"></image-slot>
+    </div>
+    <div class="photo" style="position:absolute; left:152px; top:692px; width:220px; height:225px;">
+      <image-slot id="foley-4" placeholder="Props"></image-slot>
+    </div>
+    <div class="photo" style="position:absolute; left:1037px; top:688px; width:471px; height:259px;">
+      <image-slot id="foley-5" placeholder="Footwear"></image-slot>
+    </div>
+
+    <div class="pipe">
+      <span class="step"><b>01</b> Spotting</span><span class="arrow">→</span>
+      <span class="step"><b>02</b> Surface &amp; Prop Build</span><span class="arrow">→</span>
+      <span class="step"><b>03</b> Capture</span><span class="arrow">→</span>
+      <span class="step"><b>04</b> Editorial</span><span class="arrow">→</span>
+      <span class="step"><b>05</b> Delivery (FOL)</span>
+    </div>
+
+    <span class="m-bl"></span>
+    <span class="m-br"></span>
+  </section></div></div></div>
+
+
+  <!-- ============ 12 — SCORE ============ -->
+  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="show compose sound-artboard" data-screen-label="12 Compose">
+    <span class="m-tl"><b>XYZ</b> <span class="d">· Capability · Original Score</span></span>
+    <span class="m-tr"><span class="d">12 / 15</span></span>
+
+    <div class="abs" style="left:64px; top:130px; width:611px;">
+      <div class="lbl dim" style="font-size:12px;">Original score · composition</div>
+      <div class="disp" style="font-size:168px; line-height:.9; margin-top:18px;"><em>Score,</em><br/>Written.</div>
+      <div class="copy" style="margin-top:26px; max-width:36ch;">Music written to picture — themes, motifs and the <em>emotional spine.</em> Composed in-house with a small ensemble of session players, built bespoke around the world the film lives in.</div>
+    </div>
+
+    <div class="photo" style="position:absolute; left:1405px; top:132px; width:378px; height:499px;">
+      <image-slot id="comp-1" placeholder="Strings"></image-slot>
+    </div>
+    <div class="photo" style="position:absolute; left:909px; top:237px; width:290px; height:361px;">
+      <image-slot id="comp-2" placeholder="Score sketch"></image-slot>
+    </div>
+    <div class="photo" style="position:absolute; left:540px; top:620px; width:306px; height:220px;">
+      <image-slot id="comp-3" placeholder="Piano"></image-slot>
+    </div>
+    <div class="photo" style="position:absolute; left:1037px; top:688px; width:471px; height:259px;">
+      <image-slot id="comp-4" placeholder="Console"></image-slot>
+    </div>
+
+    <div class="pipe">
+      <span class="step"><b>01</b> Spotting &amp; Direction</span><span class="arrow">→</span>
+      <span class="step"><b>02</b> Themes &amp; Sketches</span><span class="arrow">→</span>
+      <span class="step"><b>03</b> Arrangement</span><span class="arrow">→</span>
+      <span class="step"><b>04</b> Tracking</span><span class="arrow">→</span>
+      <span class="step"><b>05</b> Mix &amp; Delivery</span>
+    </div>
+
+    <span class="m-bl"></span>
+    <span class="m-br"></span>
+  </section></div></div></div>
+
+
+  <!-- ============ 13 — PRICING ============ -->
+  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="pricing sound-artboard" data-screen-label="13 Pricing">
+    <span class="m-tl"><b>XYZ</b> <span class="d">· Packages</span></span>
+    <span class="m-tr"><span class="d">13 / 15</span></span>
+
+    <div class="abs" style="left:64px; top:130px; width:680px;">
+      <div class="lbl" style="font-size:12px; margin-bottom:18px;">Three points of entry</div>
+      <div class="disp" style="font-size:168px; line-height:.9;">Packages,<br/><em>simply.</em></div>
+      <div class="ital" style="font-size:22px; line-height:1.3; color:var(--ink-dim); margin-top:28px; margin-left:160px; max-width:30ch;">Pick the one that matches the work — <span style="font-family:var(--sans); font-style:normal; font-weight:500; color:var(--ink);">every package can be tailored</span>, and pieces can be bought á la carte. All prices are starting points.</div>
+    </div>
+
+    <div class="abs rule" style="left:788px; right:64px; top:130px;"></div>
+    <div class="tier" style="top:160px;">
+      <span class="ix">01 · Lean</span>
+      <div class="nm"><em>Design</em> Pass<span class="desc">A single, focused sound design pass on a finished cut.</span><span class="incl">Spotting + Design · Stereo print · 2 revision rounds</span></div>
+      <div class="price"><span class="from">From</span><span class="num">$3.5k</span><span class="for">Shorts · 30–90s</span></div>
+    </div>
+    <div class="tier feature" style="top:440px;">
+      <span class="ix">02 · Recommended</span>
+      <div class="nm"><em>Full</em> Post<span class="desc">End-to-end audio post — design, foley, dialogue and mix.</span><span class="incl">Design + Foley · Dialogue · Stereo + 5.1 · M&amp;E + Stems · 4 rev rounds</span></div>
+      <div class="price"><span class="from">From</span><span class="num">$12k</span><span class="for">Brand films · Commercials</span></div>
+    </div>
+    <div class="tier" style="top:720px; border-bottom:none;">
+      <span class="ix">03 · Complete</span>
+      <div class="nm"><em>Score</em> &amp; Post<span class="desc">Original score and the full post pipeline, built together.</span><span class="incl">Original composition · Live tracking · Everything in Full Post</span></div>
+      <div class="price"><span class="from">From</span><span class="num">$24k</span><span class="for">Features · Long-form</span></div>
+    </div>
+
+    <span class="m-bl"></span>
+    <span class="m-br"></span>
+  </section></div></div></div>
+
+
+  <!-- ============ 14 — CREW ============ -->
+  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="crew sound-artboard" data-screen-label="14 Crew">
+    <span class="m-tl"><b>XYZ</b> <span class="d">· Crew</span></span>
+    <span class="m-tr"><span class="d">14 / 15</span></span>
+
+    <div class="abs" style="left:64px; top:130px; width:611px;">
+      <div class="lbl dim" style="font-size:12px;">The team</div>
+      <div class="disp" style="font-size:200px; line-height:.9; margin-top:18px;">The <em>crew.</em></div>
+      <div class="copy" style="margin-top:24px; max-width:34ch;">One producer fronts the project. Specialists move through the work in sequence — <em>the same hands, every time.</em></div>
+    </div>
+
+    <div class="crewgrp" style="left:768px; top:188px;">
+      <div class="glabel"><span class="ix">A</span> <span class="t1">Team 1</span> · Design · Mix · Foley</div>
+      <div class="row">
+        <div class="p">
+          <div class="role">01 / Sound Designer</div>
+          <div class="nm">Ken Palsm</div>
+          <div class="bio">Owns the sonic world of every project — spots picture, designs to it, hands off a clean session.</div>
+        </div>
+        <div class="p">
+          <div class="role">02 / Mix Engineer</div>
+          <div class="nm">William</div>
+          <div class="bio">Delivers final mix in 5.1 and stereo. Stems, M&amp;E and masters to spec — broadcast-ready every time.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="crewgrp" style="left:1170px; top:560px; width:690px;">
+      <div class="glabel"><span class="ix">B</span> <span class="t1">Team 2</span> · Composition · Arrangement</div>
+      <div class="row">
+        <div class="p">
+          <div class="role">03 / Composer</div>
+          <div class="nm">Ady</div>
+          <div class="bio">Writes and produces score to picture — themes, motifs and the emotional spine.</div>
+        </div>
+        <div class="p">
+          <div class="role">04 / Composer</div>
+          <div class="nm">Yanker</div>
+          <div class="bio">Arrangement, voicing and tracking — works alongside Ady through the score build.</div>
+        </div>
+      </div>
+    </div>
+
+    <span class="m-bl"></span>
+    <span class="m-br"></span>
+  </section></div></div></div>
+
+
+  <!-- ============ 15 — CONTACT ============ -->
+  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="contact sound-artboard" data-screen-label="15 Contact">
+    <span class="m-tl"><b>XYZ</b> <span class="d">· Contact</span></span>
+    <span class="m-tr"><span class="d">15 / 15</span></span>
+
+    <div class="abs" style="left:64px; top:120px; width:1180px;">
+      <div class="disp" style="font-size:320px; line-height:.84; white-space:nowrap;"><em>Let's</em><br/>make sound.</div>
+    </div>
+
+    <div class="abs rule" style="left:64px; right:64px; top:753px;"></div>
+
+    <div class="cblock" style="left:64px; top:792px; width:560px;">
+      <div class="k">Email</div>
+      <div class="v">inquiries@xyzstudios.co</div>
+      <div class="s">For new project enquiries</div>
+      <div class="k" style="margin-top:24px;">Website</div>
+      <div class="v">xyzstudios.co</div>
+      <div class="s">/sound</div>
+    </div>
+
+    <div class="cblock" style="left:691px; top:792px; width:540px;">
+      <div class="k">Co-Founder · Post Producer</div>
+      <div class="v em">Samry Yussuf</div>
+      <div class="s">samry@xyzstudios.co</div>
+      <div class="k" style="margin-top:24px;">Co-Founder · Post Producer</div>
+      <div class="v em">Dris Yousif</div>
+      <div class="s">dris@xyzstudios.co</div>
+    </div>
+
+    <div class="cblock" style="left:1296px; top:792px; width:540px;">
+      <div class="k">Instagram</div>
+      <div class="v">@xyzstudios.sound</div>
+      <div class="k" style="margin-top:24px;">LinkedIn</div>
+      <div class="v">XYZ Studios — Sound</div>
+    </div>
+
+    <span class="m-bl"></span>
+    <span class="m-br"></span>
+  </section></div></div></div>
+
+</div>
+<div id="deck-slide-number" aria-hidden="true"></div>
+<div id="deck-slide-label" aria-hidden="true"></div>
+<div id="nav-dots"></div>
+<div id="progress"></div>
+<div id="hint">scroll or use arrow keys</div>
+</div>
+</div>
+
+<div id="pj-cursor" aria-hidden="true">
+  <svg id="pj-cursor-svg" width="18" height="18" viewBox="0 0 24 24" fill="white">
+    <path id="pj-cursor-path" d="M8 5v14l11-7z"/>
+  </svg>
+</div>
+
+
+<script src="/capabilities/sound/scripts/image-slot.js"></script>
+<script src="/capabilities/sound/scripts/deck-hero-player.js"></script>
 <script>
-var D = {"studio": "XYZ", "year": "2026", "slides": [{"type": "cover", "tl": "XYZ \u00b7 Studios \u2014 Sound", "tr": "Capabilities \u00b7 2026", "foot": "Cover \u00b7 01 of 13", "pg": "01", "title": [{"t": "Sound,", "i": true}, {"t": "practiced.", "i": false}], "note": "A practice built through close creative collaboration from spotting to print master.", "noteSub": "Capabilities Deck \u00b7 2026", "contact": "XYZ Studios \u2014 Sound", "contactSub": "sound@xyzstudios.co \u00b7 xyzstudios.co/sound"}, {"type": "about", "tl": "XYZ \u00b7 About the Practice", "tr": "02 / 13", "foot": "About \u00b7 02 of 13", "pg": "02", "title": [{"t": "We build worlds", "i": false}, {"t": "you can hear.", "i": true}], "lead": "Cohesive, cinematic, felt.", "body": "A sound practice built through close creative collaboration. Working directly with directors and editors, staying closely involved through to the print master. Each project evolves differently \u2014 the approach is shaped to serve the work.", "caps": [["01", "Sound Design"], ["02", "Foley"], ["03", "Dialogue & Editorial"], ["04", "Mix & Master"], ["05", "Original Score"]]}, {"type": "divider", "tl": "XYZ \u00b7 Featured Work", "tr": "03 / 13", "foot": "Featured \u00b7 03 of 13", "pg": "03", "kick": "Featured Work", "title": [{"t": "Selected", "i": false}, {"t": "projects.", "i": true}]}, {"type": "project", "tl": "XYZ \u00b7 Featured Work", "tr": "Brand \u00b7 Commercial", "trYear": "2026", "foot": "Project \u00b7 Salomon SS26", "pg": "03", "label": "Project", "client": [{"t": "Louis Vitton", "i": false}], "name": [{"t": "SS26 Trailer", "i": true}], "disc": "Sound Design \u00b7 Foley \u00b7 Mix", "img": "media/image-4-1.jpg", "scope": ["Sonic Branding", "Hype Audio", "Sound Design", "Mix", "Stems Prep", "Multi-Asset"], "director": "Anthony Princeleslie", "build": [["62%", "Sound Design"], ["22%", "Foley & Editorial"], ["16%", "Composition"]], "specs": [["Format", "Commercial | 60s", "WEB / BROADCAST"], ["Stems", "5 (DX / FX / BG / FOL / MX)", "Organized delivery for mix flexibility and platform adaptation"], ["Masters", "5.1 \u00b7 Stereo \u00b7 Web \u00b7 Broadcast", "Broadcast-ready masters optimized for digital and commercial delivery"], ["Turnaround", "2 weeks", "Flexible timelines based on scope and production needs"]]}, {"type": "beforeafter", "tl": "XYZ \u00b7 Capability \u00b7 Sound Design", "tr": "07 / 13", "foot": "Sound Design \u00b7 Before / After", "pg": "07", "title": [{"t": "Sound", "i": false}, {"t": "Design.", "i": true}], "note": "From picture-lock to a layered, decisive world. We build textures, ambience and effects to carry every cut, then thin everything that distracts.", "before": {"label": "Production Audio \u00b7 SD \u00b7 V01", "rows": [["DX", 1, "02:14"], ["SFX", 0, "\u2014"], ["AMB", 0, "\u2014"], ["FOL", 0, "\u2014"], ["MX", 0, "\u2014"]]}, "after": {"label": "Designed \u00b7 SD \u00b7 V07", "rows": [["DX", 1, "02:14"], ["SFX", 1, "02:14"], ["AMB", 1, "02:14"], ["FOL", 1, "02:14"], ["MX", 1, "02:14"]]}, "imgBefore": "media/image-9-1.jpg", "imgAfter": "media/image-9-2.jpg"}, {"type": "beforeafter", "tl": "XYZ \u00b7 Capability \u00b7 Mix & Master", "tr": "08 / 13", "foot": "Mix & Master \u00b7 Before / After", "pg": "08", "title": [{"t": "Mix &", "i": false}, {"t": "Master.", "i": true}], "note": "A rough cut of stems becomes a balanced, broadcast-ready master. Loudness inside spec, dialogue intelligible at every level, dynamics intact.", "before": {"label": "Pre-Mix \u00b7 MX \u00b7 V00", "rows": [["L", 0, ""], ["R", 0, ""], ["C", 0, ""], ["LFE", 0, ""], ["BUS", 0, ""]]}, "after": {"label": "Final Mix \u00b7 MX \u00b7 V05", "rows": [["L", 1, ""], ["R", 1, ""], ["C", 1, ""], ["LFE", 1, ""], ["BUS", 1, ""]]}, "imgBefore": "media/image-10-1.jpg", "imgAfter": "media/image-10-2.jpg"}, {"type": "pipeline", "tl": "XYZ \u00b7 Capability \u00b7 Foley", "tr": "09 / 13", "foot": "Foley \u00b7 Pipeline", "pg": "09", "kick": "Performance-Based Foley", "title": [{"t": "Foley,", "i": false}, {"t": "Performed.", "i": true}], "body": "Footsteps, cloth, props and body interactions, recorded to picture on a custom foley stage. Performance matched to weight, rhythm and intent \u2014 every move on screen earns its sound.", "tiles": [["media/image-11-1.jpg", "(301) Stage A \u00b7 Wide"], ["media/image-11-2.jpg", "(312) Surface \u00b7 Gravel Pit"], ["media/image-11-3.jpg", "(327) Cloth \u00b7 Linen + Denim"], ["media/image-11-4.jpg", "(338) Props Bench"], ["media/image-11-5.jpg", "(344) Boots"]], "steps": ["Spotting", "Surface & Prop Build", "Capture", "Editorial", "Delivery (FOL)"]}, {"type": "pipeline", "tl": "XYZ \u00b7 Capability \u00b7 Original Score", "tr": "10 / 13", "foot": "Score \u00b7 Pipeline", "pg": "10", "kick": "Original Score \u00b7 Composition", "title": [{"t": "Score,", "i": false}, {"t": "Written.", "i": true}], "body": "Music written to picture \u2014 themes, motifs and the emotional spine. Composed in-house with a small ensemble of session players, built bespoke around the world the film lives in.", "tiles": [["media/image-12-1.jpg", "(402) Live Room \u00b7 Strings"], ["media/image-12-2.jpg", "(415) Score \u00b7 Pencil Sketch"], ["media/image-12-3.jpg", "(424) Piano \u00b7 1962 Steinway"], ["media/image-12-4.jpg", "(431) Console \u00b7 Session Day"], ["media/image-12-5.jpg", "(440) Mix \u00b7 Stems"]], "steps": ["Spotting & Direction", "Themes & Sketches", "Arrangement", "Tracking", "Mix & Delivery"]}, {"type": "packages", "tl": "XYZ \u00b7 Packages", "tr": "11 / 13", "foot": "Pricing \u00b7 Starting Points", "pg": "11", "kick": "Three Points of Entry", "title": [{"t": "Packages,", "i": false}, {"t": "simply.", "i": true}], "body": "Pick the one that matches the work \u2014 every package can be tailored, and pieces can be bought \u00e1 la carte. All prices are starting points.", "tiers": [{"tag": "01 \u00b7 Lean", "name": [{"t": "Design", "i": true}, {"t": " Pass", "i": false}], "desc": "A single, focused sound design pass on a finished cut.", "inc": "Spotting + Design \u00b7 Stereo Print \u00b7 2 Revision Rounds", "price": "$3.5k", "for": "Shorts \u00b7 30\u201390s", "rec": false}, {"tag": "02 \u00b7 Recommended", "name": [{"t": "Full", "i": true}, {"t": " Post", "i": false}], "desc": "End-to-end audio post \u2014 design, foley, dialogue and mix.", "inc": "Design + Foley \u00b7 Dialogue \u00b7 Stereo + 5.1 \u00b7 M&E + Stems \u00b7 4 Rev Rounds", "price": "$12k", "for": "Brand Films \u00b7 Commercials", "rec": true}, {"tag": "03 \u00b7 Complete", "name": [{"t": "Score", "i": false}, {"t": " & Post", "i": false}], "desc": "Original score and the full post pipeline, built together.", "inc": "Original Composition \u00b7 Live Tracking \u00b7 Everything in Full Post", "price": "$24k", "for": "Features \u00b7 Long-form", "rec": false}]}, {"type": "crew", "tl": "XYZ \u00b7 Crew", "tr": "12 / 13", "foot": "Crew \u00b7 Sound + Score", "pg": "12", "kick": "The Team", "title": [{"t": "The", "i": false}, {"t": "crew.", "i": true}], "body": "One producer fronts the project. Specialists move through the work in sequence \u2014 the same hands, every time.", "people": [["01 / Sound Designer", "Ken Palsm", "Owns the sonic world of every project \u2014 spots picture, designs to it, hands off a clean session."], ["02 / Mix Engineer", "William", "Delivers final mix in 5.1 and stereo. Stems, M&E and masters to spec \u2014 broadcast-ready every time."], ["03 / Composer", "Ady", "Writes and produces score to picture \u2014 themes, motifs and the emotional spine."], ["04 / Composer", "Yanker", "Arrangement, voicing and tracking \u2014 works alongside Ady through the score build."]]}, {"type": "contact", "tl": "XYZ \u00b7 Contact", "tr": "13 / 13", "foot": "Thank You", "pg": "13", "title": [{"t": "Let's", "i": false}, {"t": "make sound.", "i": true}], "email": "inquiries@xyzstudios.co", "site": "xyzstudios.co/sound", "founders": [["Co-Founder \u00b7 Post Producer", "Samry Yussuf", "samry@xyzstudios.co"], ["Co-Founder \u00b7 Post Producer", "Dris Yousif", "dris@xyzstudios.co"]], "social": ["Instagram", "LinkedIn"]}]};
-function e(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function T(parts,cls){return '<div class="T '+(cls||'')+'">'+parts.map(function(p,i){return '<span class="'+(p.i?'it':'')+'">'+e(p.t)+'</span>'+(i<parts.length-1?'<br>':'');}).join('')+'</div>';}
-function Tinline(parts){return parts.map(function(p){return '<span class="'+(p.i?'it':'')+'">'+e(p.t)+'</span>';}).join('');}
-function bg(src){return src?(" style=\"background-image:url('"+e(src)+"')\""):"";}
-function corners(s){return '<div class="c c-tl">'+e(s.tl).replace(/^([^·]+)·/,'<b>$1</b>·')+'</div>'
-  +'<div class="c c-tr">'+e(s.tr)+(s.trYear?'<span style="margin-left:30px">'+e(s.trYear)+'</span>':'')+'</div>'
-  +'<div class="c c-pg">'+e(s.pg)+'</div><div class="c-br">'+e(s.foot)+'</div>';}
-function segs(on,kind){ if(!on) return ''; var w=[18,12,22,9,16,11,20]; var h=''; for(var i=0;i<w.length;i++){ if(kind==='before'&&i>3) break; h+='<span class="seg '+(kind==='before'?'g':'k')+'" style="flex:0 0 '+w[i]+'%"></span>'; } return h; }
-var R={
- cover:function(s){return '<div class="fill"></div>'+T(s.title)
-   +'<div class="right"><div class="note">'+e(s.note)+'</div><div class="sub">'+e(s.noteSub)+'</div></div>'
-   +'<div class="contact"><div class="a">↗ '+e(s.contact)+'</div><div class="b">'+e(s.contactSub)+'</div></div><div class="fill"></div>';},
- about:function(s){var caps=s.caps.map(function(c){return '<div class="ci"><div class="cn">'+e(c[0])+'</div><div class="ct">'+e(c[1])+'</div></div>';}).join('');
-   return '<div style="margin-top:8vh">'+T(s.title)+'<div class="lead">'+e(s.lead)+'</div><div class="body">'+e(s.body)+'</div></div><div class="fill"></div><div class="caplist">'+caps+'</div>';},
- divider:function(s){return '<div class="kick labk">'+e(s.kick)+'</div>'+T(s.title);},
- project:function(s){
-   var scope=s.scope.map(function(x){return e(x);}).join('<br>');
-   var build=s.build.map(function(b){return '<div class="build-row"><span class="bv">'+e(b[0])+'</span><span class="bl">'+e(b[1])+'</span></div>';}).join('');
-   var specs=s.specs.map(function(sp){return '<div class="spec-row"><span class="sk">'+e(sp[0])+'</span><span class="sv"><div class="v">'+e(sp[1])+'</div><div class="sub">'+e(sp[2])+'</div></span></div>';}).join('');
-   return '<div class="top"><div class="pleft"><div class="lab">'+e(s.label)+'</div><div class="pname1">'+Tinline(s.client)+'</div><div class="pname2">'+Tinline(s.name)+'</div><div class="lab" style="margin-top:14px">'+e(s.disc)+'</div></div><div class="pimg"'+bg(s.img)+'></div></div>'
-    +'<div class="fill"></div><div class="hr"></div>'
-    +'<div class="bot"><div><div class="lab">Scope</div><div class="scopelist">'+scope+'</div><div class="lab" style="margin-top:18px">Director</div><div style="margin-top:6px;font-size:13px">'+e(s.director)+'</div></div>'
-    +'<div><div class="lab">Build</div>'+build+'</div><div>'+specs+'</div></div>';},
- beforeafter:function(s){
-   function lanes(side,kind){var rows=side.rows.map(function(r){return '<div class="lane"><span class="ln">'+e(r[0])+'</span><span class="trk">'+segs(r[1],kind)+'</span><span class="tt">'+e(r[2])+'</span></div>';}).join('');
-     return '<div><div class="lane-head"><b>'+(kind==='before'?'↑ Before':'→ After')+'</b><span>'+e(side.label)+'</span></div>'+rows+'</div>';}
-   return '<div class="labk" style="margin-top:5vh">↗ Before → After</div><div class="head" style="margin-top:14px">'+T(s.title)+'<div class="note">'+e(s.note)+'</div></div>'
-     +'<div class="lanes">'+lanes(s.before,'before')+lanes(s.after,'after')+'</div>'
-     +'<div class="baimgs"><div class="baimg"'+bg(s.imgBefore)+'></div><div class="baimg"'+bg(s.imgAfter)+'></div></div>';},
- pipeline:function(s){
-   var tiles=s.tiles.map(function(t){return '<div class="tile"'+bg(t[0])+'><span class="cap">'+e(t[1])+'</span></div>';}).join('');
-   var steps=s.steps.map(function(st,i){return '<span class="step"><span class="sn">0'+(i+1)+'</span><span class="st">'+e(st)+'</span></span>'+(i<s.steps.length-1?'<span class="step-ar">→</span>':'');}).join('');
-   return '<div style="margin-top:6vh"><div class="lab">'+e(s.kick)+'</div>'+T(s.title)+'<div class="body">'+e(s.body)+'</div></div><div class="fill"></div><div class="tiles">'+tiles+'</div><div class="steps">'+steps+'</div>';},
- packages:function(s){
-   var tiers=s.tiers.map(function(t){return '<div class="tier'+(t.rec?' rec':'')+'"><div class="tag">'+e(t.tag)+'</div><div><div class="tname">'+Tinline(t.name)+'</div><div class="tdesc">'+e(t.desc)+'</div><div class="tinc">'+e(t.inc)+'</div></div><div class="tright"><div class="tfrom">From</div><div class="tprice">'+e(t.price)+'</div><div class="tfor">'+e(t.for)+'</div></div></div>';}).join('');
-   return '<div class="pk-left"><div class="labk">'+e(s.kick)+'</div>'+T(s.title)+'<div class="body">'+e(s.body)+'</div></div><div class="pk-right">'+tiers+'</div>';},
- crew:function(s){var ppl=s.people.map(function(p){return '<div class="person"><div class="pr">'+e(p[0])+'</div><div class="pn">'+e(p[1])+'</div><div class="pd">'+e(p[2])+'</div></div>';}).join('');
-   return '<div style="margin-top:7vh"><div class="labk">'+e(s.kick)+'</div>'+T(s.title)+'<div class="body">'+e(s.body)+'</div></div><div class="fill"></div><div class="people">'+ppl+'</div>';},
- contact:function(s){var f=s.founders.map(function(x){return '<div class="cb"><div class="cl">'+e(x[0])+'</div><div class="cv">'+e(x[1])+'</div><div class="cs">'+e(x[2])+'</div></div>';}).join('');
-   return '<div style="margin-top:8vh">'+T(s.title)+'</div><div class="fill"></div><div class="cgrid"><div class="cb"><div class="cl">Email</div><div class="cv">'+e(s.email)+'</div><div class="cs">For new project enquiries</div></div><div class="cb"><div class="cl">Website</div><div class="cv">'+e(s.site)+'</div><div class="cs">'+e(s.social.join(' · '))+'</div></div>'+f+'</div>';}
-};
-function render(D){var h='';D.slides.forEach(function(s,i){h+='<section class="slide '+s.type+'" data-i="'+i+'"><div class="stage">'+corners(s)+'<div class="inr">'+R[s.type](s)+'</div></div></section>';});
-  document.getElementById('deck').innerHTML=h;}
-fetch('/api/site-order',{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){var d=(j&&j.order&&j.order.soundDeck&&j.order.soundDeck.slides)?j.order.soundDeck:D;render(d);}).catch(function(){render(D);});
+(function () {
+  function block(e) { e.preventDefault(); }
+  document.addEventListener('contextmenu', block, true);
+  document.addEventListener('selectstart', block, true);
+  document.addEventListener('dragstart', function (e) {
+    if (e.target && e.target.closest && e.target.closest('img, video')) block(e);
+  }, true);
+  document.addEventListener('copy', block, true);
+  document.addEventListener('cut', block, true);
+  document.addEventListener('keydown', function (e) {
+    if (!e.ctrlKey && !e.metaKey) return;
+    var k = e.key.toLowerCase();
+    if (k === 's' || k === 'p' || k === 'u') block(e);
+  }, true);
+  window.addEventListener('beforeprint', block);
+})();
+
+const slides  = document.querySelectorAll('.slide');
+const total   = slides.length;
+let current   = 0;
+let animating = false;
+
+const dotsWrap = document.getElementById('nav-dots');
+slides.forEach((_, i) => {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 0 ? ' active' : '');
+  d.addEventListener('click', () => goTo(i));
+  dotsWrap.appendChild(d);
+});
+
+const dots    = document.querySelectorAll('.dot');
+const prog    = document.getElementById('progress');
+const hint    = document.getElementById('hint');
+const slideNumberEl = document.getElementById('deck-slide-number');
+const slideLabelEl = document.getElementById('deck-slide-label');
+let hintShown = false;
+
+const pad2 = (n) => String(n).padStart(2, '0');
+
+function slideDurationMs() {
+  const raw = getComputedStyle(document.documentElement).getPropertyValue('--dur').trim();
+  if (!raw) return 880;
+  if (raw.endsWith('ms')) return parseFloat(raw) || 880;
+  return (parseFloat(raw) || 0.88) * 1000;
+}
+
+slides.forEach(function (slide) {
+  const section = slide.querySelector('.sound-artboard');
+  const mtr = section && section.querySelector('.m-tr .d');
+  if (!section || !mtr || section.classList.contains('cover')) return;
+  const yearMatch = (mtr.textContent || '').match(/^(\d{4})\s*·\s*/);
+  if (yearMatch) section.dataset.slideYear = yearMatch[1];
+});
+
+function slideNumberText(section, index) {
+  const totalStr = pad2(total);
+  const num = pad2(index + 1);
+  const year = section && section.dataset.slideYear;
+  return year ? (year + ' · ' + num + ' / ' + totalStr) : (num + ' / ' + totalStr);
+}
+
+function syncArtboardNumbers() {
+  slides.forEach(function (slide, i) {
+    const section = slide.querySelector('.sound-artboard');
+    const mtr = section && section.querySelector('.m-tr .d');
+    if (!section || !mtr || section.classList.contains('cover')) return;
+    mtr.textContent = slideNumberText(section, i);
+  });
+  syncFixedSlideNumber();
+  syncFixedSlideLabel();
+}
+
+function syncFixedSlideNumber(index) {
+  if (!slideNumberEl) return;
+  const idx = index !== undefined ? index : current;
+  const slide = slides[idx];
+  const section = slide && slide.querySelector('.sound-artboard');
+  if (!section || section.classList.contains('cover')) {
+    slideNumberEl.textContent = '';
+    slideNumberEl.classList.remove('visible');
+    return;
+  }
+  slideNumberEl.textContent = slideNumberText(section, idx);
+  slideNumberEl.classList.add('visible');
+}
+
+function coverSlideLabelEl() {
+  const section = slides[0] && slides[0].querySelector('.sound-artboard.cover');
+  return section && section.querySelector('.m-tl');
+}
+
+function setCoverLabelSuppressed(suppress) {
+  const mtl = coverSlideLabelEl();
+  if (mtl) mtl.style.visibility = suppress ? 'hidden' : '';
+}
+
+function syncFixedSlideLabel(index) {
+  if (!slideLabelEl) return;
+  const idx = index !== undefined ? index : current;
+  const slide = slides[idx];
+  const section = slide && slide.querySelector('.sound-artboard');
+  const mtl = section && section.querySelector('.m-tl');
+  if (!section || section.classList.contains('cover') || !mtl) {
+    slideLabelEl.innerHTML = '';
+    slideLabelEl.classList.remove('visible');
+    return;
+  }
+  slideLabelEl.innerHTML = mtl.innerHTML;
+  slideLabelEl.classList.add('visible');
+}
+
+function positionSlideNumber() {
+  if (!slideNumberEl) return;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const s = Math.min(vw / 1920, vh / 1080);
+  slideNumberEl.style.right = ((vw - 1920 * s) / 2 + 64 * s) + 'px';
+  slideNumberEl.style.top = ((vh - 1080 * s) / 2 + 48 * s) + 'px';
+  slideNumberEl.style.fontSize = (13 * s) + 'px';
+}
+
+function positionSlideLabel() {
+  if (!slideLabelEl) return;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const s = Math.min(vw / 1920, vh / 1080);
+  slideLabelEl.style.left = ((vw - 1920 * s) / 2 + 64 * s) + 'px';
+  slideLabelEl.style.top = ((vh - 1080 * s) / 2 + 48 * s) + 'px';
+  slideLabelEl.style.fontSize = (13 * s) + 'px';
+}
+
+function scaleArtboards() {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const s = Math.min(vw / 1920, vh / 1080);
+  document.querySelectorAll('.artboard-scaler').forEach(function (el) {
+    el.style.transform = 'scale(' + s + ')';
+  });
+  positionSlideNumber();
+  positionSlideLabel();
+}
+
+function updateUI() {
+  dots.forEach((d, i) => d.classList.toggle('active', i === current));
+  syncArtboardNumbers();
+  prog.style.width = ((current + 1) / total * 100) + '%';
+  scaleArtboards();
+}
+
+const deckHeroPlayers = [
+  window.initDeckHeroPlayer({
+    videoId: 'fw-salomon-video',
+    playerId: 'fw-salomon-player',
+    volumeId: 'fw-salomon-volume',
+    cursorId: 'pj-cursor',
+    cursorPathId: 'pj-cursor-path'
+  }),
+  window.initDeckHeroPlayer({
+    videoId: 'fw-lucid-video',
+    playerId: 'fw-lucid-player',
+    volumeId: 'fw-lucid-volume',
+    cursorId: 'pj-cursor',
+    cursorPathId: 'pj-cursor-path'
+  }),
+  window.initDeckHeroPlayer({
+    videoId: 'fw-beats-video',
+    playerId: 'fw-beats-player',
+    volumeId: 'fw-beats-volume',
+    cursorId: 'pj-cursor',
+    cursorPathId: 'pj-cursor-path'
+  }),
+  window.initDeckHeroPlayer({
+    videoId: 'mx-before-video',
+    playerId: 'mx-before-player',
+    volumeId: 'mx-before-volume',
+    cursorId: 'pj-cursor',
+    cursorPathId: 'pj-cursor-path'
+  }),
+  window.initDeckHeroPlayer({
+    videoId: 'mx-after-video',
+    playerId: 'mx-after-player',
+    volumeId: 'mx-after-volume',
+    cursorId: 'pj-cursor',
+    cursorPathId: 'pj-cursor-path',
+    startOffset: 1,
+    endOffset: 32
+  })
+].filter(Boolean);
+
+function slideDeckPlayers(slide) {
+  if (!slide) return [];
+  var out = [];
+  for (var i = 0; i < deckHeroPlayers.length; i++) {
+    var player = deckHeroPlayers[i];
+    if (!player) continue;
+    var vid = player.getVideo();
+    if (vid && slide.contains(vid)) out.push(player);
+  }
+  return out;
+}
+
+function pauseHeroVideo(slide) {
+  slideDeckPlayers(slide).forEach(function (player) {
+    player.pauseForDeck();
+  });
+}
+
+function goTo(idx) {
+  if (animating || idx === current || idx < 0 || idx >= total) return;
+  animating = true;
+  if (!hintShown) { hint.style.opacity = '0'; hintShown = true; }
+
+  const fromIdx = current;
+  const from = slides[fromIdx];
+  const to   = slides[idx];
+  const dir  = idx > fromIdx ? 1 : -1;
+  const durMs = slideDurationMs();
+
+  pauseHeroVideo(from);
+  const fromSection = from && from.querySelector('.sound-artboard');
+  if (fromSection && fromSection.classList.contains('cover')) setCoverLabelSuppressed(true);
+  syncFixedSlideNumber(idx);
+  syncFixedSlideLabel(idx);
+
+  to.style.zIndex = '2';
+  from.style.zIndex = '1';
+
+  to.style.transition = 'none';
+  to.style.transform  = dir > 0 ? 'translateY(100%)' : 'translateY(-100%)';
+  to.classList.add('active');
+
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    to.style.transition   = '';
+    from.style.transition = '';
+    to.style.transform    = 'translateY(0%)';
+    from.style.transform  = dir > 0 ? 'translateY(-100%)' : 'translateY(100%)';
+
+    setTimeout(() => {
+      from.classList.remove('active');
+      from.style.transform = '';
+      from.style.transition = '';
+      from.style.zIndex = '';
+      to.style.zIndex = '';
+      current = idx;
+      animating = false;
+      if (current === 0) setCoverLabelSuppressed(false);
+      updateUI();
+    }, durMs);
+  }));
+}
+
+const next = () => goTo(current + 1);
+const prev = () => goTo(current - 1);
+
+document.addEventListener('wheel', e => {
+  if (e.ctrlKey) { e.preventDefault(); return; }
+}, { passive: false });
+document.addEventListener('gesturestart', e => e.preventDefault(), { passive: false });
+document.addEventListener('gesturechange', e => e.preventDefault(), { passive: false });
+document.addEventListener('gestureend', e => e.preventDefault(), { passive: false });
+
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && ['+', '-', '=', '0'].includes(e.key)) { e.preventDefault(); return; }
+  if (['ArrowDown', 'ArrowRight', 'Space', ' '].includes(e.key)) { e.preventDefault(); next(); }
+  if (['ArrowUp', 'ArrowLeft'].includes(e.key)) { e.preventDefault(); prev(); }
+});
+
+let wt;
+document.addEventListener('wheel', e => {
+  if (e.ctrlKey) return;
+  clearTimeout(wt);
+  wt = setTimeout(() => { e.deltaY > 0 ? next() : prev(); }, 40);
+}, { passive: true });
+
+let ty = 0;
+document.addEventListener('touchstart', e => { ty = e.touches[0].clientY; }, { passive: true });
+document.addEventListener('touchend', e => {
+  const d = ty - e.changedTouches[0].clientY;
+  if (Math.abs(d) > 48) d > 0 ? next() : prev();
+}, { passive: true });
+
+updateUI();
+window.addEventListener('resize', scaleArtboards);
+setTimeout(scaleArtboards, 0);
+setTimeout(() => { hint.style.opacity = '0'; }, 4000);
 </script>
+
 </body>
 </html>

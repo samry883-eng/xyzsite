@@ -318,6 +318,9 @@ function getStaticFilePath(urlPath) {
     filePath = path.join(__dirname, 'Capabilities', 'vfx', 'index.html');
   } else if (p === '/capabilities/sound' || p === '/capabilities/sound/') {
     filePath = path.join(__dirname, 'Capabilities', 'sound', 'index.html');
+  } else if (/^\/capabilities\/sound\/scripts\//i.test(p)) {
+    const sub = p.replace(/^\/capabilities\/sound\/scripts\//i, '');
+    filePath = path.join(__dirname, 'Capabilities', 'sound', 'scripts', sub);
   } else if (p === '/capabilities/login' || p === '/capabilities/login/' || p === '/capabilities/login.html') {
     filePath = path.join(__dirname, 'Capabilities', 'login.html');
   } else if (p === '/capabilities/admin' || p === '/capabilities/admin/' || p === '/capabilities/admin.html') {
