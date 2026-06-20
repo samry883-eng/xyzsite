@@ -310,18 +310,15 @@
     .wu-filter-drop.is-closing .wu-filter-group-label { opacity: 0; transform: translateY(-10px); }
 
     .wu-filter-links {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 11px 30px;
-    }
-    .wu-filter-links--services .wu-filter-link {
-      flex: 0 0 calc((100% - 60px) / 3);
-      max-width: calc((100% - 60px) / 3);
+      align-items: start;
     }
 
     .wu-filter-link {
-      display: inline-flex;
-      align-items: center;
+      display: flex;
+      align-items: flex-start;
       gap: 12px;
       min-width: 0;
       background: none;
@@ -475,7 +472,7 @@
       .wu-toolbar { padding: 28px 20px 16px; }
       .wu-main { padding-left: 20px; padding-right: 20px; }
       .wu-filter-body { grid-template-columns: 1fr; gap: 36px; }
-      .wu-filter-links--services .wu-filter-link { flex: 0 0 100%; max-width: 100%; }
+      .wu-filter-links { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
       .wu-filter-inner { padding-left: 20px; padding-right: 20px; }
     }
   </style>
