@@ -143,6 +143,7 @@
       position: relative;
       z-index: 46;
       border-bottom: 1px solid var(--line);
+      background: var(--bg);
     }
 
     .wu-toolbar {
@@ -175,14 +176,9 @@
     .wu-toolbar__modes button.is-active { color: var(--fg); }
     .wu-toolbar__modes button:hover { color: var(--fg); }
     .wu-toolbar__sep { color: var(--muted); opacity: 0.4; }
-    .wu-filter-btn { display: inline-flex; align-items: baseline; gap: 7px; }
-    .wu-filter-btn.is-open { color: var(--fg) !important; }
-    .wu-filter-badge {
-      font-size: clamp(9px, 0.85vw, 10px);
-      letter-spacing: 0.08em;
-      color: var(--muted);
-    }
-    .wu-filter-badge.has-active { color: var(--accent); }
+    .wu-filter-btn { display: inline-flex; align-items: baseline; }
+    .wu-filter-btn.is-open,
+    .wu-filter-btn.is-active { color: var(--fg); }
 
     /* ── FILTER PANEL (reference curtain + scrim) ── */
     .wu-scrim {
@@ -208,6 +204,7 @@
       overflow: hidden;
       pointer-events: none;
       visibility: hidden;
+      margin-top: -1px;
     }
     .wu-filter-drop.is-open {
       pointer-events: auto;
@@ -221,21 +218,33 @@
       transition: clip-path 0.62s cubic-bezier(0.4, 0, 0.1, 1);
     }
     .wu-filter-curtain--white {
+      z-index: 1;
       background: #f4f3ee;
-      transition-delay: 0.5s;
+      box-shadow: inset 0 1px 0 var(--line);
     }
     .wu-filter-curtain--black {
+      z-index: 2;
       background: var(--bg);
       box-shadow: 0 36px 70px -10px rgba(0, 0, 0, 0.7);
-      transition-delay: 0.3s;
     }
     .wu-filter-drop.is-open.is-reveal .wu-filter-curtain--white { clip-path: inset(0); transition-delay: 0s; }
     .wu-filter-drop.is-open.is-reveal .wu-filter-curtain--black { clip-path: inset(0); transition-delay: 0.16s; }
-    .wu-filter-drop.is-closing .wu-filter-curtain--white { clip-path: inset(0 0 100% 0); transition-delay: 0.5s; }
-    .wu-filter-drop.is-closing .wu-filter-curtain--black { clip-path: inset(0 0 100% 0); transition-delay: 0.3s; }
+    .wu-filter-drop.is-closing .wu-filter-curtain--black,
+    .wu-filter-drop.is-open.is-reveal.is-closing .wu-filter-curtain--black {
+      clip-path: inset(0 0 100% 0);
+      transition: clip-path 0.62s cubic-bezier(0.4, 0, 0.1, 1);
+      transition-delay: var(--filter-close-black-delay, 0.4s);
+    }
+    .wu-filter-drop.is-closing .wu-filter-curtain--white,
+    .wu-filter-drop.is-open.is-reveal.is-closing .wu-filter-curtain--white {
+      clip-path: inset(0 0 100% 0);
+      transition: none;
+      transition-delay: 0s;
+    }
 
     .wu-filter-inner {
       position: relative;
+      z-index: 3;
       padding: 26px var(--page-pad-x) 40px;
     }
 
@@ -255,18 +264,6 @@
       align-items: center;
       gap: 22px;
     }
-    .wu-filter-clear {
-      background: none;
-      border: none;
-      color: var(--muted);
-      font-family: var(--site-font);
-      font-size: clamp(9px, 0.85vw, 10px);
-      letter-spacing: 0.13em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: color 0.2s;
-    }
-    .wu-filter-clear:hover { color: var(--fg); }
     .wu-filter-close {
       background: none;
       border: none;
@@ -335,16 +332,6 @@
       transition: opacity 0.2s;
     }
     .wu-filter-link.is-active .wu-filter-marker { opacity: 1; }
-
-    /* ── TOP FADE — content cut off under fixed header ── */
-    .work-fade-top {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: calc(var(--top-stack-h) + 48px);
-      background: linear-gradient(to bottom, #000 0%, #000 72%, rgba(0, 0, 0, 0.88) 88%, transparent 100%);
-      pointer-events: none;
-      z-index: 1000;
-    }
 
     /* ── MAIN GRID ── */
     .wu-main {
@@ -440,34 +427,6 @@
       text-align: left;
     }
 
-    .wu-empty {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 120px 0;
-      gap: 18px;
-    }
-    .wu-empty__title {
-      font-family: var(--site-font);
-      font-size: clamp(20px, 3vw, 30px);
-      letter-spacing: var(--tls);
-    }
-    .wu-empty__btn {
-      background: none;
-      border: 1px solid var(--line);
-      color: var(--muted);
-      font-family: var(--site-font);
-      font-size: clamp(9px, 0.85vw, 11px);
-      letter-spacing: 0.13em;
-      text-transform: uppercase;
-      padding: 11px 20px;
-      border-radius: 999px;
-      cursor: pointer;
-      transition: border-color 0.25s, color 0.25s;
-    }
-    .wu-empty__btn:hover { border-color: var(--fg); color: var(--fg); }
-
     #page-out { overflow: visible; }
     #page-out-logo {
       position: absolute;
@@ -496,7 +455,6 @@
 </head>
 <body>
   <div id="page-out" style="position:fixed;inset:0;z-index:9999;background:#fff;pointer-events:none;transform:translateY(0);"><img id="page-out-logo" src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt=""></div>
-  <div class="work-fade-top"></div>
   <div class="wu-scrim" id="filter-scrim" aria-hidden="true"></div>
 
   <div class="wu-top" id="wu-top">
@@ -519,9 +477,7 @@
           <span class="wu-toolbar__sep">/</span>
           <button type="button" id="mode-everything" data-mode="everything">Everything</button>
           <span class="wu-toolbar__sep">/</span>
-          <button type="button" id="mode-filter" class="wu-filter-btn">
-            Filter<span class="wu-filter-badge" id="filter-badge"></span>
-          </button>
+          <button type="button" id="mode-filter" class="wu-filter-btn">Filter</button>
         </div>
       </div>
 
@@ -531,7 +487,6 @@
         <div class="wu-filter-inner">
           <div class="wu-filter-head">
             <div class="wu-filter-head-actions">
-              <button type="button" class="wu-filter-clear" id="filter-clear" hidden>Clear</button>
               <button type="button" class="wu-filter-close" id="filter-close" aria-label="Close filter">×</button>
             </div>
           </div>
@@ -543,10 +498,6 @@
 
   <main class="wu-main" id="wu-main">
     <div class="wu-grid" id="grid"></div>
-    <div class="wu-empty" id="empty" hidden>
-      <div class="wu-empty__title">No work matches</div>
-      <button type="button" class="wu-empty__btn" id="empty-clear">Clear filters</button>
-    </div>
   </main>
 
 <script src="/work/assets/xyz-quick-slide.js"></script>
@@ -725,17 +676,16 @@
   const state = { mode: 'selected', filters: { services: [], type: [] }, filterOpen: false };
   let closeTimer = null;
   let scrimTimer = null;
-  const FILTER_PANEL_CLOSE_MS = 1180;
-  const FILTER_SCRIM_OUT_MS = 1180;
+  const FILTER_CURTAIN_MS = 620;
+  const FILTER_CLOSE_BLACK_DELAY_MS = 400;
+  const FILTER_SCRIM_OUT_MS = FILTER_CLOSE_BLACK_DELAY_MS + FILTER_CURTAIN_MS + 120;
+  const FILTER_PANEL_CLOSE_MS = FILTER_SCRIM_OUT_MS;
 
   const gridEl = document.getElementById('grid');
-  const emptyEl = document.getElementById('empty');
   const mainEl = document.getElementById('wu-main');
   const filterDrop = document.getElementById('filter-drop');
   const filterScrim = document.getElementById('filter-scrim');
   const filterOptions = document.getElementById('filter-options');
-  const filterBadge = document.getElementById('filter-badge');
-  const filterClearBtn = document.getElementById('filter-clear');
   const filterBtn = document.getElementById('mode-filter');
   const pageOut = document.getElementById('page-out');
 
@@ -755,11 +705,27 @@
     return list.filter(matchesFilters);
   }
 
+  function collapseFilterPanelInstant() {
+    clearTimeout(closeTimer);
+    clearTimeout(scrimTimer);
+    state.filterOpen = false;
+    filterDrop.classList.remove('is-open', 'is-closing', 'is-reveal');
+    filterDrop.setAttribute('aria-hidden', 'true');
+    filterScrim.classList.remove('is-visible');
+    filterScrim.setAttribute('aria-hidden', 'true');
+    mainEl.classList.remove('is-dimmed');
+    filterBtn.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+
   function setMode(mode) {
+    if (state.filterOpen) collapseFilterPanelInstant();
     state.mode = mode;
+    state.filters = { services: [], type: [] };
     document.querySelectorAll('[data-mode]').forEach(function (btn) {
       btn.classList.toggle('is-active', btn.dataset.mode === mode);
     });
+    updateFilterUI();
     renderGrid();
     if (mode !== 'selected') window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -772,12 +738,20 @@
       state.filters[key] = [name];
       state.mode = 'everything';
       document.querySelectorAll('[data-mode]').forEach(function (btn) {
-        btn.classList.toggle('is-active', btn.dataset.mode === 'everything');
+        btn.classList.toggle('is-active', false);
       });
     }
     updateFilterUI();
+
+    if (state.filterOpen) {
+      renderGrid();
+      if (!already) window.scrollTo({ top: 0, behavior: 'smooth' });
+      requestAnimationFrame(function () { closeFilterPanel(); });
+      return;
+    }
+
     renderGrid();
-    closeFilterPanel();
+    if (!already) window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function closeFilterPanel() {
@@ -797,6 +771,7 @@
       filterScrim.classList.remove('is-visible');
       filterScrim.setAttribute('aria-hidden', 'true');
       mainEl.classList.remove('is-dimmed');
+      updateFilterUI();
     }, FILTER_SCRIM_OUT_MS);
   }
 
@@ -825,12 +800,6 @@
     });
   }
 
-  function clearFilters() {
-    state.filters = { services: [], type: [] };
-    updateFilterUI();
-    renderGrid();
-  }
-
   function applyFilterStagger(revealing) {
     var idx = 0;
     var total = FILTER_GROUPS.reduce(function (a, g) { return a + g.options.length; }, 0);
@@ -856,10 +825,13 @@
   }
 
   function updateFilterUI() {
-    const count = activeFilterCount();
-    filterBadge.textContent = count ? '(' + count + ')' : '';
-    filterBadge.classList.toggle('has-active', count > 0);
-    filterClearBtn.hidden = count === 0;
+    const filtering = activeFilterCount() > 0;
+    filterBtn.classList.toggle('is-active', filtering && !state.filterOpen);
+    if (filtering) {
+      document.querySelectorAll('[data-mode]').forEach(function (btn) {
+        btn.classList.toggle('is-active', false);
+      });
+    }
     filterOptions.querySelectorAll('.wu-filter-link').forEach(function (btn) {
       const key = btn.dataset.key;
       const name = btn.dataset.name;
@@ -950,8 +922,6 @@
   function renderGrid() {
     const list = visibleProjects();
     gridEl.innerHTML = '';
-    emptyEl.hidden = list.length > 0;
-    gridEl.hidden = list.length === 0;
     updateFilterUI();
 
     list.forEach(function (p, i) {
@@ -997,8 +967,6 @@
   filterBtn.addEventListener('click', openFilterPanel);
   document.getElementById('filter-close').addEventListener('click', closeFilterPanel);
   filterScrim.addEventListener('click', closeFilterPanel);
-  filterClearBtn.addEventListener('click', clearFilters);
-  document.getElementById('empty-clear').addEventListener('click', clearFilters);
 
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && state.filterOpen) closeFilterPanel();
@@ -1042,6 +1010,7 @@
   }
 
   buildFilterPanel();
+  filterDrop.style.setProperty('--filter-close-black-delay', (FILTER_CLOSE_BLACK_DELAY_MS / 1000) + 's');
   renderGrid();
 
   function syncTopStackHeight() {
