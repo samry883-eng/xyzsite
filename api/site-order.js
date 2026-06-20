@@ -1,4 +1,4 @@
-import { getWorkOrder, setWorkOrder } from '../lib/site-store.mjs';
+import { getWorkOrderResolved, setWorkOrder } from '../lib/site-store.mjs';
 import { isAdminAuthorized } from '../lib/capabilities-admin-guard.mjs';
 import { readJsonBody } from '../lib/vercel-node-api.mjs';
 import { triggerProductionRedeploy } from '../lib/vercel-redeploy.mjs';
@@ -10,7 +10,7 @@ function json(res, code, obj) {
 }
 export default async function handler(req, res) {
   if (req.method === 'GET') {
-    const order = await getWorkOrder();
+    const order = await getWorkOrderResolved();
     json(res, 200, { ok: true, order: order || null });
     return;
   }

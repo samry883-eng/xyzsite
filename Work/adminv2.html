@@ -492,6 +492,9 @@ var GRADS = [
 
 var catalog = null;
 var draft = null;
+var workOrder = null;
+var homeReelOrder = [];
+var homeReelStarts = {};
 var activeId = null;
 var dirtyFlag = false;
 var sortable = null;
@@ -508,6 +511,83 @@ function pad(n) { return String(n).padStart(2, '0'); }
 
 function slugify(s) {
   return String(s || '').toLowerCase().replace(/[''`']/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function catalogMkey(p) {
+  return (p.category || '') + '/' + (p.slug || '');
+}
+
+function homeKeyForProject(p) {
+  return slugify(p.client) + '-' + slugify(p.title);
+}
+
+function normVideo(u) {
+  return String(u || '').split('?')[0].trim().toLowerCase();
+}
+
+function parseHomeStart(val) {
+  var x = String(val == null ? '' : val).trim();
+  if (!x) return 0;
+  if (x.indexOf(':') >= 0) {
+    var p = x.split(':');
+    return (parseInt(p[0], 10) || 0) * 60 + (parseFloat(p[1]) || 0);
+  }
+  return parseFloat(x) || 0;
+}
+
+function matchProjectToHomeItem(item, projects) {
+  var i, p;
+  if (item.mkey) {
+    for (i = 0; i < projects.length; i++) {
+      if (catalogMkey(projects[i]) === item.mkey) return projects[i];
+    }
+  }
+  if (item.key) {
+    for (i = 0; i < projects.length; i++) {
+      if (homeKeyForProject(projects[i]) === item.key) return projects[i];
+    }
+  }
+  var v = normVideo(item.video);
+  if (v) {
+    for (i = 0; i < projects.length; i++) {
+      if (normVideo(projects[i].video) === v) return projects[i];
+    }
+  }
+  var t = String(item.title || '').trim().toLowerCase();
+  var c = String(item.client || '').trim().toLowerCase();
+  if (t && c) {
+    for (i = 0; i < projects.length; i++) {
+      p = projects[i];
+      if (String(p.title || '').trim().toLowerCase() === t &&
+          String(p.client || '').trim().toLowerCase() === c) return p;
+    }
+  }
+  return null;
+}
+
+function buildHomeReelIndex(projects) {
+  homeReelOrder = [];
+  homeReelStarts = {};
+  var homeList = (workOrder && workOrder.homeList) || [];
+  var seen = {};
+  homeList.forEach(function (item) {
+    var p = matchProjectToHomeItem(item, projects);
+    if (!p || seen[p.id]) return;
+    seen[p.id] = true;
+    homeReelOrder.push(p.id);
+    homeReelStarts[p.id] = parseHomeStart(item.start);
+  });
+}
+
+function isOnHomeReel(p) {
+  if (p.homeHero && p.homeHero.enabled) return true;
+  return homeReelOrder.indexOf(p.id) >= 0;
+}
+
+function heroStartFor(p) {
+  if (Object.prototype.hasOwnProperty.call(homeReelStarts, p.id)) return homeReelStarts[p.id];
+  if (p.homeHero && p.homeHero.start != null) return p.homeHero.start;
+  return 0;
 }
 
 function inferCategory(services) {
@@ -573,7 +653,7 @@ function isLive(p) {
 
 function matchPage(p, key) {
   switch (key) {
-    case 'home': return !!(p.homeHero && p.homeHero.enabled);
+    case 'home': return isOnHomeReel(p);
     case 'all': return true;
     case 'selected': return !!p.featured;
     case 'music-video': return p.projectType === 'Music Video';
@@ -623,6 +703,16 @@ function sortedProjects() {
 function filteredProjects() {
   var q = (document.getElementById('search').value || '').trim().toLowerCase();
   var list = sortedProjects().filter(function (p) { return matchPage(p, currentPage); });
+  if (currentPage === 'home') {
+    var orderMap = {};
+    homeReelOrder.forEach(function (id, i) { orderMap[id] = i; });
+    list.sort(function (a, b) {
+      var ai = Object.prototype.hasOwnProperty.call(orderMap, a.id) ? orderMap[a.id] : 9999;
+      var bi = Object.prototype.hasOwnProperty.call(orderMap, b.id) ? orderMap[b.id] : 9999;
+      if (ai !== bi) return ai - bi;
+      return a.sortOrder - b.sortOrder;
+    });
+  }
   if (!q) return list;
   return list.filter(function (p) {
     return (p.title + ' ' + p.client + ' ' + p.category + ' ' + p.slug).toLowerCase().indexOf(q) >= 0;
@@ -777,7 +867,12 @@ function renderList() {
   var listEl = document.getElementById('list');
   listEl.innerHTML = '';
   document.getElementById('pageTitle').textContent = pageTitle(currentPage);
-  document.getElementById('pageSub').textContent = list.length + ' project' + (list.length === 1 ? '' : 's') + ' · drag № to reorder';
+  var subSuffix = currentPage === 'home' ? ' · hero reel order' : ' · drag № to reorder';
+  document.getElementById('pageSub').textContent = list.length + ' project' + (list.length === 1 ? '' : 's') + subSuffix;
+  var tableHead = document.querySelector('.table-head');
+  if (tableHead && tableHead.children[2]) {
+    tableHead.children[2].textContent = currentPage === 'home' ? 'Start' : 'Category';
+  }
 
   if (!list.length) {
     var empty = el('div', 'empty-state');
@@ -806,7 +901,9 @@ function renderList() {
     text.appendChild(el('div', 'row-client', p.client || '—'));
     proj.appendChild(text);
     row.appendChild(proj);
-    row.appendChild(el('span', 'row-type', p.projectType || 'Commercial'));
+    row.appendChild(el('span', 'row-type', currentPage === 'home'
+      ? (heroStartFor(p) + 's')
+      : (p.projectType || 'Commercial')));
     var star = el('span', 'row-star', p.featured ? '★' : '—');
     star.style.color = p.featured ? '#f4f1ea' : '#3a3a3a';
     row.appendChild(star);
@@ -823,6 +920,8 @@ function renderList() {
   });
 
   if (sortable) sortable.destroy();
+  sortable = null;
+  if (currentPage === 'home') return;
   sortable = new Sortable(listEl, {
     animation: 150,
     handle: '.row-num',
@@ -987,13 +1086,22 @@ function addProject() {
 }
 
 function loadCatalog(cb) {
-  fetch('/api/projects').then(function (r) { return r.json(); }).then(function (d) {
+  Promise.all([
+    fetch('/api/projects').then(function (r) { return r.json(); }),
+    fetch('/api/site-order').then(function (r) { return r.json(); }).catch(function () { return null; })
+  ]).then(function (results) {
+    var d = results[0];
     catalog = d && d.catalog ? d.catalog : { version: 1, projects: [] };
     draft = cloneCatalog(catalog);
+    var orderRes = results[1];
+    workOrder = (orderRes && orderRes.order) || null;
+    buildHomeReelIndex(draft.projects);
     cb && cb();
   }).catch(function () {
     catalog = { version: 1, projects: [] };
     draft = cloneCatalog(catalog);
+    workOrder = null;
+    buildHomeReelIndex(draft.projects);
     cb && cb();
   });
 }

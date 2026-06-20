@@ -36,7 +36,7 @@ import {
 import { isAdminAuthorized } from './lib/capabilities-admin-guard.mjs';
 import { getAllowlistSnapshot } from './lib/capabilities-allowlist.mjs';
 import { handleProjectsApi } from './lib/projects-api-handlers.mjs';
-import { getWorkOrder, setWorkOrder } from './lib/site-store.mjs';
+import { getWorkOrderResolved, setWorkOrder } from './lib/site-store.mjs';
 import { triggerProductionRedeploy } from './lib/vercel-redeploy.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -407,7 +407,7 @@ async function handleCapabilitiesApi(req, res, urlPath) {
 async function handleSiteOrderApi(req, res) {
   const sec = sessionSecret();
   if (req.method === 'GET') {
-    const order = await getWorkOrder();
+    const order = await getWorkOrderResolved();
     return json(res, 200, { ok: true, order: order || null });
   }
   if (req.method === 'POST') {
