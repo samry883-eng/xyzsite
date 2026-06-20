@@ -1,15 +1,14 @@
 import fs from 'fs';
 import path from 'path';
 import { buildDefaultCatalog } from '../lib/projects-default-catalog.mjs';
+import { redisConfigured, redisGet } from '../lib/upstash-redis.mjs';
+
+const REDIS_KEY = 'projects_catalog_json';
 
 async function fetchCatalogFromRedis() {
-  const url = String(process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL || '').trim();
-  const token = String(process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN || '').trim();
-  if (!url || !token) return null;
+  if (!redisConfigured()) return null;
   try {
-    const { Redis } = await import('@upstash/redis');
-    const r = new Redis({ url, token });
-    const raw = await r.get('projects_catalog_json');
+    const raw = await redisGet(REDIS_KEY);
     if (!raw) return null;
     const data = typeof raw === 'string' ? JSON.parse(raw) : raw;
     if (data && Array.isArray(data.projects) && data.projects.length) return data;
