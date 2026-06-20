@@ -20,10 +20,10 @@
     .hidden { display: none !important; }
 
     :root {
-      --bg: #000;
+      --bg: #0c0c0c;
       --text: #f4f1ea;
       --accent: #f4f1ea;
-      --accent-text: #000;
+      --accent-text: #0c0c0c;
       --muted: #5a5a5a;
       --muted2: #6a6a6a;
       --muted3: #8a877f;
@@ -44,16 +44,12 @@
     }
     body { overflow: hidden; }
 
-    .site-header {
+    nav {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       z-index: 100;
-      height: var(--site-nav-h);
-      background: #000;
-    }
-    .site-header nav {
       height: var(--site-nav-h);
       display: flex;
       align-items: center;
@@ -61,7 +57,7 @@
       padding: 0 clamp(16px, 4vw, 48px);
       background: transparent !important;
     }
-    .site-header .nav-logo img { height: 29px; width: auto; display: block; }
+    .nav-logo img { height: 29px; width: auto; display: block; }
 
     .cms-shell {
       position: fixed;
@@ -76,7 +72,7 @@
     .grain { position: relative; height: 100%; overflow: hidden; }
     .grain::after {
       content: "";
-      position: absolute; inset: 0; pointer-events: none; opacity: .045; z-index: 5;
+      position: absolute; inset: 0; pointer-events: none; opacity: .045; z-index: 0;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
       mix-blend-mode: overlay;
     }
@@ -132,7 +128,7 @@
     .nav-logout { font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); background: none; border: 0; cursor: pointer; margin-top: 8px; padding: 0 2px; text-align: left; }
     .nav-logout:hover { color: var(--text); }
 
-    .main { height: 100%; overflow: hidden; display: flex; flex-direction: column; position: relative; z-index: 1; }
+    .main { height: 100%; overflow: hidden; display: flex; flex-direction: column; position: relative; z-index: 2; }
 
     .list-mode { display: flex; flex-direction: column; height: 100%; min-height: 0; }
     .list-header {
@@ -317,26 +313,24 @@
       .col-resize { display: none; }
     }
     @media (max-width: 760px) {
-      .site-header nav { padding: 14px 20px 16px; }
-      .site-header .nav-logo img { height: 24px; }
+      nav { padding: 14px 20px 16px; }
+      .nav-logo img { height: 24px; }
     }
   </style>
 </head>
 <body>
 
-<header class="site-header">
-  <nav>
-    <a class="nav-logo" href="/">
-      <img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios">
-    </a>
-    <ul class="nav-links">
-      <li><a href="/">Home</a></li>
-      <li><a href="/projects/" class="active">Work</a></li>
-      <li style="display:none"><a href="/services/">XYZ/Services</a></li>
-      <li><a href="/contact">Contact</a></li>
-    </ul>
-  </nav>
-</header>
+<nav>
+  <a class="nav-logo" href="/">
+    <img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios">
+  </a>
+  <ul class="nav-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/projects/" class="active">Work</a></li>
+    <li style="display:none"><a href="/services/">XYZ/Services</a></li>
+    <li><a href="/contact">Contact</a></li>
+  </ul>
+</nav>
 
 <div id="login" class="grain cms-shell">
   <div class="login-box">
