@@ -482,6 +482,8 @@ function getStaticFilePath(urlPath) {
     filePath = path.join(__dirname, 'Capabilities', 'nda.html');
   } else if (p === '/capabilities/admin' || p === '/capabilities/admin/' || p === '/capabilities/admin.html') {
     filePath = path.join(__dirname, 'Capabilities', 'admin.html');
+  } else if (p === '/work/adminv2' || p === '/work/adminv2/' || p === '/work/adminv2.html') {
+    filePath = path.join(WORK, 'adminv2.html');
   } else if (p === '/work/admin' || p === '/work/admin/' || p === '/work/admin.html') {
     filePath = path.join(WORK, 'admin.html');
   } else if (p === '/admin' || p === '/admin/' || p === '/admin.html') {

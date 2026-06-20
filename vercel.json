@@ -292,6 +292,14 @@
       "destination": "/work/admin.html"
     },
     {
+      "source": "/work/adminv2",
+      "destination": "/work/adminv2.html"
+    },
+    {
+      "source": "/work/adminv2/",
+      "destination": "/work/adminv2.html"
+    },
+    {
       "source": "/capabilities/vfx",
       "destination": "/capabilities/vfx/index.html"
     },
