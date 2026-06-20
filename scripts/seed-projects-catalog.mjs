@@ -6,14 +6,14 @@
 import '../load-env-local.mjs';
 import { buildDefaultCatalog } from '../lib/projects-default-catalog.mjs';
 import { saveProjectsCatalog } from '../lib/projects-store.mjs';
-import { redisConfigured, REDIS_CONFIG_HELP } from '../lib/upstash-redis.mjs';
+import { redisConfigured, redisConfigHelp } from '../lib/upstash-redis.mjs';
 import { triggerProductionRedeploy } from '../lib/vercel-redeploy.mjs';
 
 const redeploy = process.argv.includes('--redeploy');
 const catalog = buildDefaultCatalog();
 
 if (process.env.VERCEL && !redisConfigured()) {
-  console.error('[seed] Redis required on Vercel.', REDIS_CONFIG_HELP);
+  console.error('[seed] Redis required on Vercel.', redisConfigHelp());
   process.exit(1);
 }
 
