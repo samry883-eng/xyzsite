@@ -63,8 +63,8 @@
       --line: rgba(255, 255, 255, 0.13);
       --accent: #fff;
       --site-font: Micross, Arial, sans-serif;
-      --nav-h: clamp(48px, 6vh, 58px);
-      --top-stack-h: 96px;
+      --nav-h: clamp(52px, 9vh, 80px);
+      --top-stack-h: 140px;
       --col-gap: 56px;
       --row-gap: 66px;
       --title-size: 18px;
@@ -119,7 +119,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 var(--page-pad-x);
+      padding: 0 clamp(16px, 4vw, 48px);
       background: transparent !important;
     }
     .nav-logo img { height: 29px; width: auto; display: block; }
@@ -149,7 +149,7 @@
       display: flex;
       align-items: flex-end;
       justify-content: space-between;
-      padding: 24px var(--page-pad-x) 18px;
+      padding: 40px var(--page-pad-x) 18px;
       background: var(--bg);
       opacity: 1;
       transition: opacity 0.35s ease;
@@ -463,9 +463,13 @@
 
     @media (max-width: 760px) {
       .wu-grid { grid-template-columns: 1fr; }
-      nav { min-height: 52px; }
+      nav {
+        height: auto;
+        min-height: 52px;
+        padding: 14px 20px 16px;
+      }
       .nav-logo img { height: 24px; }
-      .wu-toolbar { padding: 18px 20px 16px; }
+      .wu-toolbar { padding: 28px 20px 16px; }
       .wu-main { padding-left: 20px; padding-right: 20px; }
       .wu-filter-body { grid-template-columns: 1fr; gap: 36px; }
       .wu-filter-links--services .wu-filter-link { flex: 0 0 100%; max-width: 100%; }
