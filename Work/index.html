@@ -619,6 +619,7 @@
     <div class="work-fade-right"></div>
   </section>
 
+<script src="/work/assets/xyz-quick-slide.js"></script>
 <script>
   const VF = 'https://r2.vidzflow.com/source/';
   const SB = 'https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/';
@@ -884,7 +885,15 @@
       markWorkPageOpen();
       return;
     }
-    const dur = (!fromCacheRestore && isReloadNavigation()) ? '1.06s' : '0.58s';
+    const dur = (!fromCacheRestore && isReloadNavigation()) ? '1.06s' : '0.48s';
+    const QS = window.xyzQuickSlide;
+    if (QS && dur === '0.48s') {
+      QS.reveal(pageOut, function () {
+        markWorkPageOpen();
+        startRowStagger();
+      });
+      return;
+    }
     pageOut.style.transition = 'none';
     pageOut.style.transform = 'translateY(0)';
     pageOut.style.pointerEvents = 'none';
@@ -921,6 +930,14 @@
     pageOut.style.transition = 'none';
     pageOut.style.transform = 'translateY(100%)';
     pageOut.style.pointerEvents = 'all';
+    try { document.documentElement.classList.add('xyz-quick-transit'); } catch (e) {}
+    if (window.xyzQuickSlide) {
+      window.xyzQuickSlide.markNav();
+      window.xyzQuickSlide.cover(pageOut, function () {
+        window.location.href = dest;
+      });
+      return;
+    }
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
         pageOut.style.transition = 'transform 0.48s cubic-bezier(0.76,0,0.24,1)';
@@ -928,6 +945,7 @@
       });
     });
     // Match Home: fixed delay so cover completes before navigation (transitionend can fire early).
+    try { sessionStorage.setItem('xyz-quick-nav', '1'); } catch (e) {}
     setTimeout(function () { window.location.href = dest; }, 540);
   }
 
@@ -1725,8 +1743,18 @@
   window.__xyzOnWorkOrderApplied = openWorkPage;
 
   buildWorkGrid();
-  // Wait for admin order to land before the category entrance — reordering mid-animation cuts it off.
-  setTimeout(openWorkPage, 1000);
+  var quickNav = false;
+  try {
+    if (sessionStorage.getItem('xyz-quick-nav') === '1') {
+      quickNav = true;
+      sessionStorage.removeItem('xyz-quick-nav');
+    }
+  } catch (e) {}
+  if (quickNav) {
+    openWorkPage();
+  } else {
+    setTimeout(openWorkPage, 1000);
+  }
   waitForGridReady().catch(function () {});
   window.addEventListener('pageshow', function (e) {
     if (!e.persisted) return;

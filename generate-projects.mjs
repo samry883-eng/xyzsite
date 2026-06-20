@@ -885,7 +885,7 @@ function makeHTML(card, catLabel, framesHTML = '') {
     pageIn.style.pointerEvents = 'none';
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        pageIn.style.transition = 'transform 0.58s cubic-bezier(0.76,0,0.24,1)';
+        pageIn.style.transition = 'transform 0.48s cubic-bezier(0.76,0,0.24,1)';
         pageIn.style.transform = 'translateY(-100%)';
       });
     });
