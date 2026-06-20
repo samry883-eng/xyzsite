@@ -11,9 +11,17 @@ function sendJson(res, code, obj) {
   res.end(JSON.stringify(obj));
 }
 
-export default async function handler(req, res) {
+function slugParts(req) {
   const slug = req.query?.slug;
-  const parts = Array.isArray(slug) ? slug : slug ? [slug] : [];
+  if (Array.isArray(slug) && slug.length) return slug;
+  if (typeof slug === 'string' && slug) return slug.split('/').filter(Boolean);
+  const raw = req.url || '';
+  const m = raw.match(/\/api\/projects\/([^?]+)/);
+  return m ? m[1].split('/').filter(Boolean) : [];
+}
+
+export default async function handler(req, res) {
+  const parts = slugParts(req);
   const path = parts.join('/');
 
   if (path === 'redis-health') {
