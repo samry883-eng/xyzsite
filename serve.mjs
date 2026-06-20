@@ -412,6 +412,8 @@ function getStaticFilePath(urlPath) {
     filePath = path.join(HOME, p);
   } else if (p === '/projects-v2' || p === '/projects-v2/') {
     filePath = path.join(WORK, 'unified', 'index.html');
+  } else if (p === '/projects-v3' || p === '/projects-v3/') {
+    filePath = path.join(WORK, 'unified-v3', 'index.html');
   } else if (p === '/work.html' || p === '/work' || p === '/work/' || p === '/projects' || p === '/projects/') {
     filePath = path.join(WORK, 'index.html');
   } else if (p === '/contact-versions' || p === '/contact-versions/') {

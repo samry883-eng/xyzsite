@@ -228,6 +228,14 @@
       "destination": "/work/unified/index.html"
     },
     {
+      "source": "/projects-v3",
+      "destination": "/work/unified-v3/index.html"
+    },
+    {
+      "source": "/projects-v3/",
+      "destination": "/work/unified-v3/index.html"
+    },
+    {
       "source": "/projects",
       "destination": "/work/index.html"
     },

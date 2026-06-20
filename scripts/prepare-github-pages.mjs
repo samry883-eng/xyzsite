@@ -90,6 +90,9 @@ copyFile(path.join(root, 'Work', 'index.html'), path.join(dist, 'projects', 'ind
 fs.mkdirSync(path.join(dist, 'projects-v2'), { recursive: true });
 copyFile(path.join(root, 'Work', 'unified', 'index.html'), path.join(dist, 'projects-v2', 'index.html'));
 
+fs.mkdirSync(path.join(dist, 'projects-v3'), { recursive: true });
+copyFile(path.join(root, 'Work', 'unified-v3', 'index.html'), path.join(dist, 'projects-v3', 'index.html'));
+
 copyDir(path.join(root, 'Contact'), path.join(dist, 'contact'));
 
 fs.mkdirSync(path.join(dist, 'contact-versions'), { recursive: true });
