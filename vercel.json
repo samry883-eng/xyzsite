@@ -46,6 +46,81 @@
         {
           "key": "Cache-Control",
           "value": "no-cache, no-store, must-revalidate"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "same-origin"
+        }
+      ]
+    },
+    {
+      "source": "/capabilities/sound",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "same-origin"
+        }
+      ]
+    },
+    {
+      "source": "/capabilities/sound/",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "same-origin"
+        }
+      ]
+    },
+    {
+      "source": "/capabilities/sound/index.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "same-origin"
         }
       ]
     },
@@ -145,6 +220,14 @@
   ],
   "rewrites": [
     {
+      "source": "/projects-v2",
+      "destination": "/work/unified/index.html"
+    },
+    {
+      "source": "/projects-v2/",
+      "destination": "/work/unified/index.html"
+    },
+    {
       "source": "/projects",
       "destination": "/work/index.html"
     },
@@ -167,6 +250,14 @@
     {
       "source": "/capabilities/login/",
       "destination": "/capabilities/login.html"
+    },
+    {
+      "source": "/capabilities/nda",
+      "destination": "/capabilities/nda.html"
+    },
+    {
+      "source": "/capabilities/nda/",
+      "destination": "/capabilities/nda.html"
     },
     {
       "source": "/capabilities/admin",

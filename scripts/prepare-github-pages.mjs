@@ -64,8 +64,31 @@ copyDir(path.join(root, 'Home', 'assets'), path.join(dist, 'assets'));
 
 copyDir(path.join(root, 'Work'), path.join(dist, 'work'));
 
+// Inject coordinated home-return script on project pages
+function injectHomeReturn(dir) {
+  const tag =
+    '<script src="/work/assets/xyz-quick-slide.js"></script>\n<script src="/work/assets/xyz-home-return.js"></script>';
+  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, e.name);
+    if (e.isDirectory()) injectHomeReturn(p);
+    else if (e.name === 'index.html') {
+      const rel = path.relative(path.join(dist, 'work'), p).replace(/\\/g, '/');
+      if (rel === 'index.html') continue;
+      let s = fs.readFileSync(p, 'utf8');
+      if (s.includes('xyz-home-return.js')) continue;
+      if (!s.includes('</body>')) continue;
+      s = s.replace('</body>', tag + '\n</body>');
+      fs.writeFileSync(p, s);
+    }
+  }
+}
+injectHomeReturn(path.join(dist, 'work'));
+
 fs.mkdirSync(path.join(dist, 'projects'), { recursive: true });
 copyFile(path.join(root, 'Work', 'index.html'), path.join(dist, 'projects', 'index.html'));
+
+fs.mkdirSync(path.join(dist, 'projects-v2'), { recursive: true });
+copyFile(path.join(root, 'Work', 'unified', 'index.html'), path.join(dist, 'projects-v2', 'index.html'));
 
 copyDir(path.join(root, 'Contact'), path.join(dist, 'contact'));
 

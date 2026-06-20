@@ -22,6 +22,16 @@ import {
   clearAdminSessionCookieHeader,
   validateAdminPassword,
   getAdminSecretFromEnv,
+  verifyNdaSession,
+  createNdaSession,
+  ndaSessionCookieHeader,
+  getNdaCookieName,
+  clearNdaSessionCookieHeader,
+  ndaRecordGet,
+  ndaRecordUpsert,
+  ndaRecordRevoke,
+  ndaRecordList,
+  sessionSecret as capSessionSecret,
 } from './lib/capabilities-auth.mjs';
 import { isAdminAuthorized } from './lib/capabilities-admin-guard.mjs';
 import { getAllowlistSnapshot } from './lib/capabilities-allowlist.mjs';
@@ -43,6 +53,7 @@ const WORK = path.join(__dirname, 'Work');
 const CONTACT = path.join(__dirname, 'Contact');
 
 const COOKIE = getCookieName();
+const NDA_COOKIE = getNdaCookieName();
 
 function parseCookies(header) {
   const out = {};
@@ -65,8 +76,50 @@ function authDisabled() {
   return ['1', 'true', 'yes'].includes(String(process.env.CAPABILITIES_AUTH_DISABLED || '').toLowerCase());
 }
 
+function ndaDisabled() {
+  return ['1', 'true', 'yes'].includes(String(process.env.CAPABILITIES_NDA_DISABLED || '').toLowerCase());
+}
+
+function isNdaExemptPath(urlPath) {
+  const p = urlPath.toLowerCase();
+  return (
+    p === '/capabilities/login' ||
+    p === '/capabilities/login/' ||
+    p === '/capabilities/login.html' ||
+    p === '/capabilities/admin' ||
+    p === '/capabilities/admin/' ||
+    p === '/capabilities/admin.html' ||
+    p === '/capabilities/nda' ||
+    p === '/capabilities/nda/' ||
+    p === '/capabilities/nda.html'
+  );
+}
+
+function isNdaDeferredPath(urlPath) {
+  const p = urlPath.toLowerCase();
+  return (
+    p === '/capabilities/' ||
+    p === '/capabilities/index.html' ||
+    p.startsWith('/capabilities/sound') ||
+    p.startsWith('/capabilities/vfx') ||
+    p.startsWith('/capabilities/assets/')
+  );
+}
+
+function capabilitiesProtectHeaders(ext) {
+  const h = {
+    'Cache-Control': 'no-store, must-revalidate',
+    'X-Content-Type-Options': 'nosniff',
+    'Referrer-Policy': 'same-origin',
+  };
+  if (ext === '.html') {
+    h['X-Frame-Options'] = 'DENY';
+  }
+  return h;
+}
+
 function sessionSecret() {
-  return process.env.CAPABILITIES_SESSION_SECRET || 'dev-capabilities-session-secret';
+  return capSessionSecret();
 }
 
 function secureCookies() {
@@ -139,9 +192,63 @@ async function handleCapabilitiesApi(req, res, urlPath) {
   if (urlPath === '/api/capabilities/logout' && req.method === 'POST') {
     res.writeHead(200, {
       'Content-Type': 'application/json; charset=utf-8',
-      'Set-Cookie': clearSessionCookieHeader(sc),
     });
+    res.setHeader('Set-Cookie', [
+      clearSessionCookieHeader(sc),
+      clearNdaSessionCookieHeader(sc),
+    ]);
     return res.end(JSON.stringify({ ok: true }));
+  }
+
+  if (urlPath === '/api/capabilities/session' && req.method === 'GET') {
+    const cookies = parseCookies(req.headers.cookie);
+    const email = verifySession(cookies[COOKIE], sec);
+    if (!email) return json(res, 401, { ok: false, error: 'Login required' });
+    if (ndaDisabled()) {
+      return json(res, 200, { ok: true, ndaAccepted: true, ndaName: null, ndaSignedAt: null });
+    }
+    const record = await ndaRecordGet(email);
+    const cookieNda = verifyNdaSession(cookies[NDA_COOKIE], sec, email);
+    const accepted = !!record || !!cookieNda;
+    return json(res, 200, {
+      ok: true,
+      ndaAccepted: accepted,
+      ndaName: record ? record.signedName : cookieNda ? cookieNda.name : null,
+      ndaSignedAt: record ? record.signedAt : null,
+    });
+  }
+
+  if (urlPath === '/api/capabilities/nda-accept' && req.method === 'POST') {
+    const cookies = parseCookies(req.headers.cookie);
+    const email = verifySession(cookies[COOKIE], sec);
+    if (!email) return json(res, 401, { ok: false, error: 'Login required' });
+    let body;
+    try {
+      body = JSON.parse((await readBody(req)).toString('utf8') || '{}');
+    } catch {
+      return json(res, 400, { ok: false, error: 'Invalid JSON' });
+    }
+    const name = String(body.name || '').trim();
+    const accepted = body.accepted === true || body.accepted === 'true';
+    if (!accepted) return json(res, 400, { ok: false, error: 'You must accept the NDA to continue.' });
+    if (!name) return json(res, 400, { ok: false, error: 'Full name required' });
+    let record;
+    try {
+      record = await ndaRecordUpsert(email, name);
+    } catch (e) {
+      return json(res, 400, { ok: false, error: e.message || 'Unable to save acceptance' });
+    }
+    let token;
+    try {
+      token = createNdaSession(email, name, sec);
+    } catch (e) {
+      return json(res, 400, { ok: false, error: e.message || 'Invalid name' });
+    }
+    res.writeHead(200, {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Set-Cookie': ndaSessionCookieHeader(token, sc),
+    });
+    return res.end(JSON.stringify({ ok: true, signedName: record.signedName, signedAt: record.signedAt }));
   }
 
   if (urlPath === '/api/capabilities/admin/login' && req.method === 'POST') {
@@ -175,11 +282,13 @@ async function handleCapabilitiesApi(req, res, urlPath) {
     if (!adm) return json(res, 503, { ok: false, error: 'CAPABILITIES_ADMIN_SECRET is not set' });
     if (!isAdminAuthorized(req, null, sec)) return json(res, 401, { ok: false, error: 'Unauthorized' });
     const grants = await grantList();
+    const ndaRecords = await ndaRecordList();
     const allowlist = getAllowlistSnapshot();
     const persist = await canPersistGrants();
     return json(res, 200, {
       ok: true,
       grants,
+      ndaRecords,
       allowlist,
       canPersistGrants: persist,
     });
@@ -270,6 +379,24 @@ async function handleCapabilitiesApi(req, res, urlPath) {
     }
   }
 
+  if (urlPath === '/api/capabilities/admin/nda-revoke' && req.method === 'POST') {
+    if (!adm) return json(res, 503, { ok: false, error: 'CAPABILITIES_ADMIN_SECRET is not set' });
+    if (!isAdminAuthorized(req, null, sec)) return json(res, 401, { ok: false, error: 'Unauthorized' });
+    let body;
+    try {
+      body = JSON.parse((await readBody(req)).toString('utf8') || '{}');
+    } catch {
+      return json(res, 400, { ok: false, error: 'Invalid JSON' });
+    }
+    if (!body.email) return json(res, 400, { ok: false, error: 'email required' });
+    try {
+      await ndaRecordRevoke(body.email);
+      return json(res, 200, { ok: true });
+    } catch (e) {
+      return json(res, 400, { ok: false, error: e.message || 'Revoke failed' });
+    }
+  }
+
   res.writeHead(404, { 'Content-Type': 'text/plain' });
   res.end('Not found');
 }
@@ -283,6 +410,8 @@ function getStaticFilePath(urlPath) {
     filePath = path.join(HOME, 'index.html');
   } else if (p.startsWith('/assets/')) {
     filePath = path.join(HOME, p);
+  } else if (p === '/projects-v2' || p === '/projects-v2/') {
+    filePath = path.join(WORK, 'unified', 'index.html');
   } else if (p === '/work.html' || p === '/work' || p === '/work/' || p === '/projects' || p === '/projects/') {
     filePath = path.join(WORK, 'index.html');
   } else if (p === '/contact-versions' || p === '/contact-versions/') {
@@ -323,6 +452,8 @@ function getStaticFilePath(urlPath) {
     filePath = path.join(__dirname, 'Capabilities', 'sound', 'scripts', sub);
   } else if (p === '/capabilities/login' || p === '/capabilities/login/' || p === '/capabilities/login.html') {
     filePath = path.join(__dirname, 'Capabilities', 'login.html');
+  } else if (p === '/capabilities/nda' || p === '/capabilities/nda/' || p === '/capabilities/nda.html') {
+    filePath = path.join(__dirname, 'Capabilities', 'nda.html');
   } else if (p === '/capabilities/admin' || p === '/capabilities/admin/' || p === '/capabilities/admin.html') {
     filePath = path.join(__dirname, 'Capabilities', 'admin.html');
   } else if (p === '/admin' || p === '/admin/' || p === '/admin.html') {
@@ -344,14 +475,18 @@ function getStaticFilePath(urlPath) {
   return { filePath, ext, isPitchEmbedAsset };
 }
 
-function sendFile(res, { filePath, ext, isPitchEmbedAsset }) {
+function sendFile(res, { filePath, ext, isPitchEmbedAsset }, urlPath = '') {
   fs.readFile(filePath, (err, data) => {
     if (err) {
       res.writeHead(404);
       res.end('Not found');
     } else {
       const type = MIME[ext] || (isPitchEmbedAsset ? 'image/avif' : 'application/octet-stream');
-      res.writeHead(200, { 'Content-Type': type });
+      const headers = { 'Content-Type': type };
+      if (urlPath.toLowerCase().startsWith('/capabilities')) {
+        Object.assign(headers, capabilitiesProtectHeaders(ext));
+      }
+      res.writeHead(200, headers);
       res.end(data);
     }
   });
@@ -391,6 +526,22 @@ http.createServer((req, res) => {
           res.end('Unauthorized');
           return;
         }
+        if (!ndaDisabled() && !isNdaExemptPath(urlPath) && !isNdaDeferredPath(urlPath)) {
+          const record = await ndaRecordGet(email);
+          const ndaToken = cookies[NDA_COOKIE];
+          const nda = record || verifyNdaSession(ndaToken, sessionSecret(), email);
+          if (!nda) {
+            if (req.method === 'GET' || req.method === 'HEAD') {
+              const next = encodeURIComponent(urlPath);
+              res.writeHead(302, { Location: `/capabilities/nda?next=${next}` });
+              res.end();
+              return;
+            }
+            res.writeHead(401, { 'Content-Type': 'text/plain; charset=utf-8' });
+            res.end('NDA required');
+            return;
+          }
+        }
       }
 
       if (req.method !== 'GET' && req.method !== 'HEAD') {
@@ -415,13 +566,17 @@ http.createServer((req, res) => {
             return;
           }
           const type = MIME[spec.ext] || (spec.isPitchEmbedAsset ? 'image/avif' : 'application/octet-stream');
-          res.writeHead(200, { 'Content-Type': type });
+          const headers = { 'Content-Type': type };
+          if (urlPath.toLowerCase().startsWith('/capabilities')) {
+            Object.assign(headers, capabilitiesProtectHeaders(spec.ext));
+          }
+          res.writeHead(200, headers);
           res.end();
         });
         return;
       }
 
-      sendFile(res, spec);
+      sendFile(res, spec, urlPath);
     } catch (e) {
       console.error(e);
       res.writeHead(500, { 'Content-Type': 'text/plain' });
