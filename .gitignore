@@ -9,6 +9,7 @@ dist/
 
 # Capabilities deck access list (email + scrypt hashes) — do not commit
 data/capabilities-grants.json
+data/projects-catalog.json
 
 .c.txt
 .t.json

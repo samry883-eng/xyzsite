@@ -974,27 +974,40 @@ function saveCatalog(redeploy, btn, successMsg) {
   setStatusMsg(redeploy ? 'Updating site…' : 'Saving draft…');
   return fetch('/api/projects', {
     method: 'PUT',
+    credentials: 'same-origin',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ catalog: draft, redeploy: !!redeploy })
   })
-    .then(function (r) { return r.json(); })
-    .then(function (d) {
+    .then(function (r) {
+      return r.json().catch(function () { return null; }).then(function (d) {
+        return { status: r.status, data: d };
+      });
+    })
+    .then(function (res) {
       if (btn) btn.disabled = false;
+      var d = res.data;
       if (d && d.ok) {
         catalog = cloneCatalog(d.catalog || draft);
         draft = cloneCatalog(catalog);
-        setLive(successMsg || (d.redeployed ? 'Site updated — redeploy started (~30s)' : 'Draft saved to Edge Config'));
+        var msg = successMsg;
+        if (!msg) {
+          if (d.redeployed) msg = 'Site updated — redeploy started (~30s)';
+          else if (d.storage === 'file') msg = 'Draft saved locally (data/projects-catalog.json)';
+          else msg = 'Draft saved to Edge Config';
+        }
+        setLive(msg);
         renderNav();
         if (activeId) openEditor(activeId);
         else renderList();
       } else {
-        setStatusMsg((d && d.error) || 'Save failed');
+        var err = (d && d.error) || ('HTTP ' + res.status + (res.status === 401 ? ' — sign in again' : ''));
+        setStatusMsg(err);
       }
       return d;
     })
-    .catch(function () {
+    .catch(function (e) {
       if (btn) btn.disabled = false;
-      setStatusMsg('Network error');
+      setStatusMsg('Network error' + (e && e.message ? ': ' + e.message : ''));
     });
 }
 
