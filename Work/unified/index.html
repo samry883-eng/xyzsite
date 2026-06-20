@@ -817,6 +817,9 @@
     document.body.style.overflow = 'hidden';
     var tb = document.querySelector('.wu-toolbar');
     if (tb) tb.classList.remove('is-scroll-hidden');
+    scrollDelta = 0;
+    scrollDir = 0;
+    toolbarHidden = false;
     updateFilterUI();
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
@@ -1103,7 +1106,12 @@
   window.addEventListener('resize', syncTopStackHeight);
 
   var toolbarEl = document.querySelector('.wu-toolbar');
+  var SCROLL_TOOLBAR_HIDE_PX = 100;
+  var SCROLL_TOOLBAR_SHOW_PX = 80;
   var lastScrollY = window.scrollY || 0;
+  var scrollDelta = 0;
+  var scrollDir = 0;
+  var toolbarHidden = false;
   var scrollTicking = false;
   window.addEventListener('scroll', function () {
     if (scrollTicking || !toolbarEl) return;
@@ -1111,12 +1119,35 @@
     requestAnimationFrame(function () {
       var y = window.scrollY || document.documentElement.scrollTop || 0;
       if (state.filterOpen || y < 8) {
+        scrollDelta = 0;
+        scrollDir = 0;
+        toolbarHidden = false;
         toolbarEl.classList.remove('is-scroll-hidden');
-      } else if (y > lastScrollY + 2) {
-        toolbarEl.classList.add('is-scroll-hidden');
-      } else if (y < lastScrollY - 2) {
-        toolbarEl.classList.remove('is-scroll-hidden');
+        lastScrollY = y;
+        scrollTicking = false;
+        return;
       }
+
+      var dy = y - lastScrollY;
+      if (dy !== 0) {
+        var dir = dy > 0 ? 1 : -1;
+        if (dir !== scrollDir) {
+          scrollDir = dir;
+          scrollDelta = 0;
+        }
+        scrollDelta += Math.abs(dy);
+
+        if (!toolbarHidden && scrollDir === 1 && scrollDelta >= SCROLL_TOOLBAR_HIDE_PX) {
+          toolbarHidden = true;
+          toolbarEl.classList.add('is-scroll-hidden');
+          scrollDelta = 0;
+        } else if (toolbarHidden && scrollDir === -1 && scrollDelta >= SCROLL_TOOLBAR_SHOW_PX) {
+          toolbarHidden = false;
+          toolbarEl.classList.remove('is-scroll-hidden');
+          scrollDelta = 0;
+        }
+      }
+
       lastScrollY = y;
       scrollTicking = false;
     });
