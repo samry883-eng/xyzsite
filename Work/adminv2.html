@@ -993,6 +993,7 @@ function saveCatalog(redeploy, btn, successMsg) {
         if (!msg) {
           if (d.redeployed) msg = 'Site updated — redeploy started (~30s)';
           else if (d.storage === 'file') msg = 'Draft saved locally (data/projects-catalog.json)';
+          else if (d.storage === 'redis') msg = redeploy ? 'Site updated — saved to Redis, redeploy started (~30s)' : 'Draft saved to Redis';
           else msg = 'Draft saved to Edge Config';
         }
         setLive(msg);

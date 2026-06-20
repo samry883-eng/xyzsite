@@ -2,14 +2,32 @@ import fs from 'fs';
 import path from 'path';
 import { buildDefaultCatalog } from '../lib/projects-default-catalog.mjs';
 
+async function fetchCatalogFromRedis() {
+  const url = String(process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL || '').trim();
+  const token = String(process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN || '').trim();
+  if (!url || !token) return null;
+  try {
+    const { Redis } = await import('@upstash/redis');
+    const r = new Redis({ url, token });
+    const raw = await r.get('projects_catalog_json');
+    if (!raw) return null;
+    const data = typeof raw === 'string' ? JSON.parse(raw) : raw;
+    if (data && Array.isArray(data.projects) && data.projects.length) return data;
+  } catch {}
+  return null;
+}
+
 export async function fetchProjectsCatalog(root) {
-  let catalog = null;
+  let catalog = await fetchCatalogFromRedis();
   const EC = process.env.EDGE_CONFIG_ID;
   const RT = process.env.EDGE_CONFIG_READ_TOKEN;
-  if (EC && RT) {
+  if (!catalog && EC && RT) {
     try {
       const r = await fetch(`https://edge-config.vercel.com/${EC}/item/projectsCatalog?token=${RT}`);
-      if (r.ok) catalog = await r.json();
+      if (r.ok) {
+        const data = await r.json();
+        if (data && Array.isArray(data.projects) && data.projects.length) catalog = data;
+      }
     } catch {}
   }
   if (!catalog) {
