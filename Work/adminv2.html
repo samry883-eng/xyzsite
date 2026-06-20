@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Archivo:wght@400;500;600;700;800;900&family=Archivo+Expanded:wght@600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/xyz-nav-font.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
   <style>
     @font-face { font-family: 'Micross'; src: url('/assets/micross.ttf') format('truetype'); font-weight: 400 700; font-display: swap; }
@@ -31,6 +32,7 @@
       --green: #7fdc9a;
       --amber: #dcbf7f;
       --danger: #dc7f7f;
+      --site-nav-h: clamp(52px, 9vh, 80px);
     }
 
     html, body {
@@ -42,7 +44,36 @@
     }
     body { overflow: hidden; }
 
-    .grain { position: relative; height: 100vh; overflow: hidden; }
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      height: var(--site-nav-h);
+      background: #000;
+    }
+    .site-header nav {
+      height: var(--site-nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(16px, 4vw, 48px);
+      background: transparent !important;
+    }
+    .site-header .nav-logo img { height: 29px; width: auto; display: block; }
+
+    .cms-shell {
+      position: fixed;
+      top: var(--site-nav-h);
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: calc(100vh - var(--site-nav-h));
+      height: calc(100dvh - var(--site-nav-h));
+    }
+
+    .grain { position: relative; height: 100%; overflow: hidden; }
     .grain::after {
       content: "";
       position: absolute; inset: 0; pointer-events: none; opacity: .045; z-index: 5;
@@ -51,7 +82,7 @@
     }
 
     #login {
-      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      min-height: 100%; display: flex; align-items: center; justify-content: center;
       padding: 24px; position: relative; z-index: 2;
     }
     .login-box { width: 100%; max-width: 340px; text-align: center; }
@@ -76,17 +107,15 @@
     .btn-ghost:disabled { opacity: .4; cursor: default; }
 
     #app {
-      display: grid; grid-template-columns: 260px 1fr; height: 100vh;
+      display: grid; grid-template-columns: 260px 1fr; height: 100%;
       position: relative; z-index: 2; background: var(--bg);
     }
 
     .nav-rail {
-      border-right: 1px solid var(--line); padding: 30px 22px;
-      display: flex; flex-direction: column; height: 100vh; overflow: auto; position: relative; z-index: 2;
+      border-right: 1px solid var(--line); padding: 22px 22px 30px;
+      display: flex; flex-direction: column; height: 100%; overflow: auto; position: relative; z-index: 2;
     }
-    .nav-brand { font-family: 'Micross', 'Archivo Expanded', sans-serif; font-weight: 800; font-size: 20px; }
-    .nav-sub { font-size: 9px; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
-    .nav-section { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin: 32px 0 10px; }
+    .nav-section { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
     .nav-section.type { margin-top: 24px; }
     .nav-item {
       display: flex; justify-content: space-between; align-items: center;
@@ -103,9 +132,9 @@
     .nav-logout { font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); background: none; border: 0; cursor: pointer; margin-top: 8px; padding: 0 2px; text-align: left; }
     .nav-logout:hover { color: var(--text); }
 
-    .main { height: 100vh; overflow: hidden; display: flex; flex-direction: column; position: relative; z-index: 1; }
+    .main { height: 100%; overflow: hidden; display: flex; flex-direction: column; position: relative; z-index: 1; }
 
-    .list-mode { display: flex; flex-direction: column; height: 100vh; min-height: 0; }
+    .list-mode { display: flex; flex-direction: column; height: 100%; min-height: 0; }
     .list-header {
       padding: 26px 34px 18px; display: flex; align-items: center; justify-content: space-between;
       border-bottom: 1px solid var(--line); flex: 0 0 auto;
@@ -145,7 +174,7 @@
     .empty-state { padding: 80px 34px; text-align: center; color: var(--muted); }
     .empty-state h3 { font-family: 'Instrument Serif', serif; font-size: 32px; color: var(--muted2); font-weight: 400; }
 
-    .edit-mode { display: flex; flex-direction: column; height: 100vh; min-height: 0; }
+    .edit-mode { display: flex; flex-direction: column; height: 100%; min-height: 0; }
     .edit-top {
       padding: 18px 34px; border-bottom: 1px solid var(--line);
       display: flex; align-items: center; justify-content: space-between; flex: 0 0 auto;
@@ -218,8 +247,11 @@
       flex: 1; min-width: 0; padding: 30px 36px; overflow: auto; min-height: 0;
       display: flex; flex-direction: column; gap: 24px;
     }
-    .save-row { margin-top: 4px; }
-    .delete-section { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--line2); }
+    .actions-section {
+      margin-top: 36px; padding-top: 24px; padding-bottom: 36px;
+      border-top: 1px solid var(--line2);
+      display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+    }
     .field-label { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
     .field-label.sm { letter-spacing: .16em; color: var(--muted2); margin-bottom: 9px; }
     .title-input {
@@ -284,11 +316,29 @@
       .poster-col { width: 100% !important; max-width: none; border-right: 0; border-bottom: 1px solid var(--line); max-height: 42vh; }
       .col-resize { display: none; }
     }
+    @media (max-width: 760px) {
+      .site-header nav { padding: 14px 20px 16px; }
+      .site-header .nav-logo img { height: 24px; }
+    }
   </style>
 </head>
 <body>
 
-<div id="login" class="grain">
+<header class="site-header">
+  <nav>
+    <a class="nav-logo" href="/">
+      <img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios">
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/projects/" class="active">Work</a></li>
+      <li style="display:none"><a href="/services/">XYZ/Services</a></li>
+      <li><a href="/contact">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<div id="login" class="grain cms-shell">
   <div class="login-box">
     <div class="login-brand">XYZ</div>
     <div class="login-sub">Work CMS</div>
@@ -298,10 +348,8 @@
   </div>
 </div>
 
-<div id="app" class="grain hidden">
+<div id="app" class="grain hidden cms-shell">
   <nav class="nav-rail">
-    <div class="nav-brand">XYZ</div>
-    <div class="nav-sub">Work CMS</div>
     <div class="nav-section">Pages</div>
     <div id="navMain"></div>
     <div class="nav-section type">By type</div>
@@ -410,12 +458,10 @@
                 <div class="field-label sm">Hero start (seconds)</div>
                 <input class="hero-start-input" id="f-hero-start" type="number" min="0" step="0.1" value="0">
               </div>
-              <div class="save-row">
-                <button class="btn-accent" id="saveDraftBtn" type="button">Save</button>
-              </div>
             </div>
           </div>
-          <div class="delete-section">
+          <div class="actions-section">
+            <button class="btn-accent" id="saveDraftBtn" type="button">Save</button>
             <button class="btn-delete" id="deleteBtn" type="button">Delete project</button>
           </div>
         </div>
