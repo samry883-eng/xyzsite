@@ -299,15 +299,23 @@
     .wu-filter-drop.is-closing .wu-filter-group-label { opacity: 0; transform: translateY(-10px); }
 
     .wu-filter-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 11px 30px;
+      display: grid;
+      row-gap: 11px;
+      column-gap: clamp(20px, 3vw, 30px);
+    }
+    .wu-filter-links--services {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .wu-filter-links--type {
+      grid-template-columns: 1fr;
     }
 
     .wu-filter-link {
-      display: inline-flex;
+      display: flex;
       align-items: center;
       gap: 12px;
+      width: 100%;
+      min-width: 0;
       background: none;
       border: none;
       padding: 0;
@@ -455,6 +463,7 @@
       .wu-toolbar { padding-left: 20px; padding-right: 20px; }
       .wu-main { padding-left: 20px; padding-right: 20px; }
       .wu-filter-body { grid-template-columns: 1fr; gap: 36px; }
+      .wu-filter-links--services { grid-template-columns: 1fr; }
       .wu-filter-inner { padding-left: 20px; padding-right: 20px; }
     }
   </style>
@@ -853,12 +862,13 @@
     FILTER_GROUPS.forEach(function (group, gi) {
       const section = document.createElement('div');
       section.className = 'wu-filter-group';
+      section.dataset.key = group.key;
       const label = document.createElement('div');
       label.className = 'wu-filter-group-label';
       label.textContent = group.label;
       section.appendChild(label);
       const links = document.createElement('div');
-      links.className = 'wu-filter-links';
+      links.className = 'wu-filter-links wu-filter-links--' + group.key;
       group.options.forEach(function (opt) {
         const btn = document.createElement('button');
         btn.type = 'button';
