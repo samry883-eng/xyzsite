@@ -167,6 +167,35 @@
     .row-star { font-size: 13px; }
     .row-live { font-family: 'JetBrains Mono', monospace; font-size: 10px; }
     .row-chevron { color: var(--muted); font-size: 14px; text-align: right; }
+    .row-title-line { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .row-title-line .row-title { flex: 1; min-width: 0; }
+    .row-home-badge {
+      flex: none;
+      font-size: 8px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: #0c0c0c;
+      background: var(--green);
+      padding: 3px 7px;
+      border-radius: 2px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .row-arrows { display: flex; flex-direction: column; gap: 2px; align-items: center; justify-self: end; }
+    .row-arrow {
+      width: 24px; height: 18px;
+      border: 1px solid rgba(244,241,234,.18);
+      background: transparent;
+      color: var(--muted3);
+      font-size: 9px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0;
+    }
+    .row-arrow:hover:not(:disabled) { color: var(--text); border-color: rgba(244,241,234,.35); }
+    .row-arrow:disabled { opacity: .25; cursor: default; }
+    .table-body.home-list .table-row { grid-template-columns: 46px 1fr 150px 70px 70px 56px; }
+    .table-head.home-head { grid-template-columns: 46px 1fr 150px 70px 70px 56px; }
     .empty-state { padding: 80px 34px; text-align: center; color: var(--muted); }
     .empty-state h3 { font-family: 'Instrument Serif', serif; font-size: 32px; color: var(--muted2); font-weight: 400; }
 
@@ -495,6 +524,7 @@ var draft = null;
 var workOrder = null;
 var homeReelOrder = [];
 var homeReelStarts = {};
+var homeOrderSaving = false;
 var activeId = null;
 var dirtyFlag = false;
 var sortable = null;
@@ -588,6 +618,127 @@ function heroStartFor(p) {
   if (Object.prototype.hasOwnProperty.call(homeReelStarts, p.id)) return homeReelStarts[p.id];
   if (p.homeHero && p.homeHero.start != null) return p.homeHero.start;
   return 0;
+}
+
+function isInHomeList(p) {
+  return homeReelOrder.indexOf(p.id) >= 0;
+}
+
+function categoryLabel(slug) {
+  return {
+    'visual-effects': 'Visual Effects',
+    sound: 'Sound',
+    ai: 'AI',
+    'making-of': 'Making Of'
+  }[slug] || slug || '';
+}
+
+function findHomeItemForProject(p, list) {
+  list = list || (workOrder && workOrder.homeList) || [];
+  var i;
+  for (i = 0; i < list.length; i++) {
+    if (matchProjectToHomeItem(list[i], [p])) return list[i];
+  }
+  return null;
+}
+
+function buildHomeItemFromProject(p) {
+  var existing = findHomeItemForProject(p);
+  if (existing) return existing;
+  return {
+    key: homeKeyForProject(p),
+    client: p.client,
+    title: p.title,
+    start: String(heroStartFor(p)),
+    video: p.video || '',
+    cat: categoryLabel(p.category),
+    mkey: catalogMkey(p)
+  };
+}
+
+function applyHomeReelOrderFromIds(ids) {
+  if (!workOrder) workOrder = { homeList: [] };
+  var oldList = (workOrder.homeList || []).slice();
+  var newList = [];
+  ids.forEach(function (id) {
+    var p = draft.projects.find(function (x) { return x.id === id; });
+    if (!p) return;
+    newList.push(findHomeItemForProject(p, oldList) || buildHomeItemFromProject(p));
+  });
+  workOrder.homeList = newList;
+  buildHomeReelIndex(draft.projects);
+}
+
+function saveHomeOrder() {
+  if (homeOrderSaving) return Promise.resolve();
+  homeOrderSaving = true;
+  setStatusMsg('Saving hero order…');
+  return fetch('/api/site-order', {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ order: workOrder })
+  })
+    .then(function (r) {
+      return r.json().catch(function () { return null; }).then(function (d) {
+        return { status: r.status, data: d };
+      });
+    })
+    .then(function (res) {
+      homeOrderSaving = false;
+      var d = res.data;
+      if (d && d.ok) {
+        var msg = d.warning || (d.redeployed ? 'Hero order saved — redeploy started (~30s)' : 'Hero order saved');
+        setStatusMsg(msg);
+        window.setTimeout(function () {
+          if (!dirtyFlag) setStatusMsg('All published');
+        }, 3500);
+      } else {
+        setStatusMsg((d && d.error) || ('Hero order save failed (HTTP ' + res.status + ')'));
+      }
+      return d;
+    })
+    .catch(function (e) {
+      homeOrderSaving = false;
+      setStatusMsg('Hero order save failed' + (e && e.message ? ': ' + e.message : ''));
+    });
+}
+
+function moveHomeReel(id, dir) {
+  var list = filteredProjects().map(function (p) { return p.id; });
+  var idx = list.indexOf(id);
+  if (idx < 0) return;
+  var next = idx + dir;
+  if (next < 0 || next >= list.length) return;
+  var tmp = list[idx];
+  list[idx] = list[next];
+  list[next] = tmp;
+  applyHomeReelOrderFromIds(list);
+  renderList();
+  saveHomeOrder();
+}
+
+function buildRowArrows(p, idx, total) {
+  var box = el('div', 'row-arrows');
+  var up = el('button', 'row-arrow', '▲');
+  up.type = 'button';
+  up.title = 'Move up';
+  up.disabled = idx === 0;
+  up.onclick = function (e) {
+    e.stopPropagation();
+    moveHomeReel(p.id, -1);
+  };
+  var dn = el('button', 'row-arrow', '▼');
+  dn.type = 'button';
+  dn.title = 'Move down';
+  dn.disabled = idx >= total - 1;
+  dn.onclick = function (e) {
+    e.stopPropagation();
+    moveHomeReel(p.id, 1);
+  };
+  box.appendChild(up);
+  box.appendChild(dn);
+  return box;
 }
 
 function inferCategory(services) {
@@ -866,12 +1017,17 @@ function renderList() {
   var list = filteredProjects();
   var listEl = document.getElementById('list');
   listEl.innerHTML = '';
+  listEl.className = currentPage === 'home' ? 'table-body home-list' : 'table-body';
   document.getElementById('pageTitle').textContent = pageTitle(currentPage);
-  var subSuffix = currentPage === 'home' ? ' · hero reel order' : ' · drag № to reorder';
+  var subSuffix = currentPage === 'home'
+    ? ' · drag № or use ▲▼ to reorder hero reel'
+    : ' · drag № to reorder';
   document.getElementById('pageSub').textContent = list.length + ' project' + (list.length === 1 ? '' : 's') + subSuffix;
   var tableHead = document.querySelector('.table-head');
-  if (tableHead && tableHead.children[2]) {
-    tableHead.children[2].textContent = currentPage === 'home' ? 'Start' : 'Category';
+  if (tableHead) {
+    tableHead.className = currentPage === 'home' ? 'table-head home-head' : 'table-head';
+    if (tableHead.children[2]) tableHead.children[2].textContent = currentPage === 'home' ? 'Start' : 'Category';
+    if (tableHead.children[5]) tableHead.children[5].textContent = currentPage === 'home' ? 'Order' : '';
   }
 
   if (!list.length) {
@@ -897,7 +1053,10 @@ function renderList() {
     proj.appendChild(thumb);
     var text = el('div');
     text.style.minWidth = '0';
-    text.appendChild(el('div', 'row-title', p.title || 'Untitled'));
+    var titleLine = el('div', 'row-title-line');
+    titleLine.appendChild(el('div', 'row-title', p.title || 'Untitled'));
+    if (isInHomeList(p)) titleLine.appendChild(el('span', 'row-home-badge', 'Home'));
+    text.appendChild(titleLine);
     text.appendChild(el('div', 'row-client', p.client || '—'));
     proj.appendChild(text);
     row.appendChild(proj);
@@ -910,9 +1069,10 @@ function renderList() {
     var live = el('span', 'row-live', isLive(p) ? '● on' : '○ draft');
     live.style.color = isLive(p) ? '#7fdc9a' : '#dcbf7f';
     row.appendChild(live);
-    row.appendChild(el('span', 'row-chevron', '›'));
+    if (currentPage === 'home') row.appendChild(buildRowArrows(p, i, list.length));
+    else row.appendChild(el('span', 'row-chevron', '›'));
     row.onclick = function (e) {
-      if (e.target.closest('.row-num')) return;
+      if (e.target.closest('.row-num') || e.target.closest('.row-arrows') || e.target.closest('.row-arrow')) return;
       if (activeId) syncActiveFromForm();
       openEditor(p.id);
     };
@@ -921,13 +1081,18 @@ function renderList() {
 
   if (sortable) sortable.destroy();
   sortable = null;
-  if (currentPage === 'home') return;
   sortable = new Sortable(listEl, {
     animation: 150,
     handle: '.row-num',
     draggable: '.table-row',
     onEnd: function () {
       var ids = Array.prototype.map.call(listEl.querySelectorAll('.table-row'), function (r) { return r.dataset.id; });
+      if (currentPage === 'home') {
+        applyHomeReelOrderFromIds(ids);
+        renderList();
+        saveHomeOrder();
+        return;
+      }
       var map = {};
       draft.projects.forEach(function (p) { map[p.id] = p; });
       var visible = ids.map(function (id) { return map[id]; }).filter(Boolean);
