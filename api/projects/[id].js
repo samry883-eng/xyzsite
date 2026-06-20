@@ -1,4 +1,4 @@
-import { handleProjectById } from '../lib/projects-api-handlers.mjs';
+import { handleProjectById } from '../../lib/projects-api-handlers.mjs';
 
 export default function handler(req, res) {
   const id = req.query?.id;

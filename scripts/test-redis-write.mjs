@@ -30,7 +30,7 @@ if (!r) {
   process.exit(1);
 }
 
-console.log('client type:', r.constructor?.name || 'REST fallback');
+console.log('client:', r.client || r.constructor?.name || 'REST');
 
 try {
   await r.set('projects_catalog_json_test', payload);
