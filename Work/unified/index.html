@@ -310,10 +310,10 @@
     .wu-filter-drop.is-closing .wu-filter-group-label { opacity: 0; transform: translateY(-10px); }
 
     .wu-filter-links {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 7px 18px;
-      align-items: start;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 11px 30px;
+      align-items: flex-start;
     }
 
     .wu-filter-link {
@@ -472,7 +472,6 @@
       .wu-toolbar { padding: 28px 20px 16px; }
       .wu-main { padding-left: 20px; padding-right: 20px; }
       .wu-filter-body { grid-template-columns: 1fr; gap: 36px; }
-      .wu-filter-links { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
       .wu-filter-inner { padding-left: 20px; padding-right: 20px; }
     }
   </style>
