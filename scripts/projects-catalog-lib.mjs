@@ -1,0 +1,44 @@
+import fs from 'fs';
+import path from 'path';
+import { buildDefaultCatalog } from '../lib/projects-default-catalog.mjs';
+
+export async function fetchProjectsCatalog(root) {
+  let catalog = null;
+  const EC = process.env.EDGE_CONFIG_ID;
+  const RT = process.env.EDGE_CONFIG_READ_TOKEN;
+  if (EC && RT) {
+    try {
+      const r = await fetch(`https://edge-config.vercel.com/${EC}/item/projectsCatalog?token=${RT}`);
+      if (r.ok) catalog = await r.json();
+    } catch {}
+  }
+  if (!catalog) {
+    try {
+      const r = await fetch('https://www.xyzstudios.co/api/projects');
+      if (r.ok) {
+        const j = await r.json();
+        catalog = j && j.catalog;
+      }
+    } catch {}
+  }
+  if (!catalog || !catalog.projects?.length) catalog = buildDefaultCatalog();
+  return catalog;
+}
+
+export function injectProjectsCatalog(html, catalog) {
+  const payload = JSON.stringify(catalog).replace(/</g, '\\u003c');
+  const next = html.replace(
+    /window\.__PROJECTS_CATALOG=[\s\S]*?;\/\*XYZ_BUILD_PROJECTS\*\//,
+    'window.__PROJECTS_CATALOG=' + payload + ';/*XYZ_BUILD_PROJECTS*/',
+  );
+  return next === html ? null : next;
+}
+
+export async function injectProjectsCatalogFile(filePath, root) {
+  const catalog = await fetchProjectsCatalog(root);
+  let html = fs.readFileSync(filePath, 'utf8');
+  const next = injectProjectsCatalog(html, catalog);
+  if (!next) return { ok: false, count: 0 };
+  fs.writeFileSync(filePath, next);
+  return { ok: true, count: catalog.projects.length };
+}

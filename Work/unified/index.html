@@ -8,6 +8,9 @@
   <link rel="preconnect" href="https://r2.vidzflow.com" crossorigin>
   <link rel="stylesheet" href="/assets/xyz-nav-font.css">
   <script>
+  window.__PROJECTS_CATALOG=null;/*XYZ_BUILD_PROJECTS*/
+  </script>
+  <script>
   window.__WORK_DATA = {};
   (function (d) {
     d.CDN = 'https://cdn.prod.website-files.com/69174740184591f142f019c1/';
@@ -676,6 +679,28 @@
   }
 
   const PROJECTS = [];
+  const baked = window.__PROJECTS_CATALOG;
+  if (baked && baked.projects && baked.projects.length) {
+    const catLabel = function (slug) {
+      return ({ 'visual-effects': 'Visual Effects', sound: 'Sound', ai: 'AI', 'making-of': 'Making Of' })[slug] || slug;
+    };
+    baked.projects.slice().sort(function (a, b) { return (a.sortOrder || 0) - (b.sortOrder || 0); }).forEach(function (p) {
+      PROJECTS.push({
+        id: p.id,
+        client: p.client,
+        title: p.title,
+        video: p.video,
+        poster: p.poster,
+        url: p.href,
+        category: catLabel(p.category),
+        services: p.services || [],
+        type: [p.projectType || 'Commercial'],
+        selected: !!p.featured,
+        clipStart: p.clipStart,
+        clipEnd: p.clipEnd,
+      });
+    });
+  } else {
   ROWS.forEach(function (row) {
     row.cards.forEach(function (card) {
       const key = normalizeKey(card.title, card.client);
@@ -696,6 +721,7 @@
       });
     });
   });
+  }
 
   const state = { mode: 'selected', filters: { services: [], type: [] }, filterOpen: false };
   let closeTimer = null;

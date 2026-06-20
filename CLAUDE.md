@@ -29,7 +29,10 @@ This was rebuilt to kill a whole class of bugs. How it works now:
 ## Gotchas
 
 - The original pre-reel home (commit ~`8db77a4`) was a clean static Slater slideshow with no reel JS - that is the behavioral baseline.
-- `Capabilities/` admin + `api/capabilities/*` are a separate system (deck access grants), unrelated to the home hero.\n
+- **Home click modes:** see `Home/archive/README.md`. Current = project-page navigation (`126e7c9+`). Archived in-page fullscreen = tag `savepoint-home-inpage-fullscreen` (`71c135d`) + `Home/archive/index-inpage-fullscreen-71c135d.html`.
+- Returning from a project opened via the hero reel uses `?from=home&slide=N` + `Work/assets/xyz-home-return.js` (white slide, no loader replay).
+- `Capabilities/` admin + `api/capabilities/*` are a separate system (deck access grants), unrelated to the home hero.
+- **Work CMS (Phase 1):** projects catalog in Edge Config key `projectsCatalog`; APIs at `/api/projects*`; admin at `/work/admin`; baked to `window.__PROJECTS_CATALOG` on `/projects-v2` at build (same pattern as home order).
 
 ---
 

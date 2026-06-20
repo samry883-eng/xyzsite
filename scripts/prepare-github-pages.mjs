@@ -5,6 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { loadMkeyMap, slimHomeRow } from './home-order-lib.mjs';
+import { injectProjectsCatalogFile } from './projects-catalog-lib.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
@@ -64,6 +65,8 @@ copyDir(path.join(root, 'Home', 'assets'), path.join(dist, 'assets'));
 
 copyDir(path.join(root, 'Work'), path.join(dist, 'work'));
 
+// Work CMS admin lives at /work/admin.html (also copied via Work dir)
+
 // Inject coordinated home-return script on project pages
 function injectHomeReturn(dir) {
   const tag =
@@ -89,6 +92,11 @@ copyFile(path.join(root, 'Work', 'index.html'), path.join(dist, 'projects', 'ind
 
 fs.mkdirSync(path.join(dist, 'projects-v2'), { recursive: true });
 copyFile(path.join(root, 'Work', 'unified', 'index.html'), path.join(dist, 'projects-v2', 'index.html'));
+try {
+  const inj = await injectProjectsCatalogFile(path.join(dist, 'projects-v2', 'index.html'), root);
+  if (inj.ok) console.log('[projects-catalog] injected', inj.count, 'projects');
+  else console.warn('[projects-catalog] marker not found; using inline fallback');
+} catch (e) { console.warn('[projects-catalog] inject failed:', e && e.message); }
 
 fs.mkdirSync(path.join(dist, 'projects-v3'), { recursive: true });
 copyFile(path.join(root, 'Work', 'unified-v3', 'index.html'), path.join(dist, 'projects-v3', 'index.html'));

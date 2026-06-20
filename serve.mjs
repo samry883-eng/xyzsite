@@ -35,6 +35,9 @@ import {
 } from './lib/capabilities-auth.mjs';
 import { isAdminAuthorized } from './lib/capabilities-admin-guard.mjs';
 import { getAllowlistSnapshot } from './lib/capabilities-allowlist.mjs';
+import { handleProjectsApi } from './lib/projects-api-handlers.mjs';
+import { getWorkOrder, setWorkOrder } from './lib/site-store.mjs';
+import { triggerProductionRedeploy } from './lib/vercel-redeploy.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = Number(process.env.PORT) || 2001;
@@ -401,6 +404,27 @@ async function handleCapabilitiesApi(req, res, urlPath) {
   res.end('Not found');
 }
 
+async function handleSiteOrderApi(req, res) {
+  const sec = sessionSecret();
+  if (req.method === 'GET') {
+    const order = await getWorkOrder();
+    return json(res, 200, { ok: true, order: order || null });
+  }
+  if (req.method === 'POST') {
+    if (!isAdminAuthorized(req, null, sec)) return json(res, 401, { ok: false, error: 'Unauthorized' });
+    let body;
+    try {
+      body = JSON.parse((await readBody(req)).toString('utf8') || '{}');
+    } catch {
+      return json(res, 400, { ok: false, error: 'Invalid JSON' });
+    }
+    const ok = await setWorkOrder(body.order || {});
+    const redeployed = ok ? await triggerProductionRedeploy() : false;
+    return json(res, ok ? 200 : 503, { ok, redeployed, error: ok ? undefined : 'Save failed' });
+  }
+  return json(res, 405, { ok: false, error: 'Method not allowed' });
+}
+
 function getStaticFilePath(urlPath) {
   let p = urlPath;
   if (p === '/') p = '/index.html';
@@ -458,6 +482,8 @@ function getStaticFilePath(urlPath) {
     filePath = path.join(__dirname, 'Capabilities', 'nda.html');
   } else if (p === '/capabilities/admin' || p === '/capabilities/admin/' || p === '/capabilities/admin.html') {
     filePath = path.join(__dirname, 'Capabilities', 'admin.html');
+  } else if (p === '/work/admin' || p === '/work/admin/' || p === '/work/admin.html') {
+    filePath = path.join(WORK, 'admin.html');
   } else if (p === '/admin' || p === '/admin/' || p === '/admin.html') {
     filePath = path.join(__dirname, 'Admin', 'index.html');
   } else if (p === '/capabilities' || p === '/capabilities/' || p === '/Capabilities' || p === '/Capabilities/') {
@@ -510,6 +536,16 @@ http.createServer((req, res) => {
 
       if (urlPath.startsWith('/api/capabilities/')) {
         await handleCapabilitiesApi(req, res, urlPath);
+        return;
+      }
+
+      if (urlPath.startsWith('/api/projects')) {
+        await handleProjectsApi(req, res, urlPath);
+        return;
+      }
+
+      if (urlPath === '/api/site-order') {
+        await handleSiteOrderApi(req, res);
         return;
       }
 
