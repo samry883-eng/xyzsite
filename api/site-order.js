@@ -20,8 +20,19 @@ export default async function handler(req, res) {
     let body;
     try { body = await readJsonBody(req); } catch { json(res, 400, { ok: false, error: 'Invalid JSON' }); return; }
     const ok = await setWorkOrder(body.order || {});
-    const redeployed = ok ? await triggerProductionRedeploy() : false;
-    json(res, ok ? 200 : 503, { ok, redeployed, error: ok ? undefined : 'Save failed (Edge Config not configured?)' });
+    let redeployed = false;
+    let warning;
+    if (ok) {
+      const rd = await triggerProductionRedeploy();
+      redeployed = rd.ok;
+      if (!rd.ok) warning = `Saved to Edge Config, but redeploy failed: ${rd.error}`;
+    }
+    json(res, ok ? 200 : 503, {
+      ok,
+      redeployed,
+      error: ok ? undefined : 'Save failed (Edge Config not configured?)',
+      warning,
+    });
     return;
   }
   json(res, 405, { ok: false, error: 'Method not allowed' });

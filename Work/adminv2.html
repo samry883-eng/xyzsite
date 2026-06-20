@@ -1031,10 +1031,11 @@ function saveCatalog(redeploy, btn, successMsg) {
         draft = cloneCatalog(catalog);
         var msg = successMsg;
         if (!msg) {
-          if (d.redeployed) msg = 'Site updated — redeploy started (~30s)';
+          if (d.warning) msg = d.warning;
+          else if (d.redeployed) msg = 'Site updated — redeploy started (~30s)';
           else if (d.storage === 'file') msg = 'Draft saved locally (data/projects-catalog.json)';
           else if (d.storage === 'redis') msg = redeploy ? 'Site updated — saved to Redis, redeploy started (~30s)' : 'Draft saved to Redis';
-          else msg = 'Draft saved to Edge Config';
+          else msg = 'Draft saved';
         }
         setLive(msg);
         renderNav();
@@ -1160,7 +1161,7 @@ document.getElementById('deleteBtn').onclick = function () {
   renderNav();
 };
 
-document.getElementById('saveDraftBtn').onclick = function () { saveCatalog(false, this, 'Draft saved to Edge Config'); };
+document.getElementById('saveDraftBtn').onclick = function () { saveCatalog(false, this); };
 document.getElementById('updateSiteBtn').onclick = function () { saveCatalog(true, this); };
 
 document.getElementById('resetBtn').onclick = function () {
