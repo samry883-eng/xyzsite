@@ -342,22 +342,6 @@
       "destination": "/capabilities/admin.html"
     },
     {
-      "source": "/admin",
-      "destination": "/admin/index.html"
-    },
-    {
-      "source": "/admin/",
-      "destination": "/admin/index.html"
-    },
-    {
-      "source": "/work/admin",
-      "destination": "/work/admin.html"
-    },
-    {
-      "source": "/work/admin/",
-      "destination": "/work/admin.html"
-    },
-    {
       "source": "/work/adminv2",
       "destination": "/work/adminv2.html"
     },
