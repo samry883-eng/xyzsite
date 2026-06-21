@@ -6,6 +6,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { loadMkeyLookup, slimHomeRow, fetchWorkOrderForBuild } from './home-order-lib.mjs';
 import { injectProjectsCatalogFile, fetchProjectsCatalog, writeProjectsServicesMap } from './projects-catalog-lib.mjs';
+import { scaffoldMissingProjectPages } from '../lib/scaffold-project-page.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
@@ -57,6 +58,16 @@ try {
 copyDir(path.join(root, 'Home', 'assets'), path.join(dist, 'assets'));
 
 copyDir(path.join(root, 'Work'), path.join(dist, 'work'));
+
+// Scaffold any catalog project pages missing from Work/ (writes into dist/work/)
+try {
+  const catalogForPages = await fetchProjectsCatalog(root);
+  const scaffolded = scaffoldMissingProjectPages(path.join(dist, 'work'), catalogForPages);
+  if (scaffolded.count) {
+    console.log('[scaffold-pages] created', scaffolded.count, 'preview page(s) at build');
+    scaffolded.created.forEach((p) => console.log('  +', p.category + '/' + p.slug));
+  }
+} catch (e) { console.warn('[scaffold-pages] failed:', e && e.message); }
 
 // Slim services map for project preview pages (xyz-project-services.js)
 try {

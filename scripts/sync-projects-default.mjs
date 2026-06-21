@@ -5,7 +5,7 @@
  */
 import '../load-env-local.mjs';
 import { mergeDefaultCatalogMissing } from '../lib/projects-default-catalog.mjs';
-import { getProjectsCatalog, saveProjectsCatalog } from '../lib/projects-store.mjs';
+import { getProjectsCatalogRaw, saveProjectsCatalog, normalizeCatalog } from '../lib/projects-store.mjs';
 import { redisConfigured, redisConfigHelp } from '../lib/upstash-redis.mjs';
 import { triggerProductionRedeploy } from '../lib/vercel-redeploy.mjs';
 
@@ -16,10 +16,11 @@ if (process.env.VERCEL && !redisConfigured()) {
   process.exit(1);
 }
 
-const current = (await getProjectsCatalog()) || { version: 1, projects: [] };
-const { catalog, added } = mergeDefaultCatalogMissing(current);
+const current = (await getProjectsCatalogRaw()) || { version: 1, projects: [] };
+const { catalog: merged, added, repaired } = mergeDefaultCatalogMissing(current);
+const catalog = normalizeCatalog(merged, { applyDefaults: true }) || merged;
 
-if (!added) {
+if (!added && !repaired) {
   console.log('[sync-default] catalog already complete:', catalog.projects.length, 'projects');
   process.exit(0);
 }
@@ -30,7 +31,7 @@ if (!saved.ok) {
   process.exit(1);
 }
 
-console.log('[sync-default] added', added, 'project(s); total', catalog.projects.length, 'via', saved.storage);
+console.log('[sync-default] added', added, 'repaired', repaired, 'project(s); total', catalog.projects.length, 'via', saved.storage);
 if (redeploy) {
   const rd = await triggerProductionRedeploy();
   console.log('[sync-default] redeploy', rd.ok ? 'triggered' : 'failed', rd.error || '');

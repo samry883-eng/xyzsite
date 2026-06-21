@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { buildDefaultCatalog, mergeDefaultCatalogMissing } from '../lib/projects-default-catalog.mjs';
-import { sortServices } from '../lib/projects-store.mjs';
+import { normalizeCatalog, sortServices } from '../lib/projects-store.mjs';
 import { redisConfigured, redisGet } from '../lib/upstash-redis.mjs';
 
 const REDIS_KEY = 'projects_catalog_json';
@@ -62,12 +62,13 @@ export async function fetchProjectsCatalog(root) {
     catalog = buildDefaultCatalog();
     source = 'default';
   } else {
-    const { catalog: merged, added } = mergeDefaultCatalogMissing(catalog);
-    if (added) {
+    const { catalog: merged, added, repaired } = mergeDefaultCatalogMissing(catalog);
+    if (added || repaired) {
       catalog = merged;
-      source = `${source || 'unknown'}+default-merge`;
+      source = `${source || 'unknown'}+default-merge${repaired ? '+repair' : ''}`;
     }
   }
+  catalog = normalizeCatalog(catalog, { applyDefaults: true }) || catalog;
   if (source) console.log('[projects-catalog] source:', source, 'count:', catalog.projects.length);
   return catalog;
 }
