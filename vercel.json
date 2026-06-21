@@ -312,6 +312,51 @@
       "source": "/Capabilities",
       "destination": "/capabilities/",
       "permanent": true
+    },
+    {
+      "source": "/work",
+      "destination": "/projects-v2/",
+      "permanent": true
+    },
+    {
+      "source": "/work/",
+      "destination": "/projects-v2/",
+      "permanent": true
+    },
+    {
+      "source": "/work.html",
+      "destination": "/projects-v2/",
+      "permanent": true
+    },
+    {
+      "source": "/work/index.html",
+      "destination": "/projects-v2/",
+      "permanent": true
+    },
+    {
+      "source": "/projects",
+      "destination": "/projects-v2/",
+      "permanent": true
+    },
+    {
+      "source": "/projects/",
+      "destination": "/projects-v2/",
+      "permanent": true
+    },
+    {
+      "source": "/projects/index.html",
+      "destination": "/projects-v2/",
+      "permanent": true
+    },
+    {
+      "source": "/Work",
+      "destination": "/projects-v2/",
+      "permanent": true
+    },
+    {
+      "source": "/Work/",
+      "destination": "/projects-v2/",
+      "permanent": true
     }
   ],
   "rewrites": [

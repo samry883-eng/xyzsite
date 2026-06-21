@@ -905,7 +905,7 @@ function makeHTML(card, catLabel, framesHTML = '') {
     pageOut.style.pointerEvents = 'all';
     setTimeout(() => {
       if (document.referrer && new URL(document.referrer).host === window.location.host) history.back();
-      else window.location.href = '/projects/';
+      else window.location.href = '/projects-v2/';
     }, 420);
   }
   backBtn.addEventListener('click', () => {

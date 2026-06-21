@@ -625,6 +625,23 @@ http.createServer((req, res) => {
         return;
       }
 
+      const workListingRedirects = new Set([
+        '/work',
+        '/work/',
+        '/work.html',
+        '/work/index.html',
+        '/projects',
+        '/projects/',
+        '/projects/index.html',
+        '/Work',
+        '/Work/',
+      ]);
+      if (workListingRedirects.has(urlPath)) {
+        res.writeHead(308, { Location: '/projects-v2/' });
+        res.end();
+        return;
+      }
+
       const spec = getStaticFilePath(urlPath);
       if (req.method === 'HEAD') {
         fs.stat(spec.filePath, (err) => {
