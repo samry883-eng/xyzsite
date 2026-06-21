@@ -1367,7 +1367,11 @@ function postPosterToApi(projectId, imageBase64) {
     .then(function (res) {
       var d = res.data;
       if (d && d.ok && d.poster) return { ok: true, poster: d.poster, catalogUpdated: !!d.catalogUpdated };
-      return { ok: false, error: (d && d.error) || ('HTTP ' + res.status) };
+      var endpoint = 'POST /api/projects/poster/' + encodeURIComponent(projectId);
+      if (res.status === 404) {
+        return { ok: false, error: 'Poster API not found (' + endpoint + ')' };
+      }
+      return { ok: false, error: (d && d.error) || ('HTTP ' + res.status + ' on ' + endpoint) };
     })
     .catch(function (e) {
       return { ok: false, error: 'Network error' + (e && e.message ? ': ' + e.message : '') };
@@ -2138,7 +2142,7 @@ function saveCatalog(redeploy, btn, successMsg) {
         }
         afterPublish();
       } else {
-        var err = (d && d.error) || ('HTTP ' + res.status + (res.status === 401 ? ' — sign in again' : ''));
+        var err = (d && d.error) || ('HTTP ' + res.status + (res.status === 401 ? ' — sign in again' : '') + ' on PUT /api/projects');
         setStatusMsg(err);
       }
       return d;
