@@ -302,6 +302,10 @@
   ],
   "rewrites": [
     {
+      "source": "/api/projects/poster/:id",
+      "destination": "/api/project-poster/:id"
+    },
+    {
       "source": "/work",
       "destination": "/work/unified/index.html"
     },

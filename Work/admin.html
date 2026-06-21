@@ -1353,7 +1353,7 @@ function applyPosterResult(p, posterUrl) {
 }
 
 function postPosterToApi(projectId, imageBase64) {
-  return fetch('/api/projects/poster/' + encodeURIComponent(projectId), {
+  return fetch('/api/project-poster/' + encodeURIComponent(projectId), {
     method: 'POST',
     credentials: 'same-origin',
     headers: { 'Content-Type': 'application/json' },
@@ -1367,7 +1367,7 @@ function postPosterToApi(projectId, imageBase64) {
     .then(function (res) {
       var d = res.data;
       if (d && d.ok && d.poster) return { ok: true, poster: d.poster, catalogUpdated: !!d.catalogUpdated };
-      var endpoint = 'POST /api/projects/poster/' + encodeURIComponent(projectId);
+      var endpoint = 'POST /api/project-poster/' + encodeURIComponent(projectId);
       if (res.status === 404) {
         return { ok: false, error: 'Poster API not found (' + endpoint + ')' };
       }
