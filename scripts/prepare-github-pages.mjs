@@ -4,7 +4,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { loadMkeyMap, slimHomeRow, fetchWorkOrderForBuild } from './home-order-lib.mjs';
+import { loadMkeyLookup, slimHomeRow, fetchWorkOrderForBuild } from './home-order-lib.mjs';
 import { injectProjectsCatalogFile } from './projects-catalog-lib.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -45,8 +45,8 @@ try {
     const idxFile = path.join(dist, 'index.html');
     let s = fs.readFileSync(idxFile, 'utf8');
     const previewDir = path.join(root, 'Home', 'assets', 'home-previews');
-    const mkeyMap = loadMkeyMap(root);
-    const slim = homeList.map((x) => slimHomeRow(x, previewDir, mkeyMap));
+    const lookup = loadMkeyLookup(root);
+    const slim = homeList.map((x) => slimHomeRow(x, previewDir, lookup));
     const payload = JSON.stringify({ homeList: slim }).replace(/</g, '\\u003c');
     s = s.replace(/window\.__HOME_ORDER=[\s\S]*?;\/\*XYZ_BUILD_ORDER\*\//, 'window.__HOME_ORDER=' + payload + ';/*XYZ_BUILD_ORDER*/');
     fs.writeFileSync(idxFile, s);
