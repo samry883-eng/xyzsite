@@ -519,7 +519,7 @@
           <button class="btn-ghost" id="syncBtn" type="button">Sync missing</button>
           <button class="btn-ghost" id="seedBtn" type="button">Seed defaults</button>
           <button class="btn-ghost" id="resetBtn" type="button">Discard</button>
-          <button class="btn-accent" id="updateSiteBtn" type="button">Update site</button>
+          <button class="btn-accent" id="updateSiteBtn" type="button" title="Save catalog + hero order to Redis/Edge Config and trigger a production rebuild (~30s). Draft saves do not redeploy. If Vercel deploy limit is reached, data is still saved — retry later or push to GitHub main.">Update site</button>
           <button class="btn-accent" id="addBtnTop" type="button">+ Add project</button>
         </div>
       </div>
@@ -1100,15 +1100,15 @@ function applyHomeReelOrderFromIds(ids) {
   });
 }
 
-function saveHomeOrder() {
+function saveHomeOrder(redeploy) {
   if (homeOrderSaving) return Promise.resolve();
   homeOrderSaving = true;
-  setStatusMsg('Saving hero order…');
+  setStatusMsg(redeploy ? 'Saving hero order & publishing…' : 'Saving hero order…');
   return fetch('/api/site-order', {
     method: 'POST',
     credentials: 'same-origin',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ order: workOrder })
+    body: JSON.stringify({ order: workOrder, redeploy: !!redeploy })
   })
     .then(function (r) {
       return r.json().catch(function () { return null; }).then(function (d) {
@@ -1119,7 +1119,12 @@ function saveHomeOrder() {
       homeOrderSaving = false;
       var d = res.data;
       if (d && d.ok) {
-        var msg = d.warning || (d.redeployed ? 'Hero order saved — redeploy started (~30s)' : 'Hero order saved');
+        var msg = d.warning;
+        if (!msg) {
+          if (d.redeployed) msg = 'Hero order saved — redeploy started (~30s)';
+          else if (d.redeploySkipped) msg = 'Hero order saved (publish skipped — see status)';
+          else msg = 'Hero order saved';
+        }
         setStatusMsg(msg);
         window.setTimeout(function () {
           if (!dirtyFlag) setStatusMsg('All published');
@@ -2074,6 +2079,23 @@ function syncWorkOrderFromDraft() {
   applyHomeReelOrderFromIds(homeReelOrder.slice());
 }
 
+function publishStatusMessage(d, redeploy) {
+  if (!d) return redeploy ? 'Update failed' : 'Save failed';
+  if (d.warning) return d.warning;
+  if (d.redeployed) return 'Site updated — rebuild started (~30s)';
+  if (d.redeploySkipped) {
+    return redeploy
+      ? 'Saved — publish skipped (deploy limit or cooldown). Data is live in admin/API; retry Update site later or push to GitHub main.'
+      : 'Draft saved';
+  }
+  if (!redeploy) {
+    if (d.storage === 'file') return 'Draft saved locally (data/projects-catalog.json)';
+    if (d.storage === 'redis') return 'Draft saved to Redis';
+    return 'Draft saved';
+  }
+  return 'Saved to Redis — publish did not start';
+}
+
 function saveCatalog(redeploy, btn, successMsg) {
   var pendingPoster = posterPendingBase64;
   if (btn) btn.disabled = true;
@@ -2116,14 +2138,7 @@ function saveCatalog(redeploy, btn, successMsg) {
         catalog = cloneCatalog(d.catalog || draft);
         draft = cloneCatalog(catalog);
         reconcileHomeReelState();
-        var msg = successMsg;
-        if (!msg) {
-          if (d.warning) msg = d.warning;
-          else if (d.redeployed) msg = 'Site updated — redeploy started (~30s)';
-          else if (d.storage === 'file') msg = 'Draft saved locally (data/projects-catalog.json)';
-          else if (d.storage === 'redis') msg = redeploy ? 'Site updated — saved to Redis, redeploy started (~30s)' : 'Draft saved to Redis';
-          else msg = 'Draft saved';
-        }
+        var msg = successMsg || publishStatusMessage(d, redeploy);
         var afterPublish = function () {
           setLive(msg);
           renderNav();
@@ -2131,11 +2146,11 @@ function saveCatalog(redeploy, btn, successMsg) {
           else renderList();
         };
         if (redeploy && workOrder) {
-          return saveHomeOrder().then(function (homeRes) {
-            if (homeRes && homeRes.ok && homeRes.redeployed && !d.redeployed) {
-              msg = 'Catalog saved — hero order redeploy started (~30s)';
-            } else if (homeRes && homeRes.warning) {
-              msg = msg + ' · ' + homeRes.warning;
+          return saveHomeOrder(false).then(function (homeRes) {
+            if (homeRes && homeRes.ok && homeRes.warning && !d.redeployed) {
+              msg = d.warning || homeRes.warning || msg;
+            } else if (homeRes && homeRes.ok && !d.redeployed && !d.redeploySkipped && homeRes.redeploySkipped) {
+              msg = homeRes.warning || msg;
             }
             afterPublish();
           });
