@@ -1,5 +1,6 @@
 import {
   handleProjectById,
+  handleProjectPoster,
   handleProjectsCollection,
   handleProjectsRedisHealth,
   handleProjectsSeed,
@@ -32,6 +33,9 @@ export default async function handler(req, res) {
   if (path === 'redis-health') return handleProjectsRedisHealth(req, res);
   if (path === 'seed') return handleProjectsSeed(req, res);
   if (path === 'sync-default') return handleProjectsSyncDefault(req, res);
+  if (parts[0] === 'poster' && parts.length === 2 && parts[1]) {
+    return handleProjectPoster(req, res, decodeURIComponent(parts[1]));
+  }
   if (parts.length === 1 && parts[0]) {
     return handleProjectById(req, res, decodeURIComponent(parts[0]));
   }
