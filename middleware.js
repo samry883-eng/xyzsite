@@ -5,7 +5,19 @@ const COOKIE = 'xyz_capabilities';
 const NDA_COOKIE = 'xyz_capabilities_nda';
 
 export const config = {
-  matcher: ['/capabilities', '/capabilities/:path*'],
+  matcher: [
+    '/capabilities',
+    '/capabilities/:path*',
+    '/work',
+    '/work/',
+    '/work.html',
+    '/work/index.html',
+    '/projects',
+    '/projects/',
+    '/projects/index.html',
+    '/Work',
+    '/Work/',
+  ],
 };
 
 const PROTECT_HEADERS = {
@@ -63,15 +75,37 @@ function isNdaDeferredPath(p) {
   );
 }
 
+function isWorkListingPath(pathname) {
+  const p = pathname.toLowerCase();
+  return (
+    p === '/work' ||
+    p === '/work/' ||
+    p === '/work.html' ||
+    p === '/work/index.html' ||
+    p === '/projects' ||
+    p === '/projects/' ||
+    p === '/projects/index.html'
+  );
+}
+
 export default async function middleware(request) {
+  const url = new URL(request.url);
+  const p = url.pathname.toLowerCase();
+
+  if (isWorkListingPath(url.pathname)) {
+    const dest = new URL('/projects-v2/', request.url);
+    dest.search = url.search;
+    return Response.redirect(dest, 308);
+  }
+
+  if (!p.startsWith('/capabilities')) return next();
+
   const authOff = ['1', 'true', 'yes'].includes(
     String(process.env.CAPABILITIES_AUTH_DISABLED || '').toLowerCase()
   );
   const ndaOff = ['1', 'true', 'yes'].includes(
     String(process.env.CAPABILITIES_NDA_DISABLED || '').toLowerCase()
   );
-  const url = new URL(request.url);
-  const p = url.pathname.toLowerCase();
   if (authOff) return pass(p);
 
   if (p === '/capabilities') {
