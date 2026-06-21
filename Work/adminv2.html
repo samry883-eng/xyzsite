@@ -610,8 +610,7 @@ function buildHomeReelIndex(projects) {
 }
 
 function isOnHomeReel(p) {
-  if (p.homeHero && p.homeHero.enabled) return true;
-  return homeReelOrder.indexOf(p.id) >= 0;
+  return isInHomeList(p);
 }
 
 function heroStartFor(p) {
@@ -656,12 +655,21 @@ function buildHomeItemFromProject(p) {
   };
 }
 
-function syncCatalogHomeHeroFromWorkOrder() {
+function reconcileHomeReelState() {
+  buildHomeReelIndex(draft.projects);
   draft.projects.forEach(function (p) {
-    if (!isInHomeList(p)) return;
     if (!p.homeHero) p.homeHero = { start: 0, enabled: false };
+    if (!isInHomeList(p)) return;
     p.homeHero.enabled = true;
     p.homeHero.start = heroStartFor(p);
+  });
+  draft.projects.forEach(function (p) {
+    if (!p.homeHero || !p.homeHero.enabled || isInHomeList(p)) return;
+    addProjectToHomeList(p);
+  });
+  draft.projects.forEach(function (p) {
+    if (!p.homeHero) return;
+    if (!isInHomeList(p)) p.homeHero.enabled = false;
   });
 }
 
@@ -718,6 +726,10 @@ function applyHomeReelOrderFromIds(ids) {
   });
   workOrder.homeList = newList;
   buildHomeReelIndex(draft.projects);
+  draft.projects.forEach(function (p) {
+    if (!p.homeHero) p.homeHero = { start: 0, enabled: false };
+    p.homeHero.enabled = isInHomeList(p);
+  });
 }
 
 function saveHomeOrder() {
@@ -855,7 +867,7 @@ function isLive(p) {
 
 function matchPage(p, key) {
   switch (key) {
-    case 'home': return isOnHomeReel(p);
+    case 'home': return isInHomeList(p);
     case 'all': return true;
     case 'selected': return !!p.featured;
     case 'music-video': return p.projectType === 'Music Video';
@@ -1106,7 +1118,7 @@ function renderList() {
     text.style.minWidth = '0';
     var titleLine = el('div', 'row-title-line');
     titleLine.appendChild(el('div', 'row-title', p.title || 'Untitled'));
-    if (isInHomeList(p)) titleLine.appendChild(el('span', 'row-home-badge', 'Home'));
+    if (isOnHomeReel(p)) titleLine.appendChild(el('span', 'row-home-badge', 'Home'));
     text.appendChild(titleLine);
     text.appendChild(el('div', 'row-client', p.client || '—'));
     proj.appendChild(text);
@@ -1317,15 +1329,13 @@ function loadCatalog(cb) {
     draft = cloneCatalog(catalog);
     var orderRes = results[1];
     workOrder = (orderRes && orderRes.order) || null;
-    buildHomeReelIndex(draft.projects);
-    syncCatalogHomeHeroFromWorkOrder();
+    reconcileHomeReelState();
     cb && cb();
   }).catch(function () {
     catalog = { version: 1, projects: [] };
     draft = cloneCatalog(catalog);
     workOrder = null;
-    buildHomeReelIndex(draft.projects);
-    syncCatalogHomeHeroFromWorkOrder();
+    reconcileHomeReelState();
     cb && cb();
   });
 }
@@ -1341,24 +1351,8 @@ function showApp() {
 }
 
 function syncWorkOrderFromDraft() {
-  if (!workOrder) workOrder = { homeList: [] };
-  var oldList = (workOrder.homeList || []).slice();
-  var newList = [];
-  var seen = {};
-  homeReelOrder.forEach(function (id) {
-    var p = draft.projects.find(function (x) { return x.id === id; });
-    if (!p || !(p.homeHero && p.homeHero.enabled)) return;
-    if (seen[id]) return;
-    seen[id] = true;
-    newList.push(findHomeItemForProject(p, oldList) || buildHomeItemFromProject(p));
-  });
-  draft.projects.forEach(function (p) {
-    if (!(p.homeHero && p.homeHero.enabled) || seen[p.id]) return;
-    seen[p.id] = true;
-    newList.push(findHomeItemForProject(p, oldList) || buildHomeItemFromProject(p));
-  });
-  workOrder.homeList = newList;
-  buildHomeReelIndex(draft.projects);
+  reconcileHomeReelState();
+  applyHomeReelOrderFromIds(homeReelOrder.slice());
 }
 
 function saveCatalog(redeploy, btn, successMsg) {
@@ -1383,8 +1377,7 @@ function saveCatalog(redeploy, btn, successMsg) {
       if (d && d.ok) {
         catalog = cloneCatalog(d.catalog || draft);
         draft = cloneCatalog(catalog);
-        buildHomeReelIndex(draft.projects);
-        syncCatalogHomeHeroFromWorkOrder();
+        reconcileHomeReelState();
         var msg = successMsg;
         if (!msg) {
           if (d.warning) msg = d.warning;
@@ -1399,7 +1392,7 @@ function saveCatalog(redeploy, btn, successMsg) {
           if (activeId) openEditor(activeId);
           else renderList();
         };
-        if (redeploy && workOrder && workOrder.homeList && workOrder.homeList.length) {
+        if (redeploy && workOrder) {
           return saveHomeOrder().then(function (homeRes) {
             if (homeRes && homeRes.ok && homeRes.redeployed && !d.redeployed) {
               msg = 'Catalog saved — hero order redeploy started (~30s)';
@@ -1542,8 +1535,7 @@ document.getElementById('updateSiteBtn').onclick = function () { saveCatalog(tru
 
 document.getElementById('resetBtn').onclick = function () {
   draft = cloneCatalog(catalog);
-  buildHomeReelIndex(draft.projects);
-  syncCatalogHomeHeroFromWorkOrder();
+  reconcileHomeReelState();
   closeEditor();
   setLive('Reverted to last saved');
   renderNav();
