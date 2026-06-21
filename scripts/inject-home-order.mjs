@@ -4,13 +4,13 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { loadMkeyMap, slimHomeRow, fetchWorkOrderForBuild } from './home-order-lib.mjs';
+import { loadMkeyLookup, slimHomeRow, fetchWorkOrderForBuild } from './home-order-lib.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
 const homeHtml = path.join(root, 'Home', 'index.html');
 const previewDir = path.join(root, 'Home', 'assets', 'home-previews');
-const mkeyMap = loadMkeyMap(root);
+const lookup = loadMkeyLookup(root);
 
 async function fetchOrder() {
   return fetchWorkOrderForBuild();
@@ -23,7 +23,7 @@ if (!homeList || !homeList.length) {
   process.exit(0);
 }
 
-const slim = homeList.map((x) => slimHomeRow(x, previewDir, mkeyMap));
+const slim = homeList.map((x) => slimHomeRow(x, previewDir, lookup, root));
 
 let s = fs.readFileSync(homeHtml, 'utf8');
 const payload = JSON.stringify({ homeList: slim }).replace(/</g, '\\u003c');

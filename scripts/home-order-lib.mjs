@@ -1,51 +1,9 @@
 import fs from 'fs';
 import path from 'path';
+import { loadMkeyMap, normalizeHomeList, resolveHomeMkey, loadMkeyMaps, catFromMkey, loadHrefMaps, resolveHomeHref } from '../lib/home-mkey.mjs';
 
-export function loadMkeyLookup(root) {
-  const admin = path.join(root, 'Admin', 'index.html');
-  const s = fs.readFileSync(admin, 'utf8');
-  const dataM = s.match(/var DATA = (\{[\s\S]*?\});\s*\nvar HOME/);
-  const catM = s.match(/var CATALOG = (\{[\s\S]*?\});\s*\nvar HOMEDEF/);
-  const byKey = {};
-  const byVideo = {};
-  if (dataM) {
-    const data = JSON.parse(dataM[1]);
-    for (const cat of data.categories || []) {
-      for (const p of data.projects[cat] || []) {
-        if (p.key && p.mkey) byKey[p.key] = p.mkey;
-      }
-    }
-  }
-  if (catM) {
-    const catalog = JSON.parse(catM[1]);
-    for (const [key, row] of Object.entries(catalog)) {
-      const mkey = byKey[key];
-      if (mkey && row.video) byVideo[row.video] = mkey;
-    }
-  }
-  return { byKey, byVideo };
-}
+export { loadMkeyMap, normalizeHomeList, loadMkeyMaps as loadMkeyLookup };
 
-/** @deprecated use loadMkeyLookup */
-export function loadMkeyMap(root) {
-  return loadMkeyLookup(root).byKey;
-}
-
-export function resolveHomeMkey(row, lookup) {
-  if (!row) return '';
-  return lookup.byKey[row.key] || (row.video && lookup.byVideo[row.video]) || row.mkey || '';
-}
-
-export function applyMkeyRow(row, lookup) {
-  const mkey = resolveHomeMkey(row, lookup);
-  const out = { ...row, mkey };
-  if (mkey.startsWith('ai/')) out.cat = 'AI';
-  else if (mkey.startsWith('sound/')) out.cat = 'Sound';
-  else if (mkey.startsWith('visual-effects/')) out.cat = 'Visual Effects';
-  return out;
-}
-
-/** Build-time fetch: live API first (reads Edge Config), then direct Edge Config. */
 export async function fetchWorkOrderForBuild() {
   let order = null;
   try {
@@ -66,24 +24,30 @@ export async function fetchWorkOrderForBuild() {
   return order && order.homeList && order.homeList.length ? order : null;
 }
 
-export function normalizeHomeList(homeList, lookup = { byKey: {}, byVideo: {} }) {
-  if (!homeList || !homeList.length) return homeList;
-  return homeList.map((x) => applyMkeyRow(x, lookup));
-}
-
-export function slimHomeRow(x, previewDir, lookup) {
-  const row = applyMkeyRow({
-    key: x.key,
-    client: x.client,
-    title: x.title,
-    start: x.start,
-    video: x.video,
-    cat: x.cat,
-    mkey: x.mkey,
-  }, lookup);
-  const prev = path.join(previewDir, `${x.key}.mp4`);
+export function slimHomeRow(x, previewDir, lookup, root) {
+  let resolved = x;
+  if (lookup?.byKey) {
+    resolved = resolveHomeMkey(x, lookup);
+  } else if (lookup && typeof lookup === 'object') {
+    const mkey = lookup[x.key] || x.mkey || '';
+    resolved = { ...x, mkey, cat: catFromMkey(mkey) || x.cat };
+  }
+  const mkey = resolved.mkey || '';
+  const row = resolveHomeHref({
+    key: resolved.key,
+    client: resolved.client,
+    title: resolved.title,
+    start: resolved.start,
+    video: resolved.video,
+    cat: resolved.cat,
+    mkey,
+  }, loadHrefMaps(root));
+  if (mkey.startsWith('ai/')) row.cat = 'AI';
+  else if (mkey.startsWith('sound/')) row.cat = 'Sound';
+  else if (mkey.startsWith('visual-effects/')) row.cat = 'Visual Effects';
+  const prev = path.join(previewDir, `${resolved.key}.mp4`);
   if (fs.existsSync(prev) && fs.statSync(prev).size > 1000) {
-    row.preview = `/assets/home-previews/${x.key}.mp4`;
+    row.preview = `/assets/home-previews/${resolved.key}.mp4`;
   }
   return row;
 }
