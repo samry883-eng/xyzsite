@@ -144,14 +144,14 @@
       font-size: 12px; padding: 10px 13px; width: 230px; outline: none;
     }
     .table-head {
-      display: grid; grid-template-columns: 46px 1fr 150px 70px 70px 30px; gap: 14px;
+      display: grid; grid-template-columns: 46px 1fr 100px 150px 70px 30px; gap: 14px;
       padding: 13px 34px; font-size: 9px; letter-spacing: .16em; text-transform: uppercase;
       color: var(--muted); border-bottom: 1px solid rgba(244,241,234,.12);
       font-family: 'JetBrains Mono', monospace; flex: 0 0 auto;
     }
     .table-body { flex: 1; overflow: auto; min-height: 0; }
     .table-row {
-      display: grid; grid-template-columns: 46px 1fr 150px 70px 70px 30px; gap: 14px;
+      display: grid; grid-template-columns: 46px 1fr 100px 150px 70px 30px; gap: 14px;
       padding: 16px 34px; align-items: center; border-bottom: 1px solid var(--line2); cursor: pointer;
     }
     .table-row.sortable-ghost { opacity: .25; }
@@ -164,8 +164,15 @@
     }
     .row-client { font-size: 11px; color: #7a7a7a; margin-top: 2px; }
     .row-type { font-size: 12px; color: var(--muted3); }
-    .row-star { font-size: 13px; }
-    .row-live { font-family: 'JetBrains Mono', monospace; font-size: 10px; }
+    .row-indicator {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .row-indicator.on, .live-dot.on { color: var(--green); }
+    .row-indicator.off, .live-dot.off { color: var(--amber); }
     .row-chevron { color: var(--muted); font-size: 14px; text-align: right; }
     .row-title-line { display: flex; align-items: center; gap: 8px; min-width: 0; }
     .row-title-line .row-title { flex: 1; min-width: 0; }
@@ -206,8 +213,8 @@
     }
     .row-arrow:hover:not(:disabled) { color: var(--text); border-color: rgba(244,241,234,.35); }
     .row-arrow:disabled { opacity: .25; cursor: default; }
-    .table-body.home-list .table-row { grid-template-columns: 46px 1fr 150px 70px 70px 56px; }
-    .table-head.home-head { grid-template-columns: 46px 1fr 150px 70px 70px 56px; }
+    .table-body.home-list .table-row { grid-template-columns: 46px 1fr 100px 150px 70px 56px; }
+    .table-head.home-head { grid-template-columns: 46px 1fr 100px 150px 70px 56px; }
     .empty-state { padding: 80px 34px; text-align: center; color: var(--muted); }
     .empty-state h3 { font-family: 'Instrument Serif', serif; font-size: 32px; color: var(--muted2); font-weight: 400; }
 
@@ -428,7 +435,7 @@
     <div id="navMain"></div>
     <div class="nav-section type">By type</div>
     <div id="navType"></div>
-    <div style="height:24px"></div>
+    <div class="nav-section type" style="margin-top:24px">Drafts</div>
     <div id="navDraft"></div>
     <div class="nav-section" style="margin-top:24px">Access</div>
     <div id="navAccess"></div>
@@ -456,7 +463,7 @@
         </div>
       </div>
       <div class="table-head">
-        <span>№</span><span>Project / Client</span><span>Category</span><span>Feat</span><span>Live</span><span></span>
+        <span>№</span><span>Project / Client</span><span>Selected Work</span><span>Category</span><span>Live</span><span></span>
       </div>
       <div class="table-body" id="list"></div>
     </div>
@@ -1134,7 +1141,16 @@ function thumbStyle(p) {
 }
 
 function isLive(p) {
+  // No p.live / p.published / p.status field — "live" = visible on the public site.
   return !!(p.featured || isOnHomeReel(p));
+}
+
+function isDraft(p) {
+  return !isLive(p);
+}
+
+function buildRowIndicator(on) {
+  return el('span', 'row-indicator live-dot' + (on ? ' on' : ' off'), on ? '● on' : '○ draft');
 }
 
 function matchPage(p, key) {
@@ -1145,7 +1161,7 @@ function matchPage(p, key) {
     case 'music-video': return p.projectType === 'Music Video';
     case 'brand-film': return p.projectType === 'Brand Film';
     case 'commercial': return p.projectType === 'Commercial';
-    case 'drafts': return !isLive(p);
+    case 'drafts': return isDraft(p);
     default: return true;
   }
 }
@@ -1375,7 +1391,8 @@ function renderList() {
   var tableHead = document.querySelector('.table-head');
   if (tableHead) {
     tableHead.className = currentPage === 'home' ? 'table-head home-head' : 'table-head';
-    if (tableHead.children[2]) tableHead.children[2].textContent = currentPage === 'home' ? 'Start' : 'Category';
+    if (tableHead.children[2]) tableHead.children[2].textContent = 'Selected Work';
+    if (tableHead.children[3]) tableHead.children[3].textContent = currentPage === 'home' ? 'Start' : 'Category';
     if (tableHead.children[5]) tableHead.children[5].textContent = currentPage === 'home' ? 'Order' : '';
   }
 
@@ -1409,15 +1426,11 @@ function renderList() {
     text.appendChild(el('div', 'row-client', p.client || '—'));
     proj.appendChild(text);
     row.appendChild(proj);
+    row.appendChild(buildRowIndicator(!!p.featured));
     row.appendChild(el('span', 'row-type', currentPage === 'home'
       ? (heroStartFor(p) + 's')
       : (p.projectType || 'Commercial')));
-    var star = el('span', 'row-star', p.featured ? '★' : '—');
-    star.style.color = p.featured ? '#f4f1ea' : '#3a3a3a';
-    row.appendChild(star);
-    var live = el('span', 'row-live', isLive(p) ? '● on' : '○ draft');
-    live.style.color = isLive(p) ? '#7fdc9a' : '#dcbf7f';
-    row.appendChild(live);
+    row.appendChild(buildRowIndicator(isLive(p)));
     if (currentPage === 'home') row.appendChild(buildRowArrows(p, i, list.length));
     else row.appendChild(el('span', 'row-chevron', '›'));
     row.onclick = function (e) {
