@@ -1206,6 +1206,7 @@ function formatVideoTime(sec) {
 
 var thumbScrubbing = false;
 var thumbCaptureUrl = '';
+var posterPendingBase64 = '';
 
 function setThumbStatus(msg) {
   var el = document.getElementById('thumbStatus');
@@ -1225,9 +1226,24 @@ function updateThumbPosterPreviews(p) {
   }
 }
 
+function clearPendingPoster() {
+  posterPendingBase64 = '';
+  thumbCaptureUrl = '';
+  var captured = document.getElementById('thumbCapturedPoster');
+  if (captured) captured.removeAttribute('style');
+}
+
+function setPendingPoster(dataUrl) {
+  posterPendingBase64 = dataUrl;
+  thumbCaptureUrl = dataUrl;
+  updateThumbPosterPreviews(draft.projects.find(function (x) { return x.id === activeId; }) || null);
+  dirty();
+  setThumbStatus('Frame captured — save project to apply');
+}
+
 function resetThumbScrubber() {
   thumbScrubbing = false;
-  thumbCaptureUrl = '';
+  clearPendingPoster();
   var scrubber = document.getElementById('thumbScrubber');
   var seek = document.getElementById('thumbSeek');
   var warn = document.getElementById('thumbCorsWarn');
@@ -1239,14 +1255,14 @@ function resetThumbScrubber() {
   updateThumbPosterPreviews(null);
 }
 
-function initThumbScrubber(video, p) {
+function initThumbScrubber(video, p, keepPending) {
   var scrubber = document.getElementById('thumbScrubber');
   var seek = document.getElementById('thumbSeek');
   if (!scrubber || !seek || !video) return;
   scrubber.classList.remove('hidden');
-  thumbCaptureUrl = '';
+  if (!keepPending) clearPendingPoster();
   updateThumbPosterPreviews(p);
-  setThumbStatus('');
+  if (!keepPending) setThumbStatus('');
 
   function syncDuration() {
     var dur = video.duration;
@@ -1275,13 +1291,14 @@ function updateVideoPreview(p) {
     overlay.classList.add('hidden');
     if (frame) frame.classList.add('has-video');
     video.removeAttribute('crossorigin');
-    if (video.getAttribute('src') !== url) {
+    var srcChanged = video.getAttribute('src') !== url;
+    if (srcChanged) {
       video.setAttribute('src', url);
       video.load();
     }
     if (p.poster) video.setAttribute('poster', p.poster);
     else video.removeAttribute('poster');
-    initThumbScrubber(video, p);
+    initThumbScrubber(video, p, !srcChanged && !!posterPendingBase64);
   } else {
     video.classList.add('hidden');
     empty.classList.remove('hidden');
@@ -1321,47 +1338,51 @@ function unlockVideoField() {
   btn.title = 'Lock video URL field';
 }
 
-function applyPosterSave(posterUrl, opts) {
-  opts = opts || {};
-  if (!activeId) return;
-  var p = draft.projects.find(function (x) { return x.id === activeId; });
-  if (!p) return;
-  var btn = opts.button;
-  if (btn) btn.disabled = true;
-  setThumbStatus(opts.status || 'Saving poster…');
-  fetch('/api/projects/poster/' + encodeURIComponent(p.id), {
+function applyPosterResult(p, posterUrl) {
+  if (!p || !posterUrl) return;
+  var url = posterUrl + (posterUrl.indexOf('?') >= 0 ? '&' : '?') + 't=' + Date.now();
+  p.poster = url;
+  document.getElementById('f-poster').value = url;
+  document.getElementById('posterFrame').setAttribute('style', thumbStyle(p));
+  document.getElementById('posterName').textContent = posterFileName(p);
+  var idx = catalog.projects.findIndex(function (x) { return x.id === p.id; });
+  if (idx >= 0) catalog.projects[idx].poster = url;
+  clearPendingPoster();
+  updateThumbPosterPreviews(p);
+  renderList();
+}
+
+function postPosterToApi(projectId, imageBase64) {
+  return fetch('/api/projects/poster/' + encodeURIComponent(projectId), {
     method: 'POST',
     credentials: 'same-origin',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ imageBase64: posterUrl })
+    body: JSON.stringify({ imageBase64: imageBase64 })
   })
-    .then(function (r) { return r.json().catch(function () { return null; }).then(function (d) { return { status: r.status, data: d }; }); })
+    .then(function (r) {
+      return r.json().catch(function () { return null; }).then(function (d) {
+        return { status: r.status, data: d };
+      });
+    })
     .then(function (res) {
-      if (btn) btn.disabled = false;
       var d = res.data;
-      if (d && d.ok && d.poster) {
-        var url = d.poster + (d.poster.indexOf('?') >= 0 ? '&' : '?') + 't=' + Date.now();
-        p.poster = url;
-        document.getElementById('f-poster').value = url;
-        thumbCaptureUrl = url;
-        document.getElementById('posterFrame').setAttribute('style', thumbStyle(p));
-        document.getElementById('posterName').textContent = posterFileName(p);
-        updateThumbPosterPreviews(p);
-        if (d.catalogUpdated) {
-          var idx = catalog.projects.findIndex(function (x) { return x.id === p.id; });
-          if (idx >= 0) catalog.projects[idx].poster = url;
-        }
-        dirty();
-        setThumbStatus(opts.doneMsg || 'Poster saved');
-        renderList();
-      } else {
-        setThumbStatus((d && d.error) || ('HTTP ' + res.status));
-      }
+      if (d && d.ok && d.poster) return { ok: true, poster: d.poster, catalogUpdated: !!d.catalogUpdated };
+      return { ok: false, error: (d && d.error) || ('HTTP ' + res.status) };
     })
     .catch(function (e) {
-      if (btn) btn.disabled = false;
-      setThumbStatus('Network error' + (e && e.message ? ': ' + e.message : ''));
+      return { ok: false, error: 'Network error' + (e && e.message ? ': ' + e.message : '') };
     });
+}
+
+function commitPendingPoster(p, imageBase64) {
+  var data = imageBase64 || posterPendingBase64;
+  if (!p || !data) return Promise.resolve({ ok: true });
+  setThumbStatus('Saving poster…');
+  return postPosterToApi(p.id, data).then(function (result) {
+    if (!result.ok) return result;
+    applyPosterResult(p, result.poster);
+    return result;
+  });
 }
 
 function fileToJpegDataUrl(file, cb) {
@@ -1410,7 +1431,7 @@ function uploadPosterFile(file) {
       setThumbStatus(err || 'Upload failed');
       return;
     }
-    applyPosterSave(dataUrl, { status: 'Uploading…', doneMsg: 'Poster uploaded' });
+    setPendingPoster(dataUrl);
   });
 }
 
@@ -1422,10 +1443,70 @@ function canvasFromVideo(video) {
   var ctx = canvas.getContext('2d');
   try {
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    try { ctx.getImageData(0, 0, 1, 1); } catch (e) { return null; }
     return canvas;
   } catch (e) {
     return null;
   }
+}
+
+function captureVideoFrameAsync(sourceVideo, cb) {
+  var warn = document.getElementById('thumbCorsWarn');
+  var url = sourceVideo.currentSrc || sourceVideo.src;
+  if (!url) { cb(null, 'No video loaded'); return; }
+
+  var cap = document.createElement('video');
+  cap.setAttribute('crossorigin', 'anonymous');
+  cap.setAttribute('playsinline', '');
+  cap.muted = true;
+  cap.preload = 'auto';
+  var t = sourceVideo.currentTime;
+  var done = false;
+
+  function finish(dataUrl, err) {
+    if (done) return;
+    done = true;
+    cap.removeAttribute('src');
+    cap.load();
+    cb(dataUrl, err);
+  }
+
+  var timer = window.setTimeout(function () {
+    if (warn) warn.classList.remove('hidden');
+    finish(null, 'Capture timed out — video CORS may be blocking canvas.');
+  }, 15000);
+
+  cap.onerror = function () {
+    window.clearTimeout(timer);
+    if (warn) warn.classList.remove('hidden');
+    finish(null, 'Video failed to load for capture (CORS).');
+  };
+
+  cap.onseeked = function () {
+    window.clearTimeout(timer);
+    var canvas = canvasFromVideo(cap);
+    if (!canvas) {
+      if (warn) warn.classList.remove('hidden');
+      finish(null, 'Capture failed — video CORS may be blocking canvas.');
+      return;
+    }
+    if (warn) warn.classList.add('hidden');
+    canvas.toBlob(function (blob) {
+      if (!blob) { finish(null, 'Capture failed.'); return; }
+      var reader = new FileReader();
+      reader.onload = function () { finish(reader.result); };
+      reader.onerror = function () { finish(null, 'Could not read capture.'); };
+      reader.readAsDataURL(blob);
+    }, 'image/jpeg', 0.88);
+  };
+
+  cap.onloadedmetadata = function () {
+    try { cap.currentTime = Math.min(t, cap.duration || t); }
+    catch (e) { window.clearTimeout(timer); finish(null, 'Seek failed'); }
+  };
+
+  cap.src = url;
+  cap.load();
 }
 
 function captureThumbFromVideo() {
@@ -1433,35 +1514,20 @@ function captureThumbFromVideo() {
   var p = draft.projects.find(function (x) { return x.id === activeId; });
   if (!p) return;
   var video = document.getElementById('previewVideo');
-  var warn = document.getElementById('thumbCorsWarn');
   var btn = document.getElementById('thumbCaptureBtn');
   if (!video || !video.src) return;
 
-  var canvas = canvasFromVideo(video);
-  if (!canvas) {
-    if (warn) warn.classList.remove('hidden');
-    setThumbStatus('Capture failed — video CORS may be blocking canvas.');
-    return;
-  }
-  if (warn) warn.classList.add('hidden');
   if (btn) btn.disabled = true;
   setThumbStatus('Capturing…');
-  canvas.toBlob(function (blob) {
-    if (!blob) {
-      if (btn) btn.disabled = false;
-      setThumbStatus('Capture failed.');
+  captureVideoFrameAsync(video, function (dataUrl, err) {
+    if (btn) btn.disabled = false;
+    if (!dataUrl) {
+      setThumbStatus(err || 'Capture failed.');
       return;
     }
-    var reader = new FileReader();
-    reader.onload = function () {
-      applyPosterSave(reader.result, {
-        button: btn,
-        status: 'Capturing…',
-        doneMsg: 'Thumbnail saved at ' + formatVideoTime(video.currentTime)
-      });
-    };
-    reader.readAsDataURL(blob);
-  }, 'image/jpeg', 0.88);
+    setPendingPoster(dataUrl);
+    setThumbStatus('Frame captured at ' + formatVideoTime(video.currentTime) + ' — save project to apply');
+  });
 }
 
 function gradForId(id) {
@@ -2004,22 +2070,41 @@ function syncWorkOrderFromDraft() {
 }
 
 function saveCatalog(redeploy, btn, successMsg) {
+  var pendingPoster = posterPendingBase64;
   if (activeId) syncActiveFromForm();
   if (btn) btn.disabled = true;
   setStatusMsg(redeploy ? 'Updating site…' : 'Saving draft…');
   if (redeploy) syncWorkOrderFromDraft();
-  return fetch('/api/projects', {
-    method: 'PUT',
-    credentials: 'same-origin',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ catalog: draft, redeploy: !!redeploy })
-  })
+
+  var posterPromise = Promise.resolve({ ok: true });
+  if (activeId && pendingPoster) {
+    var pendingProject = draft.projects.find(function (x) { return x.id === activeId; });
+    if (pendingProject) posterPromise = commitPendingPoster(pendingProject, pendingPoster);
+  }
+
+  return posterPromise
+    .then(function (posterRes) {
+      if (posterRes && !posterRes.ok) {
+        if (btn) btn.disabled = false;
+        setStatusMsg(posterRes.error || 'Poster save failed');
+        setThumbStatus(posterRes.error || 'Poster save failed');
+        return null;
+      }
+      return fetch('/api/projects', {
+        method: 'PUT',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ catalog: draft, redeploy: !!redeploy })
+      });
+    })
     .then(function (r) {
+      if (!r) return null;
       return r.json().catch(function () { return null; }).then(function (d) {
         return { status: r.status, data: d };
       });
     })
     .then(function (res) {
+      if (!res) return null;
       if (btn) btn.disabled = false;
       var d = res.data;
       if (d && d.ok) {
@@ -2237,6 +2322,7 @@ document.getElementById('updateSiteBtn').onclick = function () { saveCatalog(tru
 document.getElementById('resetBtn').onclick = function () {
   draft = cloneCatalog(catalog);
   reconcileHomeReelState();
+  clearPendingPoster();
   closeEditor();
   setLive('Reverted to last saved');
   renderNav();
