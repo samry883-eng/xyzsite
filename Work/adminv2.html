@@ -395,6 +395,7 @@
         <div class="list-tools">
           <span class="status-msg" id="saveMsg">All published</span>
           <input class="search-input" type="search" id="search" placeholder="Search title or client…">
+          <button class="btn-ghost" id="syncBtn" type="button">Sync missing</button>
           <button class="btn-ghost" id="seedBtn" type="button">Seed defaults</button>
           <button class="btn-ghost" id="resetBtn" type="button">Discard</button>
           <button class="btn-accent" id="updateSiteBtn" type="button">Update site</button>
@@ -1543,7 +1544,7 @@ document.getElementById('resetBtn').onclick = function () {
 };
 
 document.getElementById('seedBtn').onclick = function () {
-  if (!confirm('Replace catalog with 38 default projects from unified work page?')) return;
+  if (!confirm('Replace entire catalog with 40 default projects? Existing edits will be lost.')) return;
   fetch('/api/projects/seed', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -1556,9 +1557,43 @@ document.getElementById('seedBtn').onclick = function () {
           closeEditor();
           renderNav();
           renderList();
-          setLive('Seeded ' + d.count + ' projects');
+          setLive('Seeded ' + d.count + ' projects — click Update site to publish');
         });
       } else alert((d && d.error) || 'Seed failed');
+    });
+};
+
+document.getElementById('syncBtn').onclick = function () {
+  var btn = this;
+  btn.disabled = true;
+  setStatusMsg('Syncing missing projects…');
+  fetch('/api/projects/sync-default', {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ redeploy: false })
+  })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      btn.disabled = false;
+      if (d && d.ok) {
+        loadCatalog(function () {
+          closeEditor();
+          renderNav();
+          renderList();
+          if (d.added) {
+            setLive('Added ' + d.added + ' project(s) — now ' + d.count + ' total · click Update site to publish');
+          } else {
+            setLive('Catalog complete — ' + d.count + ' projects');
+          }
+        });
+      } else {
+        setStatusMsg((d && d.error) || 'Sync failed');
+      }
+    })
+    .catch(function () {
+      btn.disabled = false;
+      setStatusMsg('Network error');
     });
 };
 

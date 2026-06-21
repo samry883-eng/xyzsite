@@ -597,6 +597,21 @@ http.createServer((req, res) => {
         return;
       }
 
+      const adminV2Redirects = new Set([
+        '/work/admin',
+        '/work/admin/',
+        '/work/admin.html',
+        '/admin',
+        '/admin/',
+        '/admin.html',
+        '/admin/index.html',
+      ]);
+      if (adminV2Redirects.has(urlPath)) {
+        res.writeHead(302, { Location: '/work/adminv2' });
+        res.end();
+        return;
+      }
+
       const spec = getStaticFilePath(urlPath);
       if (req.method === 'HEAD') {
         fs.stat(spec.filePath, (err) => {

@@ -12,7 +12,7 @@ Operational notes. Read this first.
 
 This was rebuilt to kill a whole class of bugs. How it works now:
 
-1. The admin order lives in **Vercel Edge Config**, key `workOrder` (its `homeList` is the hero order). It is read/written by `/api/site-order` (lib/site-store.mjs). Edit it via the admin UI.
+1. The admin order lives in **Vercel Edge Config**, key `workOrder` (its `homeList` is the hero order). It is read/written by `/api/site-order` (lib/site-store.mjs). Edit it via **Work CMS v2** (`/work/adminv2` → Home tab).
 2. At **build time**, `scripts/prepare-github-pages.mjs` fetches `workOrder` (Edge Config -> fallback live `/api/site-order` -> fallback baked default) and injects it into `dist/index.html` as `window.__HOME_ORDER`, replacing the `/*XYZ_BUILD_ORDER*/` placeholder.
 3. The page rebuilds the hero list **synchronously** from `window.__HOME_ORDER` (the `/* xyz-home-reel */` inline script, runs at parse time BEFORE Slater). There is **NO runtime fetch**, so nothing races Slater. Slater then plays a clean static list.
 4. Saving in the admin (`POST /api/site-order`) writes Edge Config **and auto-triggers a production redeploy** (via Vercel API), so the baked order refreshes hands-off in ~30s.
@@ -32,7 +32,7 @@ This was rebuilt to kill a whole class of bugs. How it works now:
 - **Home click modes:** see `Home/archive/README.md`. Current = project-page navigation (`126e7c9+`). Archived in-page fullscreen = tag `savepoint-home-inpage-fullscreen` (`71c135d`) + `Home/archive/index-inpage-fullscreen-71c135d.html`.
 - Returning from a project opened via the hero reel uses `?from=home&slide=N` + `Work/assets/xyz-home-return.js` (white slide, no loader replay).
 - `Capabilities/` admin + `api/capabilities/*` are a separate system (deck access grants), unrelated to the home hero.
-- **Work CMS (Phase 1):** projects catalog in Edge Config key `projectsCatalog`; APIs at `/api/projects*`; admin at `/work/admin`; baked to `window.__PROJECTS_CATALOG` on `/projects-v2` at build (same pattern as home order).
+- **Work CMS (Phase 1):** projects catalog in **Upstash Redis** (`projects_catalog_json`; Edge Config fallback); APIs at `/api/projects*`; **main admin at `/work/adminv2`** (catalog + home reel Home tab); legacy `/work/admin` and `/admin` redirect here; baked to `window.__PROJECTS_CATALOG` on `/projects-v2` at build (same pattern as home order). Capabilities deck grants stay at `/capabilities/admin`.
 
 ---
 

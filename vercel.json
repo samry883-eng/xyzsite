@@ -244,6 +244,36 @@
   ],
   "redirects": [
     {
+      "source": "/work/admin",
+      "destination": "/work/adminv2",
+      "permanent": false
+    },
+    {
+      "source": "/work/admin/",
+      "destination": "/work/adminv2",
+      "permanent": false
+    },
+    {
+      "source": "/work/admin.html",
+      "destination": "/work/adminv2",
+      "permanent": false
+    },
+    {
+      "source": "/admin",
+      "destination": "/work/adminv2",
+      "permanent": false
+    },
+    {
+      "source": "/admin/",
+      "destination": "/work/adminv2",
+      "permanent": false
+    },
+    {
+      "source": "/admin/index.html",
+      "destination": "/work/adminv2",
+      "permanent": false
+    },
+    {
       "source": "/capabilities",
       "destination": "/capabilities/",
       "permanent": true

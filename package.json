@@ -10,6 +10,7 @@
     "inject:home-order": "node scripts/inject-home-order.mjs",
     "inject:projects-catalog": "node scripts/inject-projects-catalog.mjs",
     "seed:projects": "node scripts/seed-projects-catalog.mjs",
+    "sync:projects": "node scripts/sync-projects-default.mjs",
     "dev:home": "node scripts/build-home-previews.mjs && node scripts/inject-home-order.mjs && node serve.mjs",
     "fetch:pitch": "node scripts/fetch-pitch-embed.mjs",
     "build:pitch-deck": "node scripts/build-pitch-deck-data.mjs && node scripts/render-pitch-deck.mjs",

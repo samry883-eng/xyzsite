@@ -58,7 +58,7 @@ copyDir(path.join(root, 'Home', 'assets'), path.join(dist, 'assets'));
 
 copyDir(path.join(root, 'Work'), path.join(dist, 'work'));
 
-// Work CMS admin: /work/admin.html, /work/adminv2.html (copied via Work dir)
+// Work CMS admin: /work/adminv2.html (main; /work/admin + /admin redirect here)
 
 // Inject coordinated home-return script on project pages
 function injectHomeReturn(dir) {

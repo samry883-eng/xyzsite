@@ -2,6 +2,7 @@ import {
   handleProjectById,
   handleProjectsRedisHealth,
   handleProjectsSeed,
+  handleProjectsSyncDefault,
 } from '../../lib/projects-api-handlers.mjs';
 
 function sendJson(res, code, obj) {
@@ -29,6 +30,9 @@ export default async function handler(req, res) {
   }
   if (path === 'seed') {
     return handleProjectsSeed(req, res);
+  }
+  if (path === 'sync-default') {
+    return handleProjectsSyncDefault(req, res);
   }
   if (parts.length === 1 && parts[0]) {
     return handleProjectById(req, res, decodeURIComponent(parts[0]));
