@@ -88,9 +88,9 @@ if (!s.includes('xyz-hero-project-link')) {
   }
   document.addEventListener("click",function(e){
     if(e.target.closest(".nav_container,.projects_item-close,.hero_video-toggle,.hero_video-scrub")) return;
-    var t=e.target.closest('[hero_video-button="browser-full-screen"],.hero_trigger_full-screen,.div-block-81,.hero_content-heading-container,.hero_vid-container');
+    var t=e.target.closest('[hero_video-button="browser-full-screen"],.hero_trigger_full-screen,.div-block-77,.div-block-81,.hero_content-heading-container,.hero_vid-container');
     if(!t) return;
-    var it=t.closest(".hero_item")||activeItem();
+    var it=activeItem();
     var url=hrefFor(it);
     if(!url) return;
     e.preventDefault();

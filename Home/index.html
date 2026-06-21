@@ -142,17 +142,10 @@
   /* Older Safari and Chromium */
 }
 
-  /* Home: CLOSE shares the nav right inset (same edge as Contact) */
-  .projects_item-close.home {
-    right: min(3rem, 4vw) !important;
-  }
-
-  .hero_vid-container .hero_vid-content.align-bottom-copy .projects_item-close.home {
-    position: fixed !important;
-    top: 1.4rem !important;
-    right: min(3rem, 4vw) !important;
-    left: auto !important;
-    z-index: 200 !important;
+  /* Home: nav Contact is the top-right chrome — hide duplicate CLOSE controls */
+  .projects_item-close.home.desktop,
+  .hero_vid-content.align-bottom-copy .projects_item-close.home {
+    display: none !important;
   }
 
   /* Hero video: match project-page control styling (Sound:On / Full Screen) */
@@ -634,9 +627,9 @@ try{
   }
   document.addEventListener("click",function(e){
     if(e.target.closest(".nav_container,.projects_item-close,.hero_video-toggle,.hero_video-scrub")) return;
-    var t=e.target.closest('[hero_video-button="browser-full-screen"],.hero_trigger_full-screen,.div-block-81,.hero_content-heading-container,.hero_vid-container');
+    var t=e.target.closest('[hero_video-button="browser-full-screen"],.hero_trigger_full-screen,.div-block-77,.div-block-81,.hero_content-heading-container,.hero_vid-container');
     if(!t) return;
-    var it=t.closest(".hero_item")||activeItem();
+    var it=activeItem();
     var url=hrefFor(it);
     if(!url) return;
     var idx=parseInt(it.getAttribute("data-slide-index")||"0",10);
