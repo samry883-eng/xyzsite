@@ -88,7 +88,7 @@ const ROWS = [
         { label: 'Directed by', value: 'Olivia Decamps' },
         { label: 'Produced by', value: 'XYZ Studios' },
       ] },
-      { video: VF  + '7c584065-5afb-43e4-9b67-ef1b5b6db304.mp4',         client: 'Audi',           title: 'F1 2026 Launch Film',          date: 'JUN 26', slug: 'f1-2026-launch-film' },
+      { video: VF  + '7c584065-5afb-43e4-9b67-ef1b5b6db304.mp4',         client: 'Audi',           title: 'F1 2026 Launch Film',          date: 'JUN 26', slug: 'f1-2026-launch-film', poster: '/work/visual-effects/f1-2026-launch-film/poster.jpg' },
       { video: VF  + '11fe9d4e-0bef-4966-bf67-b9b48dc8eee5.mp4',         client: 'Need For Speed', title: 'Shibuya',                      date: 'JUN 26', slug: 'shibuya' },
     ]
   },
