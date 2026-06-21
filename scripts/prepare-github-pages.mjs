@@ -67,7 +67,7 @@ try {
   console.log('[projects-services] wrote', svc.count, 'entries');
 } catch (e) { console.warn('[projects-services] map write failed:', e && e.message); }
 
-// Work CMS admin: /work/adminv2.html (main; /work/admin + /admin redirect here)
+// Unified site admin: /work/admin.html (/work/adminv2 + legacy paths redirect here)
 
 // Inject coordinated home-return + services scripts on project pages
 function injectProjectScripts(dir) {
@@ -114,9 +114,6 @@ for (const target of catalogTargets) {
     else console.warn('[projects-catalog] marker not found in', path.relative(dist, target));
   } catch (e) { console.warn('[projects-catalog] inject failed for', path.relative(dist, target), e && e.message); }
 }
-
-fs.mkdirSync(path.join(dist, 'projects-v3'), { recursive: true });
-copyFile(path.join(root, 'Work', 'unified-v3', 'index.html'), path.join(dist, 'projects-v3', 'index.html'));
 
 copyDir(path.join(root, 'Contact'), path.join(dist, 'contact'));
 

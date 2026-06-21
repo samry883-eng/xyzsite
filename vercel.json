@@ -274,33 +274,58 @@
       "permanent": false
     },
     {
-      "source": "/work/admin",
-      "destination": "/work/adminv2",
+      "source": "/work/adminv2",
+      "destination": "/work/admin",
       "permanent": false
     },
     {
-      "source": "/work/admin/",
-      "destination": "/work/adminv2",
+      "source": "/work/adminv2/",
+      "destination": "/work/admin",
       "permanent": false
     },
     {
-      "source": "/work/admin.html",
-      "destination": "/work/adminv2",
+      "source": "/work/adminv2.html",
+      "destination": "/work/admin",
       "permanent": false
     },
     {
       "source": "/admin",
-      "destination": "/work/adminv2",
+      "destination": "/work/admin",
       "permanent": false
     },
     {
       "source": "/admin/",
-      "destination": "/work/adminv2",
+      "destination": "/work/admin",
       "permanent": false
     },
     {
       "source": "/admin/index.html",
-      "destination": "/work/adminv2",
+      "destination": "/work/admin",
+      "permanent": false
+    },
+    {
+      "source": "/capabilities/admin",
+      "destination": "/work/admin?tab=access",
+      "permanent": false
+    },
+    {
+      "source": "/capabilities/admin/",
+      "destination": "/work/admin?tab=access",
+      "permanent": false
+    },
+    {
+      "source": "/capabilities/admin.html",
+      "destination": "/work/admin?tab=access",
+      "permanent": false
+    },
+    {
+      "source": "/projects-v3",
+      "destination": "/projects-v2/",
+      "permanent": false
+    },
+    {
+      "source": "/projects-v3/",
+      "destination": "/projects-v2/",
       "permanent": false
     },
     {
@@ -357,6 +382,26 @@
       "source": "/Work/",
       "destination": "/projects-v2/",
       "permanent": true
+    },
+    {
+      "source": "/work/adminv2",
+      "destination": "/work/admin",
+      "permanent": true
+    },
+    {
+      "source": "/work/adminv2/",
+      "destination": "/work/admin",
+      "permanent": true
+    },
+    {
+      "source": "/projects-v3",
+      "destination": "/projects-v2/",
+      "permanent": true
+    },
+    {
+      "source": "/projects-v3/",
+      "destination": "/projects-v2/",
+      "permanent": true
     }
   ],
   "rewrites": [
@@ -369,12 +414,12 @@
       "destination": "/work/unified/index.html"
     },
     {
-      "source": "/projects-v3",
-      "destination": "/work/unified-v3/index.html"
+      "source": "/work/admin",
+      "destination": "/work/admin.html"
     },
     {
-      "source": "/projects-v3/",
-      "destination": "/work/unified-v3/index.html"
+      "source": "/work/admin/",
+      "destination": "/work/admin.html"
     },
     {
       "source": "/capabilities/login",
@@ -391,22 +436,6 @@
     {
       "source": "/capabilities/nda/",
       "destination": "/capabilities/nda.html"
-    },
-    {
-      "source": "/capabilities/admin",
-      "destination": "/capabilities/admin.html"
-    },
-    {
-      "source": "/capabilities/admin/",
-      "destination": "/capabilities/admin.html"
-    },
-    {
-      "source": "/work/adminv2",
-      "destination": "/work/adminv2.html"
-    },
-    {
-      "source": "/work/adminv2/",
-      "destination": "/work/adminv2.html"
     },
     {
       "source": "/capabilities/vfx",

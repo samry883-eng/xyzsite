@@ -4,15 +4,1903 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
-  <meta http-equiv="refresh" content="0;url=/work/adminv2">
-  <title>Work CMS moved — XYZ Studios</title>
+  <title>Admin — XYZ Studios</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Archivo:wght@400;500;600;700;800;900&family=Archivo+Expanded:wght@600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/xyz-nav-font.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
   <style>
-    html, body { background: #0c0c0c; color: #f4f1ea; font-family: Arial, sans-serif; min-height: 100vh; display: grid; place-items: center; margin: 0; }
-    a { color: #f4f1ea; }
+    @font-face { font-family: 'Micross'; src: url('/assets/micross.ttf') format('truetype'); font-weight: 400 700; font-display: swap; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    ::-webkit-scrollbar { width: 0; height: 0; }
+    input, select, button, textarea { font-family: inherit; }
+    input::placeholder, textarea::placeholder { color: #5a5a5a; }
+    select option { background: #161616; color: #f4f1ea; }
+    .hidden { display: none !important; }
+
+    :root {
+      --bg: #0c0c0c;
+      --text: #f4f1ea;
+      --accent: #f4f1ea;
+      --accent-text: #0c0c0c;
+      --muted: #5a5a5a;
+      --muted2: #6a6a6a;
+      --muted3: #8a877f;
+      --line: rgba(244, 241, 234, .14);
+      --line2: rgba(244, 241, 234, .08);
+      --green: #7fdc9a;
+      --amber: #dcbf7f;
+      --danger: #dc7f7f;
+      --site-nav-h: clamp(52px, 9vh, 80px);
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Archivo', Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    body { overflow: hidden; }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      height: var(--site-nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(16px, 4vw, 48px);
+      background: transparent !important;
+    }
+    .nav-logo img { height: 29px; width: auto; display: block; }
+
+    .cms-shell {
+      position: fixed;
+      top: var(--site-nav-h);
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: calc(100vh - var(--site-nav-h));
+      height: calc(100dvh - var(--site-nav-h));
+    }
+
+    .grain { position: relative; height: 100%; overflow: hidden; }
+    .grain::after {
+      content: "";
+      position: absolute; inset: 0; pointer-events: none; opacity: .045; z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      mix-blend-mode: overlay;
+    }
+
+    #login {
+      min-height: 100%; display: flex; align-items: center; justify-content: center;
+      padding: 24px; position: relative; z-index: 2;
+    }
+    .login-box { width: 100%; max-width: 340px; text-align: center; }
+    .login-brand { font-family: 'Micross', 'Archivo Expanded', sans-serif; font-weight: 800; font-size: 20px; }
+    .login-sub { font-size: 9px; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); margin-top: 4px; margin-bottom: 36px; }
+    .login-box input {
+      width: 100%; background: transparent; border: 0; border-bottom: 1px solid rgba(244,241,234,.22);
+      color: var(--text); font-size: 14px; padding: 14px 0; text-align: center; outline: none;
+    }
+    .login-box input:focus { border-color: var(--text); }
+    .msg { font-size: 11px; color: var(--muted3); min-height: 1.2em; margin-top: 14px; }
+
+    .btn-accent {
+      font-size: 11px; letter-spacing: .12em; text-transform: uppercase; font-weight: 700;
+      background: var(--accent); color: var(--accent-text); border: 0; padding: 12px 18px; cursor: pointer;
+    }
+    .btn-accent:disabled { opacity: .4; cursor: default; }
+    .btn-ghost {
+      font-size: 10px; letter-spacing: .12em; text-transform: uppercase; background: transparent;
+      color: var(--muted3); border: 1px solid rgba(244,241,234,.18); padding: 11px 18px; cursor: pointer;
+    }
+    .btn-ghost:disabled { opacity: .4; cursor: default; }
+
+    #app {
+      display: grid; grid-template-columns: 260px 1fr; height: 100%;
+      position: relative; z-index: 2; background: var(--bg);
+    }
+
+    .nav-rail {
+      border-right: 1px solid var(--line); padding: 22px 22px 30px;
+      display: flex; flex-direction: column; height: 100%; overflow: auto; position: relative; z-index: 2;
+    }
+    .nav-section { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+    .nav-section.type { margin-top: 24px; }
+    .nav-item {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 12px; letter-spacing: .06em; padding: 9px 11px; cursor: pointer; color: var(--muted3);
+    }
+    .nav-item.active { background: var(--accent); color: var(--accent-text); font-weight: 700; }
+    .nav-count { font-family: 'JetBrains Mono', monospace; font-size: 10px; opacity: .7; }
+    .nav-spacer { flex: 1; }
+    .nav-new {
+      font-size: 10px; letter-spacing: .14em; text-transform: uppercase; border: 1px solid var(--text);
+      padding: 12px; text-align: center; font-weight: 700; cursor: pointer;
+    }
+    .nav-footer { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); line-height: 1.8; margin-top: 14px; padding: 0 2px; }
+    .nav-logout { font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); background: none; border: 0; cursor: pointer; margin-top: 8px; padding: 0 2px; text-align: left; }
+    .nav-logout:hover { color: var(--text); }
+
+    .main { height: 100%; overflow: hidden; display: flex; flex-direction: column; position: relative; z-index: 2; }
+
+    .list-mode { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+    .list-header {
+      padding: 26px 34px 18px; display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--line); flex: 0 0 auto;
+    }
+    .list-title { font-family: 'Archivo Expanded', 'Archivo', sans-serif; font-weight: 800; font-size: 28px; letter-spacing: -.01em; text-transform: uppercase; }
+    .list-sub { font-size: 11px; color: var(--muted2); margin-top: 4px; }
+    .list-tools { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .status-msg { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted3); min-width: 120px; }
+    .search-input {
+      background: transparent; border: 1px solid rgba(244,241,234,.18); color: var(--text);
+      font-size: 12px; padding: 10px 13px; width: 230px; outline: none;
+    }
+    .table-head {
+      display: grid; grid-template-columns: 46px 1fr 150px 70px 70px 30px; gap: 14px;
+      padding: 13px 34px; font-size: 9px; letter-spacing: .16em; text-transform: uppercase;
+      color: var(--muted); border-bottom: 1px solid rgba(244,241,234,.12);
+      font-family: 'JetBrains Mono', monospace; flex: 0 0 auto;
+    }
+    .table-body { flex: 1; overflow: auto; min-height: 0; }
+    .table-row {
+      display: grid; grid-template-columns: 46px 1fr 150px 70px 70px 30px; gap: 14px;
+      padding: 16px 34px; align-items: center; border-bottom: 1px solid var(--line2); cursor: pointer;
+    }
+    .table-row.sortable-ghost { opacity: .25; }
+    .row-num { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); cursor: grab; touch-action: none; }
+    .row-project { display: flex; align-items: center; gap: 14px; min-width: 0; }
+    .row-thumb { width: 56px; height: 34px; border-radius: 3px; flex: none; background: #1a1a1a center/cover no-repeat; }
+    .row-title {
+      font-family: 'Archivo Expanded', 'Archivo', sans-serif; font-weight: 700; font-size: 16px;
+      text-transform: uppercase; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .row-client { font-size: 11px; color: #7a7a7a; margin-top: 2px; }
+    .row-type { font-size: 12px; color: var(--muted3); }
+    .row-star { font-size: 13px; }
+    .row-live { font-family: 'JetBrains Mono', monospace; font-size: 10px; }
+    .row-chevron { color: var(--muted); font-size: 14px; text-align: right; }
+    .row-title-line { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .row-title-line .row-title { flex: 1; min-width: 0; }
+    .row-page-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      flex: none;
+    }
+    .row-page-badge {
+      font-size: 8px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 3px 7px;
+      border-radius: 2px;
+      font-family: 'JetBrains Mono', monospace;
+      flex: none;
+    }
+    .row-page-badge--home {
+      color: #0c0c0c;
+      background: var(--green);
+    }
+    .row-page-badge--selected {
+      color: #0c0c0c;
+      background: var(--amber);
+    }
+    .row-arrows { display: flex; flex-direction: column; gap: 2px; align-items: center; justify-self: end; }
+    .row-arrow {
+      width: 24px; height: 18px;
+      border: 1px solid rgba(244,241,234,.18);
+      background: transparent;
+      color: var(--muted3);
+      font-size: 9px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0;
+    }
+    .row-arrow:hover:not(:disabled) { color: var(--text); border-color: rgba(244,241,234,.35); }
+    .row-arrow:disabled { opacity: .25; cursor: default; }
+    .table-body.home-list .table-row { grid-template-columns: 46px 1fr 150px 70px 70px 56px; }
+    .table-head.home-head { grid-template-columns: 46px 1fr 150px 70px 70px 56px; }
+    .empty-state { padding: 80px 34px; text-align: center; color: var(--muted); }
+    .empty-state h3 { font-family: 'Instrument Serif', serif; font-size: 32px; color: var(--muted2); font-weight: 400; }
+
+    .edit-mode { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+    .edit-top {
+      padding: 18px 34px; border-bottom: 1px solid var(--line);
+      display: flex; align-items: center; justify-content: space-between; flex: 0 0 auto;
+    }
+    .edit-top-left { display: flex; align-items: center; gap: 16px; }
+    .edit-back { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted3); cursor: pointer; background: none; border: 0; }
+    .edit-breadcrumb { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted2); }
+    .edit-top-right { display: flex; gap: 8px; align-items: center; }
+    .step-btn {
+      width: 32px; height: 32px; border: 1px solid rgba(244,241,234,.18);
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      color: var(--muted3); background: transparent; font-size: 14px;
+    }
+    .status-pill { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--muted3); margin: 0 6px; }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; }
+    .edit-body { flex: 1; display: flex; min-height: 0; position: relative; }
+
+    .poster-col {
+      flex: none; width: var(--media-col-w, 480px); min-width: 280px; max-width: 72vw;
+      border-right: 1px solid var(--line); padding: 30px 24px 30px 30px;
+      display: flex; flex-direction: column; gap: 14px; min-height: 0; position: relative;
+    }
+    .col-resize {
+      position: absolute; top: 0; right: -3px; width: 6px; height: 100%;
+      cursor: col-resize; z-index: 4; touch-action: none;
+    }
+    .col-resize::after {
+      content: ""; position: absolute; top: 0; bottom: 0; left: 2px; width: 2px;
+      background: transparent; transition: background .15s;
+    }
+    .col-resize:hover::after, .col-resize.is-dragging::after { background: rgba(244,241,234,.35); }
+    .poster-frame {
+      flex: 1; border-radius: 5px; position: relative; border: 1px solid rgba(244,241,234,.12);
+      min-height: 0; overflow: hidden; background: #1a1a1a center/cover no-repeat;
+    }
+    .preview-video {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+      background: #1a1a1a; z-index: 1;
+    }
+    .poster-featured {
+      position: absolute; top: 14px; left: 14px; font-size: 10px; letter-spacing: .14em;
+      text-transform: uppercase; background: #fff; color: #000; padding: 5px 11px; font-weight: 700; z-index: 2;
+    }
+    .preview-empty {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.35); z-index: 1;
+    }
+    .poster-overlay {
+      position: absolute; left: 0; right: 0; bottom: 0; display: flex; align-items: center;
+      justify-content: space-between; padding: 12px 14px;
+      background: linear-gradient(transparent, rgba(0,0,0,.8)); cursor: pointer; z-index: 2;
+    }
+    .poster-name { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(255,255,255,.7); }
+    .poster-replace {
+      font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+      background: rgba(255,255,255,.92); color: #0c0c0c; padding: 6px 11px; font-weight: 700;
+    }
+    .poster-bottom { display: flex; gap: 10px; }
+    .poster-browse {
+      flex: 1; font-size: 11px; color: var(--muted2); border: 1px dashed rgba(244,241,234,.22);
+      padding: 11px; text-align: center; cursor: pointer;
+    }
+    .video-input {
+      flex: 1; background: transparent; border: 1px solid rgba(244,241,234,.16); color: var(--text);
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 11px; text-align: center; outline: none;
+    }
+    .poster-url-hidden { position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0; }
+
+    .fields-col {
+      flex: 1; min-width: 0; padding: 30px 36px; overflow: auto; min-height: 0;
+      display: flex; flex-direction: column; gap: 24px;
+    }
+    .actions-section {
+      margin-top: 36px; padding-top: 24px; padding-bottom: 36px;
+      border-top: 1px solid var(--line2);
+      display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+    }
+    .field-label { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+    .field-label.sm { letter-spacing: .16em; color: var(--muted2); margin-bottom: 9px; }
+    .title-input {
+      width: 100%; font-family: 'Instrument Serif', serif; font-size: 52px; line-height: 1;
+      background: transparent; border: 0; border-bottom: 1px solid rgba(244,241,234,.18);
+      color: var(--text); padding-bottom: 12px; outline: none;
+    }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+    .text-input, .select-input {
+      width: 100%; background: transparent; border: 0; border-bottom: 1px solid rgba(244,241,234,.18);
+      color: var(--text); font-size: 16px; padding-bottom: 9px; outline: none;
+    }
+    .select-input { cursor: pointer; }
+
+    .service-tags { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .service-tag {
+      font-size: 12px; border: 1px solid var(--text); padding: 6px 13px;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .service-tag button { background: none; border: 0; cursor: pointer; color: var(--muted3); font-size: 14px; line-height: 1; padding: 0; }
+    .service-add {
+      background: transparent; border: 1px dashed rgba(244,241,234,.25); color: var(--text);
+      font-size: 12px; padding: 6px 13px; outline: none; width: 150px; cursor: pointer;
+    }
+
+    .credits-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 11px; }
+    .credits-hint { font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted3); }
+    .credits-box { border: 1px solid var(--line); }
+    .credit-row { display: grid; grid-template-columns: 190px 1fr 36px; align-items: center; border-bottom: 1px solid rgba(244,241,234,.1); }
+    .credit-role {
+      background: rgba(244,241,234,.03); border: 0; border-right: 1px solid rgba(244,241,234,.1);
+      color: #cfcabd; font-size: 13px; padding: 11px 13px; outline: none;
+    }
+    .credit-name { background: transparent; border: 0; color: var(--text); font-size: 14px; padding: 11px 13px; outline: none; }
+    .credit-remove { text-align: center; color: var(--muted); cursor: pointer; background: none; border: 0; font-size: 16px; }
+    .add-credit {
+      font-size: 11px; letter-spacing: .06em; color: var(--muted3); border: 1px dashed rgba(244,241,234,.2);
+      padding: 10px; text-align: center; margin-top: 8px; cursor: pointer; background: none; width: 100%;
+    }
+
+    .appears-row { display: flex; flex-direction: column; gap: 14px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+    .chip {
+      font-size: 11px; padding: 7px 13px; cursor: pointer;
+      border: 1px solid rgba(244,241,234,.22); color: var(--muted3); background: transparent;
+    }
+    .chip.on { background: var(--accent); color: var(--accent-text); font-weight: 600; border-color: var(--accent); }
+    .chip.static { cursor: default; border: 1px solid rgba(244,241,234,.16); color: var(--muted2); }
+    .hero-start-input {
+      width: 100%; background: transparent; border: 0; border-bottom: 1px solid rgba(244,241,234,.18);
+      color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 14px; padding-bottom: 9px; outline: none;
+    }
+    .btn-delete {
+      border: 1px solid rgba(220,120,120,.35); color: var(--danger); padding: 11px 18px;
+      font-size: 10px; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; flex: none; background: transparent;
+    }
+
+    @media (max-width: 1100px) {
+      #app { grid-template-columns: 1fr; }
+      .nav-rail { display: none; }
+      .edit-body { flex-direction: column; }
+      .poster-col { width: 100% !important; max-width: none; border-right: 0; border-bottom: 1px solid var(--line); max-height: 42vh; }
+      .col-resize { display: none; }
+    }
+    @media (max-width: 760px) {
+      nav { padding: 14px 20px 16px; }
+      .nav-logo img { height: 24px; }
+    }
+
+    .access-mode { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+    .access-header { padding: 26px 34px 18px; border-bottom: 1px solid var(--line); flex: 0 0 auto; }
+    .access-body { flex: 1; overflow: auto; padding: 26px 34px 40px; max-width: 920px; }
+    .access-help {
+      font-size: 11px; color: var(--muted2); line-height: 1.7; padding: 14px 16px;
+      border: 1px solid var(--line2); margin-bottom: 24px;
+    }
+    .access-help code { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted3); }
+    .access-label {
+      font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted);
+      margin-bottom: 10px; font-family: 'JetBrains Mono', monospace;
+    }
+    .access-bulk textarea {
+      width: 100%; min-height: 88px; background: rgba(244,241,234,.04); border: 1px solid var(--line);
+      color: var(--text); font-size: 12px; padding: 12px; resize: vertical; outline: none; font-family: inherit;
+    }
+    .access-bulk textarea:focus { border-color: rgba(244,241,234,.35); }
+    .access-err { font-size: 11px; color: var(--danger); min-height: 1.2em; margin: 8px 0; }
+    .access-section-title {
+      font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted);
+      margin: 32px 0 12px; font-family: 'JetBrains Mono', monospace;
+    }
+    .access-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .access-table th, .access-table td { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--line2); }
+    .access-table th {
+      font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .access-source { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+    .access-row-btn { background: none; border: 0; cursor: pointer; color: var(--muted); font-size: 16px; padding: 0 4px; line-height: 1; }
+    .access-row-btn:hover { color: var(--text); }
+    .access-copy pre {
+      white-space: pre-wrap; word-break: break-all; font-family: 'JetBrains Mono', monospace; font-size: 10px;
+      color: var(--muted3); background: rgba(244,241,234,.04); border: 1px solid var(--line);
+      padding: 12px; margin: 8px 0 12px; max-height: 120px; overflow: auto;
+    }
+    .access-toolbar { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+    .access-date { font-size: 10px; color: var(--muted2); white-space: nowrap; }
   </style>
 </head>
 <body>
-  <p>Work CMS moved to <a href="/work/adminv2">/work/adminv2</a>.</p>
-  <script>location.replace('/work/adminv2');</script>
+
+<nav>
+  <a class="nav-logo" href="/">
+    <img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios">
+  </a>
+  <ul class="nav-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/projects-v2/" class="active">WORK</a></li>
+    <li style="display:none"><a href="/services/">XYZ/Services</a></li>
+    <li><a href="/contact">Contact</a></li>
+  </ul>
+</nav>
+
+<div id="login" class="grain cms-shell">
+  <div class="login-box">
+    <div class="login-brand">XYZ</div>
+    <div class="login-sub">Admin</div>
+    <input id="pw" type="password" placeholder="Admin password" autocomplete="current-password">
+    <button class="btn-accent" id="loginBtn" style="width:100%;margin-top:24px">Sign in</button>
+    <div class="msg" id="loginMsg"></div>
+  </div>
+</div>
+
+<div id="app" class="grain hidden cms-shell">
+  <nav class="nav-rail">
+    <div class="nav-section">Pages</div>
+    <div id="navMain"></div>
+    <div class="nav-section type">By type</div>
+    <div id="navType"></div>
+    <div style="height:24px"></div>
+    <div id="navDraft"></div>
+    <div class="nav-section" style="margin-top:24px">Access</div>
+    <div id="navAccess"></div>
+    <div class="nav-spacer"></div>
+    <div class="nav-new" id="addBtn">+ New project</div>
+    <div class="nav-footer" id="navFooter">all live</div>
+    <button class="nav-logout" id="logoutBtn" type="button">Log out</button>
+  </nav>
+
+  <div class="main">
+    <div id="listMode" class="list-mode">
+      <div class="list-header">
+        <div>
+          <div class="list-title" id="pageTitle">All Work</div>
+          <div class="list-sub" id="pageSub">0 projects · drag № to reorder</div>
+        </div>
+        <div class="list-tools">
+          <span class="status-msg" id="saveMsg">All published</span>
+          <input class="search-input" type="search" id="search" placeholder="Search title or client…">
+          <button class="btn-ghost" id="syncBtn" type="button">Sync missing</button>
+          <button class="btn-ghost" id="seedBtn" type="button">Seed defaults</button>
+          <button class="btn-ghost" id="resetBtn" type="button">Discard</button>
+          <button class="btn-accent" id="updateSiteBtn" type="button">Update site</button>
+          <button class="btn-accent" id="addBtnTop" type="button">+ Add project</button>
+        </div>
+      </div>
+      <div class="table-head">
+        <span>№</span><span>Project / Client</span><span>Category</span><span>Feat</span><span>Live</span><span></span>
+      </div>
+      <div class="table-body" id="list"></div>
+    </div>
+
+    <div id="accessMode" class="access-mode hidden">
+      <div class="access-header">
+        <div class="list-title">Allow List</div>
+        <div class="list-sub">Capabilities deck access · email grants · NDA signatories</div>
+      </div>
+      <div class="access-body">
+        <div class="access-toolbar">
+          <a class="btn-ghost" href="/capabilities/login?next=%2Fcapabilities%2F" style="text-decoration:none;display:inline-flex;align-items:center">Open deck</a>
+        </div>
+        <div class="access-help" id="accessHelp">
+          Paste emails below to grant deck access. On live Vercel without Redis, copy the value into
+          <code>CAPABILITIES_ALLOWED_EMAILS</code> and redeploy — or add one email per line in
+          <code>data/deck-allowlist.txt</code> and push to GitHub.
+        </div>
+        <div class="access-bulk">
+          <div class="access-label">Add emails (one per line or comma-separated)</div>
+          <textarea id="accessBulkEmails" placeholder="client@agency.com&#10;partner@brand.com" spellcheck="false"></textarea>
+        </div>
+        <div class="access-err" id="accessAddErr" aria-live="polite"></div>
+        <button class="btn-accent" id="accessBulkAddBtn" type="button">Add access</button>
+        <div class="hidden" id="accessCopyBox" style="margin-top:20px">
+          <div class="access-label">Paste into Vercel → CAPABILITIES_ALLOWED_EMAILS</div>
+          <div class="access-copy"><pre id="accessCopyValue"></pre></div>
+          <button class="btn-ghost" id="accessCopyBtn" type="button">Copy to clipboard</button>
+        </div>
+        <div class="access-section-title">Deck access</div>
+        <div class="access-err" id="accessListErr" aria-live="polite"></div>
+        <table class="access-table">
+          <thead><tr><th>Email</th><th>Source</th><th></th></tr></thead>
+          <tbody id="accessGrantRows"></tbody>
+        </table>
+        <div class="access-section-title">NDA signatories</div>
+        <div class="access-err" id="accessNdaErr" aria-live="polite"></div>
+        <table class="access-table">
+          <thead><tr><th>Email</th><th>Signed name</th><th>Signed</th><th></th></tr></thead>
+          <tbody id="accessNdaRows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="editMode" class="edit-mode hidden">
+      <div class="edit-top">
+        <div class="edit-top-left">
+          <button class="edit-back" id="backBtn" type="button">‹ Back</button>
+          <div class="edit-breadcrumb" id="breadcrumb"></div>
+        </div>
+        <div class="edit-top-right">
+          <button class="step-btn" id="prevBtn" type="button">‹</button>
+          <button class="step-btn" id="nextBtn" type="button">›</button>
+          <div class="status-pill"><span class="status-dot" id="statusDot"></span><span id="statusLabel">Live</span></div>
+          <span class="status-msg" id="editSaveMsg"></span>
+        </div>
+      </div>
+      <div class="edit-body" id="editBody">
+        <div class="poster-col" id="posterCol">
+          <div class="poster-frame" id="posterFrame">
+            <video class="preview-video hidden" id="previewVideo" controls playsinline preload="metadata"></video>
+            <div class="preview-empty" id="previewEmpty">No video URL</div>
+            <div class="poster-featured hidden" id="posterFeatured">★ Selected</div>
+            <label class="poster-overlay" id="posterOverlay">
+              <span class="poster-name" id="posterName"></span>
+              <span class="poster-replace">⤓ Replace</span>
+            </label>
+          </div>
+          <div class="poster-bottom">
+            <label class="poster-browse" id="posterBrowse">⤒ Drop image or browse</label>
+            <input class="poster-url-hidden" id="f-poster" autocomplete="off">
+            <input class="video-input" id="f-video" placeholder="video url ↗" autocomplete="off">
+          </div>
+          <div class="col-resize" id="colResize" title="Drag to resize"></div>
+        </div>
+        <div class="fields-col">
+          <div>
+            <div class="field-label">Title</div>
+            <input class="title-input" id="f-title" placeholder="Untitled" autocomplete="off">
+          </div>
+          <div class="grid2">
+            <div>
+              <div class="field-label sm">Client</div>
+              <input class="text-input" id="f-client" placeholder="Client name" autocomplete="off">
+            </div>
+            <div>
+              <div class="field-label sm">Category</div>
+              <select class="select-input" id="f-projectType">
+                <option value="Commercial">Commercial</option>
+                <option value="Brand Film">Brand Film</option>
+                <option value="Music Video">Music Video</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <div class="field-label sm">Services</div>
+            <div class="service-tags" id="serviceTags"></div>
+          </div>
+          <div>
+            <div class="credits-head">
+              <span class="field-label sm" style="margin:0">Credits</span>
+              <span class="credits-hint">type a role → a name</span>
+            </div>
+            <div class="credits-box" id="creditsBox"></div>
+            <button class="add-credit" id="addCreditBtn" type="button">+ Add credit</button>
+          </div>
+          <div class="appears-row">
+            <div>
+              <div class="field-label sm">Appears on</div>
+              <div class="chips">
+                <span class="chip" id="chipHome" role="button" tabindex="0">Home reel</span>
+                <span class="chip" id="chipSelected" role="button" tabindex="0">Selected Work</span>
+                <span class="chip static" id="chipTypeAuto">Commercial · auto</span>
+              </div>
+              <div id="heroStartWrap" class="hidden" style="margin-top:14px">
+                <div class="field-label sm">Hero start (seconds)</div>
+                <input class="hero-start-input" id="f-hero-start" type="number" min="0" step="0.1" value="0">
+              </div>
+            </div>
+          </div>
+          <div class="actions-section">
+            <button class="btn-accent" id="saveDraftBtn" type="button">Save</button>
+            <button class="btn-delete" id="deleteBtn" type="button">Delete project</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var SERVICE_OPTIONS_VISUAL = [
+  'Creative Direction', 'Visual Effects', 'CGI', 'AI', 'Compositing', 'Clean Up & Beauty'
+];
+var SERVICE_OPTIONS_SOUND = ['Sound Design', 'Mixing & Mastering', 'Compose'];
+var SERVICE_OPTIONS = SERVICE_OPTIONS_VISUAL.concat(SERVICE_OPTIONS_SOUND);
+var SOUND_SERVICES = SERVICE_OPTIONS_SOUND.slice();
+var VFX_SERVICES = ['Creative Direction', 'Visual Effects', 'CGI', 'Compositing', 'Clean Up & Beauty'];
+
+function sortServices(services) {
+  return (services || []).slice().sort(function (a, b) {
+    var ia = SERVICE_OPTIONS.indexOf(a);
+    var ib = SERVICE_OPTIONS.indexOf(b);
+    return (ia < 0 ? 999 : ia) - (ib < 0 ? 999 : ib);
+  });
+}
+var PAGES = [
+  { key: 'all', label: 'All' },
+  { key: 'home', label: 'Home' },
+  { key: 'selected', label: 'Selected Work' },
+  { key: 'commercial', label: 'Commercial' },
+  { key: 'brand-film', label: 'Brand Film' },
+  { key: 'music-video', label: 'Music Video' },
+  { key: 'drafts', label: 'Drafts' }
+];
+var GRADS = [
+  'radial-gradient(120% 120% at 30% 20%,#3f5b74,#0a0e13)',
+  'radial-gradient(120% 120% at 30% 20%,#5a4470,#130b1a)',
+  'radial-gradient(120% 120% at 30% 20%,#2f6054,#08130f)',
+  'radial-gradient(120% 120% at 30% 20%,#70583f,#1a120b)',
+  'radial-gradient(120% 120% at 30% 20%,#44475e,#0b0b14)',
+  'radial-gradient(120% 120% at 30% 20%,#6e4646,#140b0b)'
+];
+
+var catalog = null;
+var draft = null;
+var workOrder = null;
+var homeReelOrder = [];
+var homeReelStarts = {};
+var homeOrderSaving = false;
+var activeId = null;
+var dirtyFlag = false;
+var sortable = null;
+var currentPage = 'all';
+var accessGrantsLoaded = false;
+
+function accessApi(path, opts) {
+  opts = opts || {};
+  opts.credentials = 'include';
+  opts.headers = opts.headers || {};
+  if (opts.body && typeof opts.body === 'object' && !(opts.body instanceof FormData)) {
+    opts.headers['Content-Type'] = 'application/json';
+    opts.body = JSON.stringify(opts.body);
+  }
+  return fetch(path, opts).then(function (r) {
+    return r.text().then(function (text) {
+      var data = {};
+      try { data = text ? JSON.parse(text) : {}; }
+      catch (e) {
+        data = { error: r.status === 404 ? 'API not found' : text.slice(0, 240) };
+      }
+      return { ok: r.ok, status: r.status, data: data };
+    });
+  });
+}
+
+function accessSourceLabel(source) {
+  if (source === 'allowlist') return 'List / env';
+  if (source === 'grant') return 'Saved';
+  if (source === 'allowlist+grant') return 'Both';
+  return '—';
+}
+
+function formatAccessSignedAt(iso) {
+  if (!iso) return '—';
+  try {
+    return new Date(iso).toLocaleString(undefined, {
+      year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+    });
+  } catch (e) { return iso; }
+}
+
+function renderAccessNdaRows(records) {
+  var box = document.getElementById('accessNdaRows');
+  box.innerHTML = '';
+  (records || []).forEach(function (r) {
+    var tr = document.createElement('tr');
+    var td1 = document.createElement('td'); td1.textContent = r.email;
+    var td2 = document.createElement('td'); td2.textContent = r.signedName || '—';
+    var td3 = document.createElement('td'); td3.className = 'access-date'; td3.textContent = formatAccessSignedAt(r.signedAt);
+    var td4 = document.createElement('td');
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'access-row-btn'; btn.innerHTML = '&times;';
+    btn.title = 'Reset NDA (testing)';
+    btn.onclick = function () {
+      accessApi('/api/capabilities/admin/nda-revoke', { method: 'POST', body: { email: r.email } }).then(function (x) {
+        if (!x.ok) document.getElementById('accessNdaErr').textContent = (x.data && x.data.error) || 'Could not reset NDA';
+        else { document.getElementById('accessNdaErr').textContent = ''; refreshAccessList(); }
+      });
+    };
+    td4.appendChild(btn);
+    tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3); tr.appendChild(td4);
+    box.appendChild(tr);
+  });
+}
+
+function renderAccessGrantRows(grants) {
+  var box = document.getElementById('accessGrantRows');
+  box.innerHTML = '';
+  (grants || []).forEach(function (g) {
+    var tr = document.createElement('tr');
+    var td1 = document.createElement('td'); td1.textContent = g.email;
+    var td2 = document.createElement('td'); td2.className = 'access-source'; td2.textContent = accessSourceLabel(g.source);
+    var td3 = document.createElement('td');
+    if (g.source !== 'allowlist') {
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'access-row-btn'; btn.innerHTML = '&times;';
+      btn.onclick = function () {
+        accessApi('/api/capabilities/admin/revoke', { method: 'POST', body: { email: g.email } }).then(function (x) {
+          if (!x.ok) document.getElementById('accessListErr').textContent = (x.data && x.data.error) || 'Could not remove';
+          else { document.getElementById('accessListErr').textContent = ''; refreshAccessList(); }
+        });
+      };
+      td3.appendChild(btn);
+    }
+    tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3);
+    box.appendChild(tr);
+  });
+}
+
+function showAccessCopyEnv(value, message) {
+  document.getElementById('accessCopyValue').textContent = value || '';
+  document.getElementById('accessCopyBox').classList.remove('hidden');
+  if (message) document.getElementById('accessAddErr').textContent = message;
+}
+
+function handleAccessGrantResponse(x, clearInput) {
+  if (!x.ok) {
+    document.getElementById('accessAddErr').textContent = (x.data && x.data.error) || 'Could not add';
+    return;
+  }
+  if (x.data.mode === 'copy_env' && x.data.suggestedAllowedEmails) {
+    showAccessCopyEnv(
+      x.data.suggestedAllowedEmails,
+      x.data.message || 'Copy the value below into Vercel → CAPABILITIES_ALLOWED_EMAILS, then redeploy.'
+    );
+  } else {
+    document.getElementById('accessAddErr').textContent = '';
+    document.getElementById('accessCopyBox').classList.add('hidden');
+    if (clearInput) clearInput();
+  }
+  refreshAccessList();
+}
+
+function refreshAccessList() {
+  document.getElementById('accessListErr').textContent = '';
+  return accessApi('/api/capabilities/admin/list').then(function (x) {
+    if (x.status === 401) { location.reload(); return; }
+    if (!x.ok) {
+      document.getElementById('accessListErr').textContent = (x.data && x.data.error) || 'Could not load list';
+      return;
+    }
+    if (x.data.allowlist && x.data.allowlist.envValue) {
+      document.getElementById('accessCopyValue').textContent = x.data.allowlist.envValue;
+    }
+    renderAccessGrantRows(x.data.grants);
+    renderAccessNdaRows(x.data.ndaRecords);
+    accessGrantsLoaded = true;
+  });
+}
+
+function openAccessPage() {
+  currentPage = 'access';
+  document.getElementById('search').value = '';
+  activeId = null;
+  setMode(false);
+  renderNav();
+  refreshAccessList();
+}
+
+function bindAccessPanel() {
+  document.getElementById('accessBulkAddBtn').onclick = function () {
+    document.getElementById('accessAddErr').textContent = '';
+    var raw = document.getElementById('accessBulkEmails').value.trim();
+    if (!raw) { document.getElementById('accessAddErr').textContent = 'Enter at least one email.'; return; }
+    accessApi('/api/capabilities/admin/grant-bulk', { method: 'POST', body: { emails: raw } }).then(function (x) {
+      handleAccessGrantResponse(x, function () { document.getElementById('accessBulkEmails').value = ''; });
+    });
+  };
+  document.getElementById('accessCopyBtn').onclick = function () {
+    var text = document.getElementById('accessCopyValue').textContent || '';
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(
+      function () { document.getElementById('accessAddErr').textContent = 'Copied. Paste in Vercel and redeploy.'; },
+      function () { document.getElementById('accessAddErr').textContent = 'Select the box and copy manually.'; }
+    );
+  };
+}
+
+bindAccessPanel();
+
+function el(tag, cls, html) {
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (html != null) e.innerHTML = html;
+  return e;
+}
+
+function pad(n) { return String(n).padStart(2, '0'); }
+
+function slugify(s) {
+  return String(s || '').toLowerCase().replace(/[''`']/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function catalogMkey(p) {
+  return (p.category || '') + '/' + (p.slug || '');
+}
+
+function homeKeyForProject(p) {
+  return slugify(p.client) + '-' + slugify(p.title);
+}
+
+function normVideo(u) {
+  return String(u || '').split('?')[0].trim().toLowerCase();
+}
+
+function parseHomeStart(val) {
+  var x = String(val == null ? '' : val).trim();
+  if (!x) return 0;
+  if (x.indexOf(':') >= 0) {
+    var p = x.split(':');
+    return (parseInt(p[0], 10) || 0) * 60 + (parseFloat(p[1]) || 0);
+  }
+  return parseFloat(x) || 0;
+}
+
+function matchProjectToHomeItem(item, projects) {
+  var i, p;
+  if (item.mkey) {
+    for (i = 0; i < projects.length; i++) {
+      if (catalogMkey(projects[i]) === item.mkey) return projects[i];
+    }
+  }
+  if (item.key) {
+    for (i = 0; i < projects.length; i++) {
+      if (homeKeyForProject(projects[i]) === item.key) return projects[i];
+    }
+  }
+  var v = normVideo(item.video);
+  if (v) {
+    for (i = 0; i < projects.length; i++) {
+      if (normVideo(projects[i].video) === v) return projects[i];
+    }
+  }
+  var t = String(item.title || '').trim().toLowerCase();
+  var c = String(item.client || '').trim().toLowerCase();
+  if (t && c) {
+    for (i = 0; i < projects.length; i++) {
+      p = projects[i];
+      if (String(p.title || '').trim().toLowerCase() === t &&
+          String(p.client || '').trim().toLowerCase() === c) return p;
+    }
+  }
+  return null;
+}
+
+function buildHomeReelIndex(projects) {
+  homeReelOrder = [];
+  homeReelStarts = {};
+  var homeList = (workOrder && workOrder.homeList) || [];
+  var seen = {};
+  homeList.forEach(function (item) {
+    var p = matchProjectToHomeItem(item, projects);
+    if (!p || seen[p.id]) return;
+    seen[p.id] = true;
+    homeReelOrder.push(p.id);
+    homeReelStarts[p.id] = parseHomeStart(item.start);
+  });
+}
+
+function isOnHomeReel(p) {
+  return isInHomeList(p);
+}
+
+function heroStartFor(p) {
+  if (Object.prototype.hasOwnProperty.call(homeReelStarts, p.id)) return homeReelStarts[p.id];
+  if (p.homeHero && p.homeHero.start != null) return p.homeHero.start;
+  return 0;
+}
+
+function isInHomeList(p) {
+  return homeReelOrder.indexOf(p.id) >= 0;
+}
+
+function isOnSelectedWork(p) {
+  return !!p.featured;
+}
+
+function appendRowPageBadges(titleLine, p) {
+  var hasHome = isOnHomeReel(p);
+  var hasSelected = isOnSelectedWork(p);
+  if (!hasHome && !hasSelected) return;
+  var box = el('div', 'row-page-badges');
+  if (hasHome) box.appendChild(el('span', 'row-page-badge row-page-badge--home', 'Home'));
+  if (hasSelected) box.appendChild(el('span', 'row-page-badge row-page-badge--selected', 'Selected'));
+  titleLine.appendChild(box);
+}
+
+function categoryLabel(slug) {
+  return {
+    'visual-effects': 'Visual Effects',
+    sound: 'Sound',
+    ai: 'AI',
+    'making-of': 'Making Of'
+  }[slug] || slug || '';
+}
+
+function findHomeItemForProject(p, list) {
+  list = list || (workOrder && workOrder.homeList) || [];
+  var i;
+  for (i = 0; i < list.length; i++) {
+    if (matchProjectToHomeItem(list[i], [p])) return list[i];
+  }
+  return null;
+}
+
+function buildHomeItemFromProject(p) {
+  var existing = findHomeItemForProject(p);
+  if (existing) return existing;
+  return {
+    key: homeKeyForProject(p),
+    client: p.client,
+    title: p.title,
+    start: String(heroStartFor(p)),
+    video: p.video || '',
+    cat: categoryLabel(p.category),
+    mkey: catalogMkey(p)
+  };
+}
+
+function reconcileHomeReelState() {
+  buildHomeReelIndex(draft.projects);
+  draft.projects.forEach(function (p) {
+    if (!p.homeHero) p.homeHero = { start: 0, enabled: false };
+    if (!isInHomeList(p)) return;
+    p.homeHero.enabled = true;
+    p.homeHero.start = heroStartFor(p);
+  });
+  draft.projects.forEach(function (p) {
+    if (!p.homeHero || !p.homeHero.enabled || isInHomeList(p)) return;
+    addProjectToHomeList(p);
+  });
+  draft.projects.forEach(function (p) {
+    if (!p.homeHero) return;
+    if (!isInHomeList(p)) p.homeHero.enabled = false;
+  });
+}
+
+function removeProjectFromHomeList(p) {
+  if (!workOrder || !workOrder.homeList) return;
+  workOrder.homeList = workOrder.homeList.filter(function (item) {
+    return !matchProjectToHomeItem(item, [p]);
+  });
+  buildHomeReelIndex(draft.projects);
+}
+
+function addProjectToHomeList(p) {
+  if (!workOrder) workOrder = { homeList: [] };
+  if (findHomeItemForProject(p)) return;
+  workOrder.homeList.push(buildHomeItemFromProject(p));
+  buildHomeReelIndex(draft.projects);
+}
+
+function refreshHomeListItem(p) {
+  if (!workOrder || !workOrder.homeList || !isInHomeList(p)) return;
+  var list = workOrder.homeList;
+  var i;
+  for (i = 0; i < list.length; i++) {
+    if (!matchProjectToHomeItem(list[i], [p])) continue;
+    var kept = list[i];
+    var fresh = buildHomeItemFromProject(p);
+    fresh.start = String(heroStartFor(p));
+    if (kept.key) fresh.key = kept.key;
+    list[i] = fresh;
+    buildHomeReelIndex(draft.projects);
+    return;
+  }
+}
+
+function setProjectHomeReel(p, on) {
+  if (!p.homeHero) p.homeHero = { start: 0, enabled: false };
+  p.homeHero.enabled = !!on;
+  if (on) {
+    if (!isInHomeList(p)) addProjectToHomeList(p);
+    else refreshHomeListItem(p);
+  } else {
+    removeProjectFromHomeList(p);
+  }
+}
+
+function applyHomeReelOrderFromIds(ids) {
+  if (!workOrder) workOrder = { homeList: [] };
+  var oldList = (workOrder.homeList || []).slice();
+  var newList = [];
+  ids.forEach(function (id) {
+    var p = draft.projects.find(function (x) { return x.id === id; });
+    if (!p) return;
+    newList.push(findHomeItemForProject(p, oldList) || buildHomeItemFromProject(p));
+  });
+  workOrder.homeList = newList;
+  buildHomeReelIndex(draft.projects);
+  draft.projects.forEach(function (p) {
+    if (!p.homeHero) p.homeHero = { start: 0, enabled: false };
+    p.homeHero.enabled = isInHomeList(p);
+  });
+}
+
+function saveHomeOrder() {
+  if (homeOrderSaving) return Promise.resolve();
+  homeOrderSaving = true;
+  setStatusMsg('Saving hero order…');
+  return fetch('/api/site-order', {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ order: workOrder })
+  })
+    .then(function (r) {
+      return r.json().catch(function () { return null; }).then(function (d) {
+        return { status: r.status, data: d };
+      });
+    })
+    .then(function (res) {
+      homeOrderSaving = false;
+      var d = res.data;
+      if (d && d.ok) {
+        var msg = d.warning || (d.redeployed ? 'Hero order saved — redeploy started (~30s)' : 'Hero order saved');
+        setStatusMsg(msg);
+        window.setTimeout(function () {
+          if (!dirtyFlag) setStatusMsg('All published');
+        }, 3500);
+      } else {
+        setStatusMsg((d && d.error) || ('Hero order save failed (HTTP ' + res.status + ')'));
+      }
+      return d;
+    })
+    .catch(function (e) {
+      homeOrderSaving = false;
+      setStatusMsg('Hero order save failed' + (e && e.message ? ': ' + e.message : ''));
+    });
+}
+
+function moveHomeReel(id, dir) {
+  var list = filteredProjects().map(function (p) { return p.id; });
+  var idx = list.indexOf(id);
+  if (idx < 0) return;
+  var next = idx + dir;
+  if (next < 0 || next >= list.length) return;
+  var tmp = list[idx];
+  list[idx] = list[next];
+  list[next] = tmp;
+  applyHomeReelOrderFromIds(list);
+  renderList();
+  saveHomeOrder();
+}
+
+function buildRowArrows(p, idx, total) {
+  var box = el('div', 'row-arrows');
+  var up = el('button', 'row-arrow', '▲');
+  up.type = 'button';
+  up.title = 'Move up';
+  up.disabled = idx === 0;
+  up.onclick = function (e) {
+    e.stopPropagation();
+    moveHomeReel(p.id, -1);
+  };
+  var dn = el('button', 'row-arrow', '▼');
+  dn.type = 'button';
+  dn.title = 'Move down';
+  dn.disabled = idx >= total - 1;
+  dn.onclick = function (e) {
+    e.stopPropagation();
+    moveHomeReel(p.id, 1);
+  };
+  box.appendChild(up);
+  box.appendChild(dn);
+  return box;
+}
+
+function inferCategory(services) {
+  services = services || [];
+  var hasSound = services.some(function (s) { return SOUND_SERVICES.indexOf(s) >= 0; });
+  var hasVfx = services.some(function (s) { return VFX_SERVICES.indexOf(s) >= 0; });
+  var hasAi = services.indexOf('AI') >= 0;
+  if (hasAi && !hasVfx && !hasSound) return 'ai';
+  if (hasSound && !hasVfx && !hasAi) return 'sound';
+  if (hasAi && !hasVfx) return 'ai';
+  if (hasSound && !hasVfx) return 'sound';
+  return 'visual-effects';
+}
+
+function applyDerivedFields(p) {
+  p.slug = slugify(p.title) || 'untitled';
+  p.category = inferCategory(p.services);
+  p.href = '/work/' + p.category + '/' + p.slug + '/';
+  return p;
+}
+
+function setStatusMsg(msg) {
+  document.getElementById('saveMsg').textContent = msg || 'All published';
+  var editMsg = document.getElementById('editSaveMsg');
+  if (editMsg) editMsg.textContent = dirtyFlag ? (msg || 'Unsaved changes') : '';
+}
+
+function updateVideoPreview(p) {
+  var video = document.getElementById('previewVideo');
+  var empty = document.getElementById('previewEmpty');
+  var overlay = document.getElementById('posterOverlay');
+  var url = (p && p.video || '').trim();
+  if (url) {
+    video.classList.remove('hidden');
+    empty.classList.add('hidden');
+    overlay.classList.add('hidden');
+    if (video.getAttribute('src') !== url) video.setAttribute('src', url);
+    if (p.poster) video.setAttribute('poster', p.poster);
+    else video.removeAttribute('poster');
+  } else {
+    video.classList.add('hidden');
+    empty.classList.remove('hidden');
+    overlay.classList.remove('hidden');
+    video.removeAttribute('src');
+    video.load();
+  }
+}
+
+function gradForId(id) {
+  var n = 0;
+  for (var i = 0; i < String(id).length; i++) n += String(id).charCodeAt(i);
+  return GRADS[n % GRADS.length];
+}
+
+function thumbStyle(p) {
+  if (p.poster) return 'background-image:url(' + JSON.stringify(p.poster) + ')';
+  return 'background:' + gradForId(p.id);
+}
+
+function isLive(p) {
+  return !!(p.featured || isOnHomeReel(p));
+}
+
+function matchPage(p, key) {
+  switch (key) {
+    case 'home': return isInHomeList(p);
+    case 'all': return true;
+    case 'selected': return !!p.featured;
+    case 'music-video': return p.projectType === 'Music Video';
+    case 'brand-film': return p.projectType === 'Brand Film';
+    case 'commercial': return p.projectType === 'Commercial';
+    case 'drafts': return !isLive(p);
+    default: return true;
+  }
+}
+
+function pageTitle(key) {
+  if (key === 'access') return 'Allow List';
+  if (key === 'all') return 'All Work';
+  var pg = PAGES.find(function (x) { return x.key === key; });
+  return pg ? pg.label : 'All Work';
+}
+
+function posterFileName(p) {
+  if (!p.poster) return slugify(p.title || 'untitled') + '.jpg · no file yet';
+  try {
+    var path = p.poster.split('?')[0].split('/').pop() || 'poster.jpg';
+    return decodeURIComponent(path);
+  } catch (e) {
+    return 'poster.jpg';
+  }
+}
+
+function dirty() {
+  if (!dirtyFlag) {
+    dirtyFlag = true;
+    setStatusMsg('Unsaved changes');
+  }
+  if (activeId) updateRecordStatus();
+}
+
+function setLive(msg) {
+  dirtyFlag = false;
+  setStatusMsg(msg || 'All published');
+  if (activeId) updateRecordStatus();
+}
+
+function cloneCatalog(c) { return JSON.parse(JSON.stringify(c)); }
+
+function sortedProjects() {
+  return draft.projects.slice().sort(function (a, b) { return a.sortOrder - b.sortOrder; });
+}
+
+function filteredProjects() {
+  var q = (document.getElementById('search').value || '').trim().toLowerCase();
+  var list = sortedProjects().filter(function (p) { return matchPage(p, currentPage); });
+  if (currentPage === 'home') {
+    var orderMap = {};
+    homeReelOrder.forEach(function (id, i) { orderMap[id] = i; });
+    list.sort(function (a, b) {
+      var ai = Object.prototype.hasOwnProperty.call(orderMap, a.id) ? orderMap[a.id] : 9999;
+      var bi = Object.prototype.hasOwnProperty.call(orderMap, b.id) ? orderMap[b.id] : 9999;
+      if (ai !== bi) return ai - bi;
+      return a.sortOrder - b.sortOrder;
+    });
+  }
+  if (!q) return list;
+  return list.filter(function (p) {
+    return (p.title + ' ' + p.client + ' ' + p.category + ' ' + p.slug).toLowerCase().indexOf(q) >= 0;
+  });
+}
+
+function pageCounts() {
+  var counts = {};
+  PAGES.forEach(function (pg) {
+    counts[pg.key] = sortedProjects().filter(function (p) { return matchPage(p, pg.key); }).length;
+  });
+  return counts;
+}
+
+function liveCount() {
+  return sortedProjects().filter(isLive).length;
+}
+
+function renderNav() {
+  var counts = pageCounts();
+  function renderGroup(containerId, keys) {
+    var box = document.getElementById(containerId);
+    box.innerHTML = '';
+    keys.forEach(function (key) {
+      var pg = PAGES.find(function (x) { return x.key === key; });
+      if (!pg) return;
+      var item = el('div', 'nav-item' + (currentPage === key ? ' active' : ''));
+      item.appendChild(document.createTextNode(pg.label));
+      item.appendChild(el('span', 'nav-count', pad(counts[key])));
+      item.onclick = function () {
+        currentPage = key;
+        document.getElementById('search').value = '';
+        if (activeId) syncActiveFromForm();
+        activeId = null;
+        setMode(false);
+        renderNav();
+        renderList();
+      };
+      box.appendChild(item);
+    });
+  }
+  renderGroup('navMain', ['all', 'home', 'selected']);
+  renderGroup('navType', ['commercial', 'brand-film', 'music-video']);
+  renderGroup('navDraft', ['drafts']);
+  var accessBox = document.getElementById('navAccess');
+  accessBox.innerHTML = '';
+  var accessItem = el('div', 'nav-item' + (currentPage === 'access' ? ' active' : ''));
+  accessItem.appendChild(document.createTextNode('Allow List'));
+  accessItem.appendChild(el('span', 'nav-count', accessGrantsLoaded ? '●' : '—'));
+  accessItem.onclick = openAccessPage;
+  accessBox.appendChild(accessItem);
+  var total = sortedProjects().length;
+  var live = liveCount();
+  document.getElementById('navFooter').textContent = live + ' live · ' + total + ' total';
+}
+
+function renderServiceTags(services) {
+  services = sortServices(services);
+  var box = document.getElementById('serviceTags');
+  box.innerHTML = '';
+  services.forEach(function (name) {
+    var tag = el('span', 'service-tag');
+    tag.appendChild(document.createTextNode(name));
+    var rm = el('button', null, '×');
+    rm.type = 'button';
+    rm.onclick = function (e) {
+      e.stopPropagation();
+      if (!activeId) return;
+      var p = draft.projects.find(function (x) { return x.id === activeId; });
+      if (!p) return;
+      p.services = sortServices((p.services || []).filter(function (s) { return s !== name; }));
+      dirty();
+      renderServiceTags(p.services);
+    };
+    tag.appendChild(rm);
+    box.appendChild(tag);
+  });
+  var add = el('select', 'service-add');
+  add.innerHTML = '<option value="">+ add service</option>';
+  var ogVisual = el('optgroup');
+  ogVisual.label = 'Visual';
+  SERVICE_OPTIONS_VISUAL.forEach(function (name) {
+    if ((services || []).indexOf(name) >= 0) return;
+    var opt = el('option', null, name);
+    opt.value = name;
+    ogVisual.appendChild(opt);
+  });
+  add.appendChild(ogVisual);
+  var ogSound = el('optgroup');
+  ogSound.label = 'Sound';
+  SERVICE_OPTIONS_SOUND.forEach(function (name) {
+    if ((services || []).indexOf(name) >= 0) return;
+    var opt = el('option', null, name);
+    opt.value = name;
+    ogSound.appendChild(opt);
+  });
+  add.appendChild(ogSound);
+  add.onchange = function () {
+    if (!add.value || !activeId) return;
+    var p = draft.projects.find(function (x) { return x.id === activeId; });
+    if (!p) return;
+    if (!p.services) p.services = [];
+    if (p.services.indexOf(add.value) < 0) p.services.push(add.value);
+    p.services = sortServices(p.services);
+    dirty();
+    renderServiceTags(p.services);
+  };
+  box.appendChild(add);
+}
+
+function renderCreditsEditor(credits) {
+  var box = document.getElementById('creditsBox');
+  box.innerHTML = '';
+  var rows = credits && credits.length ? credits.slice() : [{ label: '', value: '' }];
+  rows.forEach(function (c, i) {
+    var row = el('div', 'credit-row');
+    var role = el('input', 'credit-role');
+    role.placeholder = 'Role';
+    role.value = c.label || '';
+    role.oninput = function () { if (activeId) dirty(); };
+    var name = el('input', 'credit-name');
+    name.placeholder = 'Name';
+    name.value = c.value || '';
+    name.oninput = function () { if (activeId) dirty(); };
+    var rm = el('button', 'credit-remove', '×');
+    rm.type = 'button';
+    rm.onclick = function () {
+      var next = readCreditsFromDom().filter(function (_, j) { return j !== i; });
+      if (!next.length) next = [{ label: '', value: '' }];
+      if (activeId) {
+        var p = draft.projects.find(function (x) { return x.id === activeId; });
+        if (p) p.credits = next.filter(function (cr) { return cr.label && cr.value; });
+      }
+      dirty();
+      renderCreditsEditor(next);
+    };
+    row.appendChild(role);
+    row.appendChild(name);
+    row.appendChild(rm);
+    box.appendChild(row);
+  });
+}
+
+function readCreditsFromDom() {
+  var out = [];
+  document.querySelectorAll('#creditsBox .credit-row').forEach(function (row) {
+    var role = row.querySelector('.credit-role');
+    var name = row.querySelector('.credit-name');
+    var label = (role && role.value || '').trim();
+    var value = (name && name.value || '').trim();
+    if (label || value) out.push({ label: label, value: value });
+  });
+  return out;
+}
+
+function setMode(editing) {
+  var isAccess = currentPage === 'access';
+  document.getElementById('listMode').classList.toggle('hidden', editing || isAccess);
+  document.getElementById('editMode').classList.toggle('hidden', !editing);
+  document.getElementById('accessMode').classList.toggle('hidden', !isAccess);
+}
+
+function renderList() {
+  var list = filteredProjects();
+  var listEl = document.getElementById('list');
+  listEl.innerHTML = '';
+  listEl.className = currentPage === 'home' ? 'table-body home-list' : 'table-body';
+  document.getElementById('pageTitle').textContent = pageTitle(currentPage);
+  var subSuffix = currentPage === 'home'
+    ? ' · drag № or use ▲▼ to reorder hero reel'
+    : ' · drag № to reorder';
+  document.getElementById('pageSub').textContent = list.length + ' project' + (list.length === 1 ? '' : 's') + subSuffix;
+  var tableHead = document.querySelector('.table-head');
+  if (tableHead) {
+    tableHead.className = currentPage === 'home' ? 'table-head home-head' : 'table-head';
+    if (tableHead.children[2]) tableHead.children[2].textContent = currentPage === 'home' ? 'Start' : 'Category';
+    if (tableHead.children[5]) tableHead.children[5].textContent = currentPage === 'home' ? 'Order' : '';
+  }
+
+  if (!list.length) {
+    var empty = el('div', 'empty-state');
+    empty.appendChild(el('h3', null, 'Nothing here yet'));
+    var addFirst = el('button', 'btn-accent', '+ Add the first project');
+    addFirst.type = 'button';
+    addFirst.style.marginTop = '18px';
+    addFirst.onclick = addProject;
+    empty.appendChild(addFirst);
+    listEl.appendChild(empty);
+    if (sortable) { sortable.destroy(); sortable = null; }
+    return;
+  }
+
+  list.forEach(function (p, i) {
+    var row = el('div', 'table-row');
+    row.dataset.id = p.id;
+    row.appendChild(el('span', 'row-num', pad(i + 1)));
+    var proj = el('div', 'row-project');
+    var thumb = el('div', 'row-thumb');
+    thumb.setAttribute('style', thumbStyle(p));
+    proj.appendChild(thumb);
+    var text = el('div');
+    text.style.minWidth = '0';
+    var titleLine = el('div', 'row-title-line');
+    titleLine.appendChild(el('div', 'row-title', p.title || 'Untitled'));
+    appendRowPageBadges(titleLine, p);
+    text.appendChild(titleLine);
+    text.appendChild(el('div', 'row-client', p.client || '—'));
+    proj.appendChild(text);
+    row.appendChild(proj);
+    row.appendChild(el('span', 'row-type', currentPage === 'home'
+      ? (heroStartFor(p) + 's')
+      : (p.projectType || 'Commercial')));
+    var star = el('span', 'row-star', p.featured ? '★' : '—');
+    star.style.color = p.featured ? '#f4f1ea' : '#3a3a3a';
+    row.appendChild(star);
+    var live = el('span', 'row-live', isLive(p) ? '● on' : '○ draft');
+    live.style.color = isLive(p) ? '#7fdc9a' : '#dcbf7f';
+    row.appendChild(live);
+    if (currentPage === 'home') row.appendChild(buildRowArrows(p, i, list.length));
+    else row.appendChild(el('span', 'row-chevron', '›'));
+    row.onclick = function (e) {
+      if (e.target.closest('.row-num') || e.target.closest('.row-arrows') || e.target.closest('.row-arrow')) return;
+      if (activeId) syncActiveFromForm();
+      openEditor(p.id);
+    };
+    listEl.appendChild(row);
+  });
+
+  if (sortable) sortable.destroy();
+  sortable = null;
+  sortable = new Sortable(listEl, {
+    animation: 150,
+    handle: '.row-num',
+    draggable: '.table-row',
+    onEnd: function () {
+      var ids = Array.prototype.map.call(listEl.querySelectorAll('.table-row'), function (r) { return r.dataset.id; });
+      if (currentPage === 'home') {
+        applyHomeReelOrderFromIds(ids);
+        renderList();
+        saveHomeOrder();
+        return;
+      }
+      var map = {};
+      draft.projects.forEach(function (p) { map[p.id] = p; });
+      var visible = ids.map(function (id) { return map[id]; }).filter(Boolean);
+      var hidden = sortedProjects().filter(function (p) { return ids.indexOf(p.id) < 0; });
+      var next = visible.concat(hidden);
+      next.forEach(function (p, i) { p.sortOrder = i; });
+      draft.projects = next;
+      dirty();
+      renderList();
+    }
+  });
+}
+
+function updateChips(p) {
+  var homeOn = isOnHomeReel(p);
+  var featOn = !!p.featured;
+  document.getElementById('chipHome').className = 'chip' + (homeOn ? ' on' : '');
+  document.getElementById('chipHome').textContent = (homeOn ? '✓ ' : '') + 'Home reel';
+  document.getElementById('chipSelected').className = 'chip' + (featOn ? ' on' : '');
+  document.getElementById('chipSelected').textContent = (featOn ? '✓ ' : '') + 'Selected Work';
+  document.getElementById('chipTypeAuto').textContent = (p.projectType || 'Commercial') + ' · auto';
+  document.getElementById('heroStartWrap').classList.toggle('hidden', !homeOn);
+}
+
+function updateRecordStatus() {
+  if (!activeId) return;
+  var p = draft.projects.find(function (x) { return x.id === activeId; });
+  if (!p) return;
+  var live = isLive(p);
+  document.getElementById('statusLabel').textContent = dirtyFlag ? 'Unsaved' : (live ? 'Live' : 'Draft');
+  document.getElementById('statusDot').style.background = dirtyFlag ? '#dcbf7f' : (live ? '#7fdc9a' : '#dcbf7f');
+}
+
+function syncActiveFromForm() {
+  if (!activeId) return;
+  var p = draft.projects.find(function (x) { return x.id === activeId; });
+  if (p) readEditorIntoProject(p);
+}
+
+function openEditor(id) {
+  activeId = id;
+  var p = draft.projects.find(function (x) { return x.id === id; });
+  if (!p) return;
+  if (isInHomeList(p)) {
+    if (!p.homeHero) p.homeHero = { start: 0, enabled: false };
+    p.homeHero.enabled = true;
+    p.homeHero.start = heroStartFor(p);
+  }
+  setMode(true);
+  document.getElementById('f-title').value = p.title || '';
+  document.getElementById('f-client').value = p.client || '';
+  document.getElementById('f-projectType').value = p.projectType || 'Commercial';
+  document.getElementById('f-video').value = p.video || '';
+  document.getElementById('f-poster').value = p.poster || '';
+  document.getElementById('f-hero-start').value = heroStartFor(p);
+  renderServiceTags(p.services || []);
+  renderCreditsEditor(p.credits && p.credits.length ? p.credits : [{ label: '', value: '' }]);
+  updateChips(p);
+  document.getElementById('posterFrame').setAttribute('style', thumbStyle(p));
+  document.getElementById('posterFeatured').classList.toggle('hidden', !p.featured);
+  document.getElementById('posterName').textContent = posterFileName(p);
+  updateVideoPreview(p);
+  var pageList = filteredProjects();
+  var idx = pageList.findIndex(function (x) { return x.id === id; });
+  if (idx < 0) { pageList = sortedProjects(); idx = pageList.findIndex(function (x) { return x.id === id; }); }
+  document.getElementById('breadcrumb').textContent =
+    pageTitle(currentPage) + ' / ' + slugify(p.title || 'untitled') + ' · ' + pad(idx + 1) + ' of ' + pad(pageList.length);
+  updateRecordStatus();
+}
+
+function readEditorIntoProject(p) {
+  p.title = document.getElementById('f-title').value.trim();
+  p.client = document.getElementById('f-client').value.trim();
+  p.projectType = document.getElementById('f-projectType').value;
+  p.video = document.getElementById('f-video').value.trim();
+  p.poster = document.getElementById('f-poster').value.trim();
+  p.credits = readCreditsFromDom().filter(function (c) { return c.label && c.value; });
+  p.services = sortServices(p.services || []);
+  if (!p.homeHero) p.homeHero = { start: 0, enabled: false };
+  p.homeHero.start = Number(document.getElementById('f-hero-start').value) || 0;
+  applyDerivedFields(p);
+  if (isOnHomeReel(p)) refreshHomeListItem(p);
+  document.getElementById('posterFrame').setAttribute('style', thumbStyle(p));
+  document.getElementById('posterFeatured').classList.toggle('hidden', !p.featured);
+  document.getElementById('posterName').textContent = posterFileName(p);
+  document.getElementById('chipTypeAuto').textContent = (p.projectType || 'Commercial') + ' · auto';
+  updateVideoPreview(p);
+  return p;
+}
+
+function closeEditor() {
+  activeId = null;
+  setMode(false);
+  renderList();
+}
+
+function stepRecord(dir) {
+  if (!activeId) return;
+  syncActiveFromForm();
+  var list = filteredProjects();
+  var idx = list.findIndex(function (p) { return p.id === activeId; });
+  if (idx < 0) { list = sortedProjects(); idx = list.findIndex(function (p) { return p.id === activeId; }); }
+  if (idx < 0) return;
+  var next = list[(idx + dir + list.length) % list.length];
+  if (next) openEditor(next.id);
+}
+
+function initColResize() {
+  var handle = document.getElementById('colResize');
+  var col = document.getElementById('posterCol');
+  if (!handle || !col) return;
+  var dragging = false;
+  var startX = 0;
+  var startW = 0;
+
+  function onMove(e) {
+    if (!dragging) return;
+    var w = Math.max(280, Math.min(window.innerWidth * 0.72, startW + (e.clientX - startX)));
+    col.style.setProperty('--media-col-w', w + 'px');
+  }
+
+  function onUp() {
+    if (!dragging) return;
+    dragging = false;
+    handle.classList.remove('is-dragging');
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+    window.removeEventListener('mousemove', onMove);
+    window.removeEventListener('mouseup', onUp);
+  }
+
+  handle.addEventListener('mousedown', function (e) {
+    e.preventDefault();
+    dragging = true;
+    startX = e.clientX;
+    startW = col.getBoundingClientRect().width;
+    handle.classList.add('is-dragging');
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+  });
+}
+
+function addProject() {
+  var id = 'new-' + Date.now();
+  var np = {
+    id: id, title: 'Untitled', client: '', slug: 'untitled', category: 'visual-effects',
+    projectType: 'Commercial', video: '', poster: '', href: '', credits: [], services: [],
+    featured: false, homeHero: { start: 0, enabled: false }, sortOrder: 0
+  };
+  applyDerivedFields(np);
+  if (currentPage === 'home') setProjectHomeReel(np, true);
+  if (currentPage === 'selected') np.featured = true;
+  if (currentPage === 'music-video') np.projectType = 'Music Video';
+  if (currentPage === 'brand-film') np.projectType = 'Brand Film';
+  if (currentPage === 'commercial') np.projectType = 'Commercial';
+  draft.projects.unshift(np);
+  draft.projects.forEach(function (p, i) { p.sortOrder = i; });
+  dirty();
+  openEditor(id);
+  renderNav();
+}
+
+function loadCatalog(cb) {
+  Promise.all([
+    fetch('/api/projects').then(function (r) { return r.json(); }),
+    fetch('/api/site-order').then(function (r) { return r.json(); }).catch(function () { return null; })
+  ]).then(function (results) {
+    var d = results[0];
+    catalog = d && d.catalog ? d.catalog : { version: 1, projects: [] };
+    draft = cloneCatalog(catalog);
+    draft.projects.forEach(function (p) {
+      p.services = sortServices(p.services || []);
+    });
+    var orderRes = results[1];
+    workOrder = (orderRes && orderRes.order) || null;
+    reconcileHomeReelState();
+    cb && cb();
+  }).catch(function () {
+    catalog = { version: 1, projects: [] };
+    draft = cloneCatalog(catalog);
+    workOrder = null;
+    reconcileHomeReelState();
+    cb && cb();
+  });
+}
+
+function showApp() {
+  document.getElementById('login').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  var params = new URLSearchParams(location.search);
+  var tab = (params.get('tab') || '').toLowerCase();
+  var hash = (location.hash || '').replace(/^#/, '').toLowerCase();
+  var openAccess = tab === 'access' || hash === 'access';
+  loadCatalog(function () {
+    if (openAccess) {
+      openAccessPage();
+    } else {
+      renderNav();
+      renderList();
+      setLive('All published');
+    }
+    refreshAccessList().then(function () { renderNav(); });
+  });
+}
+
+function syncWorkOrderFromDraft() {
+  reconcileHomeReelState();
+  applyHomeReelOrderFromIds(homeReelOrder.slice());
+}
+
+function saveCatalog(redeploy, btn, successMsg) {
+  if (activeId) syncActiveFromForm();
+  if (btn) btn.disabled = true;
+  setStatusMsg(redeploy ? 'Updating site…' : 'Saving draft…');
+  if (redeploy) syncWorkOrderFromDraft();
+  return fetch('/api/projects', {
+    method: 'PUT',
+    credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ catalog: draft, redeploy: !!redeploy })
+  })
+    .then(function (r) {
+      return r.json().catch(function () { return null; }).then(function (d) {
+        return { status: r.status, data: d };
+      });
+    })
+    .then(function (res) {
+      if (btn) btn.disabled = false;
+      var d = res.data;
+      if (d && d.ok) {
+        catalog = cloneCatalog(d.catalog || draft);
+        draft = cloneCatalog(catalog);
+        reconcileHomeReelState();
+        var msg = successMsg;
+        if (!msg) {
+          if (d.warning) msg = d.warning;
+          else if (d.redeployed) msg = 'Site updated — redeploy started (~30s)';
+          else if (d.storage === 'file') msg = 'Draft saved locally (data/projects-catalog.json)';
+          else if (d.storage === 'redis') msg = redeploy ? 'Site updated — saved to Redis, redeploy started (~30s)' : 'Draft saved to Redis';
+          else msg = 'Draft saved';
+        }
+        var afterPublish = function () {
+          setLive(msg);
+          renderNav();
+          if (activeId) openEditor(activeId);
+          else renderList();
+        };
+        if (redeploy && workOrder) {
+          return saveHomeOrder().then(function (homeRes) {
+            if (homeRes && homeRes.ok && homeRes.redeployed && !d.redeployed) {
+              msg = 'Catalog saved — hero order redeploy started (~30s)';
+            } else if (homeRes && homeRes.warning) {
+              msg = msg + ' · ' + homeRes.warning;
+            }
+            afterPublish();
+          });
+        }
+        afterPublish();
+      } else {
+        var err = (d && d.error) || ('HTTP ' + res.status + (res.status === 401 ? ' — sign in again' : ''));
+        setStatusMsg(err);
+      }
+      return d;
+    })
+    .catch(function (e) {
+      if (btn) btn.disabled = false;
+      setStatusMsg('Network error' + (e && e.message ? ': ' + e.message : ''));
+    });
+}
+
+function focusPosterInput() {
+  var input = document.getElementById('f-poster');
+  var url = window.prompt('Poster image URL', input.value || '');
+  if (url === null) return;
+  input.value = url.trim();
+  if (activeId) {
+    var p = draft.projects.find(function (x) { return x.id === activeId; });
+    if (p) {
+      p.poster = input.value;
+      document.getElementById('posterFrame').setAttribute('style', thumbStyle(p));
+      document.getElementById('posterName').textContent = posterFileName(p);
+      dirty();
+    }
+  }
+}
+
+fetch('/api/capabilities/admin/list').then(function (r) { if (r.ok) showApp(); }).catch(function () {});
+
+document.getElementById('loginBtn').onclick = function () {
+  var pw = document.getElementById('pw').value;
+  document.getElementById('loginMsg').textContent = 'Signing in…';
+  fetch('/api/capabilities/admin/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password: pw })
+  })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      if (d && d.ok) showApp();
+      else document.getElementById('loginMsg').textContent = (d && d.error) || 'Wrong password';
+    })
+    .catch(function () { document.getElementById('loginMsg').textContent = 'Network error'; });
+};
+
+document.getElementById('logoutBtn').onclick = function () {
+  fetch('/api/capabilities/admin/logout', { method: 'POST' }).finally(function () { location.reload(); });
+};
+
+document.getElementById('search').oninput = renderList;
+document.getElementById('addBtn').onclick = addProject;
+document.getElementById('addBtnTop').onclick = addProject;
+document.getElementById('backBtn').onclick = function () { if (activeId) syncActiveFromForm(); closeEditor(); };
+document.getElementById('prevBtn').onclick = function () { stepRecord(-1); };
+document.getElementById('nextBtn').onclick = function () { stepRecord(1); };
+document.getElementById('posterOverlay').onclick = focusPosterInput;
+document.getElementById('posterBrowse').onclick = focusPosterInput;
+
+['f-title', 'f-client', 'f-video', 'f-projectType', 'f-hero-start'].forEach(function (id) {
+  var node = document.getElementById(id);
+  node.addEventListener('input', function () {
+    if (!activeId) return;
+    dirty();
+    var p = draft.projects.find(function (x) { return x.id === activeId; });
+    if (!p) return;
+    if (id === 'f-projectType') {
+      p.projectType = node.value;
+      document.getElementById('chipTypeAuto').textContent = p.projectType + ' · auto';
+    }
+    if (id === 'f-video') {
+      p.video = node.value.trim();
+      updateVideoPreview(p);
+    }
+    if (id === 'f-hero-start') {
+      if (!p.homeHero) p.homeHero = { start: 0, enabled: false };
+      p.homeHero.start = Number(node.value) || 0;
+      if (isOnHomeReel(p)) refreshHomeListItem(p);
+    }
+  });
+  node.addEventListener('change', function () { if (activeId) dirty(); });
+});
+
+function bindChip(id, fn) {
+  document.getElementById(id).onclick = fn;
+}
+bindChip('chipHome', function () {
+  if (!activeId) return;
+  var p = draft.projects.find(function (x) { return x.id === activeId; });
+  if (!p) return;
+  setProjectHomeReel(p, !isOnHomeReel(p));
+  updateChips(p);
+  dirty();
+  renderNav();
+  renderList();
+  updateRecordStatus();
+});
+bindChip('chipSelected', function () {
+  if (!activeId) return;
+  var p = draft.projects.find(function (x) { return x.id === activeId; });
+  if (!p) return;
+  p.featured = !p.featured;
+  updateChips(p);
+  document.getElementById('posterFeatured').classList.toggle('hidden', !p.featured);
+  dirty();
+  renderNav();
+  renderList();
+  updateRecordStatus();
+});
+
+document.getElementById('addCreditBtn').onclick = function () {
+  var credits = readCreditsFromDom();
+  credits.push({ label: '', value: '' });
+  dirty();
+  renderCreditsEditor(credits);
+};
+
+document.getElementById('deleteBtn').onclick = function () {
+  if (!activeId || !confirm('Delete this project from the catalog?')) return;
+  var doomed = draft.projects.find(function (p) { return p.id === activeId; });
+  if (doomed) removeProjectFromHomeList(doomed);
+  draft.projects = draft.projects.filter(function (p) { return p.id !== activeId; });
+  draft.projects.forEach(function (p, i) { p.sortOrder = i; });
+  closeEditor();
+  dirty();
+  renderNav();
+};
+
+document.getElementById('saveDraftBtn').onclick = function () { saveCatalog(false, this); };
+document.getElementById('updateSiteBtn').onclick = function () { saveCatalog(true, this); };
+
+document.getElementById('resetBtn').onclick = function () {
+  draft = cloneCatalog(catalog);
+  reconcileHomeReelState();
+  closeEditor();
+  setLive('Reverted to last saved');
+  renderNav();
+  renderList();
+};
+
+document.getElementById('seedBtn').onclick = function () {
+  if (!confirm('Replace entire catalog with 40 default projects? Existing edits will be lost.')) return;
+  fetch('/api/projects/seed', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ redeploy: false })
+  })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      if (d && d.ok) {
+        loadCatalog(function () {
+          closeEditor();
+          renderNav();
+          renderList();
+          setLive('Seeded ' + d.count + ' projects — click Update site to publish');
+        });
+      } else alert((d && d.error) || 'Seed failed');
+    });
+};
+
+document.getElementById('syncBtn').onclick = function () {
+  var btn = this;
+  btn.disabled = true;
+  setStatusMsg('Syncing missing projects…');
+  fetch('/api/projects/sync-default', {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ redeploy: false })
+  })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      btn.disabled = false;
+      if (d && d.ok) {
+        loadCatalog(function () {
+          closeEditor();
+          renderNav();
+          renderList();
+          if (d.added) {
+            setLive('Added ' + d.added + ' project(s) — now ' + d.count + ' total · click Update site to publish');
+          } else {
+            setLive('Catalog complete — ' + d.count + ' projects');
+          }
+        });
+      } else {
+        setStatusMsg((d && d.error) || 'Sync failed');
+      }
+    })
+    .catch(function () {
+      btn.disabled = false;
+      setStatusMsg('Network error');
+    });
+};
+
+document.getElementById('pw').addEventListener('keydown', function (e) {
+  if (e.key === 'Enter') document.getElementById('loginBtn').click();
+});
+
+initColResize();
+</script>
 </body>
 </html>
