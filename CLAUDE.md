@@ -4,8 +4,8 @@ Operational notes. Read this first.
 
 ## Source of truth & deploy pipeline (IMPORTANT)
 
-- Live site `xyzstudios.co` / `www.xyzstudios.co` -> Vercel project `xyzsite-omega` (`prj_VJcvkk6j0pDBjgtmsS5OP2ZPcgpf`), which auto-deploys from GitHub `samry883-eng/xyzsite` branch `main`.
-- Build: `npm run build` -> `scripts/prepare-github-pages.mjs` -> output dir `dist`. It copies `Home/index.html` -> `dist/index.html` and (NEW) bakes the home order in (see below).
+- Live site `xyzstudios.co` / `www.xyzstudios.co` -> Vercel project `xyzsite-omega` (`prj_VJcvkk6j0pDBjgtmsS5OP2ZPcgpf`), which auto-deploys from GitHub `samry883-eng/xyzsite` branch `main`. **Production = Vercel only** — the GitHub Actions "Deploy GitHub Pages" workflow is disabled (`workflow_dispatch` only); it previously failed on every push and is not used for the live site.
+- Build: `npm run build` -> `scripts/prepare-github-pages.mjs` -> output dir `dist`. It copies `Home/index.html` -> `dist/index.html` and (NEW) bakes the home order in (see below). Vercel install uses `npm install --omit=dev` (deck-only native deps skipped; `ffmpeg-static` is a production dependency for hero preview clips).
 - The GitHub repo is the source of truth, NOT the local folder. Always pull from `main` before editing.
 
 ## Home hero videos & ordering (NEW architecture: BAKED at build, no runtime race)

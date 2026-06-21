@@ -32,10 +32,10 @@
     "pdfjs-dist": "^5.6.205",
     "puppeteer": "^24.41.0",
     "puppeteer-core": "^24.41.0",
-    "sharp": "^0.35.1",
-    "ffmpeg-static": "^5.2.0"
+    "sharp": "^0.35.1"
   },
   "dependencies": {
-    "@vercel/edge": "^1.2.2"
+    "@vercel/edge": "^1.2.2",
+    "ffmpeg-static": "^5.2.0"
   }
 }

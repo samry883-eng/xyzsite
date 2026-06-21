@@ -6,7 +6,13 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { spawn } from 'child_process';
-import ffmpegPath from 'ffmpeg-static';
+
+let ffmpegPath;
+try {
+  ffmpegPath = (await import('ffmpeg-static')).default;
+} catch {
+  ffmpegPath = null;
+}
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
@@ -51,6 +57,10 @@ async function buildOne(item) {
     console.log('[skip]', item.key);
     return dest;
   }
+  if (!ffmpegPath) {
+    console.warn('[skip]', item.key, 'ffmpeg-static unavailable (committed preview used if present)');
+    return dest;
+  }
   const start = sec(item.start);
   const url = item.video;
   if (!url) throw new Error(`no video URL for ${item.key}`);
@@ -85,8 +95,7 @@ for (const item of list) {
   try {
     await buildOne(item);
   } catch (e) {
-    console.error('[fail]', item.key, e.message || e);
-    process.exitCode = 1;
+    console.warn('[fail]', item.key, e.message || e, '(build continues; use committed preview if present)');
   }
 }
 

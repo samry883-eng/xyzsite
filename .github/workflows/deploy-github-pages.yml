@@ -1,8 +1,10 @@
+# DISABLED — production deploys via Vercel (xyzstudios.co), not GitHub Pages.
+# This workflow previously ran on every push and failed (no npm install step; Pages not used).
+# Re-enable manually via Actions → "Deploy GitHub Pages" → Run workflow if needed.
 name: Deploy GitHub Pages
 
 on:
-  push:
-    branches: ["main"]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -21,6 +23,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: npm
+      - name: Install dependencies
+        run: npm ci || npm install
       - name: Build static site
         run: npm run build
       - uses: actions/upload-pages-artifact@v3
