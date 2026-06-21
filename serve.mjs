@@ -438,9 +438,7 @@ function getStaticFilePath(urlPath) {
     filePath = path.join(WORK, 'unified', 'index.html');
   } else if (p === '/projects-v3' || p === '/projects-v3/') {
     filePath = path.join(WORK, 'unified-v3', 'index.html');
-  } else if (p === '/work.html' || p === '/work' || p === '/work/' || p === '/projects' || p === '/projects/') {
-    filePath = path.join(WORK, 'index.html');
-  } else if (p === '/contact-versions' || p === '/contact-versions/') {
+  } else if (false) { /* legacy work listing */ } else if (p === '/contact-versions' || p === '/contact-versions/') {
     filePath = path.join(CONTACT, 'versions.html');
   } else if (p === '/contact-versions-2' || p === '/contact-versions-2/') {
     filePath = path.join(CONTACT, 'versions2.html');
@@ -597,6 +595,21 @@ http.createServer((req, res) => {
         return;
       }
 
+      
+      const projectsV2Redirects = new Set([
+        '/work.html',
+        '/work',
+        '/work/',
+        '/work/index.html',
+        '/projects',
+        '/projects/',
+        '/projects/index.html',
+      ]);
+      if (projectsV2Redirects.has(urlPath)) {
+        res.writeHead(302, { Location: '/projects-v2/' });
+        res.end();
+        return;
+      }
       const adminV2Redirects = new Set([
         '/work/admin',
         '/work/admin/',

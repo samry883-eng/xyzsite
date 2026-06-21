@@ -4,7 +4,7 @@ import '../load-env-local.mjs';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { injectProjectsCatalogFile } from './projects-catalog-lib.mjs';
+import { injectProjectsCatalogFile, writeProjectsServicesMap, fetchProjectsCatalog } from './projects-catalog-lib.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
@@ -14,5 +14,12 @@ const result = await injectProjectsCatalogFile(unified, root);
 if (!result.ok) {
   console.warn('[inject-projects-catalog] marker not found in', unified);
   process.exit(1);
+}
+try {
+  const catalog = await fetchProjectsCatalog(root);
+  const svc = await writeProjectsServicesMap(root, catalog);
+  console.log('[inject-projects-catalog] services map:', svc.count, 'entries');
+} catch (e) {
+  console.warn('[inject-projects-catalog] services map failed:', e && e.message);
 }
 console.log('[inject-projects-catalog] updated', result.count, 'projects');

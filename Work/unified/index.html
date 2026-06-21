@@ -493,7 +493,7 @@
       </a>
       <ul class="nav-links">
         <li><a href="/">Home</a></li>
-        <li><a href="/projects/" class="active">Work</a></li>
+        <li><a href="/projects-v2/" class="active">Work</a></li>
         <li style="display:none"><a href="/services/">XYZ/Services</a></li>
         <li><a href="/contact">Contact</a></li>
       </ul>
@@ -677,7 +677,16 @@
       if (/concept|cold wall|ducati|bmw|nike|chanel|mercedes/i.test(blob)) services.add('CGI');
     }
 
-    return { services: Array.from(services), type: [projectType] };
+    return { services: sortServicesList(Array.from(services)), type: [projectType] };
+  }
+
+  function sortServicesList(services) {
+    const order = FILTER_GROUPS[0].options;
+    return services.slice().sort(function (a, b) {
+      const ia = order.indexOf(a);
+      const ib = order.indexOf(b);
+      return (ia < 0 ? 999 : ia) - (ib < 0 ? 999 : ib);
+    });
   }
 
   const PROJECTS = [];
@@ -985,7 +994,7 @@
     list.forEach(function (p, i) {
       const wrap = document.createElement('div');
       wrap.className = 'work-card-wrap';
-      const tagline = p.services.join('  ·  ') + '  —  ' + p.type[0];
+      const tagline = p.type[0] || 'Commercial';
 
       wrap.innerHTML =
         '<div class="work-card">' +

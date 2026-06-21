@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-<link href="/assets/xyz-studio-dev.webflow.shared.6e9159a05.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="/capabilities/assets/nda-modal.css" />
 <style>
   @font-face {
     font-family: 'Micross';
@@ -214,6 +214,30 @@
     background:transparent; border:none;
   }
 
+  /* ===== SCORE / COMPOSE — asymmetric video grid ===== */
+  .compose .score-vid-wrap{
+    display:flex; flex-direction:column; align-items:flex-start;
+    --cap-gap:10px;
+  }
+  .compose .score-vid-wrap .cap{
+    position:static; display:block; margin:0 0 var(--cap-gap) 0;
+    white-space:nowrap;
+    font-family:var(--mono); font-size:11px; letter-spacing:.12em;
+    color:var(--muted); text-transform:uppercase; line-height:1.3;
+  }
+  .compose .score-vid-wrap .cap b{ color:var(--ink-dim); font-weight:500; margin-right:4px; }
+  .compose .score-vid{
+    position:relative; width:100%; flex:none;
+    border-radius:10px; overflow:hidden; outline:none; background:var(--paper);
+  }
+  .compose .score-vid .deck-hero-inner{
+    position:absolute; inset:0; width:100%; height:100%;
+    border-radius:10px; overflow:hidden;
+  }
+  .compose .score-vid .featured-hero-video{
+    border-radius:10px; object-fit:cover; object-position:center center;
+  }
+
   /* ===== pipeline footer row (foley/score) ===== */
   .pipe{ position:absolute; left:64px; bottom:46px; display:flex; gap:26px; align-items:baseline; }
   .pipe .step{ font-family:var(--mono); font-size:12px; letter-spacing:.16em; color:var(--ink-dim); text-transform:uppercase; font-weight:500; display:flex; gap:8px; align-items:baseline; }
@@ -250,7 +274,8 @@
   .cblock .v{ font-family:var(--sans); font-size:21px; color:var(--ink); margin-top:8px; }
   .cblock .v.em{ font-family:var(--display); font-style:italic; font-size:24px; }
   .cblock .s{ font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); margin-top:6px; }
-
+  a.deck-link{ color:inherit; text-decoration:none; pointer-events:auto; cursor:pointer; transition:opacity .2s ease; }
+  a.deck-link:hover{ opacity:.78; }
 
   :root{ --dur:.88s; --ease:cubic-bezier(.76,0,.24,1); --deck-pad-x:64px; --deck-pad-y:56px; --pt:32px; --p:var(--deck-pad-x); }
   #deck-viewport{ position:fixed; inset:0; z-index:1; background:var(--bg); }
@@ -316,8 +341,8 @@
       <div class="ital" style="font-size:36px; line-height:1.2; color:var(--ink-dim);">A practice built through close creative collaboration <span style="color:var(--ink);">from spotting to print master.</span></div>
     </div>
 
-    <div class="abs lbl" style="left:64px; bottom:92px; font-size:12px;">↗ &nbsp;inquiries@xyzstudios.co</div>
-    <div class="abs lbl dim" style="right:64px; bottom:92px; font-size:12px;">xyzstudios.co/sound</div>
+    <a href="/contact/" target="_blank" rel="noopener noreferrer" class="abs lbl deck-link" style="left:64px; bottom:92px; font-size:12px;">↗ &nbsp;inquiries@xyzstudios.co</a>
+    <a href="https://www.xyzstudios.co/" target="_blank" rel="noopener noreferrer" class="abs lbl dim deck-link" style="right:64px; bottom:92px; font-size:12px;">xyzstudios.co/sound</a>
 
     <span class="m-bl"></span>
     <span class="m-br"></span>
@@ -397,7 +422,7 @@
           src="https://r2.vidzflow.com/source/214a3ae2-01ca-4593-8949-98a7191f6548.mp4"></video>
         <div class="deck-hero-player-ui" id="fw-salomon-player">
           <div class="deck-hero-volume-row">
-            <input type="range" class="deck-hero-volume-slider" id="fw-salomon-volume" min="0" max="100" value="50" aria-label="Volume">
+            <input type="range" class="deck-hero-volume-slider" id="fw-salomon-volume" min="0" max="100" value="100" aria-label="Volume">
           </div>
         </div>
       </div>
@@ -454,7 +479,7 @@
           src="https://r2.vidzflow.com/source/6c66aad7-7df3-4809-a8d7-1f92a377fa5e.mp4"></video>
         <div class="deck-hero-player-ui" id="fw-lucid-player">
           <div class="deck-hero-volume-row">
-            <input type="range" class="deck-hero-volume-slider" id="fw-lucid-volume" min="0" max="100" value="50" aria-label="Volume">
+            <input type="range" class="deck-hero-volume-slider" id="fw-lucid-volume" min="0" max="100" value="100" aria-label="Volume">
           </div>
         </div>
       </div>
@@ -511,7 +536,7 @@
           src="https://r2.vidzflow.com/source/17e77d71-3bca-4d42-8275-71deb05724d1.mp4"></video>
         <div class="deck-hero-player-ui" id="fw-beats-player">
           <div class="deck-hero-volume-row">
-            <input type="range" class="deck-hero-volume-slider" id="fw-beats-volume" min="0" max="100" value="50" aria-label="Volume">
+            <input type="range" class="deck-hero-volume-slider" id="fw-beats-volume" min="0" max="100" value="100" aria-label="Volume">
           </div>
         </div>
       </div>
@@ -626,22 +651,22 @@
     <!-- VIDEO frames -->
     <div class="photo deck-hero-wrap" id="mx-before-hero" style="position:absolute; left:64px; top:566px; width:880px; height:418px;">
       <div class="deck-hero-inner">
-        <video class="featured-hero-video" id="mx-before-video" playsinline muted loop preload="metadata"
+        <video class="featured-hero-video" id="mx-before-video" playsinline loop preload="metadata"
           src="https://r2.vidzflow.com/source/2c0ce742-618b-42c2-aa9a-fd7795bd429c.mp4"></video>
         <div class="deck-hero-player-ui" id="mx-before-player">
           <div class="deck-hero-volume-row">
-            <input type="range" class="deck-hero-volume-slider" id="mx-before-volume" min="0" max="100" value="50" aria-label="Volume">
+            <input type="range" class="deck-hero-volume-slider" id="mx-before-volume" min="0" max="100" value="100" aria-label="Volume">
           </div>
         </div>
       </div>
     </div>
     <div class="photo deck-hero-wrap" id="mx-after-hero" style="position:absolute; left:976px; top:566px; width:880px; height:418px;">
       <div class="deck-hero-inner">
-        <video class="featured-hero-video" id="mx-after-video" playsinline muted loop preload="metadata"
+        <video class="featured-hero-video" id="mx-after-video" playsinline loop preload="metadata"
           src="https://r2.vidzflow.com/source/123bbb0c-4196-4103-a680-527652853702.mp4"></video>
         <div class="deck-hero-player-ui" id="mx-after-player">
           <div class="deck-hero-volume-row">
-            <input type="range" class="deck-hero-volume-slider" id="mx-after-volume" min="0" max="100" value="50" aria-label="Volume">
+            <input type="range" class="deck-hero-volume-slider" id="mx-after-volume" min="0" max="100" value="100" aria-label="Volume">
           </div>
         </div>
       </div>
@@ -697,35 +722,69 @@
     <span class="m-tl"><b>XYZ</b> <span class="d">· Capability · Original Score</span></span>
     <span class="m-tr"><span class="d">12 / 15</span></span>
 
-    <div class="abs" style="left:64px; top:130px; width:611px;">
-      <div class="lbl dim" style="font-size:12px;">Original score · composition</div>
-      <div class="disp" style="font-size:168px; line-height:.9; margin-top:18px;"><em>Score,</em><br/>Written.</div>
-      <div class="copy" style="margin-top:26px; max-width:36ch;">Music written to picture — themes, motifs and the <em>emotional spine.</em> Composed in-house with a small ensemble of session players, built bespoke around the world the film lives in.</div>
+    <div class="abs" style="left:64px; top:85px; width:611px;">
+      <div class="disp" style="font-size:168px; line-height:.9; white-space:nowrap;"><em>Score,</em> Written.</div>
+      <div class="copy" style="margin-top:26px; max-width:580px;">Music written to picture — themes, motifs and the <em>emotional spine.</em> Composed in-house with a small ensemble of session players, built bespoke around the world the film lives in.</div>
     </div>
 
-    <div class="photo" style="position:absolute; left:1405px; top:132px; width:378px; height:499px;">
-      <image-slot id="comp-1" placeholder="Strings"></image-slot>
-    </div>
-    <div class="photo" style="position:absolute; left:909px; top:237px; width:290px; height:361px;">
-      <image-slot id="comp-2" placeholder="Score sketch"></image-slot>
-    </div>
-    <div class="photo" style="position:absolute; left:540px; top:620px; width:306px; height:220px;">
-      <image-slot id="comp-3" placeholder="Piano"></image-slot>
-    </div>
-    <div class="photo" style="position:absolute; left:1037px; top:688px; width:471px; height:259px;">
-      <image-slot id="comp-4" placeholder="Console"></image-slot>
+    <!-- 1 · AI Awareness — bottom-left landscape -->
+    <div class="abs score-vid-wrap" style="left:124px; top:457px; width:478px;">
+      <span class="cap">AI Awareness</span>
+      <div class="photo deck-hero-wrap score-vid" style="height:363px;">
+        <div class="deck-hero-inner">
+          <video class="featured-hero-video" id="comp-score-1" playsinline preload="metadata"
+            src="/work/sound/ai-awareness/video.mp4"></video>
+        </div>
+      </div>
     </div>
 
-    <div class="pipe">
-      <span class="step"><b>01</b> Spotting &amp; Direction</span><span class="arrow">→</span>
-      <span class="step"><b>02</b> Themes &amp; Sketches</span><span class="arrow">→</span>
-      <span class="step"><b>03</b> Arrangement</span><span class="arrow">→</span>
-      <span class="step"><b>04</b> Tracking</span><span class="arrow">→</span>
-      <span class="step"><b>05</b> Mix &amp; Delivery</span>
+    <!-- 2 · Viled — upper-center portrait -->
+    <div class="abs score-vid-wrap" style="left:865px; top:187px; width:257px;">
+      <span class="cap">Viled</span>
+      <div class="photo deck-hero-wrap score-vid" style="height:351px;">
+        <div class="deck-hero-inner">
+          <video class="featured-hero-video" id="comp-score-2" playsinline preload="metadata"
+            src="https://binsta.dev/api/v1/files/9QPdNWnR8T"></video>
+        </div>
+      </div>
     </div>
 
-    <span class="m-bl"></span>
-    <span class="m-br"></span>
+    <!-- 3 · Adidas — top-right landscape -->
+    <div class="abs score-vid-wrap" style="left:1290px; top:121px; width:478px;">
+      <span class="cap">Adidas</span>
+      <div class="photo deck-hero-wrap score-vid" style="height:361px;">
+        <div class="deck-hero-inner">
+          <video class="featured-hero-video" id="comp-score-3" playsinline preload="metadata"
+            src="https://binsta.dev/api/v1/files/6x2apeG8HQ"></video>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 · LMS — bottom-center landscape -->
+    <div class="abs score-vid-wrap" style="left:713px; top:657px; width:428px;">
+      <span class="cap">LMS</span>
+      <div class="photo deck-hero-wrap score-vid" style="height:242px;">
+        <div class="deck-hero-inner">
+          <video class="featured-hero-video" id="comp-score-4" playsinline preload="metadata"
+            src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/YFUMKYDZ4b/original"></video>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 · New Era F1 — bottom-right portrait -->
+    <div class="abs score-vid-wrap" style="left:1378px; top:522px; width:266px;">
+      <span class="cap">New Era F1</span>
+      <div class="photo deck-hero-wrap score-vid" style="height:436px;">
+        <div class="deck-hero-inner">
+          <video class="featured-hero-video" id="comp-score-5" playsinline preload="metadata"
+            src="https://r2.vidzflow.com/source/5b0d552d-9e53-4967-9d5b-15a5deb86100.mp4"></video>
+        </div>
+      </div>
+    </div>
+
+    <div id="comp-score-player" class="abs" style="width:0;height:0;overflow:hidden;opacity:0;pointer-events:none;" aria-hidden="true">
+      <input type="range" id="comp-score-volume" min="0" max="100" value="100" tabindex="-1">
+    </div>
   </section></div></div></div>
 
 
@@ -823,27 +882,27 @@
 
     <div class="cblock" style="left:64px; top:792px; width:560px;">
       <div class="k">Email</div>
-      <div class="v">inquiries@xyzstudios.co</div>
+      <div class="v"><a href="/contact/" target="_blank" rel="noopener noreferrer" class="deck-link">inquiries@xyzstudios.co</a></div>
       <div class="s">For new project enquiries</div>
       <div class="k" style="margin-top:24px;">Website</div>
-      <div class="v">xyzstudios.co</div>
+      <div class="v"><a href="https://www.xyzstudios.co/" target="_blank" rel="noopener noreferrer" class="deck-link">xyzstudios.co</a></div>
       <div class="s">/sound</div>
     </div>
 
     <div class="cblock" style="left:691px; top:792px; width:540px;">
       <div class="k">Co-Founder · Post Producer</div>
       <div class="v em">Samry Yussuf</div>
-      <div class="s">samry@xyzstudios.co</div>
+      <div class="s"><a href="mailto:samry@xyzstudios.co" class="deck-link">samry@xyzstudios.co</a></div>
       <div class="k" style="margin-top:24px;">Co-Founder · Post Producer</div>
       <div class="v em">Dris Yousif</div>
-      <div class="s">dris@xyzstudios.co</div>
+      <div class="s"><a href="mailto:dris@xyzstudios.co" class="deck-link">dris@xyzstudios.co</a></div>
     </div>
 
     <div class="cblock" style="left:1296px; top:792px; width:540px;">
       <div class="k">Instagram</div>
-      <div class="v">@xyzstudios.sound</div>
+      <div class="v"><a href="https://www.instagram.com/xyzstudios.sound/" target="_blank" rel="noopener noreferrer" class="deck-link">@xyzstudios.sound</a></div>
       <div class="k" style="margin-top:24px;">LinkedIn</div>
-      <div class="v">XYZ Studios — Sound</div>
+      <div class="v"><a href="https://www.linkedin.com/company/xyzstudioss/" target="_blank" rel="noopener noreferrer" class="deck-link">XYZ Studios — Sound</a></div>
     </div>
 
     <span class="m-bl"></span>
@@ -870,18 +929,28 @@
 <script src="/capabilities/sound/scripts/deck-hero-player.js"></script>
 <script>
 (function () {
+  function isDeckLink(el) {
+    return el && el.closest && el.closest('a.deck-link');
+  }
   function block(e) { e.preventDefault(); }
-  document.addEventListener('contextmenu', block, true);
-  document.addEventListener('selectstart', block, true);
+  document.addEventListener('contextmenu', function (e) {
+    if (isDeckLink(e.target)) return;
+    block(e);
+  }, true);
+  document.addEventListener('selectstart', function (e) {
+    if (isDeckLink(e.target)) return;
+    block(e);
+  }, true);
   document.addEventListener('dragstart', function (e) {
-    if (e.target && e.target.closest && e.target.closest('img, video')) block(e);
+    if (isDeckLink(e.target)) return;
+    block(e);
   }, true);
   document.addEventListener('copy', block, true);
   document.addEventListener('cut', block, true);
   document.addEventListener('keydown', function (e) {
     if (!e.ctrlKey && !e.metaKey) return;
     var k = e.key.toLowerCase();
-    if (k === 's' || k === 'p' || k === 'u') block(e);
+    if (k === 's' || k === 'p' || k === 'u' || k === 'a') block(e);
   }, true);
   window.addEventListener('beforeprint', block);
 })();
@@ -1055,6 +1124,14 @@ const deckHeroPlayers = [
     cursorPathId: 'pj-cursor-path',
     startOffset: 1,
     endOffset: 32
+  }),
+  window.initDeckHeroPlayer({
+    videoId: 'comp-score-1',
+    playerId: 'comp-score-player',
+    volumeId: 'comp-score-volume',
+    cursorId: 'pj-cursor',
+    cursorPathId: 'pj-cursor-path',
+    extraVideoIds: ['comp-score-2', 'comp-score-3', 'comp-score-4', 'comp-score-5']
   })
 ].filter(Boolean);
 
@@ -1155,6 +1232,7 @@ window.addEventListener('resize', scaleArtboards);
 setTimeout(scaleArtboards, 0);
 setTimeout(() => { hint.style.opacity = '0'; }, 4000);
 </script>
+<script src="/capabilities/assets/nda-modal.js" defer></script>
 
 </body>
 </html>

@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { buildDefaultCatalog, mergeDefaultCatalogMissing } from '../lib/projects-default-catalog.mjs';
+import { sortServices } from '../lib/projects-store.mjs';
 import { redisConfigured, redisGet } from '../lib/upstash-redis.mjs';
 
 const REDIS_KEY = 'projects_catalog_json';
@@ -78,6 +79,25 @@ export function injectProjectsCatalog(html, catalog) {
     'window.__PROJECTS_CATALOG=' + payload + ';/*XYZ_BUILD_PROJECTS*/',
   );
   return next === html ? null : next;
+}
+
+/** Slim mkey → services[] map for project preview pages. */
+export function buildProjectsServicesMap(catalog) {
+  const map = {};
+  if (!catalog || !Array.isArray(catalog.projects)) return map;
+  for (const p of catalog.projects) {
+    if (!p.category || !p.slug || !Array.isArray(p.services) || !p.services.length) continue;
+    map[`${p.category}/${p.slug}`] = sortServices(p.services);
+  }
+  return map;
+}
+
+export async function writeProjectsServicesMap(root, catalog) {
+  const out = path.join(root, 'Work', 'assets', 'projects-services.json');
+  const map = buildProjectsServicesMap(catalog);
+  fs.mkdirSync(path.dirname(out), { recursive: true });
+  fs.writeFileSync(out, JSON.stringify(map), 'utf8');
+  return { path: out, count: Object.keys(map).length };
 }
 
 export async function injectProjectsCatalogFile(filePath, root) {

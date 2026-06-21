@@ -1,0 +1,174 @@
+/* NDA modal overlay — deck visible but blocked until accepted */
+html.xyz-nda-open,
+html.xyz-nda-open body {
+  overflow: hidden;
+}
+
+html.xyz-nda-open #deck-viewport,
+html.xyz-nda-open .wrap,
+html.xyz-nda-open #site-nav {
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+html.xyz-nda-open #deck-viewport,
+html.xyz-nda-open .wrap {
+  filter: blur(4px) brightness(0.55);
+  transition: filter 0.35s ease;
+}
+
+#xyz-nda-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 4vw, 40px);
+  background: rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  pointer-events: auto;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+#xyz-nda-overlay.visible {
+  display: flex;
+}
+
+#xyz-nda-modal {
+  width: min(100%, 560px);
+  max-height: min(92vh, 820px);
+  overflow: auto;
+  background: #14120d;
+  color: #f0ece1;
+  border: 1px solid rgba(240, 236, 225, 0.1);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+  padding: clamp(28px, 5vw, 40px);
+  font-family: Micross, "Geist", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+#xyz-nda-modal .nda-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(240, 236, 225, 0.35);
+  margin-bottom: 14px;
+}
+
+#xyz-nda-modal h2 {
+  font-size: clamp(24px, 3.6vw, 34px);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  margin: 0 0 22px;
+  color: #f0ece1;
+}
+
+#xyz-nda-modal .nda-copy {
+  font-size: 13px;
+  line-height: 1.7;
+  color: rgba(240, 236, 225, 0.55);
+  margin-bottom: 24px;
+  padding: 18px 0;
+  border-top: 1px solid rgba(240, 236, 225, 0.08);
+  border-bottom: 1px solid rgba(240, 236, 225, 0.08);
+}
+
+#xyz-nda-modal .nda-copy p {
+  margin: 0;
+}
+
+#xyz-nda-modal .nda-copy p + p {
+  margin-top: 12px;
+}
+
+#xyz-nda-modal .ct-field {
+  position: relative;
+  border-bottom: 1px solid rgba(240, 236, 225, 0.1);
+  padding: 20px 0 11px;
+  margin-bottom: 18px;
+  transition: border-color 0.2s;
+}
+
+#xyz-nda-modal .ct-field:focus-within {
+  border-color: rgba(240, 236, 225, 0.28);
+}
+
+#xyz-nda-modal .ct-label {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  font: 400 9px/1 Micross, Arial, sans-serif;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(240, 236, 225, 0.16);
+  transition: top 0.22s cubic-bezier(0.16, 1, 0.3, 1), font-size 0.22s, color 0.22s;
+  pointer-events: none;
+}
+
+#xyz-nda-modal .ct-field:focus-within .ct-label,
+#xyz-nda-modal .ct-field.filled .ct-label {
+  top: 2px;
+  font-size: 7px;
+  color: rgba(240, 236, 225, 0.38);
+}
+
+#xyz-nda-modal .ct-field input {
+  background: none;
+  border: none;
+  outline: none;
+  width: 100%;
+  font: 400 13px/1.5 Micross, Arial, sans-serif;
+  color: #f0ece1;
+  caret-color: rgba(240, 236, 225, 0.5);
+}
+
+#xyz-nda-modal .nda-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 6px 0 20px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: rgba(240, 236, 225, 0.45);
+  cursor: pointer;
+}
+
+#xyz-nda-modal .nda-check input {
+  margin-top: 3px;
+  accent-color: #f0ece1;
+  flex: none;
+}
+
+#xyz-nda-modal .nda-err {
+  font: 400 11px/1.5 Micross, Arial, sans-serif;
+  color: rgba(255, 140, 130, 0.95);
+  margin: 0 0 14px;
+  min-height: 1.35em;
+}
+
+#xyz-nda-modal .ct-submit {
+  font: 700 8px/1 Micross, Arial, sans-serif;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(240, 236, 225, 0.32);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+  transition: color 0.2s;
+}
+
+#xyz-nda-modal .ct-submit:hover:not(:disabled) {
+  color: #f0ece1;
+}
+
+#xyz-nda-modal .ct-submit:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}

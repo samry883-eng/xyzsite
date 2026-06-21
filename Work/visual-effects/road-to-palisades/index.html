@@ -602,7 +602,7 @@
     pageOut.style.pointerEvents = 'all';
     setTimeout(() => {
       if (document.referrer && new URL(document.referrer).host === window.location.host) history.back();
-      else window.location.href = '/projects/';
+      else window.location.href = '/projects-v2/';
     }, 420);
   }
   backBtn.addEventListener('click', () => {
@@ -633,36 +633,6 @@
     if (entries[0].isIntersecting) { credits.classList.add('revealed'); obs.disconnect(); }
   }, { threshold: 0.05 }).observe(credits);
 </script>
-<style id="xyz-center-play">
-  #pj-center-play{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); z-index:30;
-    background:none; border:0; padding:0; cursor:pointer; display:flex; align-items:center; justify-content:center;
-    touch-action:manipulation; transition:opacity .3s ease; }
-  #pj-center-play svg{ width:60px; height:60px; fill:#fff; display:block; filter:drop-shadow(0 1px 8px rgba(0,0,0,.55)); }
-  #pj-center-play.pj-hide{ opacity:0; pointer-events:none; }
-</style>
-<script>
-(function(){
-  if(!window.matchMedia('(max-width: 768px)').matches) return;
-  var PLAY='<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
-  function init(){
-    var vid=document.getElementById('pj-video'); if(!vid) return false;
-    var wrap=vid.closest('.pj-video-frame')||vid.parentElement; if(!wrap) return false;
-    if(document.getElementById('pj-center-play')) return true;
-    if(getComputedStyle(wrap).position==='static') wrap.style.position='relative';
-    var b=document.createElement('button'); b.type='button'; b.id='pj-center-play'; b.setAttribute('aria-label','Play');
-    b.innerHTML=PLAY; wrap.appendChild(b);
-    function sync(){ b.classList.toggle('pj-hide', !vid.paused); }
-    b.addEventListener('click',function(e){ e.preventDefault(); e.stopPropagation();
-      if(vid.paused){ var p=vid.play(); if(p&&p.catch)p.catch(function(){}); } else { vid.pause(); } });
-    vid.addEventListener('play',sync); vid.addEventListener('pause',sync); vid.addEventListener('ended',sync); sync();
-    return true;
-  }
-  if(!init()){ var n=0,iv=setInterval(function(){ n++; if(init()||n>60)clearInterval(iv); },200); }
-  document.addEventListener('DOMContentLoaded',init); window.addEventListener('load',init);
-})();
-</script>
-<script>/* xyz-meta-override */(function(){fetch('/api/site-order').then(function(r){return r.json();}).then(function(d){var o=d&&d.order;if(!o||!o.meta)return;var p=location.pathname.replace(/^\/work\//i,'').replace(/\/+$/,'').split('/');var key=p.slice(0,2).join('/');var m=o.meta[key];if(!m)return;function s(sel,v){if(v==null||v==='')return;var ns=document.querySelectorAll(sel);for(var i=0;i<ns.length;i++)ns[i].textContent=v;}s('#pj-ui-titles .projects_item-title:not(.company)',m.title);s('.pj-cr-title',m.title);s('#pj-ui-titles .projects_item-title.company',m.client);s('.pj-cr-sub',m.client);if(m.client&&m.title)document.title=m.client+' \u2014 '+m.title+' \u2014 XYZ Studios';}).catch(function(){});})();</script>
-<script src="/work/assets/xyz-quick-slide.js"></script>
-<script src="/work/assets/xyz-home-return.js"></script>
+<script src="/work/assets/xyz-project-services.js"></script>
 </body>
 </html>

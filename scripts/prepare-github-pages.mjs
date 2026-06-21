@@ -5,7 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { loadMkeyLookup, slimHomeRow, fetchWorkOrderForBuild } from './home-order-lib.mjs';
-import { injectProjectsCatalogFile } from './projects-catalog-lib.mjs';
+import { injectProjectsCatalogFile, fetchProjectsCatalog, writeProjectsServicesMap } from './projects-catalog-lib.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
@@ -58,27 +58,44 @@ copyDir(path.join(root, 'Home', 'assets'), path.join(dist, 'assets'));
 
 copyDir(path.join(root, 'Work'), path.join(dist, 'work'));
 
+// Slim services map for project preview pages (xyz-project-services.js)
+try {
+  const catalog = await fetchProjectsCatalog(root);
+  const svc = await writeProjectsServicesMap(root, catalog);
+  const distSvc = path.join(dist, 'work', 'assets', 'projects-services.json');
+  fs.copyFileSync(svc.path, distSvc);
+  console.log('[projects-services] wrote', svc.count, 'entries');
+} catch (e) { console.warn('[projects-services] map write failed:', e && e.message); }
+
 // Work CMS admin: /work/adminv2.html (main; /work/admin + /admin redirect here)
 
-// Inject coordinated home-return script on project pages
-function injectHomeReturn(dir) {
-  const tag =
+// Inject coordinated home-return + services scripts on project pages
+function injectProjectScripts(dir) {
+  const homeTag =
     '<script src="/work/assets/xyz-quick-slide.js"></script>\n<script src="/work/assets/xyz-home-return.js"></script>';
+  const servicesTag = '<script src="/work/assets/xyz-project-services.js"></script>';
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
     const p = path.join(dir, e.name);
-    if (e.isDirectory()) injectHomeReturn(p);
+    if (e.isDirectory()) injectProjectScripts(p);
     else if (e.name === 'index.html') {
       const rel = path.relative(path.join(dist, 'work'), p).replace(/\\/g, '/');
       if (rel === 'index.html') continue;
       let s = fs.readFileSync(p, 'utf8');
-      if (s.includes('xyz-home-return.js')) continue;
       if (!s.includes('</body>')) continue;
-      s = s.replace('</body>', tag + '\n</body>');
-      fs.writeFileSync(p, s);
+      let changed = false;
+      if (!s.includes('xyz-home-return.js')) {
+        s = s.replace('</body>', homeTag + '\n</body>');
+        changed = true;
+      }
+      if (!s.includes('xyz-project-services.js')) {
+        s = s.replace('</body>', servicesTag + '\n</body>');
+        changed = true;
+      }
+      if (changed) fs.writeFileSync(p, s);
     }
   }
 }
-injectHomeReturn(path.join(dist, 'work'));
+injectProjectScripts(path.join(dist, 'work'));
 
 fs.mkdirSync(path.join(dist, 'projects'), { recursive: true });
 copyFile(path.join(root, 'Work', 'index.html'), path.join(dist, 'projects', 'index.html'));

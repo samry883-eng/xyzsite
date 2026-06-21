@@ -1,4 +1,4 @@
-import { grantList, getAdminSecretFromEnv, canPersistGrants } from '../../../lib/capabilities-auth.mjs';
+import { grantList, ndaRecordList, getAdminSecretFromEnv, canPersistGrants } from '../../../lib/capabilities-auth.mjs';
 import { getAllowlistSnapshot } from '../../../lib/capabilities-allowlist.mjs';
 import { isAdminAuthorized } from '../../../lib/capabilities-admin-guard.mjs';
 
@@ -23,11 +23,13 @@ export default async function handler(req, res) {
     return;
   }
   const grants = await grantList();
+  const ndaRecords = await ndaRecordList();
   const allowlist = getAllowlistSnapshot();
   const persist = await canPersistGrants();
   sendJson(res, 200, {
     ok: true,
     grants,
+    ndaRecords,
     allowlist,
     canPersistGrants: persist,
     help: persist

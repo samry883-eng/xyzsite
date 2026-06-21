@@ -484,7 +484,7 @@
       transform: translateZ(0);
     }
   </style>
-  <link rel="prefetch" href="/projects/">
+  <link rel="prefetch" href="/projects-v2/">
 <style id="xyz-contact-fix">
   /* PHONE ONLY */
   @media (max-width: 768px){
@@ -521,7 +521,7 @@
   <div class="anim-wrap"><a class="nav-logo anim-item soft" id="an-logo" href="/"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios"></a></div>
   <ul class="nav-links">
     <li><div class="anim-wrap"><a href="/" class="anim-item soft" id="an-n1">Home</a></div></li>
-    <li><div class="anim-wrap"><a href="/projects/" class="anim-item soft" id="an-n2">Work</a></div></li>
+    <li><div class="anim-wrap"><a href="/projects-v2/" class="anim-item soft" id="an-n2">Work</a></div></li>
     <li style="display:none"><div class="anim-wrap"><a href="/services/" class="anim-item soft" id="an-n3">XYZ/Services</a></div></li>
     <li><div class="anim-wrap"><a href="/contact" class="active anim-item soft" id="an-n4">Contact</a></div></li>
   </ul>
@@ -707,7 +707,7 @@
             btn.disabled = false;
             return;
           }
-          window.location.href = '/capabilities/';
+          window.location.href = '/capabilities/nda?next=' + encodeURIComponent('/capabilities/');
         })
         .catch(function () {
           err.textContent = 'Network error. Try again.';
@@ -1059,7 +1059,7 @@
     try{return !!(performance.navigation&&performance.navigation.type===1);}catch(e){return false;}
   }
   function scheduleReveal(fromCacheRestore){
-    var dur=(!fromCacheRestore&&isReloadNavigation())?'1.06s':'0.58s';
+    var dur=(!fromCacheRestore&&isReloadNavigation())?'1.06s':'0.48s';
     var durMs=parseFloat(dur)*1000;
     var overlapMs=80;
     setTimeout(function(){
@@ -1068,7 +1068,7 @@
   }
   // Animation 2 — same timing as Work (not Home)
   function slideAwayPanel(fromCacheRestore){
-    var dur=(!fromCacheRestore&&isReloadNavigation())?'1.06s':'0.58s';
+    var dur=(!fromCacheRestore&&isReloadNavigation())?'1.06s':'0.48s';
     pageOut.style.transition='none';
     pageOut.style.transform='translateY(0)';
     pageOut.style.pointerEvents='none';

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login — XYZ Studios</title>
   <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="/assets/xyz-nav-font.css" />
   <style>
     @font-face {
       font-family: 'Micross';
@@ -16,6 +17,7 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --deck-pad-x: clamp(24px, 4vw, 64px);
+      --nav-h: clamp(52px, 9vh, 80px);
     }
     html, body {
       min-height: 100%;
@@ -52,6 +54,21 @@
       letter-spacing: 0.13em;
       text-transform: uppercase;
     }
+    #site-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 20;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(16px, 4vw, 48px);
+      pointer-events: none;
+      background: transparent;
+    }
+    #site-nav a { pointer-events: auto; }
+    #site-nav .nav-logo img { height: 29px; width: auto; display: block; }
+    .split { padding-top: var(--nav-h); box-sizing: border-box; }
     .cover-zone {
       position: relative;
       z-index: 1;
@@ -194,6 +211,17 @@
   </style>
 </head>
 <body>
+  <nav id="site-nav" aria-label="Site">
+    <a class="nav-logo" href="/">
+      <img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/691f47e2f734702aa3a0675f_xyz-logo.png" alt="XYZ Studios">
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/projects-v2/">Work</a></li>
+      <li><a href="/services/">Services</a></li>
+      <li><a href="/contact">Contact</a></li>
+    </ul>
+  </nav>
   <div class="split">
     <aside class="split-left" aria-label="Capabilities">
       <div class="wordmark">XYZSTUDIOS</div>
@@ -247,6 +275,15 @@
       var btn = document.getElementById('btn');
       var form = document.getElementById('f');
 
+      fetch('/api/capabilities/session', { credentials: 'same-origin' })
+        .then(function (r) {
+          return r.json().then(function (data) { return { ok: r.ok, data: data }; });
+        })
+        .then(function (x) {
+          if (x.ok && x.data.ok) window.location.replace(target);
+        })
+        .catch(function () {});
+
       form.addEventListener('submit', function (e) {
         e.preventDefault();
         err.textContent = '';
@@ -268,7 +305,7 @@
               btn.disabled = false;
               return;
             }
-            window.location.href = target;
+            window.location.replace(target);
           })
           .catch(function () {
             err.textContent = 'Network error.';

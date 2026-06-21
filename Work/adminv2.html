@@ -169,17 +169,29 @@
     .row-chevron { color: var(--muted); font-size: 14px; text-align: right; }
     .row-title-line { display: flex; align-items: center; gap: 8px; min-width: 0; }
     .row-title-line .row-title { flex: 1; min-width: 0; }
-    .row-home-badge {
+    .row-page-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
       flex: none;
+    }
+    .row-page-badge {
       font-size: 8px;
       letter-spacing: .14em;
       text-transform: uppercase;
       font-weight: 700;
-      color: #0c0c0c;
-      background: var(--green);
       padding: 3px 7px;
       border-radius: 2px;
       font-family: 'JetBrains Mono', monospace;
+      flex: none;
+    }
+    .row-page-badge--home {
+      color: #0c0c0c;
+      background: var(--green);
+    }
+    .row-page-badge--selected {
+      color: #0c0c0c;
+      background: var(--amber);
     }
     .row-arrows { display: flex; flex-direction: column; gap: 2px; align-items: center; justify-self: end; }
     .row-arrow {
@@ -355,7 +367,7 @@
   </a>
   <ul class="nav-links">
     <li><a href="/">Home</a></li>
-    <li><a href="/projects/" class="active">Work</a></li>
+    <li><a href="/projects-v2/" class="active">Work</a></li>
     <li style="display:none"><a href="/services/">XYZ/Services</a></li>
     <li><a href="/contact">Contact</a></li>
   </ul>
@@ -502,6 +514,14 @@ var SERVICE_OPTIONS_SOUND = ['Sound Design', 'Mixing & Mastering', 'Compose'];
 var SERVICE_OPTIONS = SERVICE_OPTIONS_VISUAL.concat(SERVICE_OPTIONS_SOUND);
 var SOUND_SERVICES = SERVICE_OPTIONS_SOUND.slice();
 var VFX_SERVICES = ['Creative Direction', 'Visual Effects', 'CGI', 'Compositing', 'Clean Up & Beauty'];
+
+function sortServices(services) {
+  return (services || []).slice().sort(function (a, b) {
+    var ia = SERVICE_OPTIONS.indexOf(a);
+    var ib = SERVICE_OPTIONS.indexOf(b);
+    return (ia < 0 ? 999 : ia) - (ib < 0 ? 999 : ib);
+  });
+}
 var PAGES = [
   { key: 'all', label: 'All' },
   { key: 'home', label: 'Home' },
@@ -622,6 +642,20 @@ function heroStartFor(p) {
 
 function isInHomeList(p) {
   return homeReelOrder.indexOf(p.id) >= 0;
+}
+
+function isOnSelectedWork(p) {
+  return !!p.featured;
+}
+
+function appendRowPageBadges(titleLine, p) {
+  var hasHome = isOnHomeReel(p);
+  var hasSelected = isOnSelectedWork(p);
+  if (!hasHome && !hasSelected) return;
+  var box = el('div', 'row-page-badges');
+  if (hasHome) box.appendChild(el('span', 'row-page-badge row-page-badge--home', 'Home'));
+  if (hasSelected) box.appendChild(el('span', 'row-page-badge row-page-badge--selected', 'Selected'));
+  titleLine.appendChild(box);
 }
 
 function categoryLabel(slug) {
@@ -976,9 +1010,10 @@ function renderNav() {
 }
 
 function renderServiceTags(services) {
+  services = sortServices(services);
   var box = document.getElementById('serviceTags');
   box.innerHTML = '';
-  (services || []).forEach(function (name, i) {
+  services.forEach(function (name) {
     var tag = el('span', 'service-tag');
     tag.appendChild(document.createTextNode(name));
     var rm = el('button', null, '×');
@@ -988,7 +1023,7 @@ function renderServiceTags(services) {
       if (!activeId) return;
       var p = draft.projects.find(function (x) { return x.id === activeId; });
       if (!p) return;
-      p.services = (p.services || []).filter(function (_, j) { return j !== i; });
+      p.services = sortServices((p.services || []).filter(function (s) { return s !== name; }));
       dirty();
       renderServiceTags(p.services);
     };
@@ -1021,6 +1056,7 @@ function renderServiceTags(services) {
     if (!p) return;
     if (!p.services) p.services = [];
     if (p.services.indexOf(add.value) < 0) p.services.push(add.value);
+    p.services = sortServices(p.services);
     dirty();
     renderServiceTags(p.services);
   };
@@ -1119,7 +1155,7 @@ function renderList() {
     text.style.minWidth = '0';
     var titleLine = el('div', 'row-title-line');
     titleLine.appendChild(el('div', 'row-title', p.title || 'Untitled'));
-    if (isOnHomeReel(p)) titleLine.appendChild(el('span', 'row-home-badge', 'Home'));
+    appendRowPageBadges(titleLine, p);
     text.appendChild(titleLine);
     text.appendChild(el('div', 'row-client', p.client || '—'));
     proj.appendChild(text);
@@ -1234,6 +1270,7 @@ function readEditorIntoProject(p) {
   p.video = document.getElementById('f-video').value.trim();
   p.poster = document.getElementById('f-poster').value.trim();
   p.credits = readCreditsFromDom().filter(function (c) { return c.label && c.value; });
+  p.services = sortServices(p.services || []);
   if (!p.homeHero) p.homeHero = { start: 0, enabled: false };
   p.homeHero.start = Number(document.getElementById('f-hero-start').value) || 0;
   applyDerivedFields(p);
@@ -1328,6 +1365,9 @@ function loadCatalog(cb) {
     var d = results[0];
     catalog = d && d.catalog ? d.catalog : { version: 1, projects: [] };
     draft = cloneCatalog(catalog);
+    draft.projects.forEach(function (p) {
+      p.services = sortServices(p.services || []);
+    });
     var orderRes = results[1];
     workOrder = (orderRes && orderRes.order) || null;
     reconcileHomeReelState();
@@ -1510,6 +1550,7 @@ bindChip('chipSelected', function () {
   document.getElementById('posterFeatured').classList.toggle('hidden', !p.featured);
   dirty();
   renderNav();
+  renderList();
   updateRecordStatus();
 });
 

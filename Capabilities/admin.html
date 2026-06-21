@@ -34,7 +34,7 @@
     }
     .page {
       width: 100%;
-      max-width: 480px;
+      max-width: 720px;
       margin: 0 auto;
       padding: 0;
       text-align: center;
@@ -193,6 +193,20 @@
       max-height: 120px;
       overflow: auto;
     }
+    .section-title {
+      width: 100%;
+      font: 700 8px/1 Micross, Arial, sans-serif;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.35);
+      margin: 36px 0 16px;
+      text-align: center;
+    }
+    .nda-date {
+      font: 400 10px/1.4 Micross, Arial, sans-serif;
+      color: rgba(255, 255, 255, 0.38);
+      white-space: nowrap;
+    }
     .source-tag {
       font: 400 9px/1 Micross, Arial, sans-serif;
       color: rgba(255, 255, 255, 0.28);
@@ -240,11 +254,21 @@
       </div>
 
       <div class="err" id="list-err" aria-live="polite" style="margin-top:28px;"></div>
+      <div class="section-title">Deck access</div>
       <table>
         <thead>
           <tr><th>Email</th><th>Source</th><th></th></tr>
         </thead>
         <tbody id="grant-rows"></tbody>
+      </table>
+
+      <div class="section-title">NDA signatories</div>
+      <div class="err" id="nda-err" aria-live="polite"></div>
+      <table>
+        <thead>
+          <tr><th>Email</th><th>Signed name</th><th>Signed</th><th></th></tr>
+        </thead>
+        <tbody id="nda-rows"></tbody>
       </table>
     </div>
   </div>
@@ -257,6 +281,8 @@
       var listErr = document.getElementById('list-err');
       var addErr = document.getElementById('add-err');
       var grantRows = document.getElementById('grant-rows');
+      var ndaRows = document.getElementById('nda-rows');
+      var ndaErr = document.getElementById('nda-err');
 
       function api(path, opts) {
         opts = opts || {};
@@ -299,6 +325,61 @@
         copyValue.textContent = value || '';
         copyBox.classList.add('visible');
         if (message) addErr.textContent = message;
+      }
+
+      function formatSignedAt(iso) {
+        if (!iso) return '—';
+        try {
+          return new Date(iso).toLocaleString(undefined, {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+          });
+        } catch (e) {
+          return iso;
+        }
+      }
+
+      function renderNdaRows(records) {
+        ndaRows.innerHTML = '';
+        (records || []).forEach(function (r) {
+          var tr = document.createElement('tr');
+          var td1 = document.createElement('td');
+          td1.textContent = r.email;
+          var td2 = document.createElement('td');
+          td2.textContent = r.signedName || '—';
+          var td3 = document.createElement('td');
+          td3.className = 'nda-date';
+          td3.textContent = formatSignedAt(r.signedAt);
+          var td4 = document.createElement('td');
+          td4.className = 'row-actions';
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.setAttribute('aria-label', 'Reset NDA');
+          btn.title = 'Reset NDA (testing)';
+          btn.innerHTML = '&times;';
+          btn.addEventListener('click', function () {
+            api('/api/capabilities/admin/nda-revoke', {
+              method: 'POST',
+              body: { email: r.email },
+            }).then(function (x) {
+              if (!x.ok) {
+                ndaErr.textContent = (x.data && x.data.error) || 'Could not reset NDA';
+                return;
+              }
+              ndaErr.textContent = '';
+              refreshList();
+            });
+          });
+          td4.appendChild(btn);
+          tr.appendChild(td1);
+          tr.appendChild(td2);
+          tr.appendChild(td3);
+          tr.appendChild(td4);
+          ndaRows.appendChild(tr);
+        });
       }
 
       function renderRows(grants) {
@@ -355,6 +436,7 @@
             copyValue.textContent = x.data.allowlist.envValue;
           }
           renderRows(x.data.grants);
+          renderNdaRows(x.data.ndaRecords);
         });
       }
 
@@ -442,6 +524,7 @@
           loginPanel.classList.add('hidden');
           adminPanel.classList.remove('hidden');
           renderRows(x.data.grants);
+          renderNdaRows(x.data.ndaRecords);
         }
       });
     })();

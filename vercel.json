@@ -244,6 +244,36 @@
   ],
   "redirects": [
     {
+      "source": "/work",
+      "destination": "/projects-v2/",
+      "permanent": false
+    },
+    {
+      "source": "/work/",
+      "destination": "/projects-v2/",
+      "permanent": false
+    },
+    {
+      "source": "/projects",
+      "destination": "/projects-v2/",
+      "permanent": false
+    },
+    {
+      "source": "/projects/",
+      "destination": "/projects-v2/",
+      "permanent": false
+    },
+    {
+      "source": "/work/index.html",
+      "destination": "/projects-v2/",
+      "permanent": false
+    },
+    {
+      "source": "/projects/index.html",
+      "destination": "/projects-v2/",
+      "permanent": false
+    },
+    {
       "source": "/work/admin",
       "destination": "/work/adminv2",
       "permanent": false
@@ -300,22 +330,6 @@
     {
       "source": "/projects-v3/",
       "destination": "/work/unified-v3/index.html"
-    },
-    {
-      "source": "/projects",
-      "destination": "/work/index.html"
-    },
-    {
-      "source": "/projects/",
-      "destination": "/work/index.html"
-    },
-    {
-      "source": "/work",
-      "destination": "/work/index.html"
-    },
-    {
-      "source": "/work/",
-      "destination": "/work/index.html"
     },
     {
       "source": "/capabilities/login",

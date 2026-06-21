@@ -167,15 +167,27 @@
 
 
 
-    function applyVolume(val) {
+    var userAdjustedVolume = false;
+
+    function applyVolume(val, fromUser) {
+
+      if (fromUser) userAdjustedVolume = true;
 
       var v = Math.max(0, Math.min(1, val / 100));
 
       cursorVideos.forEach(function (target) {
 
-        target.volume = v;
+        if (v === 0 && userAdjustedVolume) {
 
-        target.muted = v === 0;
+          target.muted = true;
+
+        } else {
+
+          target.muted = false;
+
+          target.volume = v > 0 ? v : 1;
+
+        }
 
       });
 
@@ -187,13 +199,35 @@
 
     if (volSlider) {
 
+      cursorVideos.forEach(function (target) {
+
+        target.muted = false;
+
+        if (!target.volume) target.volume = 1;
+
+      });
+
       var initVol = Number(volSlider.value);
 
-      applyVolume(isNaN(initVol) ? 50 : initVol);
+      if (isNaN(initVol) || initVol <= 0) initVol = 100;
+
+      volSlider.value = String(initVol);
+
+      applyVolume(initVol, false);
 
       volSlider.addEventListener('input', function () {
 
-        applyVolume(Number(volSlider.value));
+        applyVolume(Number(volSlider.value), true);
+
+      });
+
+    } else {
+
+      cursorVideos.forEach(function (target) {
+
+        target.muted = false;
+
+        if (!target.volume) target.volume = 1;
 
       });
 
