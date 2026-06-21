@@ -413,7 +413,7 @@
   </a>
   <ul class="nav-links">
     <li><a href="/">Home</a></li>
-    <li><a href="/projects-v2/" class="active">WORK</a></li>
+    <li><a href="/work/" class="active">WORK</a></li>
     <li style="display:none"><a href="/services/">XYZ/Services</a></li>
     <li><a href="/contact">Contact</a></li>
   </ul>
@@ -1743,13 +1743,14 @@ function focusPosterInput() {
   }
 }
 
-fetch('/api/capabilities/admin/list').then(function (r) { if (r.ok) showApp(); }).catch(function () {});
+fetch('/api/capabilities/admin/list', { credentials: 'include' }).then(function (r) { if (r.ok) showApp(); }).catch(function () {});
 
 document.getElementById('loginBtn').onclick = function () {
   var pw = document.getElementById('pw').value;
   document.getElementById('loginMsg').textContent = 'Signing in…';
   fetch('/api/capabilities/admin/login', {
     method: 'POST',
+    credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ password: pw })
   })
@@ -1762,7 +1763,7 @@ document.getElementById('loginBtn').onclick = function () {
 };
 
 document.getElementById('logoutBtn').onclick = function () {
-  fetch('/api/capabilities/admin/logout', { method: 'POST' }).finally(function () { location.reload(); });
+  fetch('/api/capabilities/admin/logout', { method: 'POST', credentials: 'include' }).finally(function () { location.reload(); });
 };
 
 document.getElementById('search').oninput = renderList;

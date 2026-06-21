@@ -97,15 +97,31 @@ function injectProjectScripts(dir) {
 }
 injectProjectScripts(path.join(dist, 'work'));
 
+// Legacy listing URLs → /work/ (redirect stubs; grid lives at /work/ via unified index).
+const legacyWorkRedirect = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="refresh" content="0;url=/work/">
+  <link rel="canonical" href="/work/">
+  <title>Work — XYZ Studios</title>
+  <script>location.replace('/work/');</script>
+</head>
+<body><p><a href="/work/">WORK</a></p></body>
+</html>
+`;
 fs.mkdirSync(path.join(dist, 'projects'), { recursive: true });
-copyFile(path.join(root, 'Work', 'index.html'), path.join(dist, 'projects', 'index.html'));
-
+fs.writeFileSync(path.join(dist, 'projects', 'index.html'), legacyWorkRedirect);
 fs.mkdirSync(path.join(dist, 'projects-v2'), { recursive: true });
-copyFile(path.join(root, 'Work', 'unified', 'index.html'), path.join(dist, 'projects-v2', 'index.html'));
-// Bake catalog into the file Vercel actually serves (/projects-v2 rewrites to /work/unified/index.html).
+fs.writeFileSync(path.join(dist, 'projects-v2', 'index.html'), legacyWorkRedirect);
+
+// Public work grid at /work/ (also rewritten to unified/index.html on Vercel).
+copyFile(path.join(root, 'Work', 'unified', 'index.html'), path.join(dist, 'work', 'index.html'));
+
+// Bake catalog into the files served at /work/ and /work/unified/.
 const catalogTargets = [
   path.join(dist, 'work', 'unified', 'index.html'),
-  path.join(dist, 'projects-v2', 'index.html'),
+  path.join(dist, 'work', 'index.html'),
 ];
 for (const target of catalogTargets) {
   try {

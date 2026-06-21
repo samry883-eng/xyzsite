@@ -434,7 +434,14 @@ function getStaticFilePath(urlPath) {
     filePath = path.join(HOME, 'index.html');
   } else if (p.startsWith('/assets/')) {
     filePath = path.join(HOME, p);
-  } else if (p === '/projects-v2' || p === '/projects-v2/') {
+  } else if (
+    p === '/work' ||
+    p === '/work/' ||
+    p === '/work/index.html' ||
+    p === '/projects-v2' ||
+    p === '/projects-v2/' ||
+    p === '/projects-v2/index.html'
+  ) {
     filePath = path.join(WORK, 'unified', 'index.html');
   } else if (p === '/contact-versions' || p === '/contact-versions/') {
     filePath = path.join(CONTACT, 'versions.html');
@@ -476,10 +483,6 @@ function getStaticFilePath(urlPath) {
     filePath = path.join(__dirname, 'Capabilities', 'login.html');
   } else if (p === '/capabilities/nda' || p === '/capabilities/nda/' || p === '/capabilities/nda.html') {
     filePath = path.join(__dirname, 'Capabilities', 'nda.html');
-  } else if (p === '/capabilities/admin' || p === '/capabilities/admin/' || p === '/capabilities/admin.html') {
-    filePath = path.join(__dirname, 'Capabilities', 'admin.html');
-  } else if (p === '/work/adminv2' || p === '/work/adminv2/' || p === '/work/adminv2.html') {
-    filePath = path.join(WORK, 'adminv2.html');
   } else if (p === '/work/admin' || p === '/work/admin/' || p === '/work/admin.html') {
     filePath = path.join(WORK, 'admin.html');
   } else if (p === '/admin' || p === '/admin/' || p === '/admin.html') {
@@ -593,18 +596,21 @@ http.createServer((req, res) => {
         return;
       }
 
-      
-      const projectsV2Redirects = new Set([
+      const legacyWorkRedirects = new Set([
         '/work.html',
-        '/work',
-        '/work/',
-        '/work/index.html',
         '/projects',
         '/projects/',
         '/projects/index.html',
+        '/projects-v2',
+        '/projects-v2/',
+        '/projects-v2/index.html',
+        '/projects-v3',
+        '/projects-v3/',
+        '/Work',
+        '/Work/',
       ]);
-      if (projectsV2Redirects.has(urlPath)) {
-        res.writeHead(302, { Location: '/projects-v2/' });
+      if (legacyWorkRedirects.has(urlPath)) {
+        res.writeHead(308, { Location: '/work/' });
         res.end();
         return;
       }
@@ -629,28 +635,6 @@ http.createServer((req, res) => {
       ]);
       if (capabilitiesAdminRedirects.has(urlPath)) {
         res.writeHead(302, { Location: '/work/admin?tab=access' });
-        res.end();
-        return;
-      }
-      if (urlPath === '/projects-v3' || urlPath === '/projects-v3/') {
-        res.writeHead(308, { Location: '/projects-v2/' });
-        res.end();
-        return;
-      }
-
-      const workListingRedirects = new Set([
-        '/work',
-        '/work/',
-        '/work.html',
-        '/work/index.html',
-        '/projects',
-        '/projects/',
-        '/projects/index.html',
-        '/Work',
-        '/Work/',
-      ]);
-      if (workListingRedirects.has(urlPath)) {
-        res.writeHead(308, { Location: '/projects-v2/' });
         res.end();
         return;
       }

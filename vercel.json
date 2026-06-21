@@ -152,60 +152,6 @@
       ]
     },
     {
-      "source": "/projects",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/projects/",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/projects/index.html",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/projects-v2",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/projects-v2/",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/projects-v2/index.html",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, must-revalidate"
-        }
-      ]
-    },
-    {
       "source": "/work/unified/index.html",
       "headers": [
         {
@@ -289,48 +235,58 @@
       "permanent": true
     },
     {
-      "source": "/work",
-      "destination": "/projects-v2/",
+      "source": "/projects-v2",
+      "destination": "/work/",
       "permanent": true
     },
     {
-      "source": "/work/",
-      "destination": "/projects-v2/",
+      "source": "/projects-v2/",
+      "destination": "/work/",
       "permanent": true
     },
     {
-      "source": "/work.html",
-      "destination": "/projects-v2/",
+      "source": "/projects-v2/index.html",
+      "destination": "/work/",
       "permanent": true
     },
     {
-      "source": "/work/index.html",
-      "destination": "/projects-v2/",
+      "source": "/projects-v3",
+      "destination": "/work/",
+      "permanent": true
+    },
+    {
+      "source": "/projects-v3/",
+      "destination": "/work/",
       "permanent": true
     },
     {
       "source": "/projects",
-      "destination": "/projects-v2/",
+      "destination": "/work/",
       "permanent": true
     },
     {
       "source": "/projects/",
-      "destination": "/projects-v2/",
+      "destination": "/work/",
       "permanent": true
     },
     {
       "source": "/projects/index.html",
-      "destination": "/projects-v2/",
+      "destination": "/work/",
+      "permanent": true
+    },
+    {
+      "source": "/work.html",
+      "destination": "/work/",
       "permanent": true
     },
     {
       "source": "/Work",
-      "destination": "/projects-v2/",
+      "destination": "/work/",
       "permanent": true
     },
     {
       "source": "/Work/",
-      "destination": "/projects-v2/",
+      "destination": "/work/",
       "permanent": true
     },
     {
@@ -342,25 +298,15 @@
       "source": "/work/adminv2/",
       "destination": "/work/admin",
       "permanent": true
-    },
-    {
-      "source": "/projects-v3",
-      "destination": "/projects-v2/",
-      "permanent": true
-    },
-    {
-      "source": "/projects-v3/",
-      "destination": "/projects-v2/",
-      "permanent": true
     }
   ],
   "rewrites": [
     {
-      "source": "/projects-v2",
+      "source": "/work",
       "destination": "/work/unified/index.html"
     },
     {
-      "source": "/projects-v2/",
+      "source": "/work/",
       "destination": "/work/unified/index.html"
     },
     {
