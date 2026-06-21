@@ -656,6 +656,57 @@ function buildHomeItemFromProject(p) {
   };
 }
 
+function syncCatalogHomeHeroFromWorkOrder() {
+  draft.projects.forEach(function (p) {
+    if (!isInHomeList(p)) return;
+    if (!p.homeHero) p.homeHero = { start: 0, enabled: false };
+    p.homeHero.enabled = true;
+    p.homeHero.start = heroStartFor(p);
+  });
+}
+
+function removeProjectFromHomeList(p) {
+  if (!workOrder || !workOrder.homeList) return;
+  workOrder.homeList = workOrder.homeList.filter(function (item) {
+    return !matchProjectToHomeItem(item, [p]);
+  });
+  buildHomeReelIndex(draft.projects);
+}
+
+function addProjectToHomeList(p) {
+  if (!workOrder) workOrder = { homeList: [] };
+  if (findHomeItemForProject(p)) return;
+  workOrder.homeList.push(buildHomeItemFromProject(p));
+  buildHomeReelIndex(draft.projects);
+}
+
+function refreshHomeListItem(p) {
+  if (!workOrder || !workOrder.homeList || !isInHomeList(p)) return;
+  var list = workOrder.homeList;
+  var i;
+  for (i = 0; i < list.length; i++) {
+    if (!matchProjectToHomeItem(list[i], [p])) continue;
+    var kept = list[i];
+    var fresh = buildHomeItemFromProject(p);
+    fresh.start = String(heroStartFor(p));
+    if (kept.key) fresh.key = kept.key;
+    list[i] = fresh;
+    buildHomeReelIndex(draft.projects);
+    return;
+  }
+}
+
+function setProjectHomeReel(p, on) {
+  if (!p.homeHero) p.homeHero = { start: 0, enabled: false };
+  p.homeHero.enabled = !!on;
+  if (on) {
+    if (!isInHomeList(p)) addProjectToHomeList(p);
+    else refreshHomeListItem(p);
+  } else {
+    removeProjectFromHomeList(p);
+  }
+}
+
 function applyHomeReelOrderFromIds(ids) {
   if (!workOrder) workOrder = { homeList: [] };
   var oldList = (workOrder.homeList || []).slice();
@@ -799,7 +850,7 @@ function thumbStyle(p) {
 }
 
 function isLive(p) {
-  return !!(p.featured || (p.homeHero && p.homeHero.enabled));
+  return !!(p.featured || isOnHomeReel(p));
 }
 
 function matchPage(p, key) {
@@ -1107,7 +1158,7 @@ function renderList() {
 }
 
 function updateChips(p) {
-  var homeOn = !!(p.homeHero && p.homeHero.enabled);
+  var homeOn = isOnHomeReel(p);
   var featOn = !!p.featured;
   document.getElementById('chipHome').className = 'chip' + (homeOn ? ' on' : '');
   document.getElementById('chipHome').textContent = (homeOn ? '✓ ' : '') + 'Home reel';
@@ -1136,13 +1187,18 @@ function openEditor(id) {
   activeId = id;
   var p = draft.projects.find(function (x) { return x.id === id; });
   if (!p) return;
+  if (isInHomeList(p)) {
+    if (!p.homeHero) p.homeHero = { start: 0, enabled: false };
+    p.homeHero.enabled = true;
+    p.homeHero.start = heroStartFor(p);
+  }
   setMode(true);
   document.getElementById('f-title').value = p.title || '';
   document.getElementById('f-client').value = p.client || '';
   document.getElementById('f-projectType').value = p.projectType || 'Commercial';
   document.getElementById('f-video').value = p.video || '';
   document.getElementById('f-poster').value = p.poster || '';
-  document.getElementById('f-hero-start').value = p.homeHero && p.homeHero.start != null ? p.homeHero.start : 0;
+  document.getElementById('f-hero-start').value = heroStartFor(p);
   renderServiceTags(p.services || []);
   renderCreditsEditor(p.credits && p.credits.length ? p.credits : [{ label: '', value: '' }]);
   updateChips(p);
@@ -1168,6 +1224,7 @@ function readEditorIntoProject(p) {
   if (!p.homeHero) p.homeHero = { start: 0, enabled: false };
   p.homeHero.start = Number(document.getElementById('f-hero-start').value) || 0;
   applyDerivedFields(p);
+  if (isOnHomeReel(p)) refreshHomeListItem(p);
   document.getElementById('posterFrame').setAttribute('style', thumbStyle(p));
   document.getElementById('posterFeatured').classList.toggle('hidden', !p.featured);
   document.getElementById('posterName').textContent = posterFileName(p);
@@ -1238,7 +1295,7 @@ function addProject() {
     featured: false, homeHero: { start: 0, enabled: false }, sortOrder: 0
   };
   applyDerivedFields(np);
-  if (currentPage === 'home') np.homeHero.enabled = true;
+  if (currentPage === 'home') setProjectHomeReel(np, true);
   if (currentPage === 'selected') np.featured = true;
   if (currentPage === 'music-video') np.projectType = 'Music Video';
   if (currentPage === 'brand-film') np.projectType = 'Brand Film';
@@ -1261,12 +1318,14 @@ function loadCatalog(cb) {
     var orderRes = results[1];
     workOrder = (orderRes && orderRes.order) || null;
     buildHomeReelIndex(draft.projects);
+    syncCatalogHomeHeroFromWorkOrder();
     cb && cb();
   }).catch(function () {
     catalog = { version: 1, projects: [] };
     draft = cloneCatalog(catalog);
     workOrder = null;
     buildHomeReelIndex(draft.projects);
+    syncCatalogHomeHeroFromWorkOrder();
     cb && cb();
   });
 }
@@ -1324,6 +1383,8 @@ function saveCatalog(redeploy, btn, successMsg) {
       if (d && d.ok) {
         catalog = cloneCatalog(d.catalog || draft);
         draft = cloneCatalog(catalog);
+        buildHomeReelIndex(draft.projects);
+        syncCatalogHomeHeroFromWorkOrder();
         var msg = successMsg;
         if (!msg) {
           if (d.warning) msg = d.warning;
@@ -1423,6 +1484,11 @@ document.getElementById('posterBrowse').onclick = focusPosterInput;
       p.video = node.value.trim();
       updateVideoPreview(p);
     }
+    if (id === 'f-hero-start') {
+      if (!p.homeHero) p.homeHero = { start: 0, enabled: false };
+      p.homeHero.start = Number(node.value) || 0;
+      if (isOnHomeReel(p)) refreshHomeListItem(p);
+    }
   });
   node.addEventListener('change', function () { if (activeId) dirty(); });
 });
@@ -1434,11 +1500,11 @@ bindChip('chipHome', function () {
   if (!activeId) return;
   var p = draft.projects.find(function (x) { return x.id === activeId; });
   if (!p) return;
-  if (!p.homeHero) p.homeHero = { start: 0, enabled: false };
-  p.homeHero.enabled = !p.homeHero.enabled;
+  setProjectHomeReel(p, !isOnHomeReel(p));
   updateChips(p);
   dirty();
   renderNav();
+  renderList();
   updateRecordStatus();
 });
 bindChip('chipSelected', function () {
@@ -1462,6 +1528,8 @@ document.getElementById('addCreditBtn').onclick = function () {
 
 document.getElementById('deleteBtn').onclick = function () {
   if (!activeId || !confirm('Delete this project from the catalog?')) return;
+  var doomed = draft.projects.find(function (p) { return p.id === activeId; });
+  if (doomed) removeProjectFromHomeList(doomed);
   draft.projects = draft.projects.filter(function (p) { return p.id !== activeId; });
   draft.projects.forEach(function (p, i) { p.sortOrder = i; });
   closeEditor();
@@ -1474,6 +1542,8 @@ document.getElementById('updateSiteBtn').onclick = function () { saveCatalog(tru
 
 document.getElementById('resetBtn').onclick = function () {
   draft = cloneCatalog(catalog);
+  buildHomeReelIndex(draft.projects);
+  syncCatalogHomeHeroFromWorkOrder();
   closeEditor();
   setLive('Reverted to last saved');
   renderNav();
