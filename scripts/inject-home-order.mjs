@@ -4,7 +4,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { loadMkeyMap, slimHomeRow } from './home-order-lib.mjs';
+import { loadMkeyMap, slimHomeRow, fetchWorkOrderForBuild } from './home-order-lib.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
@@ -13,25 +13,7 @@ const previewDir = path.join(root, 'Home', 'assets', 'home-previews');
 const mkeyMap = loadMkeyMap(root);
 
 async function fetchOrder() {
-  let order = null;
-  const EC = process.env.EDGE_CONFIG_ID;
-  const RT = process.env.EDGE_CONFIG_READ_TOKEN;
-  if (EC && RT) {
-    try {
-      const r = await fetch(`https://edge-config.vercel.com/${EC}/item/workOrder?token=${RT}`);
-      if (r.ok) order = await r.json();
-    } catch {}
-  }
-  if (!order) {
-    try {
-      const r = await fetch('https://www.xyzstudios.co/api/site-order');
-      if (r.ok) {
-        const j = await r.json();
-        order = j && j.order;
-      }
-    } catch {}
-  }
-  return order;
+  return fetchWorkOrderForBuild();
 }
 
 const order = await fetchOrder();

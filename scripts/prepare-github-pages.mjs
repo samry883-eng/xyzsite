@@ -4,7 +4,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { loadMkeyMap, slimHomeRow } from './home-order-lib.mjs';
+import { loadMkeyMap, slimHomeRow, fetchWorkOrderForBuild } from './home-order-lib.mjs';
 import { injectProjectsCatalogFile } from './projects-catalog-lib.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -39,14 +39,7 @@ copyFile(path.join(root, 'Home', 'index.html'), path.join(dist, 'index.html'));
 
 // --- Inject latest home hero order at build time (page ships static-correct; no runtime fetch/race) ---
 try {
-  let order = null;
-  const EC = process.env.EDGE_CONFIG_ID, RT = process.env.EDGE_CONFIG_READ_TOKEN;
-  if (EC && RT) {
-    try { const r = await fetch(`https://edge-config.vercel.com/${EC}/item/workOrder?token=${RT}`); if (r.ok) order = await r.json(); } catch {}
-  }
-  if (!order) {
-    try { const r = await fetch('https://www.xyzstudios.co/api/site-order'); if (r.ok) { const j = await r.json(); order = j && j.order; } } catch {}
-  }
+  const order = await fetchWorkOrderForBuild();
   const homeList = order && order.homeList;
   if (homeList && homeList.length) {
     const idxFile = path.join(dist, 'index.html');
@@ -92,11 +85,18 @@ copyFile(path.join(root, 'Work', 'index.html'), path.join(dist, 'projects', 'ind
 
 fs.mkdirSync(path.join(dist, 'projects-v2'), { recursive: true });
 copyFile(path.join(root, 'Work', 'unified', 'index.html'), path.join(dist, 'projects-v2', 'index.html'));
-try {
-  const inj = await injectProjectsCatalogFile(path.join(dist, 'projects-v2', 'index.html'), root);
-  if (inj.ok) console.log('[projects-catalog] injected', inj.count, 'projects');
-  else console.warn('[projects-catalog] marker not found; using inline fallback');
-} catch (e) { console.warn('[projects-catalog] inject failed:', e && e.message); }
+// Bake catalog into the file Vercel actually serves (/projects-v2 rewrites to /work/unified/index.html).
+const catalogTargets = [
+  path.join(dist, 'work', 'unified', 'index.html'),
+  path.join(dist, 'projects-v2', 'index.html'),
+];
+for (const target of catalogTargets) {
+  try {
+    const inj = await injectProjectsCatalogFile(target, root);
+    if (inj.ok) console.log('[projects-catalog] injected', inj.count, 'projects into', path.relative(dist, target));
+    else console.warn('[projects-catalog] marker not found in', path.relative(dist, target));
+  } catch (e) { console.warn('[projects-catalog] inject failed for', path.relative(dist, target), e && e.message); }
+}
 
 fs.mkdirSync(path.join(dist, 'projects-v3'), { recursive: true });
 copyFile(path.join(root, 'Work', 'unified-v3', 'index.html'), path.join(dist, 'projects-v3', 'index.html'));

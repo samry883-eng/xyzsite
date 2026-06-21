@@ -25,25 +25,10 @@ function sec(x) {
   return parseFloat(s) || 0;
 }
 
+import { fetchWorkOrderForBuild } from './home-order-lib.mjs';
+
 async function readHomeList() {
-  let order = null;
-  const EC = process.env.EDGE_CONFIG_ID;
-  const RT = process.env.EDGE_CONFIG_READ_TOKEN;
-  if (EC && RT) {
-    try {
-      const r = await fetch(`https://edge-config.vercel.com/${EC}/item/workOrder?token=${RT}`);
-      if (r.ok) order = await r.json();
-    } catch {}
-  }
-  if (!order) {
-    try {
-      const r = await fetch('https://www.xyzstudios.co/api/site-order');
-      if (r.ok) {
-        const j = await r.json();
-        order = j && j.order;
-      }
-    } catch {}
-  }
+  const order = await fetchWorkOrderForBuild();
   if (order && order.homeList && order.homeList.length) return order.homeList;
   const html = fs.readFileSync(homeHtml, 'utf8');
   const m = html.match(/window\.__HOME_ORDER=(\{[\s\S]*?\});\/\*XYZ_BUILD_ORDER\*\//);

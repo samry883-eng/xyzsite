@@ -5,40 +5,63 @@ import { redisConfigured, redisGet } from '../lib/upstash-redis.mjs';
 
 const REDIS_KEY = 'projects_catalog_json';
 
-async function fetchCatalogFromRedis() {
-  if (!redisConfigured()) return null;
+function parseCatalogPayload(raw) {
+  if (raw == null) return null;
   try {
-    const raw = await redisGet(REDIS_KEY);
-    if (!raw) return null;
     const data = typeof raw === 'string' ? JSON.parse(raw) : raw;
     if (data && Array.isArray(data.projects) && data.projects.length) return data;
   } catch {}
   return null;
 }
 
-export async function fetchProjectsCatalog(root) {
-  let catalog = await fetchCatalogFromRedis();
+async function fetchCatalogFromRedis() {
+  if (!redisConfigured()) return null;
+  try {
+    const result = await redisGet(REDIS_KEY);
+    if (!result.ok || result.value == null) return null;
+    return parseCatalogPayload(result.value);
+  } catch {}
+  return null;
+}
+
+async function fetchCatalogFromApi() {
+  try {
+    const r = await fetch('https://www.xyzstudios.co/api/projects');
+    if (!r.ok) return null;
+    const j = await r.json();
+    return j && j.catalog;
+  } catch {}
+  return null;
+}
+
+async function fetchCatalogFromEdgeConfig() {
   const EC = process.env.EDGE_CONFIG_ID;
   const RT = process.env.EDGE_CONFIG_READ_TOKEN;
-  if (!catalog && EC && RT) {
-    try {
-      const r = await fetch(`https://edge-config.vercel.com/${EC}/item/projectsCatalog?token=${RT}`);
-      if (r.ok) {
-        const data = await r.json();
-        if (data && Array.isArray(data.projects) && data.projects.length) catalog = data;
-      }
-    } catch {}
+  if (!EC || !RT) return null;
+  try {
+    const r = await fetch(`https://edge-config.vercel.com/${EC}/item/projectsCatalog?token=${RT}`);
+    if (!r.ok) return null;
+    return parseCatalogPayload(await r.json());
+  } catch {}
+  return null;
+}
+
+export async function fetchProjectsCatalog(root) {
+  let catalog = await fetchCatalogFromRedis();
+  let source = catalog ? 'redis' : null;
+  if (!catalog) {
+    catalog = await fetchCatalogFromApi();
+    if (catalog) source = 'api';
   }
   if (!catalog) {
-    try {
-      const r = await fetch('https://www.xyzstudios.co/api/projects');
-      if (r.ok) {
-        const j = await r.json();
-        catalog = j && j.catalog;
-      }
-    } catch {}
+    catalog = await fetchCatalogFromEdgeConfig();
+    if (catalog) source = 'edge-config';
   }
-  if (!catalog || !catalog.projects?.length) catalog = buildDefaultCatalog();
+  if (!catalog || !catalog.projects?.length) {
+    catalog = buildDefaultCatalog();
+    source = 'default';
+  }
+  if (source) console.log('[projects-catalog] source:', source, 'count:', catalog.projects.length);
   return catalog;
 }
 
