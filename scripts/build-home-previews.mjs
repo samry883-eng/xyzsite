@@ -78,6 +78,10 @@ if (!list.length) {
 }
 
 for (const item of list) {
+  if (!item.video) {
+    console.warn('[skip]', item.key || '(no key)', 'no video URL');
+    continue;
+  }
   try {
     await buildOne(item);
   } catch (e) {
