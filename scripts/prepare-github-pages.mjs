@@ -46,7 +46,7 @@ try {
     let s = fs.readFileSync(idxFile, 'utf8');
     const previewDir = path.join(root, 'Home', 'assets', 'home-previews');
     const lookup = loadMkeyLookup(root);
-    const slim = homeList.map((x) => slimHomeRow(x, previewDir, lookup));
+    const slim = homeList.map((x) => slimHomeRow(x, previewDir, lookup, root));
     const payload = JSON.stringify({ homeList: slim }).replace(/</g, '\\u003c');
     s = s.replace(/window\.__HOME_ORDER=[\s\S]*?;\/\*XYZ_BUILD_ORDER\*\//, 'window.__HOME_ORDER=' + payload + ';/*XYZ_BUILD_ORDER*/');
     fs.writeFileSync(idxFile, s);
