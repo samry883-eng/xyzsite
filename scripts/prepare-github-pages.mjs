@@ -5,7 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { loadMkeyLookup, slimHomeRow, fetchWorkOrderForBuild } from './home-order-lib.mjs';
-import { injectProjectsCatalogFile, fetchProjectsCatalog, writeProjectsServicesMap } from './projects-catalog-lib.mjs';
+import { injectProjectsCatalogFile, fetchProjectsCatalog, writeProjectsServicesMap, writeProjectsPreviewMap } from './projects-catalog-lib.mjs';
 import { scaffoldMissingProjectPages } from '../lib/scaffold-project-page.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -69,14 +69,18 @@ try {
   }
 } catch (e) { console.warn('[scaffold-pages] failed:', e && e.message); }
 
-// Slim services map for project preview pages (xyz-project-services.js)
+// Slim preview + services maps for project preview pages (xyz-project-catalog.js)
 try {
   const catalog = await fetchProjectsCatalog(root);
   const svc = await writeProjectsServicesMap(root, catalog);
+  const preview = await writeProjectsPreviewMap(root, catalog);
   const distSvc = path.join(dist, 'work', 'assets', 'projects-services.json');
+  const distPreview = path.join(dist, 'work', 'assets', 'projects-preview.json');
   fs.copyFileSync(svc.path, distSvc);
+  fs.copyFileSync(preview.path, distPreview);
+  console.log('[projects-preview] wrote', preview.count, 'entries');
   console.log('[projects-services] wrote', svc.count, 'entries');
-} catch (e) { console.warn('[projects-services] map write failed:', e && e.message); }
+} catch (e) { console.warn('[projects-preview] map write failed:', e && e.message); }
 
 // Unified site admin: /work/admin.html (/work/adminv2 + legacy paths redirect here)
 
@@ -84,7 +88,7 @@ try {
 function injectProjectScripts(dir) {
   const homeTag =
     '<script src="/work/assets/xyz-quick-slide.js"></script>\n<script src="/work/assets/xyz-home-return.js"></script>';
-  const servicesTag = '<script src="/work/assets/xyz-project-services.js"></script>';
+  const servicesTag = '<script src="/work/assets/xyz-project-catalog.js"></script>';
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
     const p = path.join(dir, e.name);
     if (e.isDirectory()) injectProjectScripts(p);
@@ -98,7 +102,7 @@ function injectProjectScripts(dir) {
         s = s.replace('</body>', homeTag + '\n</body>');
         changed = true;
       }
-      if (!s.includes('xyz-project-services.js')) {
+      if (!s.includes('xyz-project-catalog.js') && !s.includes('xyz-project-services.js')) {
         s = s.replace('</body>', servicesTag + '\n</body>');
         changed = true;
       }

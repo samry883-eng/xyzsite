@@ -93,9 +93,40 @@ export function buildProjectsServicesMap(catalog) {
   return map;
 }
 
+/** Slug-keyed preview payload for static project pages (video, poster, credits, services). */
+export function buildProjectsPreviewMap(catalog) {
+  const map = {};
+  if (!catalog || !Array.isArray(catalog.projects)) return map;
+  for (const p of catalog.projects) {
+    if (!p.slug) continue;
+    map[p.slug] = {
+      id: p.id,
+      slug: p.slug,
+      category: p.category,
+      title: p.title,
+      client: p.client,
+      video: p.video,
+      poster: p.poster,
+      href: p.href,
+      credits: Array.isArray(p.credits) ? p.credits : [],
+      services: sortServices(p.services || []),
+      projectType: p.projectType || 'Commercial',
+    };
+  }
+  return map;
+}
+
 export async function writeProjectsServicesMap(root, catalog) {
   const out = path.join(root, 'Work', 'assets', 'projects-services.json');
   const map = buildProjectsServicesMap(catalog);
+  fs.mkdirSync(path.dirname(out), { recursive: true });
+  fs.writeFileSync(out, JSON.stringify(map), 'utf8');
+  return { path: out, count: Object.keys(map).length };
+}
+
+export async function writeProjectsPreviewMap(root, catalog) {
+  const out = path.join(root, 'Work', 'assets', 'projects-preview.json');
+  const map = buildProjectsPreviewMap(catalog);
   fs.mkdirSync(path.dirname(out), { recursive: true });
   fs.writeFileSync(out, JSON.stringify(map), 'utf8');
   return { path: out, count: Object.keys(map).length };

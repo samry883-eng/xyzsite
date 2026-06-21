@@ -1932,7 +1932,8 @@ function readEditorIntoProject(p) {
   p.client = document.getElementById('f-client').value.trim();
   p.projectType = document.getElementById('f-projectType').value;
   p.video = document.getElementById('f-video').value.trim();
-  p.poster = document.getElementById('f-poster').value.trim();
+  var posterVal = document.getElementById('f-poster').value.trim();
+  if (posterVal || !p.poster) p.poster = posterVal;
   p.credits = readCreditsFromDom().filter(function (c) { return c.label && c.value; });
   p.services = sortServices(p.services || []);
   if (!p.homeHero) p.homeHero = { start: 0, enabled: false };
@@ -2071,7 +2072,6 @@ function syncWorkOrderFromDraft() {
 
 function saveCatalog(redeploy, btn, successMsg) {
   var pendingPoster = posterPendingBase64;
-  if (activeId) syncActiveFromForm();
   if (btn) btn.disabled = true;
   setStatusMsg(redeploy ? 'Updating site…' : 'Saving draft…');
   if (redeploy) syncWorkOrderFromDraft();
@@ -2090,6 +2090,7 @@ function saveCatalog(redeploy, btn, successMsg) {
         setThumbStatus(posterRes.error || 'Poster save failed');
         return null;
       }
+      if (activeId) syncActiveFromForm();
       return fetch('/api/projects', {
         method: 'PUT',
         credentials: 'same-origin',

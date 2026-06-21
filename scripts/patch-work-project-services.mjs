@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const workRoot = path.join(__dirname, '..', 'Work');
-const tag = '<script src="/work/assets/xyz-project-services.js"></script>';
+const tag = '<script src="/work/assets/xyz-project-catalog.js"></script>';
 let n = 0;
 
 function walk(dir) {
@@ -15,7 +15,7 @@ function walk(dir) {
       const rel = path.relative(workRoot, p).replace(/\\/g, '/');
       if (rel === 'index.html' || rel === 'project/index.html' || rel.startsWith('unified')) continue;
       let s = fs.readFileSync(p, 'utf8');
-      if (s.includes('xyz-project-services.js')) continue;
+      if (s.includes('xyz-project-catalog.js') || s.includes('xyz-project-services.js')) continue;
       if (!s.includes('</body>')) continue;
       s = s.replace('</body>', tag + '\n</body>');
       fs.writeFileSync(p, s);

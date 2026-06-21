@@ -4,7 +4,7 @@ import '../load-env-local.mjs';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { injectProjectsCatalogFile, writeProjectsServicesMap, fetchProjectsCatalog } from './projects-catalog-lib.mjs';
+import { injectProjectsCatalogFile, writeProjectsServicesMap, writeProjectsPreviewMap, fetchProjectsCatalog } from './projects-catalog-lib.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
@@ -18,7 +18,9 @@ if (!result.ok) {
 try {
   const catalog = await fetchProjectsCatalog(root);
   const svc = await writeProjectsServicesMap(root, catalog);
+  const preview = await writeProjectsPreviewMap(root, catalog);
   console.log('[inject-projects-catalog] services map:', svc.count, 'entries');
+  console.log('[inject-projects-catalog] preview map:', preview.count, 'entries');
 } catch (e) {
   console.warn('[inject-projects-catalog] services map failed:', e && e.message);
 }
