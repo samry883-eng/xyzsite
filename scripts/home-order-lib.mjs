@@ -37,7 +37,20 @@ export async function fetchWorkOrderForBuild() {
   return order && order.homeList && order.homeList.length ? order : null;
 }
 
+export function normalizeHomeList(homeList, mkeyMap = {}) {
+  if (!homeList || !homeList.length) return homeList;
+  return homeList.map((x) => {
+    const mkey = mkeyMap[x.key] || x.mkey || '';
+    const row = { ...x, mkey };
+    if (mkey.startsWith('ai/')) row.cat = 'AI';
+    else if (mkey.startsWith('sound/')) row.cat = 'Sound';
+    else if (mkey.startsWith('visual-effects/')) row.cat = 'Visual Effects';
+    return row;
+  });
+}
+
 export function slimHomeRow(x, previewDir, mkeyMap) {
+  const mkey = mkeyMap[x.key] || x.mkey || '';
   const row = {
     key: x.key,
     client: x.client,
@@ -45,8 +58,11 @@ export function slimHomeRow(x, previewDir, mkeyMap) {
     start: x.start,
     video: x.video,
     cat: x.cat,
-    mkey: x.mkey || mkeyMap[x.key] || '',
+    mkey,
   };
+  if (mkey.startsWith('ai/')) row.cat = 'AI';
+  else if (mkey.startsWith('sound/')) row.cat = 'Sound';
+  else if (mkey.startsWith('visual-effects/')) row.cat = 'Visual Effects';
   const prev = path.join(previewDir, `${x.key}.mp4`);
   if (fs.existsSync(prev) && fs.statSync(prev).size > 1000) {
     row.preview = `/assets/home-previews/${x.key}.mp4`;
