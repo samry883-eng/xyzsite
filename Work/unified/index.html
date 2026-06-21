@@ -30,7 +30,7 @@
       "tu sancho|fuerza regida":          d.CDN + "69863392ec9c14012747b8de_drake%202.avif",
       "secreto victoria|fuerza regida":   d.CDN + "698633cf9aa1fa498d7e8cac_Fuerza%20Secreto%202.avif",
       "de maravisha|tokischa":            d.CDN + "698b9b4e9009c8f8fd33f65b_tokischa%201.avif",
-      "f1 2026 launch film|audi":         d.CDN + "69c0bbd38bf9e9ecfb7c293b_final%20test1.mp4_snapshot_00.27.567.jpg",
+      "f1 2026 launch film|audi":         "/work/visual-effects/f1-2026-launch-film/poster.jpg",
       "shibuya|need for speed":           d.CDN + "69c0bbd38bf9e9ecfb7c293b_final%20test1.mp4_snapshot_00.27.567.jpg",
       "ai awareness|sumsub":              "/work/sound/ai-awareness/poster.jpg",
       "ss26 teaser|louis vuitton":        d.CDN + "69c0b94d0ebe8f3b86741b7a_214a3ae2-01ca-4593-8949-98a7191f6548.mp4_snapshot_00.12.156.jpg",
@@ -72,7 +72,7 @@
       --top-stack-h: 140px;
       --col-gap: 56px;
       --row-gap: 66px;
-      --title-size: 18px;
+      --title-size: 15px;
       --page-pad-x: 52px;
       --tls: -0.012em;
     }
@@ -183,6 +183,7 @@
       font-family: var(--site-font);
       font-size: inherit;
       letter-spacing: inherit;
+      text-transform: uppercase;
       color: var(--muted);
       transition: color 0.3s;
     }
@@ -265,14 +266,14 @@
     .wu-filter-inner {
       position: relative;
       z-index: 3;
-      padding: 26px var(--page-pad-x) 40px;
+      padding: 20px var(--page-pad-x) 32px;
     }
 
     .wu-filter-head {
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
       opacity: 0;
       transition: opacity 0.4s ease;
       font-family: var(--site-font);
@@ -305,11 +306,11 @@
 
     .wu-filter-group-label {
       font-family: var(--site-font);
-      font-size: clamp(9px, 0.85vw, 10px);
+      font-size: clamp(8px, 0.75vw, 9px);
       letter-spacing: 0.22em;
       text-transform: uppercase;
       color: var(--muted);
-      margin-bottom: 20px;
+      margin-bottom: 12px;
       opacity: 0;
       transform: translateY(-10px);
       transition: opacity 0.45s ease, transform 0.5s cubic-bezier(0.3, 0.6, 0.2, 1);
@@ -320,21 +321,21 @@
     .wu-filter-links {
       display: flex;
       flex-wrap: wrap;
-      gap: 11px 30px;
+      gap: 7px 18px;
     }
 
     .wu-filter-link {
       display: flex;
       align-items: center;
       flex: 0 0 auto;
-      gap: 12px;
+      gap: 10px;
       background: none;
       border: none;
       padding: 0;
       cursor: pointer;
       text-align: left;
       font-family: var(--site-font);
-      font-size: clamp(14px, 1.15vw, 18px);
+      font-size: clamp(11px, 0.95vw, 14px);
       letter-spacing: var(--tls);
       text-transform: uppercase;
       color: var(--muted);

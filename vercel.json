@@ -244,46 +244,6 @@
   ],
   "redirects": [
     {
-      "source": "/work",
-      "destination": "/projects-v2/",
-      "permanent": false
-    },
-    {
-      "source": "/work/",
-      "destination": "/projects-v2/",
-      "permanent": false
-    },
-    {
-      "source": "/projects",
-      "destination": "/projects-v2/",
-      "permanent": false
-    },
-    {
-      "source": "/projects/",
-      "destination": "/projects-v2/",
-      "permanent": false
-    },
-    {
-      "source": "/work/index.html",
-      "destination": "/projects-v2/",
-      "permanent": false
-    },
-    {
-      "source": "/projects/index.html",
-      "destination": "/projects-v2/",
-      "permanent": false
-    },
-    {
-      "source": "/work/adminv2",
-      "destination": "/work/admin",
-      "permanent": false
-    },
-    {
-      "source": "/work/adminv2/",
-      "destination": "/work/admin",
-      "permanent": false
-    },
-    {
       "source": "/work/adminv2.html",
       "destination": "/work/admin",
       "permanent": false
@@ -316,16 +276,6 @@
     {
       "source": "/capabilities/admin.html",
       "destination": "/work/admin?tab=access",
-      "permanent": false
-    },
-    {
-      "source": "/projects-v3",
-      "destination": "/projects-v2/",
-      "permanent": false
-    },
-    {
-      "source": "/projects-v3/",
-      "destination": "/projects-v2/",
       "permanent": false
     },
     {
