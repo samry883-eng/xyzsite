@@ -133,10 +133,13 @@
       gap: clamp(20px, 3vw, 34px);
       list-style: none;
       font-size: clamp(9.6px, 1vw, 11.2px);
-      letter-spacing: 0.16em;
+      letter-spacing: normal;
       text-transform: uppercase;
     }
     .nav-links a {
+      font-family: Micross, Arial, sans-serif;
+      font-weight: 400;
+      letter-spacing: normal;
       color: var(--muted);
       text-decoration: none;
       transition: color 0.3s;
@@ -172,17 +175,20 @@
       flex-wrap: wrap;
       font-family: var(--site-font);
       font-size: clamp(13px, 1.1vw, 15px);
-      letter-spacing: 0.16em;
+      font-weight: 400;
+      letter-spacing: normal;
       text-transform: uppercase;
     }
-    .wu-toolbar__modes button {
+    .wu-toolbar__modes button,
+    .wu-filter-btn {
       background: none;
       border: none;
       padding: 0;
       cursor: pointer;
-      font-family: var(--site-font);
+      font-family: Micross, Arial, sans-serif;
+      font-weight: 400;
       font-size: inherit;
-      letter-spacing: inherit;
+      letter-spacing: normal;
       text-transform: uppercase;
       color: var(--muted);
       transition: color 0.3s;
