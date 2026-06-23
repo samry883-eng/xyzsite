@@ -90,6 +90,7 @@ const ROWS = [
       ] },
       { video: VF  + '7c584065-5afb-43e4-9b67-ef1b5b6db304.mp4',         client: 'Audi',           title: 'F1 2026 Launch Film',          date: 'JUN 26', slug: 'f1-2026-launch-film', poster: '/work/visual-effects/f1-2026-launch-film/poster.jpg' },
       { video: VF  + '11fe9d4e-0bef-4966-bf67-b9b48dc8eee5.mp4',         client: 'Need For Speed', title: 'Shibuya',                      date: 'JUN 26', slug: 'shibuya' },
+      { video: VF  + 'eba40295-a63b-45a1-a80d-3324f0b6c750.mp4',         client: 'Raid',           title: 'Raid Shadow Legends',          date: 'JUN 26' },
     ]
   },
   {
@@ -135,7 +136,12 @@ const ROWS = [
         { label: 'Directed by', value: 'Joshua Smedina' },
       ] },
       { video: VF  + '68eb0d30-28c6-4074-a239-6ff8a10dbbf1.mp4',         client: 'Hongqi',         title: 'Hongqi',                       date: 'AUG 19' },
-      { video: VF  + 'c5bfdb30-f5d1-4f1d-a96f-b736b4ab1fcf.mp4',         client: 'Celsius',        title: 'Spritez Vibez',                date: 'MAY 20', poster: '/work/sound/spritez-vibez/poster.jpg' },
+      { video: VF  + '8bdede9c-3055-4065-a194-3f620e6d4f3b.mp4',         client: 'Celsius',        title: 'Spritez Vibez',                date: 'MAY 20', poster: '/work/sound/spritez-vibez/poster.jpg' },
+      { video: VF  + '9d988956-2525-48f8-8191-0d028e9493dd.mp4',         client: 'Add Wavs',       title: 'Add Wavs',                     date: 'JUN 26' },
+      { video: VF  + 'acddd408-ce03-4c91-a53f-bb3e6f83dafe.mp4',         client: 'TBD',            title: 'Wrapped in Heat',              date: 'JUN 26' },
+      { video: VF  + '0ebab23b-0659-4385-873a-8a4b6eecb0d8.mp4',         client: 'War Ready',      title: 'War Ready Official Album Trailer', date: 'JUN 26' },
+      { video: VF  + '59722a46-21f4-43c9-a22c-8e25f399a20b.mp4',         client: 'Wham',           title: 'Wham Trailer',                 date: 'JUN 26' },
+      { video: VF  + '1b4f1208-57d6-4cc8-a828-b4e005070c8d.mp4',         client: 'Wingstop',       title: 'Wingstop',                     date: 'JUN 26' },
     ]
   },
   {
