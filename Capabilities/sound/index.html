@@ -1194,68 +1194,16 @@ function updateUI() {
   scaleArtboards();
 }
 
-const deckHeroPlayers = [
-  window.initDeckHeroPlayer({
-    videoId: 'fw-salomon-video',
-    playerId: 'fw-salomon-player',
-    volumeId: 'fw-salomon-volume',
-    cursorId: 'pj-cursor',
-    cursorPathId: 'pj-cursor-path'
-  }),
-  window.initDeckHeroPlayer({
-    videoId: 'fw-lucid-video',
-    playerId: 'fw-lucid-player',
-    volumeId: 'fw-lucid-volume',
-    cursorId: 'pj-cursor',
-    cursorPathId: 'pj-cursor-path'
-  }),
-  window.initDeckHeroPlayer({
-    videoId: 'fw-beats-video',
-    playerId: 'fw-beats-player',
-    volumeId: 'fw-beats-volume',
-    cursorId: 'pj-cursor',
-    cursorPathId: 'pj-cursor-path'
-  }),
-  window.initDeckHeroPlayer({
-    videoId: 'fw-audi-video',
-    playerId: 'fw-audi-player',
-    volumeId: 'fw-audi-volume',
-    cursorId: 'pj-cursor',
-    cursorPathId: 'pj-cursor-path'
-  }),
-  window.initDeckHeroPlayer({
-    videoId: 'mx-before-video',
-    playerId: 'mx-before-player',
-    volumeId: 'mx-before-volume',
-    cursorId: 'pj-cursor',
-    cursorPathId: 'pj-cursor-path'
-  }),
-  window.initDeckHeroPlayer({
-    videoId: 'mx-after-video',
-    playerId: 'mx-after-player',
-    volumeId: 'mx-after-volume',
-    cursorId: 'pj-cursor',
-    cursorPathId: 'pj-cursor-path',
-    startOffset: 1,
-    endOffset: 32
-  }),
-  window.initDeckHeroPlayer({
-    videoId: 'comp-foley-1',
-    playerId: 'comp-foley-player',
-    volumeId: 'comp-foley-volume',
-    cursorId: 'pj-cursor',
-    cursorPathId: 'pj-cursor-path',
-    extraVideoIds: ['comp-foley-2', 'comp-foley-3', 'comp-foley-4', 'comp-foley-5']
-  }),
-  window.initDeckHeroPlayer({
-    videoId: 'comp-score-1',
-    playerId: 'comp-score-player',
-    volumeId: 'comp-score-volume',
-    cursorId: 'pj-cursor',
-    cursorPathId: 'pj-cursor-path',
-    extraVideoIds: ['comp-score-2', 'comp-score-3', 'comp-score-4', 'comp-score-5']
-  })
-].filter(Boolean);
+let deckHeroPlayers = [];
+
+function initDeckHeroPlayerSafe(opts) {
+  if (typeof window.initDeckHeroPlayer !== 'function') return null;
+  try {
+    return window.initDeckHeroPlayer(opts);
+  } catch (e) {
+    return null;
+  }
+}
 
 function slideDeckPlayers(slide) {
   if (!slide) return [];
@@ -1353,6 +1301,69 @@ updateUI();
 window.addEventListener('resize', scaleArtboards);
 setTimeout(scaleArtboards, 0);
 setTimeout(() => { hint.style.opacity = '0'; }, 4000);
+
+deckHeroPlayers = [
+  initDeckHeroPlayerSafe({
+    videoId: 'fw-salomon-video',
+    playerId: 'fw-salomon-player',
+    volumeId: 'fw-salomon-volume',
+    cursorId: 'pj-cursor',
+    cursorPathId: 'pj-cursor-path'
+  }),
+  initDeckHeroPlayerSafe({
+    videoId: 'fw-lucid-video',
+    playerId: 'fw-lucid-player',
+    volumeId: 'fw-lucid-volume',
+    cursorId: 'pj-cursor',
+    cursorPathId: 'pj-cursor-path'
+  }),
+  initDeckHeroPlayerSafe({
+    videoId: 'fw-beats-video',
+    playerId: 'fw-beats-player',
+    volumeId: 'fw-beats-volume',
+    cursorId: 'pj-cursor',
+    cursorPathId: 'pj-cursor-path'
+  }),
+  initDeckHeroPlayerSafe({
+    videoId: 'fw-audi-video',
+    playerId: 'fw-audi-player',
+    volumeId: 'fw-audi-volume',
+    cursorId: 'pj-cursor',
+    cursorPathId: 'pj-cursor-path'
+  }),
+  initDeckHeroPlayerSafe({
+    videoId: 'mx-before-video',
+    playerId: 'mx-before-player',
+    volumeId: 'mx-before-volume',
+    cursorId: 'pj-cursor',
+    cursorPathId: 'pj-cursor-path'
+  }),
+  initDeckHeroPlayerSafe({
+    videoId: 'mx-after-video',
+    playerId: 'mx-after-player',
+    volumeId: 'mx-after-volume',
+    cursorId: 'pj-cursor',
+    cursorPathId: 'pj-cursor-path',
+    startOffset: 1,
+    endOffset: 32
+  }),
+  initDeckHeroPlayerSafe({
+    videoId: 'comp-foley-1',
+    playerId: 'comp-foley-player',
+    volumeId: 'comp-foley-volume',
+    cursorId: 'pj-cursor',
+    cursorPathId: 'pj-cursor-path',
+    extraVideoIds: ['comp-foley-2', 'comp-foley-3', 'comp-foley-4', 'comp-foley-5']
+  }),
+  initDeckHeroPlayerSafe({
+    videoId: 'comp-score-1',
+    playerId: 'comp-score-player',
+    volumeId: 'comp-score-volume',
+    cursorId: 'pj-cursor',
+    cursorPathId: 'pj-cursor-path',
+    extraVideoIds: ['comp-score-2', 'comp-score-3', 'comp-score-4', 'comp-score-5']
+  })
+].filter(Boolean);
 </script>
 <script src="/capabilities/assets/nda-modal.js" defer></script>
 
