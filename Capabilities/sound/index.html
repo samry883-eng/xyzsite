@@ -129,7 +129,12 @@
   #fw-beats-hero .hero_video-controls_inner,
   #fw-beats-hero .hero_video-time,
   #fw-beats-hero .hero_video-toggle,
-  #fw-beats-hero [hero_video-text]{ display:none !important; }
+  #fw-beats-hero [hero_video-text],
+  #fw-audi-hero .hero_video-scrub,
+  #fw-audi-hero .hero_video-controls_inner,
+  #fw-audi-hero .hero_video-time,
+  #fw-audi-hero .hero_video-toggle,
+  #fw-audi-hero [hero_video-text]{ display:none !important; }
   .videoframe{ outline:1px dashed var(--line); }
   .photo .cap{
     position:absolute; top:-22px; left:0; white-space:nowrap;
@@ -562,6 +567,64 @@
     <div class="abs" style="left:1266px; top:806px; width:570px;">
       <div class="lbl dim fw-approach-header" style="font-size:10px; padding-bottom:9px; border-bottom:1px solid var(--line);">Approach</div>
       <p class="copy" style="font-size:15px; line-height:1.55; margin:16px 0 0;">Pellentesque habitant morbi tristique — bass-forward sound design with tight headphone foley and rhythm-matched urban beds, mixed for punch on every Beats playback surface.</p>
+    </div>
+
+    <span class="m-bl"></span>
+    <span class="m-br"></span>
+  </section></div></div></div>
+
+
+  <!-- ============ 07 — FEATURED · 04 (Audi · F1 2026 Launch Film) ============ -->
+  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="featured sound-artboard" data-screen-label="07 Featured · Audi F1">
+    <span class="m-tl"><b>XYZ</b> <span class="d">· Selected work · 04</span></span>
+    <span class="m-tr"><span class="d">2026 · 07 / 16</span></span>
+
+    <!-- left: title + director -->
+    <a href="/work/sound/f1-2026-launch-film/" target="_blank" rel="noopener noreferrer" class="abs fw-project-col deck-link" style="left:64px; top:300px; width:560px; text-decoration:none; color:inherit;">
+      <div class="lbl dim fw-proj-lbl">Project</div>
+      <div class="ital fw-brand">Audi</div>
+      <div class="fw-title-slot">
+        <div class="disp fw-title-stack"><em>F1 2026</em><br/>Launch Film</div>
+      </div>
+      <div class="lbl dim fw-dir-lbl">Director</div>
+      <div class="ital fw-dir">XYZ Studios</div>
+      <div class="lbl dim" style="font-size:10px; margin-top:28px;">↗ &nbsp;View project</div>
+    </a>
+
+    <!-- top-right hero video (Audi F1 launch) — Work page player UI -->
+    <div class="abs photo deck-hero-wrap" id="fw-audi-hero" style="left:700px; top:124px; width:1140px; height:612px;">
+      <div class="deck-hero-inner">
+        <video class="featured-hero-video" id="fw-audi-video" playsinline preload="metadata"
+          poster="/work/sound/f1-2026-launch-film/poster.jpg"
+          src="https://r2.vidzflow.com/source/7c584065-5afb-43e4-9b67-ef1b5b6db304.mp4"></video>
+        <div class="deck-hero-player-ui" id="fw-audi-player">
+          <div class="deck-hero-volume-row">
+            <input type="range" class="deck-hero-volume-slider" id="fw-audi-volume" min="0" max="100" value="100" aria-label="Volume">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- full-width rule -->
+    <div class="abs rule" style="left:64px; right:64px; top:786px;"></div>
+
+    <!-- bottom band: 3 columns -->
+    <div class="abs" style="left:64px; top:806px; width:560px;">
+      <div class="lbl dim fw-scope-header" style="font-size:10px; padding-bottom:9px; border-bottom:1px solid var(--line);">Build · Scope</div>
+      <div class="scopelist">
+        <span class="s">Power Unit Layer</span><span class="s">Pit Lane Texture</span><span class="s">Crowd Bed</span>
+        <span class="s">Broadcast Mix</span><span class="s">Launch Suite</span><span class="s">Engine Sync</span>
+      </div>
+    </div>
+    <div class="abs spec" style="left:685px; top:806px; width:500px;">
+      <div class="r"><div class="top"><span class="k">Deliverable</span><span class="v">60s Launch Film + Cutdowns</span></div></div>
+      <div class="r"><div class="top"><span class="k">Ready for</span><span class="v">Broadcast · Digital · Event</span></div></div>
+      <div class="r" style="border-bottom:none;"><div class="top"><span class="k">Timeline</span><span class="v">8 days · launch lane</span></div></div>
+    </div>
+
+    <div class="abs" style="left:1266px; top:806px; width:570px;">
+      <div class="lbl dim fw-approach-header" style="font-size:10px; padding-bottom:9px; border-bottom:1px solid var(--line);">Approach</div>
+      <p class="copy" style="font-size:15px; line-height:1.55; margin:16px 0 0;">Race-day energy built from power-unit layers and pit-lane detail — a forward-momentum sonic palette tuned for broadcast loudness and premium playback across every launch surface.</p>
     </div>
 
     <span class="m-bl"></span>
@@ -1106,6 +1169,13 @@ const deckHeroPlayers = [
     videoId: 'fw-beats-video',
     playerId: 'fw-beats-player',
     volumeId: 'fw-beats-volume',
+    cursorId: 'pj-cursor',
+    cursorPathId: 'pj-cursor-path'
+  }),
+  window.initDeckHeroPlayer({
+    videoId: 'fw-audi-video',
+    playerId: 'fw-audi-player',
+    volumeId: 'fw-audi-volume',
     cursorId: 'pj-cursor',
     cursorPathId: 'pj-cursor-path'
   }),
