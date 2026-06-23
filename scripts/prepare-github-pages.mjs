@@ -6,6 +6,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { loadMkeyLookup, slimHomeRow, fetchWorkOrderForBuild } from './home-order-lib.mjs';
 import { injectProjectsCatalogFile, fetchProjectsCatalog, writeProjectsServicesMap, writeProjectsPreviewMap } from './projects-catalog-lib.mjs';
+import { extractProjectPosters } from './extract-project-posters.mjs';
 import { scaffoldMissingProjectPages } from '../lib/scaffold-project-page.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -54,6 +55,18 @@ try {
     console.log('[home-order] injected', homeList.length, 'videos');
   } else { console.warn('[home-order] no order fetched; using baked default'); }
 } catch (e) { console.warn('[home-order] inject failed:', e && e.message); }
+
+// Extract missing project posters into Work/{category}/{slug}/poster.jpg before copy
+try {
+  const catalogForPosters = await fetchProjectsCatalog(root);
+  const posterResult = await extractProjectPosters(root, catalogForPosters, {
+    workRoot: path.join(root, 'Work'),
+  });
+  if (posterResult.extracted.length) {
+    console.log('[extract-posters] extracted', posterResult.extracted.length, 'poster(s) at build');
+    posterResult.extracted.forEach((p) => console.log('  +', p));
+  }
+} catch (e) { console.warn('[extract-posters] failed:', e && e.message); }
 
 copyDir(path.join(root, 'Home', 'assets'), path.join(dist, 'assets'));
 

@@ -5,8 +5,9 @@
   "scripts": {
     "start": "node serve.mjs",
     "dev": "node serve.mjs",
-    "build": "node scripts/build-home-previews.mjs && node scripts/prepare-github-pages.mjs",
+    "build": "node scripts/build-home-previews.mjs && node scripts/extract-project-posters.mjs && node scripts/prepare-github-pages.mjs",
     "build:home-previews": "node scripts/build-home-previews.mjs",
+    "extract:posters": "node scripts/extract-project-posters.mjs",
     "inject:home-order": "node scripts/inject-home-order.mjs",
     "inject:projects-catalog": "node scripts/inject-projects-catalog.mjs",
     "seed:projects": "node scripts/seed-projects-catalog.mjs",

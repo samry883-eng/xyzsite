@@ -1193,7 +1193,20 @@ function applyDerivedFields(p) {
   p.slug = slugify(p.title) || 'untitled';
   p.category = inferCategory(p.services);
   p.href = '/work/' + p.category + '/' + p.slug + '/';
+  ensureDefaultPoster(p);
   return p;
+}
+
+var GENERIC_POSTER_MARK = '69c0bbd38bf9e9ecfb7c293b_final';
+function isGenericPosterUrl(url) {
+  return !url || String(url).indexOf(GENERIC_POSTER_MARK) >= 0;
+}
+function defaultPosterPath(p) {
+  return '/work/' + p.category + '/' + p.slug + '/poster.jpg';
+}
+function ensureDefaultPoster(p) {
+  if (!p.category || !p.slug) return;
+  if (!p.poster || isGenericPosterUrl(p.poster)) p.poster = defaultPosterPath(p);
 }
 
 function setStatusMsg(msg) {
@@ -1546,7 +1559,7 @@ function gradForId(id) {
 }
 
 function thumbStyle(p) {
-  if (p.poster) return 'background-image:url(' + JSON.stringify(p.poster) + ')';
+  if (p.poster && !isGenericPosterUrl(p.poster)) return 'background-image:url(' + JSON.stringify(p.poster) + ')';
   return 'background:' + gradForId(p.id);
 }
 
@@ -2280,6 +2293,7 @@ document.getElementById('thumbCaptureBtn').onclick = captureThumbFromVideo;
     }
     if (id === 'f-video') {
       p.video = node.value.trim();
+      if (p.video) ensureDefaultPoster(p);
       updateVideoPreview(p);
     }
     if (id === 'f-hero-start') {
