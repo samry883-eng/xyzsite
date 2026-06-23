@@ -275,6 +275,10 @@
   .crewgrp .glabel .ix{ font-family:var(--display); font-style:italic; font-size:28px; color:var(--ink); letter-spacing:-.01em; }
   .crewgrp .glabel .t1{ color:var(--ink); font-weight:600; }
   .crewgrp .row{ display:grid; grid-template-columns:1fr 1fr; gap:48px; padding-top:22px; }
+  .crewgrp .clist{ padding-top:18px; display:flex; flex-direction:column; gap:18px; }
+  .crewgrp .clist .c .nm{ font-family:var(--display); font-style:italic; font-size:40px; line-height:.95; color:var(--ink); letter-spacing:-.015em; }
+  .crewgrp .clist .c .bio{ font-size:13px; line-height:1.45; color:var(--ink-dim); margin-top:5px; max-width:36ch; }
+  .crewgrp .clist .c.role-only .bio{ margin-top:0; font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
   .crewgrp .p .role{ font-family:var(--mono); font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); font-weight:500; }
   .crewgrp .p .nm{ font-family:var(--display); font-style:italic; font-size:60px; line-height:.94; color:var(--ink); letter-spacing:-.015em; margin-top:8px; }
   .crewgrp .p .bio{ font-size:13px; line-height:1.55; color:var(--ink-dim); margin-top:12px; max-width:34ch; }
@@ -939,34 +943,46 @@
       <div class="copy" style="margin-top:24px; max-width:34ch;">One producer fronts the project. Specialists move through the work in sequence — <em>the same hands, every time.</em></div>
     </div>
 
-    <div class="crewgrp" style="left:768px; top:188px;">
-      <div class="glabel"><span class="ix">A</span> <span class="t1">Team 1</span> · Design · Mix · Foley</div>
-      <div class="row">
-        <div class="p">
-          <div class="role">01 / Sound Designer</div>
-          <div class="nm">Ken Palsm</div>
-          <div class="bio">Owns the sonic world of every project — spots picture, designs to it, hands off a clean session.</div>
+    <div class="crewgrp" style="left:768px; top:188px; width:680px;">
+      <div class="glabel"><span class="t1">USA</span></div>
+      <div class="clist">
+        <div class="c">
+          <div class="nm">Ken Psalms</div>
+          <div class="bio">Sound Design &amp; Mixing</div>
         </div>
-        <div class="p">
-          <div class="role">02 / Mix Engineer</div>
-          <div class="nm">William</div>
-          <div class="bio">Delivers final mix in 5.1 and stereo. Stems, M&amp;E and masters to spec — broadcast-ready every time.</div>
+        <div class="c">
+          <div class="nm">William Landry</div>
+          <div class="bio">Mixing &amp; Mastering</div>
         </div>
       </div>
     </div>
 
-    <div class="crewgrp" style="left:1170px; top:560px; width:690px;">
-      <div class="glabel"><span class="ix">B</span> <span class="t1">Team 2</span> · Composition · Arrangement</div>
-      <div class="row">
-        <div class="p">
-          <div class="role">03 / Composer</div>
-          <div class="nm">Ady</div>
-          <div class="bio">Writes and produces score to picture — themes, motifs and the emotional spine.</div>
+    <div class="crewgrp" style="left:768px; top:420px; width:680px;">
+      <div class="glabel"><span class="t1">KlangTextur</span></div>
+      <div class="clist">
+        <div class="c">
+          <div class="nm">Easer Europe</div>
         </div>
-        <div class="p">
-          <div class="role">04 / Composer</div>
-          <div class="nm">Yanker</div>
-          <div class="bio">Arrangement, voicing and tracking — works alongside Ady through the score build.</div>
+        <div class="c">
+          <div class="nm">Daryn Ady</div>
+          <div class="bio">Sound Designer &amp; Mixing · Foley · Composer</div>
+        </div>
+        <div class="c">
+          <div class="nm">Darmen</div>
+          <div class="bio">Mixing &amp; Mastering · Composer</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="crewgrp" style="left:1170px; top:188px; width:686px;">
+      <div class="glabel"><span class="t1">Germany</span></div>
+      <div class="clist">
+        <div class="c">
+          <div class="nm">Gregor Gammaro</div>
+          <div class="bio">Sound Design</div>
+        </div>
+        <div class="c role-only">
+          <div class="bio">Mixing</div>
         </div>
       </div>
     </div>
