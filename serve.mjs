@@ -39,8 +39,27 @@ import { handleProjectsApi } from './lib/projects-api-handlers.mjs';
 import { handleCapabilitiesApi } from './lib/capabilities-api-vercel.mjs';
 import { getWorkOrderResolved, setWorkOrder } from './lib/site-store.mjs';
 import { triggerProductionRedeploy } from './lib/vercel-redeploy.mjs';
+import { fetchProjectsCatalog, injectProjectsCatalog } from './scripts/projects-catalog-lib.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const WORK_UNIFIED_HTML = path.join(__dirname, 'Work', 'unified', 'index.html');
+
+let devCatalogCache = null;
+let devCatalogCacheAt = 0;
+const DEV_CATALOG_TTL_MS = 30_000;
+
+async function getDevProjectsCatalog() {
+  if (devCatalogCache && Date.now() - devCatalogCacheAt < DEV_CATALOG_TTL_MS) {
+    return devCatalogCache;
+  }
+  devCatalogCache = await fetchProjectsCatalog(__dirname);
+  devCatalogCacheAt = Date.now();
+  return devCatalogCache;
+}
+
+function isWorkUnifiedHtml(filePath) {
+  return path.resolve(filePath) === path.resolve(WORK_UNIFIED_HTML);
+}
 const PORT = Number(process.env.PORT) || 2001;
 
 const MIME = {
@@ -268,21 +287,33 @@ function getStaticFilePath(urlPath) {
   return { filePath, ext, isPitchEmbedAsset };
 }
 
-function sendFile(res, { filePath, ext, isPitchEmbedAsset }, urlPath = '') {
-  fs.readFile(filePath, (err, data) => {
-    if (err) {
-      res.writeHead(404);
-      res.end('Not found');
-    } else {
-      const type = MIME[ext] || (isPitchEmbedAsset ? 'image/avif' : 'application/octet-stream');
-      const headers = { 'Content-Type': type };
-      if (urlPath.toLowerCase().startsWith('/capabilities')) {
-        Object.assign(headers, capabilitiesProtectHeaders(ext));
-      }
-      res.writeHead(200, headers);
-      res.end(data);
+async function sendFile(res, { filePath, ext, isPitchEmbedAsset }, urlPath = '') {
+  let data;
+  try {
+    data = await fs.promises.readFile(filePath);
+  } catch {
+    res.writeHead(404);
+    res.end('Not found');
+    return;
+  }
+
+  if (ext === '.html' && isWorkUnifiedHtml(filePath)) {
+    try {
+      const catalog = await getDevProjectsCatalog();
+      const injected = injectProjectsCatalog(data.toString('utf8'), catalog);
+      if (injected) data = Buffer.from(injected, 'utf8');
+    } catch (e) {
+      console.warn('[projects-catalog] dev inject failed:', e && e.message);
     }
-  });
+  }
+
+  const type = MIME[ext] || (isPitchEmbedAsset ? 'image/avif' : 'application/octet-stream');
+  const headers = { 'Content-Type': type };
+  if (urlPath.toLowerCase().startsWith('/capabilities')) {
+    Object.assign(headers, capabilitiesProtectHeaders(ext));
+  }
+  res.writeHead(200, headers);
+  res.end(data);
 }
 
 http.createServer((req, res) => {
@@ -422,7 +453,7 @@ http.createServer((req, res) => {
         return;
       }
 
-      sendFile(res, spec, urlPath);
+      await sendFile(res, spec, urlPath);
     } catch (e) {
       console.error(e);
       res.writeHead(500, { 'Content-Type': 'text/plain' });
