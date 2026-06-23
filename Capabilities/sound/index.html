@@ -219,27 +219,33 @@
     background:transparent; border:none;
   }
 
-  /* ===== SCORE / COMPOSE — asymmetric video grid ===== */
-  .compose .score-vid-wrap{
+  /* ===== SCORE / FOLEY — asymmetric video grid ===== */
+  .compose .score-vid-wrap,
+  .foley .score-vid-wrap{
     display:flex; flex-direction:column; align-items:flex-start;
     --cap-gap:10px;
   }
-  .compose .score-vid-wrap .cap{
+  .compose .score-vid-wrap .cap,
+  .foley .score-vid-wrap .cap{
     position:static; display:block; margin:0 0 var(--cap-gap) 0;
     white-space:nowrap;
     font-family:var(--mono); font-size:11px; letter-spacing:.12em;
     color:var(--muted); text-transform:uppercase; line-height:1.3;
   }
-  .compose .score-vid-wrap .cap b{ color:var(--ink-dim); font-weight:500; margin-right:4px; }
-  .compose .score-vid{
+  .compose .score-vid-wrap .cap b,
+  .foley .score-vid-wrap .cap b{ color:var(--ink-dim); font-weight:500; margin-right:4px; }
+  .compose .score-vid,
+  .foley .score-vid{
     position:relative; width:100%; flex:none;
     border-radius:10px; overflow:hidden; outline:none; background:var(--paper);
   }
-  .compose .score-vid .deck-hero-inner{
+  .compose .score-vid .deck-hero-inner,
+  .foley .score-vid .deck-hero-inner{
     position:absolute; inset:0; width:100%; height:100%;
     border-radius:10px; overflow:hidden;
   }
-  .compose .score-vid .featured-hero-video{
+  .compose .score-vid .featured-hero-video,
+  .foley .score-vid .featured-hero-video{
     border-radius:10px; object-fit:cover; object-position:center center;
   }
 
@@ -751,20 +757,63 @@
       <div class="copy" style="margin-top:26px; max-width:36ch;">Footsteps, cloth, props and body interactions, recorded to picture on a <em>custom foley stage.</em> Performance matched to weight, rhythm and intent — every move on screen earns its sound.</div>
     </div>
 
-    <div class="photo" style="position:absolute; left:1405px; top:132px; width:378px; height:499px;">
-      <image-slot id="foley-1" placeholder="Stage A — wide"></image-slot>
+    <!-- 1 · Stage A — upper-right portrait -->
+    <div class="abs score-vid-wrap" style="left:1405px; top:132px; width:378px;">
+      <span class="cap">Stage A</span>
+      <div class="photo deck-hero-wrap score-vid" style="height:499px;">
+        <div class="deck-hero-inner">
+          <video class="featured-hero-video" id="comp-foley-1" playsinline preload="metadata"
+            src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/wkPiuH4MIA/original"></video>
+        </div>
+      </div>
     </div>
-    <div class="photo" style="position:absolute; left:909px; top:237px; width:290px; height:361px;">
-      <image-slot id="foley-2" placeholder="Surface pit"></image-slot>
+
+    <!-- 2 · Surface pit — upper-center portrait -->
+    <div class="abs score-vid-wrap" style="left:909px; top:237px; width:290px;">
+      <span class="cap">Surface Pit</span>
+      <div class="photo deck-hero-wrap score-vid" style="height:361px;">
+        <div class="deck-hero-inner">
+          <video class="featured-hero-video" id="comp-foley-2" playsinline preload="metadata"
+            src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/KAM5isc42w/original"></video>
+        </div>
+      </div>
     </div>
-    <div class="photo" style="position:absolute; left:540px; top:620px; width:306px; height:220px;">
-      <image-slot id="foley-3" placeholder="Cloth"></image-slot>
+
+    <!-- 3 · Cloth — lower-left landscape -->
+    <div class="abs score-vid-wrap" style="left:540px; top:620px; width:306px;">
+      <span class="cap">Cloth</span>
+      <div class="photo deck-hero-wrap score-vid" style="height:220px;">
+        <div class="deck-hero-inner">
+          <video class="featured-hero-video" id="comp-foley-3" playsinline preload="metadata"
+            src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/XxdMFelNin/original"></video>
+        </div>
+      </div>
     </div>
-    <div class="photo" style="position:absolute; left:152px; top:692px; width:220px; height:225px;">
-      <image-slot id="foley-4" placeholder="Props"></image-slot>
+
+    <!-- 4 · Props — bottom-left portrait -->
+    <div class="abs score-vid-wrap" style="left:152px; top:692px; width:220px;">
+      <span class="cap">Props</span>
+      <div class="photo deck-hero-wrap score-vid" style="height:225px;">
+        <div class="deck-hero-inner">
+          <video class="featured-hero-video" id="comp-foley-4" playsinline preload="metadata"
+            src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/FsvlQ95RJV/original"></video>
+        </div>
+      </div>
     </div>
-    <div class="photo" style="position:absolute; left:1037px; top:688px; width:471px; height:259px;">
-      <image-slot id="foley-5" placeholder="Footwear"></image-slot>
+
+    <!-- 5 · Footwear — bottom-center landscape -->
+    <div class="abs score-vid-wrap" style="left:1037px; top:688px; width:471px;">
+      <span class="cap">Footwear</span>
+      <div class="photo deck-hero-wrap score-vid" style="height:259px;">
+        <div class="deck-hero-inner">
+          <video class="featured-hero-video" id="comp-foley-5" playsinline preload="metadata"
+            src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/7keGXC6gVK/original"></video>
+        </div>
+      </div>
+    </div>
+
+    <div id="comp-foley-player" class="abs" style="width:0;height:0;overflow:hidden;opacity:0;pointer-events:none;" aria-hidden="true">
+      <input type="range" id="comp-foley-volume" min="0" max="100" value="100" tabindex="-1">
     </div>
 
     <div class="pipe">
@@ -1194,6 +1243,14 @@ const deckHeroPlayers = [
     cursorPathId: 'pj-cursor-path',
     startOffset: 1,
     endOffset: 32
+  }),
+  window.initDeckHeroPlayer({
+    videoId: 'comp-foley-1',
+    playerId: 'comp-foley-player',
+    volumeId: 'comp-foley-volume',
+    cursorId: 'pj-cursor',
+    cursorPathId: 'pj-cursor-path',
+    extraVideoIds: ['comp-foley-2', 'comp-foley-3', 'comp-foley-4', 'comp-foley-5']
   }),
   window.initDeckHeroPlayer({
     videoId: 'comp-score-1',
