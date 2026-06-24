@@ -679,8 +679,17 @@
       <span class="vbadge">▶ Before · 02:14</span>
       <div class="vcap"><b>↑ Before · Production Audio</b>Dialogue and a handful of camera-side effects. Flat — no ambience, no design pass.</div>
     </div>
-    <div class="photo videoframe" style="position:absolute; left:976px; top:566px; width:880px; height:418px;">
-      <image-slot id="sd-after" placeholder="After — scene clip / video"></image-slot>
+    <div class="photo deck-hero-wrap" id="sd-after-hero" style="position:absolute; left:976px; top:566px; width:880px; height:418px;">
+      <div class="deck-hero-inner">
+        <video class="featured-hero-video" id="sd-after-video" playsinline loop preload="metadata"
+          poster="/work/sound/after-every-man-jack/poster.jpg"
+          src="https://r2.vidzflow.com/source/bf7d427d-1973-4520-89a3-28b6bf670b18.mp4"></video>
+        <div class="deck-hero-player-ui" id="sd-after-player">
+          <div class="deck-hero-volume-row">
+            <input type="range" class="deck-hero-volume-slider" id="sd-after-volume" min="0" max="100" value="100" aria-label="Volume">
+          </div>
+        </div>
+      </div>
       <span class="vbadge">▶ After · 02:14</span>
       <div class="vcap"><b>→ After · Designed</b>Ambience bed under every scene, performance-matched foley and designed effects, mix bus printed.</div>
     </div>
@@ -1328,6 +1337,13 @@ deckHeroPlayers = [
     videoId: 'fw-audi-video',
     playerId: 'fw-audi-player',
     volumeId: 'fw-audi-volume',
+    cursorId: 'pj-cursor',
+    cursorPathId: 'pj-cursor-path'
+  }),
+  initDeckHeroPlayerSafe({
+    videoId: 'sd-after-video',
+    playerId: 'sd-after-player',
+    volumeId: 'sd-after-volume',
     cursorId: 'pj-cursor',
     cursorPathId: 'pj-cursor-path'
   }),
