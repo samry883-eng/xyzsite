@@ -4,39 +4,36 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <meta name="robots" content="noindex, nofollow" />
-<title>Beats/open - Find your Beat</title>
+<title>XYZ Studios — Sound · 2026 (Dark)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="/capabilities/assets/nda-modal.css" />
 <style>
-  @font-face {
-    font-family: 'Micross';
-    src: url('/assets/micross.ttf') format('truetype');
-    font-weight: 400; font-style: normal; font-display: swap;
-  }
+
+  @font-face{ font-family:'ZTBros'; src:url('/capabilities/sound/fonts/ZTBrosOskon90s-Regular.otf') format('opentype'); font-weight:400; font-style:normal; font-display:swap; }
+  @font-face{ font-family:'ZTBros'; src:url('/capabilities/sound/fonts/ZTBrosOskon90s-Italic.otf') format('opentype'); font-weight:400; font-style:italic; font-display:swap; }
+  @font-face{ font-family:'ZTBros'; src:url('/capabilities/sound/fonts/ZTBrosOskon90s-Light.otf') format('opentype'); font-weight:300; font-style:normal; font-display:swap; }
+  @font-face{ font-family:'ZTBros'; src:url('/capabilities/sound/fonts/ZTBrosOskon90s-LightItalic.otf') format('opentype'); font-weight:300; font-style:italic; font-display:swap; }
+  @font-face{ font-family:'ZTBros'; src:url('/capabilities/sound/fonts/ZTBrosOskon90s-ExtraLight.otf') format('opentype'); font-weight:200; font-style:normal; font-display:swap; }
+  @font-face{ font-family:'ZTBros'; src:url('/capabilities/sound/fonts/ZTBrosOskon90s-ExtLtIta.otf') format('opentype'); font-weight:200; font-style:italic; font-display:swap; }
   :root{
-    --bg:        #14120d;
+    --bg:        #0d0c0b;
     --paper:     #1e1a13;
     --ink:       #f0ece1;
     --ink-dim:   #ada494;
     --muted:     #756f62;
     --line:      #34302a;
     --accent:    #f0ece1;
-    --display:   "Instrument Serif", "Times New Roman", serif;
+    --display:   "ZTBros", "Times New Roman", serif;
     --sans:      "Geist", system-ui, sans-serif;
     --mono:      "JetBrains Mono", ui-monospace, monospace;
   }
   html, body { margin:0; padding:0; background:var(--bg); color:var(--ink); font-family:var(--sans); overflow:hidden; height:100%; }
-  html.deck-protect, html.deck-protect body {
-    user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; touch-action:manipulation;
-    -webkit-text-size-adjust:100%; text-size-adjust:100%;
-  }
-  html.deck-protect img, html.deck-protect video { -webkit-user-drag:none; user-select:none; }
-  @media print { html.deck-protect body { display:none !important; } }
   section.sound-artboard{
-    width:1920px; height:1080px; position:relative; overflow:hidden;
-    background:var(--bg); color:var(--ink); font-family:var(--sans);
+    width:1920px; height:1080px;
+    background: var(--bg); color: var(--ink);
+    position:relative; overflow:hidden; font-family: var(--sans);
   }
 
   /* coordinate-positioned children */
@@ -48,8 +45,8 @@
     text-transform:uppercase; color:var(--ink); font-weight:600;
   }
   .lbl.dim{ color:var(--muted); font-weight:500; }
-  .disp{ font-family:var(--display); font-weight:400; color:var(--ink); line-height:.9; letter-spacing:-.02em; }
-  .disp em{ font-style:italic; }
+  .disp{ font-family:var(--display); font-weight:400; color:var(--ink); line-height:.96; letter-spacing:-.012em; }
+  .disp em{ font-family:var(--display); font-style:italic; font-weight:400; letter-spacing:0; }
   .ital{ font-family:var(--display); font-style:italic; color:var(--ink); line-height:1; }
   .copy{ font-family:var(--sans); font-size:16px; line-height:1.55; color:var(--ink-dim); }
   .copy em{ font-family:var(--display); font-style:italic; color:var(--ink); }
@@ -71,70 +68,6 @@
   .photo image-slot{ width:100%; height:100%; }
   /* video/photo placement boxes blend into the bg — thin outline only */
   .photo{ outline:1px solid var(--line); outline-offset:0; }
-  .deck-hero-wrap{ overflow:hidden; display:flex; flex-direction:column; }
-  .deck-hero-inner{
-    position:relative; width:100%; height:100%; display:flex; flex-direction:column;
-    background:var(--bg);
-  }
-  .deck-hero-inner .featured-hero-video{
-    position:absolute; inset:0; width:100%; height:100%;
-    object-fit:cover; display:block; background:var(--bg); cursor:none;
-  }
-  .deck-hero-wrap{ filter:none; }
-  .deck-hero-volume-row{
-    display:flex; justify-content:center; align-items:center;
-    width:min(420px, 72%); pointer-events:none;
-    padding:10px 20px 4px;
-  }
-  .deck-hero-volume-slider{
-    -webkit-appearance:none; appearance:none;
-    width:100%; height:3px; margin:0; padding:0;
-    border-radius:2px; background:rgba(255,255,255,0.22); cursor:pointer;
-    pointer-events:auto;
-  }
-  .deck-hero-volume-slider::-webkit-slider-thumb{
-    -webkit-appearance:none; width:10px; height:10px; border-radius:50%;
-    background:#fff; box-shadow:0 0 1px rgba(0,0,0,0.18);
-  }
-  .deck-hero-volume-slider::-moz-range-thumb{
-    width:10px; height:10px; border:0; border-radius:50%;
-    background:#fff; box-shadow:0 0 1px rgba(0,0,0,0.18);
-  }
-  .deck-hero-player-ui{
-    position:absolute; inset:0; z-index:3;
-    display:flex; align-items:flex-end; justify-content:center;
-    pointer-events:none;
-    background:none !important; padding:0 14px 12px !important;
-  }
-  #pj-cursor{
-    position:fixed; pointer-events:none; z-index:300;
-    transform:translate(-50%, -50%);
-    opacity:0; transition:opacity .18s ease;
-    flex:none; width:0; height:0; overflow:visible;
-  }
-  #pj-cursor.visible{ opacity:1; }
-  #pj-cursor svg{ display:block; }
-  /* Neutralize shared Webflow player chrome if any class leaks in */
-  #fw-salomon-hero .hero_video-scrub,
-  #fw-salomon-hero .hero_video-controls_inner,
-  #fw-salomon-hero .hero_video-time,
-  #fw-salomon-hero .hero_video-toggle,
-  #fw-salomon-hero [hero_video-text],
-  #fw-lucid-hero .hero_video-scrub,
-  #fw-lucid-hero .hero_video-controls_inner,
-  #fw-lucid-hero .hero_video-time,
-  #fw-lucid-hero .hero_video-toggle,
-  #fw-lucid-hero [hero_video-text],
-  #fw-beats-hero .hero_video-scrub,
-  #fw-beats-hero .hero_video-controls_inner,
-  #fw-beats-hero .hero_video-time,
-  #fw-beats-hero .hero_video-toggle,
-  #fw-beats-hero [hero_video-text],
-  #fw-audi-hero .hero_video-scrub,
-  #fw-audi-hero .hero_video-controls_inner,
-  #fw-audi-hero .hero_video-time,
-  #fw-audi-hero .hero_video-toggle,
-  #fw-audi-hero [hero_video-text]{ display:none !important; }
   .videoframe{ outline:1px dashed var(--line); }
   .photo .cap{
     position:absolute; top:-22px; left:0; white-space:nowrap;
@@ -142,13 +75,14 @@
     color:var(--muted); text-transform:uppercase;
   }
   .photo .cap b{ color:var(--ink); font-weight:600; margin-right:6px; }
+  .eyb{ font-family:var(--mono); font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); font-weight:600; }
 
   /* ===== ABOUT caps list ===== */
   .caps .it{ position:absolute; left:960px; width:838px; }
   .caps .it .ix{ position:absolute; left:3px; top:6px; font-family:var(--mono); font-size:11px; letter-spacing:.14em; color:var(--muted); font-weight:500; }
-  .caps .it .nm{ margin-left:44px; font-family:var(--display); font-size:29px; line-height:1; color:var(--ink); letter-spacing:-.01em; }
+  .caps .it .nm{ font-family:var(--display); font-size:52px; line-height:1; color:var(--ink); letter-spacing:-.01em; }
   .caps .it .nm em{ font-style:italic; }
-  .caps .it .dx{ margin-left:44px; margin-top:6px; font-size:13px; line-height:1.45; color:var(--ink-dim); }
+  .caps .it .dx{ margin-top:12px; font-size:17px; line-height:1.45; color:var(--ink-dim); }
   .caps .ln{ position:absolute; left:960px; width:838px; height:1px; background:var(--line); }
 
   /* ===== FEATURED (case) bottom band ===== */
@@ -171,9 +105,7 @@
   .frame{ position:absolute; width:840px; }
   .slbl, .frame .slbl{ display:flex; justify-content:space-between; align-items:baseline;
     font-family:var(--mono); font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink); }
-  .slbl b, .frame .slbl b{ font-weight:600; color:var(--accent); }
-  .frame.before .slbl b, section.ba .abs[style*="left:64px"] .slbl b{ color:var(--muted); }
-  .frame.after .slbl b{ color:var(--accent); }
+  .frame.before .slbl b{ color:var(--muted); } .frame.after .slbl b{ color:var(--accent); }
   .slbl .d, .frame .slbl .d{ color:var(--muted); font-weight:500; }
   .tracks{ display:flex; flex-direction:column; gap:9px; margin-top:18px; }
   .tracks .tk{ display:grid; grid-template-columns:58px 1fr 58px; gap:12px; align-items:center; }
@@ -183,7 +115,11 @@
   .frame.before .tracks .tk .bar .seg{ opacity:.2; } .frame.after .tracks .tk .bar .seg{ opacity:.85; }
   .tracks .tk .tm{ font-family:var(--mono); font-size:11px; color:var(--muted); text-align:right; }
   .wave{ height:150px; display:flex; align-items:center; gap:3px; margin-top:14px; }
-  .wave .b{ flex:1; background:var(--ink); min-width:2px; }
+  .wave .b{ flex:1; background:var(--ink); min-width:2px; will-change:height; }
+  /* video play badge doubles as each waveform's activator */
+  .videoframe .vbadge{ cursor:pointer; user-select:none; transition:opacity .15s, background .15s; }
+  .videoframe .vbadge:hover{ opacity:.82; }
+  .videoframe .vbadge.playing{ background:var(--ink); color:var(--bg); }
   .frame.before .wave .b{ opacity:.25; } .frame.before .wave .b.q{ opacity:.08; }
   .frame.after .wave .b{ opacity:.9; } .frame.after .wave .b.q{ opacity:.35; }
   .readouts{ display:flex; gap:26px; align-items:baseline; margin-top:16px; }
@@ -192,62 +128,18 @@
   .readouts .v small{ font-family:var(--mono); font-size:12px; color:var(--muted); font-style:normal; margin-left:4px; letter-spacing:.12em; text-transform:uppercase; }
   .frame.before .readouts .v{ color:var(--muted); }
   .note{ font-size:13px; line-height:1.5; color:var(--ink-dim); margin-top:14px; }
+  /* before/after compact readout strip (mix) */
+  .readstrip{ display:flex; gap:24px; align-items:baseline; margin-top:12px; }
+  .readstrip .k{ font-family:var(--mono); font-size:9px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); }
+  .readstrip .v{ font-family:var(--display); font-style:italic; font-size:30px; line-height:1; color:var(--ink); margin-left:6px; }
+  .readstrip .v small{ font-family:var(--mono); font-size:9px; color:var(--muted); font-style:normal; margin-left:3px; letter-spacing:.1em; text-transform:uppercase; }
+  .frame.before .readstrip .v{ color:var(--muted); }
   /* video frame (SD + Mix before/after) */
   .videoframe{ overflow:hidden; background:var(--paper); border:1px solid var(--line); }
   .videoframe .vbadge{ position:absolute; left:14px; top:14px; z-index:2; font-family:var(--mono); font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink); background:rgba(243,240,230,.94); padding:5px 9px; font-weight:600; border:1px solid var(--ink); }
   .videoframe .vcap{ position:absolute; left:0; right:0; bottom:0; z-index:2; padding:36px 18px 16px; font-size:13px; line-height:1.45; color:#fff; background:linear-gradient(to top, rgba(0,0,0,.80), rgba(0,0,0,0)); }
   .videoframe .vcap b{ display:block; font-family:var(--mono); font-size:10px; letter-spacing:.16em; text-transform:uppercase; margin-bottom:6px; color:#fff; }
-  .videoframe{ position:relative; }
-  .videoframe video{
-    position:absolute; inset:0; width:100%; height:100%;
-    object-fit:cover; object-position:center center;
-    display:block; background:var(--bg);
-  }
-  .videoframe.deck-hero-wrap{
-    display:flex; flex-direction:column; overflow:hidden;
-  }
-  .videoframe.deck-hero-wrap .deck-hero-inner{
-    position:relative; width:100%; height:100%; flex:1; min-height:0;
-  }
-  .videoframe.deck-hero-wrap .featured-hero-video{
-    position:absolute; inset:0; width:100%; height:100%;
-    object-fit:cover; display:block; background:var(--bg); cursor:none;
-  }
-  /* mix B/A slide — match featured hero frames (thin outline, no paper box) */
-  #mx-before-hero,
-  #mx-after-hero{
-    background:transparent; border:none;
-  }
 
-  /* ===== SCORE / FOLEY — asymmetric video grid ===== */
-  .compose .score-vid-wrap,
-  .foley .score-vid-wrap{
-    display:flex; flex-direction:column; align-items:flex-start;
-    --cap-gap:10px;
-  }
-  .compose .score-vid-wrap .cap,
-  .foley .score-vid-wrap .cap{
-    position:static; display:block; margin:0 0 var(--cap-gap) 0;
-    white-space:nowrap;
-    font-family:var(--mono); font-size:11px; letter-spacing:.12em;
-    color:var(--muted); text-transform:uppercase; line-height:1.3;
-  }
-  .compose .score-vid-wrap .cap b,
-  .foley .score-vid-wrap .cap b{ color:var(--ink-dim); font-weight:500; margin-right:4px; }
-  .compose .score-vid,
-  .foley .score-vid{
-    position:relative; width:100%; flex:none;
-    border-radius:10px; overflow:hidden; outline:none; background:var(--paper);
-  }
-  .compose .score-vid .deck-hero-inner,
-  .foley .score-vid .deck-hero-inner{
-    position:absolute; inset:0; width:100%; height:100%;
-    border-radius:10px; overflow:hidden;
-  }
-  .compose .score-vid .featured-hero-video,
-  .foley .score-vid .featured-hero-video{
-    border-radius:10px; object-fit:cover; object-position:center center;
-  }
 
   /* ===== pipeline footer row (foley/score) ===== */
   .pipe{ position:absolute; left:64px; bottom:46px; display:flex; gap:26px; align-items:baseline; }
@@ -256,7 +148,7 @@
   .pipe .arrow{ color:var(--muted); }
 
   /* ===== pricing tiers ===== */
-  .tier{ position:absolute; left:788px; right:64px; display:grid; grid-template-columns:150px 1fr 300px; gap:32px; align-items:baseline; padding:0; border-bottom:1px solid var(--line); }
+  .tier{ position:absolute; left:788px; right:64px; display:grid; grid-template-columns:150px 1fr 300px; gap:32px; align-items:center; padding:0; }
   .tier .ix{ font-family:var(--mono); font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); font-weight:500; }
   .tier.feature .ix{ color:var(--ink); font-weight:700; }
   .tier .nm{ font-family:var(--display); font-size:48px; line-height:.95; color:var(--ink); letter-spacing:-.015em; }
@@ -264,9 +156,13 @@
   .tier .nm .desc{ display:block; font-family:var(--sans); font-style:normal; font-size:13px; line-height:1.5; color:var(--ink-dim); margin-top:10px; max-width:42ch; letter-spacing:0; }
   .tier .nm .incl{ display:block; font-family:var(--mono); font-style:normal; font-size:10px; letter-spacing:.12em; color:var(--ink-dim); margin-top:12px; line-height:1.6; text-transform:uppercase; }
   .tier .price{ text-align:right; }
-  .tier .price .from{ font-family:var(--mono); font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); display:block; }
+  .tier .price .from{ font-family:var(--mono); font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:16px; }
   .tier .price .num{ font-family:var(--display); font-style:italic; font-size:88px; line-height:.9; color:var(--ink); }
   .tier .price .for{ font-family:var(--mono); font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); display:block; margin-top:6px; }
+  /* recommended-tier highlight panel (sits behind the grid, no layout shift) */
+  .feathl{ background:rgba(240,236,225,.045); }
+  .tier.feature .nm{ color:var(--accent); }
+  .tier.feature .price .num{ color:var(--accent); }
 
   /* ===== crew ===== */
   .crewgrp{ position:absolute; width:760px; }
@@ -279,15 +175,97 @@
   .crewgrp .p .nm{ font-family:var(--display); font-style:italic; font-size:60px; line-height:.94; color:var(--ink); letter-spacing:-.015em; margin-top:8px; }
   .crewgrp .p .bio{ font-size:13px; line-height:1.55; color:var(--ink-dim); margin-top:12px; max-width:34ch; }
 
+  /* ===== crew — clean two-column vertical variant ===== */
+  .crewfull{ position:absolute; display:grid; grid-template-columns:1fr 1fr; gap:72px; align-items:start; }
+  .crewfull .ccol{ display:flex; flex-direction:column; gap:46px; }
+  .crewfull .p .role{ font-family:var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); font-weight:500; }
+  .crewfull .p .nm{ font-family:var(--display); font-style:italic; font-size:46px; line-height:1; color:var(--ink); letter-spacing:-.015em; margin-top:12px; }
+
+  /* ===== crew — credit roster ===== */
+  .roster .rhead{ display:grid; grid-template-columns:1fr 296px 168px; gap:26px; align-items:baseline; padding-bottom:15px; border-bottom:1px solid var(--line);
+    font-family:var(--mono); font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .roster .rhead .rl{ text-align:right; }
+  .roster .row{ display:grid; grid-template-columns:1fr 296px 168px; gap:26px; align-items:baseline; padding:25px 0; border-bottom:1px solid var(--line); transition:background .25s; }
+  .roster .row:hover{ background:rgba(240,236,225,.035); }
+  .roster .row .rx{ font-family:var(--mono); font-size:12px; letter-spacing:.08em; color:var(--muted); }
+  .roster .row .rn{ font-family:var(--display); font-style:italic; font-size:46px; line-height:1; color:var(--ink); letter-spacing:-.012em; white-space:nowrap; }
+  .roster .row .rr{ font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-dim); white-space:nowrap; align-self:center; }
+  .roster .row .rl{ font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink); white-space:nowrap; text-align:right; align-self:center; }
+
   /* ===== contact bottom band ===== */
   .cblock{ position:absolute; }
   .cblock .k{ font-family:var(--mono); font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); font-weight:500; }
   .cblock .v{ font-family:var(--sans); font-size:21px; color:var(--ink); margin-top:8px; }
   .cblock .v.em{ font-family:var(--display); font-style:italic; font-size:24px; }
   .cblock .s{ font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); margin-top:6px; }
-  a.deck-link{ color:inherit; text-decoration:none; pointer-events:auto; cursor:pointer; transition:opacity .2s ease; }
-  a.deck-link:hover{ opacity:.78; }
 
+  /* ===== contact — editorial wordmark layout ===== */
+  .cx .cl{ display:block; font-family:var(--sans); font-size:22px; font-weight:500; color:var(--ink); line-height:1.55; text-decoration:none; }
+  .cx a.cl{ transition:opacity .2s; }
+  .cx a.cl:hover{ opacity:.55; }
+  .cx .cl.dim{ color:var(--muted); font-weight:400; }
+  .cx .cl.lbl-mono{ font-family:var(--mono); font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); font-weight:600; margin-bottom:12px; }
+  .wordmark-wrap{
+    left:50%; bottom:132px; width:max-content; max-width:none;
+    transform:translateX(-50%);
+    overflow:visible; pointer-events:none;
+  }
+  .wordmark{
+    font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; font-weight:500;
+    font-size:360px; line-height:.9; letter-spacing:-.015em; color:var(--ink-dim);
+    white-space:nowrap; display:block;
+  }
+  .wordmark em{ font-family:var(--display); font-style:italic; font-weight:400; letter-spacing:-.01em; }
+
+  
+  html.deck-protect, html.deck-protect body {
+    user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; touch-action:manipulation;
+    -webkit-text-size-adjust:100%; text-size-adjust:100%;
+  }
+  html.deck-protect img, html.deck-protect video { -webkit-user-drag:none; user-select:none; }
+  @media print { html.deck-protect body { display:none !important; } }
+  .deck-hero-wrap{ overflow:hidden; display:flex; flex-direction:column; }
+  .deck-hero-inner{ position:relative; width:100%; height:100%; display:flex; flex-direction:column; background:var(--bg); }
+  .deck-hero-inner .featured-hero-video{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover; display:block; background:var(--bg); cursor:none;
+  }
+  .deck-hero-volume-row{
+    display:flex; justify-content:center; align-items:center;
+    width:min(420px, 72%); pointer-events:none; padding:10px 20px 4px;
+  }
+  .deck-hero-volume-slider{
+    -webkit-appearance:none; appearance:none; width:100%; height:3px; margin:0; padding:0;
+    border-radius:2px; background:rgba(240,236,225,.22); cursor:pointer; pointer-events:auto;
+  }
+  .deck-hero-volume-slider::-webkit-slider-thumb{
+    -webkit-appearance:none; width:10px; height:10px; border-radius:50%;
+    background:var(--ink); box-shadow:0 0 1px rgba(0,0,0,.18);
+  }
+  .deck-hero-volume-slider::-moz-range-thumb{
+    width:10px; height:10px; border:0; border-radius:50%; background:var(--ink);
+  }
+  .deck-hero-player-ui{
+    position:absolute; inset:0; z-index:3; display:flex; align-items:flex-end; justify-content:center;
+    pointer-events:none; background:none !important; padding:0 14px 12px !important;
+  }
+  #pj-cursor{
+    position:fixed; pointer-events:none; z-index:300; transform:translate(-50%, -50%);
+    opacity:0; transition:opacity .18s ease; flex:none; width:0; height:0; overflow:visible;
+  }
+  #pj-cursor.visible{ opacity:1; }
+  #pj-cursor svg{ display:block; }
+  .videoframe video{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover; object-position:center center; display:block; background:var(--bg);
+  }
+  .photo.deck-hero-wrap .featured-hero-video,
+  .photo.deck-hero-wrap video{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover; display:block; background:var(--bg); cursor:none;
+  }
+  a.deck-link{ color:inherit; text-decoration:none; pointer-events:auto; cursor:pointer; transition:opacity .2s ease; }
+  a.deck-link:hover{ opacity:.55; }
   :root{ --dur:.88s; --ease:cubic-bezier(.76,0,.24,1); --deck-pad-x:64px; --deck-pad-y:56px; --pt:32px; --p:var(--deck-pad-x); }
   #deck-viewport{ position:fixed; inset:0; z-index:1; background:var(--bg); }
   #deck-stage{ position:absolute; inset:0; overflow:hidden; background:var(--bg); }
@@ -302,14 +280,12 @@
   .dot{ width:4px; height:4px; border-radius:50%; background:rgba(240,236,225,.2); cursor:pointer; transition:background .3s, transform .3s; }
   .dot.active{ background:rgba(240,236,225,.75); transform:scale(1.6); }
   #hint{ position:absolute; bottom:calc(var(--deck-pad-y) + 40px); left:50%; transform:translateX(-50%); font-size:10px; letter-spacing:.15em; color:rgba(240,236,225,.22); text-transform:uppercase; z-index:200; transition:opacity 1s; pointer-events:none; }
-  /* fixed slide index — artboard .m-tr coords, never moves with .slide translate */
   #deck-slide-number{
     position:absolute; z-index:210; pointer-events:none; text-align:right;
     font-family:var(--mono); font-size:13px; letter-spacing:.2em; text-transform:uppercase;
     font-weight:500; color:var(--muted); opacity:0; transition:opacity .15s ease;
   }
   #deck-slide-number.visible{ opacity:1; }
-  /* fixed slide label — artboard .m-tl coords, never moves with .slide translate */
   #deck-slide-label{
     position:absolute; z-index:210; pointer-events:none;
     font-family:var(--mono); font-size:13px; letter-spacing:.2em; text-transform:uppercase;
@@ -317,88 +293,66 @@
   }
   #deck-slide-label.visible{ opacity:1; }
   #deck-slide-label .d{ color:var(--muted); font-weight:500; }
-  .sound-artboard:not(.cover) .m-tr .d{ visibility:hidden; }
+  .sound-artboard:not(.cover) .m-tr{ visibility:hidden; }
   .sound-artboard:not(.cover) .m-tl{ visibility:hidden; }
-
-  /* featured slides 4/5 — consistent left-column title rhythm */
-  .fw-project-col .fw-proj-lbl{ font-size:11px; }
-  .fw-project-col .fw-brand{ font-size:32px; margin-top:8px; }
-  .fw-project-col .fw-title-slot{ margin-top:10px; min-height:128px; }
-  .fw-project-col .fw-title-single{ font-size:100px; line-height:1.0; white-space:nowrap; }
-  .fw-project-col .fw-title-stack{ font-size:72px; line-height:.88; }
-  .fw-project-col .fw-dir-lbl{ font-size:10px; margin-top:34px; }
-  .fw-project-col .fw-dir{ font-size:26px; margin-top:6px; }
-
   @media (max-width:900px){ :root{ --deck-pad-x:24px; --deck-pad-y:24px; --pt:20px; } #nav-dots{ right:8px; gap:9px; } .dot{ width:6px; height:6px; } }
 
   @media print, (prefers-reduced-motion: reduce){ *{ animation:none !important; } }
+
 </style>
 </head>
 <body>
+
 <div id="deck-viewport">
 <div id="deck-stage">
 <div id="deck">
 
-  <!-- ============ 01 — COVER ============ -->
   <div class="slide active"><div class="slide-inner"><div class="artboard-scaler"><section class="cover sound-artboard" data-screen-label="01 Cover">
-    <span class="m-tl"><b>XYZ</b> <span class="d">· Studios — Sound</span></span>
+<span class="m-tl"><b>XYZ</b> <span class="d">· Studios — Sound</span></span>
     <span class="m-tr"><span class="d">Capabilities ·</span> 2026</span>
 
-    <div class="abs" style="left:64px; top:150px; width:1180px; text-align:center;">
-      <div class="disp" style="font-size:360px; line-height:.84; white-space:nowrap;"><em>Sound,</em><br/>practiced.</div>
+    <div class="abs" style="left:64px; top:330px; width:1080px; text-align:left;">
+      <div class="disp" style="font-size:244px; line-height:.84;"><em>Sound,</em><br/>practiced.</div>
     </div>
 
-    <div class="abs" style="left:1285px; top:486px; width:551px; text-align:center;">
-      <div class="ital" style="font-size:36px; line-height:1.2; color:var(--ink-dim);">A practice built through close creative collaboration <span style="color:var(--ink);">from spotting to print master.</span></div>
+    <div class="abs" style="right:140px; top:470px; width:560px; text-align:right;">
+      <div class="ital" style="font-size:38px; line-height:1.25; color:var(--ink-dim);">A practice built through close creative collaboration <span style="color:var(--ink);">from spotting to print master.</span></div>
     </div>
 
-    <a href="/contact/" target="_blank" rel="noopener noreferrer" class="abs lbl deck-link" style="left:64px; bottom:92px; font-size:12px;">↗ &nbsp;inquiries@xyzstudios.co</a>
-    <a href="https://www.xyzstudios.co/" target="_blank" rel="noopener noreferrer" class="abs lbl dim deck-link" style="right:64px; bottom:92px; font-size:12px;">xyzstudios.co/sound</a>
+    <a href="mailto:inquiries@xyzstudios.co" target="_blank" rel="noopener noreferrer" class="abs lbl deck-link" style="left:64px; bottom:92px; font-size:12px;">↗ &nbsp;inquiries@xyzstudios.co</a>
+    <a href="https://xyzstudios.co/sound" target="_blank" rel="noopener noreferrer" class="abs lbl dim deck-link" style="right:64px; bottom:92px; font-size:12px;">xyzstudios.co/sound</a>
 
     <span class="m-bl"></span>
     <span class="m-br"></span>
   </section></div></div></div>
 
-
-  <!-- ============ 02 — ABOUT ============ -->
   <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="about sound-artboard" data-screen-label="02 About" id="about-section">
-    <span class="m-tl"><b>XYZ</b> <span class="d">· About the practice</span></span>
-    <span class="m-tr"><span class="d">02 / 14</span></span>
+<span class="m-tl"><b>XYZ</b> <span class="d">· About the practice</span></span>
+    <span class="m-tr"><span class="d">02 / 11</span></span>
 
     <div class="abs" style="left:64px; top:224px; width:760px;">
       <div class="disp" style="font-size:104px; line-height:1.0;">We build <em>worlds</em> you can <em>hear.</em> <span style="color:var(--muted);">Cohesive, cinematic, felt.</span></div>
     </div>
 
-    <div class="abs lead-body" style="left:64px; top:706px; width:580px;">
-      <p class="copy" style="margin:0;">A sound practice built through close creative collaboration. Working with directors, agencies, and post teams to carry projects through final delivery — <em>staying closely involved through to the print master.</em></p>
-      <p class="copy" style="margin:14px 0 0;">Each project evolves differently. The approach is shaped to serve the work and its intended outcome — from a single sound design pass to the full audio post pipeline, with original score when called for.</p>
+    <div class="abs lead-body" style="left:64px; top:600px; width:580px;">
+      <p class="copy" style="margin:0;">A sound practice built through close creative collaboration. We work remotely with directors, agencies, and post teams to carry projects through final delivery.</p>
+      <p class="copy" style="margin:14px 0 0;">Each project evolves differently. The approach is shaped to serve the work and its intended outcome, from a single sound design pass to the full audio post pipeline, with original score when called for.</p>
     </div>
 
     <div class="caps">
-      <div class="ln" style="top:125px;"></div>
-      <div class="it" style="top:150px;"><span class="ix">01</span><div class="nm"><em>Sound</em> Design</div><div class="dx">Worlds, textures, ambience and effects.</div></div>
-      <div class="ln" style="top:262px;"></div>
-      <div class="it" style="top:288px;"><span class="ix">02</span><div class="nm"><em>Original</em> Score</div><div class="dx">Themes, motifs, the emotional spine.</div></div>
-      <div class="ln" style="top:400px;"></div>
-      <div class="it" style="top:425px;"><span class="ix">03</span><div class="nm"><em>Mix</em> &amp; Master</div><div class="dx">Stereo and 5.1, broadcast-ready.</div></div>
-      <div class="ln" style="top:538px;"></div>
-      <div class="it" style="top:563px;"><span class="ix">04</span><div class="nm"><em>Foley</em></div><div class="dx">Performance-based, on a custom stage.</div></div>
-      <div class="ln" style="top:675px;"></div>
-      <div class="it" style="top:700px;"><span class="ix">05</span><div class="nm"><em>Dialogue</em> Edit</div><div class="dx">Cleanup, consistency, ADR.</div></div>
-      <div class="ln" style="top:813px;"></div>
-      <div class="it" style="top:838px;"><span class="ix">06</span><div class="nm"><em>Sonic</em> Branding</div><div class="dx">Audio identity that scales.</div></div>
-      <div class="ln" style="top:951px;"></div>
+      <div class="it" style="top:250px;"><div class="nm"><em>Sound</em> Design</div><div class="dx">Worlds, textures, ambience and effects.</div></div>
+      <div class="it" style="top:430px;"><div class="nm"><em>Original</em> Score</div><div class="dx">Themes, motifs, the emotional spine.</div></div>
+      <div class="it" style="top:610px;"><div class="nm"><em>Mix</em> &amp; Master</div><div class="dx">Dialogue edit, stereo and 5.1, broadcast-ready.</div></div>
+      <div class="it" style="top:790px;"><div class="nm"><em>Foley</em></div><div class="dx">Performance-based, on a custom stage.</div></div>
     </div>
 
     <span class="m-bl"></span>
     <span class="m-br"></span>
   </section></div></div></div>
 
-
-  <!-- ============ 03 — FEATURED WORK (divider) ============ -->
   <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="divider sound-artboard" data-screen-label="03 Featured Work">
-    <span class="m-tl"><b>XYZ</b> <span class="d">· Selected work</span></span>
-    <span class="m-tr"><span class="d">03 / 14</span></span>
+<span class="m-tl"><b>XYZ</b> <span class="d">· Selected work</span></span>
+    <span class="m-tr"><span class="d">03 / 11</span></span>
 
     <div class="abs" style="left:64px; bottom:80px; width:900px;">
       <div class="disp" style="font-size:248px; line-height:.84;"><em>Featured</em><br/>Work</div>
@@ -408,24 +362,19 @@
     <span class="m-br"></span>
   </section></div></div></div>
 
-
-  <!-- ============ 04 — FEATURED · 01 (Salomon) ============ -->
   <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="featured sound-artboard" data-screen-label="04 Featured · Salomon">
-    <span class="m-tl"><b>XYZ</b> <span class="d">· Selected work · 01</span></span>
-    <span class="m-tr"><span class="d">2026 · 04 / 14</span></span>
+<span class="m-tl"><b>XYZ</b> <span class="d">· Selected work · 01</span></span>
+    <span class="m-tr"><span class="d">2026 · 04 / 11</span></span>
 
-    <!-- left: title + director -->
-    <div class="abs fw-project-col" style="left:64px; top:300px; width:560px;">
-      <div class="lbl dim fw-proj-lbl">Project</div>
-      <div class="ital fw-brand">Salomon</div>
-      <div class="fw-title-slot">
-        <div class="disp fw-title-single"><em>SS26</em> Trailer</div>
-      </div>
-      <div class="lbl dim fw-dir-lbl">Director</div>
-      <div class="ital fw-dir">Anthony Princeleslie</div>
+    <!-- left: director + title, centered -->
+    <div class="abs" style="left:64px; top:303px; width:560px;">
+      <div class="lbl dim" style="font-size:11px;">Director</div>
+      <div class="ital" style="font-size:28px; margin-top:6px; margin-bottom:38px;">Anthony Princeleslie</div>
+      <div class="lbl" style="font-size:13px;">Salomon</div>
+      <div class="disp" style="font-size:100px; line-height:1.0; margin-top:14px; white-space:nowrap;"><em>SS26</em> Trailer</div>
     </div>
 
-    <!-- top-right hero video (SS26 trailer) — Work page player UI -->
+    <!-- top-right hero image -->
     <div class="abs photo deck-hero-wrap" id="fw-salomon-hero" style="left:700px; top:124px; width:1140px; height:612px;">
       <div class="deck-hero-inner">
         <video class="featured-hero-video" id="fw-salomon-video" playsinline preload="metadata"
@@ -433,7 +382,7 @@
           src="https://r2.vidzflow.com/source/214a3ae2-01ca-4593-8949-98a7191f6548.mp4"></video>
         <div class="deck-hero-player-ui" id="fw-salomon-player">
           <div class="deck-hero-volume-row">
-            <input type="range" class="deck-hero-volume-slider" id="fw-salomon-volume" min="0" max="100" value="100" aria-label="Volume">
+            <input type="range" class="deck-hero-volume-slider" id="fw-salomon-volume" min="0" max="100" value="50" aria-label="Volume">
           </div>
         </div>
       </div>
@@ -442,216 +391,39 @@
     <!-- full-width rule -->
     <div class="abs rule" style="left:64px; right:64px; top:786px;"></div>
 
-    <!-- bottom band: 3 columns -->
-    <div class="abs" style="left:64px; top:806px; width:560px;">
-      <div class="lbl dim fw-scope-header" style="font-size:10px; padding-bottom:9px; border-bottom:1px solid var(--line);">Build · Scope</div>
-      <div class="scopelist">
-        <span class="s">Trail Pulse</span><span class="s">Alpine Texture</span><span class="s">Peak Hype</span>
-        <span class="s">Broadcast Mix</span><span class="s">Cutdown Ladder</span><span class="s">Sonic Lockup</span>
-      </div>
+    <!-- bottom band -->
+    <div class="abs spec" style="left:64px; top:806px; width:500px;">
+      <div class="r"><div class="top"><span class="k">Deliverable</span><span class="v">60s Commercial</span></div></div>
+      <div class="r"><div class="top"><span class="k">Ready for</span><span class="v">Web · Social · Broadcast</span></div></div>
+      <div class="r" style="border-bottom:none;"><div class="top"><span class="k">Timeline</span><span class="v">2 weeks</span></div></div>
     </div>
-    <div class="abs spec" style="left:685px; top:806px; width:500px;">
-      <div class="r"><div class="top"><span class="k">Deliverable</span><span class="v">90s Hero + :15s Cutdowns</span></div></div>
-      <div class="r"><div class="top"><span class="k">Ready for</span><span class="v">Cinema · Stream · Retail</span></div></div>
-      <div class="r" style="border-bottom:none;"><div class="top"><span class="k">Timeline</span><span class="v">6 days · rush lane</span></div></div>
+
+    <div class="abs" style="left:806px; top:806px; width:400px;">
+      <div class="lbl dim" style="font-size:10px; padding-bottom:9px; border-bottom:1px solid var(--line);">Services</div>
+      <p class="copy" style="font-size:15px; line-height:1.8; margin:16px 0 0;">Sound Design<br/>Foley<br/>Mix</p>
     </div>
 
     <div class="abs" style="left:1266px; top:806px; width:570px;">
-      <div class="lbl dim fw-approach-header" style="font-size:10px; padding-bottom:9px; border-bottom:1px solid var(--line);">Approach</div>
-      <p class="copy" style="font-size:15px; line-height:1.55; margin:16px 0 0;">Vestibulum ante ipsum primis in faucibus — a forward-momentum sonic palette built around percussive trail hits and wide alpine beds, mixed for every cutdown variant.</p>
+      <div class="lbl dim" style="font-size:10px; padding-bottom:9px; border-bottom:1px solid var(--line);">Approach</div>
+      <p class="copy" style="font-size:15px; line-height:1.55; margin:16px 0 0;">Built the sonic identity end-to-end — hype-driven design, performance foley and a broadcast mix carried across every cutdown.</p>
     </div>
 
     <span class="m-bl"></span>
     <span class="m-br"></span>
   </section></div></div></div>
 
-
-  <!-- ============ 05 — FEATURED · 02 (Lucid Motors) ============ -->
-  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="featured sound-artboard" data-screen-label="05 Featured · Lucid Motors">
-    <span class="m-tl"><b>XYZ</b> <span class="d">· Selected work · 02</span></span>
-    <span class="m-tr"><span class="d">2025 · 05 / 14</span></span>
-
-    <!-- left: title + director -->
-    <div class="abs fw-project-col" style="left:64px; top:300px; width:560px;">
-      <div class="lbl dim fw-proj-lbl">Project</div>
-      <div class="ital fw-brand">Lucid Motors</div>
-      <div class="fw-title-slot">
-        <div class="disp fw-title-stack"><em>Compromise</em><br/>Nothing</div>
-      </div>
-      <div class="lbl dim fw-dir-lbl">Director</div>
-      <div class="ital fw-dir">Lachlan McClellan</div>
-    </div>
-
-    <!-- top-right hero video (Lucid commercial) — Work page player UI -->
-    <div class="abs photo deck-hero-wrap" id="fw-lucid-hero" style="left:700px; top:124px; width:1140px; height:612px;">
-      <div class="deck-hero-inner">
-        <video class="featured-hero-video" id="fw-lucid-video" playsinline preload="metadata"
-          poster="https://cdn.prod.website-files.com/69174740184591f142f019c1/69c0bed5350817015931b808_6c66aad7-7df3-4809-a8d7-1f92a377fa5e.mp4_snapshot_00.15.452.jpg"
-          src="https://r2.vidzflow.com/source/6c66aad7-7df3-4809-a8d7-1f92a377fa5e.mp4"></video>
-        <div class="deck-hero-player-ui" id="fw-lucid-player">
-          <div class="deck-hero-volume-row">
-            <input type="range" class="deck-hero-volume-slider" id="fw-lucid-volume" min="0" max="100" value="100" aria-label="Volume">
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- full-width rule -->
-    <div class="abs rule" style="left:64px; right:64px; top:786px;"></div>
-
-    <!-- bottom band: 3 columns -->
-    <div class="abs" style="left:64px; top:806px; width:560px;">
-      <div class="lbl dim fw-scope-header" style="font-size:10px; padding-bottom:9px; border-bottom:1px solid var(--line);">Build · Scope</div>
-      <div class="scopelist">
-        <span class="s">Engine Synth</span><span class="s">Cabin Detail</span><span class="s">Road Texture</span>
-        <span class="s">5.1 Print</span><span class="s">M&amp;E Stems</span><span class="s">Launch Suite</span>
-      </div>
-    </div>
-    <div class="abs spec" style="left:685px; top:806px; width:500px;">
-      <div class="r"><div class="top"><span class="k">Deliverable</span><span class="v">45s Launch Spot + :06s Bumpers</span></div></div>
-      <div class="r"><div class="top"><span class="k">Ready for</span><span class="v">Digital · OLA · Event Loop</span></div></div>
-      <div class="r" style="border-bottom:none;"><div class="top"><span class="k">Timeline</span><span class="v">11 days · phased review</span></div></div>
-    </div>
-
-    <div class="abs" style="left:1266px; top:806px; width:570px;">
-      <div class="lbl dim fw-approach-header" style="font-size:10px; padding-bottom:9px; border-bottom:1px solid var(--line);">Approach</div>
-      <p class="copy" style="font-size:15px; line-height:1.55; margin:16px 0 0;">Maecenas sed diam eget risus varius — electric-forward sound design with performance-matched cabin foley, tuned for premium playback on every launch surface.</p>
-    </div>
-
-    <span class="m-bl"></span>
-    <span class="m-br"></span>
-  </section></div></div></div>
-
-
-  <!-- ============ 06 — FEATURED · 03 (Beats · Open) ============ -->
-  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="featured sound-artboard" data-screen-label="06 Featured · Beats Open">
-    <span class="m-tl"><b>XYZ</b> <span class="d">· Selected work · 03</span></span>
-    <span class="m-tr"><span class="d">2025 · 06 / 14</span></span>
-
-    <!-- left: title + director -->
-    <div class="abs fw-project-col" style="left:64px; top:300px; width:560px;">
-      <div class="lbl dim fw-proj-lbl">Project</div>
-      <div class="ital fw-brand">Beats</div>
-      <div class="fw-title-slot">
-        <div class="disp fw-title-single"><em>Find your</em> Beat</div>
-      </div>
-      <div class="lbl dim fw-dir-lbl">Director</div>
-      <div class="ital fw-dir">Aidan Cullen</div>
-    </div>
-
-    <!-- top-right hero video (Beats Open) — Work page player UI -->
-    <div class="abs photo deck-hero-wrap" id="fw-beats-hero" style="left:700px; top:124px; width:1140px; height:612px;">
-      <div class="deck-hero-inner">
-        <video class="featured-hero-video" id="fw-beats-video" playsinline preload="metadata"
-          poster="https://cdn.prod.website-files.com/69174740184591f142f019c1/69c0c86dee76a67f51f3ccbb_17e77d71-3bca-4d42-8275-71deb05724d1.mp4_snapshot_00.11.787.jpg"
-          src="https://r2.vidzflow.com/source/17e77d71-3bca-4d42-8275-71deb05724d1.mp4"></video>
-        <div class="deck-hero-player-ui" id="fw-beats-player">
-          <div class="deck-hero-volume-row">
-            <input type="range" class="deck-hero-volume-slider" id="fw-beats-volume" min="0" max="100" value="100" aria-label="Volume">
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- full-width rule -->
-    <div class="abs rule" style="left:64px; right:64px; top:786px;"></div>
-
-    <!-- bottom band: 3 columns -->
-    <div class="abs" style="left:64px; top:806px; width:560px;">
-      <div class="lbl dim fw-scope-header" style="font-size:10px; padding-bottom:9px; border-bottom:1px solid var(--line);">Build · Scope</div>
-      <div class="scopelist">
-        <span class="s">Headphone Detail</span><span class="s">Urban Texture</span><span class="s">Beat Pulse</span>
-        <span class="s">Stereo Print</span><span class="s">Social Cutdowns</span><span class="s">Launch Suite</span>
-      </div>
-    </div>
-    <div class="abs spec" style="left:685px; top:806px; width:500px;">
-      <div class="r"><div class="top"><span class="k">Deliverable</span><span class="v">60s Hero + :15s / :06s Cutdowns</span></div></div>
-      <div class="r"><div class="top"><span class="k">Ready for</span><span class="v">Digital · Retail · OOH</span></div></div>
-      <div class="r" style="border-bottom:none;"><div class="top"><span class="k">Timeline</span><span class="v">9 days · launch lane</span></div></div>
-    </div>
-
-    <div class="abs" style="left:1266px; top:806px; width:570px;">
-      <div class="lbl dim fw-approach-header" style="font-size:10px; padding-bottom:9px; border-bottom:1px solid var(--line);">Approach</div>
-      <p class="copy" style="font-size:15px; line-height:1.55; margin:16px 0 0;">Pellentesque habitant morbi tristique — bass-forward sound design with tight headphone foley and rhythm-matched urban beds, mixed for punch on every Beats playback surface.</p>
-    </div>
-
-    <span class="m-bl"></span>
-    <span class="m-br"></span>
-  </section></div></div></div>
-
-
-  <!-- ============ 07 — FEATURED · 04 (Audi · F1 2026 Launch Film) ============ -->
-  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="featured sound-artboard" data-screen-label="07 Featured · Audi F1">
-    <span class="m-tl"><b>XYZ</b> <span class="d">· Selected work · 04</span></span>
-    <span class="m-tr"><span class="d">2026 · 07 / 16</span></span>
-
-    <!-- left: title + director -->
-    <a href="/work/sound/f1-2026-launch-film/" target="_blank" rel="noopener noreferrer" class="abs fw-project-col deck-link" style="left:64px; top:300px; width:560px; text-decoration:none; color:inherit;">
-      <div class="lbl dim fw-proj-lbl">Project</div>
-      <div class="ital fw-brand">Audi</div>
-      <div class="fw-title-slot">
-        <div class="disp fw-title-stack"><em>F1 2026</em><br/>Launch Film</div>
-      </div>
-      <div class="lbl dim fw-dir-lbl">Director</div>
-      <div class="ital fw-dir">XYZ Studios</div>
-      <div class="lbl dim" style="font-size:10px; margin-top:28px;">↗ &nbsp;View project</div>
-    </a>
-
-    <!-- top-right hero video (Audi F1 launch) — Work page player UI -->
-    <div class="abs photo deck-hero-wrap" id="fw-audi-hero" style="left:700px; top:124px; width:1140px; height:612px;">
-      <div class="deck-hero-inner">
-        <video class="featured-hero-video" id="fw-audi-video" playsinline preload="metadata"
-          poster="/work/sound/f1-2026-launch-film/poster.jpg"
-          src="https://r2.vidzflow.com/source/7c584065-5afb-43e4-9b67-ef1b5b6db304.mp4"></video>
-        <div class="deck-hero-player-ui" id="fw-audi-player">
-          <div class="deck-hero-volume-row">
-            <input type="range" class="deck-hero-volume-slider" id="fw-audi-volume" min="0" max="100" value="100" aria-label="Volume">
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- full-width rule -->
-    <div class="abs rule" style="left:64px; right:64px; top:786px;"></div>
-
-    <!-- bottom band: 3 columns -->
-    <div class="abs" style="left:64px; top:806px; width:560px;">
-      <div class="lbl dim fw-scope-header" style="font-size:10px; padding-bottom:9px; border-bottom:1px solid var(--line);">Build · Scope</div>
-      <div class="scopelist">
-        <span class="s">Power Unit Layer</span><span class="s">Pit Lane Texture</span><span class="s">Crowd Bed</span>
-        <span class="s">Broadcast Mix</span><span class="s">Launch Suite</span><span class="s">Engine Sync</span>
-      </div>
-    </div>
-    <div class="abs spec" style="left:685px; top:806px; width:500px;">
-      <div class="r"><div class="top"><span class="k">Deliverable</span><span class="v">60s Launch Film + Cutdowns</span></div></div>
-      <div class="r"><div class="top"><span class="k">Ready for</span><span class="v">Broadcast · Digital · Event</span></div></div>
-      <div class="r" style="border-bottom:none;"><div class="top"><span class="k">Timeline</span><span class="v">8 days · launch lane</span></div></div>
-    </div>
-
-    <div class="abs" style="left:1266px; top:806px; width:570px;">
-      <div class="lbl dim fw-approach-header" style="font-size:10px; padding-bottom:9px; border-bottom:1px solid var(--line);">Approach</div>
-      <p class="copy" style="font-size:15px; line-height:1.55; margin:16px 0 0;">Race-day energy built from power-unit layers and pit-lane detail — a forward-momentum sonic palette tuned for broadcast loudness and premium playback across every launch surface.</p>
-    </div>
-
-    <span class="m-bl"></span>
-    <span class="m-br"></span>
-  </section></div></div></div>
-
-
-  <!-- ============ 08 — SOUND DESIGN before/after ============ -->
   <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="ba sound-artboard" data-screen-label="08 Sound Design B/A">
-    <span class="m-tl"><b>XYZ</b> <span class="d">· Capability · Sound Design</span></span>
-    <span class="m-tr"><span class="d">08 / 14</span></span>
+<span class="m-tl"><b>XYZ</b> <span class="d">· Capability · Sound Design</span></span>
+    <span class="m-tr"><span class="d">05 / 11</span></span>
 
     <div class="abs" style="left:64px; top:122px;">
-      <div class="lbl" style="font-size:12px;">↗ Before → After</div>
       <div class="disp" style="font-size:104px; line-height:.9; margin-top:14px; white-space:nowrap;">Sound <em>Design.</em></div>
     </div>
     <div class="abs ital" style="left:884px; top:150px; width:892px; font-size:24px; line-height:1.3; color:var(--ink-dim);">From picture-lock to a layered, decisive world. We build textures, ambience and effects to carry every cut, then thin everything that distracts.</div>
 
     <!-- before column — meters -->
     <div class="abs" style="left:64px; top:330px; width:880px;">
-      <div class="slbl"><b>↑ Before</b><span class="d">Production Audio · SD · v01</span></div>
+      <div class="slbl"><b>↑ Before</b></div>
       <div class="tracks" style="margin-top:14px;">
         <div class="tk"><span class="nm">DX</span><span class="bar"><span class="seg" style="left:4%;width:24%"></span><span class="seg" style="left:36%;width:18%"></span><span class="seg" style="left:62%;width:30%"></span></span><span class="tm">02:14</span></div>
         <div class="tk"><span class="nm">SFX</span><span class="bar"><span class="seg" style="left:18%;width:8%"></span></span><span class="tm">—</span></div>
@@ -663,7 +435,7 @@
 
     <!-- after column — meters -->
     <div class="abs" style="left:976px; top:330px; width:880px;">
-      <div class="slbl"><b>→ After</b><span class="d">Designed · SD · v07</span></div>
+      <div class="slbl"><b>→ After</b><span class="d" style="margin-left:.55em; color:var(--muted);">· Sound Design</span></div>
       <div class="tracks" style="margin-top:14px;">
         <div class="tk"><span class="nm">DX</span><span class="bar"><span class="seg" style="left:4%;width:24%"></span><span class="seg" style="left:36%;width:18%"></span><span class="seg" style="left:62%;width:30%"></span></span><span class="tm">02:14</span></div>
         <div class="tk"><span class="nm">SFX</span><span class="bar"><span class="seg" style="left:6%;width:14%"></span><span class="seg" style="left:30%;width:8%"></span><span class="seg" style="left:48%;width:22%"></span><span class="seg" style="left:78%;width:14%"></span></span><span class="tm">02:14</span></div>
@@ -674,77 +446,78 @@
     </div>
 
     <!-- VIDEO frames -->
-    <div class="photo videoframe" style="position:absolute; left:64px; top:566px; width:880px; height:418px;">
-      <image-slot id="sd-before" placeholder="Before — scene clip / video"></image-slot>
-      <span class="vbadge">▶ Before · 02:14</span>
-      <div class="vcap"><b>↑ Before · Production Audio</b>Dialogue and a handful of camera-side effects. Flat — no ambience, no design pass.</div>
-    </div>
-    <div class="photo deck-hero-wrap" id="sd-after-hero" style="position:absolute; left:976px; top:566px; width:880px; height:418px;">
+    <div class="photo videoframe deck-hero-wrap" id="sd-before-hero" style="position:absolute; left:64px; top:566px; width:880px; height:418px;">
       <div class="deck-hero-inner">
-        <video class="featured-hero-video" id="sd-after-video" playsinline loop preload="metadata"
-          poster="/work/sound/after-every-man-jack/poster.jpg"
+        <video class="featured-hero-video" id="sd-before-video" playsinline loop preload="metadata"
           src="https://r2.vidzflow.com/source/bf7d427d-1973-4520-89a3-28b6bf670b18.mp4"></video>
-        <div class="deck-hero-player-ui" id="sd-after-player">
+        <div class="deck-hero-player-ui" id="sd-before-player">
           <div class="deck-hero-volume-row">
-            <input type="range" class="deck-hero-volume-slider" id="sd-after-volume" min="0" max="100" value="100" aria-label="Volume">
+            <input type="range" class="deck-hero-volume-slider" id="sd-before-volume" min="0" max="100" value="50" aria-label="Volume">
           </div>
         </div>
       </div>
-      <span class="vbadge">▶ After · 02:14</span>
-      <div class="vcap"><b>→ After · Designed</b>Ambience bed under every scene, performance-matched foley and designed effects, mix bus printed.</div>
+    </div>
+    <div class="photo videoframe deck-hero-wrap" id="sd-after-hero" style="position:absolute; left:976px; top:566px; width:880px; height:418px;">
+      <div class="deck-hero-inner">
+        <video class="featured-hero-video" id="sd-after-video" playsinline loop preload="metadata"
+          poster="/work/sound/after-every-man-jack/poster.jpg"
+          src="https://r2.vidzflow.com/source/5fb6c412-713f-4257-bd4c-d3ad16b8ff6f.mp4"></video>
+        <div class="deck-hero-player-ui" id="sd-after-player">
+          <div class="deck-hero-volume-row">
+            <input type="range" class="deck-hero-volume-slider" id="sd-after-volume" min="0" max="100" value="50" aria-label="Volume">
+          </div>
+        </div>
+      </div>
     </div>
 
     <span class="m-bl"></span>
     <span class="m-br"></span>
   </section></div></div></div>
 
-
-  <!-- ============ 09 — MIX before/after ============ -->
   <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="ba sound-artboard" data-screen-label="09 Mix B/A">
-    <span class="m-tl"><b>XYZ</b> <span class="d">· Capability · Mix &amp; Master</span></span>
-    <span class="m-tr"><span class="d">09 / 14</span></span>
+<span class="m-tl"><b>XYZ</b> <span class="d">· Capability · Mix &amp; Master</span></span>
+    <span class="m-tr"><span class="d">06 / 11</span></span>
 
     <div class="abs" style="left:64px; top:122px;">
-      <div class="lbl" style="font-size:12px;">↗ Before → After</div>
       <div class="disp" style="font-size:104px; line-height:.9; margin-top:14px; white-space:nowrap;">Mix &amp; <em>Master.</em></div>
     </div>
     <div class="abs ital" style="left:884px; top:150px; width:892px; font-size:24px; line-height:1.3; color:var(--ink-dim);">A rough cut of stems becomes a balanced, broadcast-ready master. Loudness inside spec, dialogue intelligible at every level, dynamics intact.</div>
 
-    <!-- before column — waveform -->
+    <!-- before column — waveform + readouts -->
     <div class="abs" style="left:64px; top:320px; width:880px;">
-      <div class="slbl"><b>↑ Non-mixed</b><span class="d">Pre-Mix · MX · v00</span></div>
+      <div class="slbl"><b>↑ Before</b></div>
       <div class="wave" style="height:118px; margin-top:12px;">
         <div class="b" style="height:60%"></div><div class="b q" style="height:14%"></div><div class="b" style="height:72%"></div><div class="b" style="height:90%"></div><div class="b q" style="height:8%"></div><div class="b" style="height:52%"></div><div class="b q" style="height:20%"></div><div class="b" style="height:84%"></div><div class="b" style="height:96%"></div><div class="b q" style="height:12%"></div><div class="b" style="height:46%"></div><div class="b" style="height:78%"></div><div class="b" style="height:94%"></div><div class="b q" style="height:10%"></div><div class="b" style="height:62%"></div><div class="b" style="height:88%"></div><div class="b q" style="height:6%"></div><div class="b" style="height:70%"></div><div class="b" style="height:54%"></div><div class="b q" style="height:18%"></div><div class="b" style="height:82%"></div><div class="b" style="height:36%"></div>
       </div>
     </div>
 
-    <!-- after column — waveform -->
+    <!-- after column — waveform + readouts -->
     <div class="abs" style="left:976px; top:320px; width:880px;">
-      <div class="slbl"><b>→ Timerland</b><span class="d">Final Mix · MX · v05</span></div>
+      <div class="slbl"><b>→ After</b><span class="d" style="margin-left:.55em; color:var(--muted);">· Mix</span></div>
       <div class="wave" style="height:118px; margin-top:12px;">
         <div class="b" style="height:62%"></div><div class="b q" style="height:54%"></div><div class="b" style="height:70%"></div><div class="b" style="height:76%"></div><div class="b q" style="height:48%"></div><div class="b" style="height:66%"></div><div class="b q" style="height:52%"></div><div class="b" style="height:72%"></div><div class="b" style="height:78%"></div><div class="b q" style="height:50%"></div><div class="b" style="height:64%"></div><div class="b" style="height:74%"></div><div class="b" style="height:80%"></div><div class="b q" style="height:46%"></div><div class="b" style="height:68%"></div><div class="b" style="height:76%"></div><div class="b q" style="height:42%"></div><div class="b" style="height:70%"></div><div class="b" style="height:66%"></div><div class="b q" style="height:54%"></div><div class="b" style="height:72%"></div><div class="b" style="height:60%"></div>
       </div>
     </div>
 
     <!-- VIDEO frames -->
-    <div class="photo deck-hero-wrap" id="mx-before-hero" style="position:absolute; left:64px; top:566px; width:880px; height:418px;">
+    <div class="photo videoframe deck-hero-wrap" id="mx-before-hero" style="position:absolute; left:64px; top:566px; width:880px; height:418px;">
       <div class="deck-hero-inner">
         <video class="featured-hero-video" id="mx-before-video" playsinline loop preload="metadata"
           src="https://r2.vidzflow.com/source/2c0ce742-618b-42c2-aa9a-fd7795bd429c.mp4"></video>
         <div class="deck-hero-player-ui" id="mx-before-player">
           <div class="deck-hero-volume-row">
-            <input type="range" class="deck-hero-volume-slider" id="mx-before-volume" min="0" max="100" value="100" aria-label="Volume">
+            <input type="range" class="deck-hero-volume-slider" id="mx-before-volume" min="0" max="100" value="50" aria-label="Volume">
           </div>
         </div>
       </div>
     </div>
-    <div class="photo deck-hero-wrap" id="mx-after-hero" style="position:absolute; left:976px; top:566px; width:880px; height:418px;">
+    <div class="photo videoframe deck-hero-wrap" id="mx-after-hero" style="position:absolute; left:976px; top:566px; width:880px; height:418px;">
       <div class="deck-hero-inner">
         <video class="featured-hero-video" id="mx-after-video" playsinline loop preload="metadata"
           src="https://r2.vidzflow.com/source/123bbb0c-4196-4103-a680-527652853702.mp4"></video>
         <div class="deck-hero-player-ui" id="mx-after-player">
           <div class="deck-hero-volume-row">
-            <input type="range" class="deck-hero-volume-slider" id="mx-after-volume" min="0" max="100" value="100" aria-label="Volume">
+            <input type="range" class="deck-hero-volume-slider" id="mx-after-volume" min="0" max="100" value="50" aria-label="Volume">
           </div>
         </div>
       </div>
@@ -754,181 +527,231 @@
     <span class="m-br"></span>
   </section></div></div></div>
 
-
-  <!-- ============ 11 — FOLEY ============ -->
-  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="show foley sound-artboard" data-screen-label="11 Foley">
-    <span class="m-tl"><b>XYZ</b> <span class="d">· Capability · Foley</span></span>
-    <span class="m-tr"><span class="d">11 / 15</span></span>
+  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="show foley sound-artboard" data-screen-label="10 Foley">
+<span class="m-tl"><b>XYZ</b> <span class="d">· Capability · Foley</span></span>
+    <span class="m-tr"><span class="d">07 / 11</span></span>
 
     <div class="abs" style="left:64px; top:130px; width:611px;">
-      <div class="lbl dim" style="font-size:12px;">Performance-based foley</div>
       <div class="disp" style="font-size:168px; line-height:.9; margin-top:18px;"><em>Foley,</em><br/>Performed.</div>
-      <div class="copy" style="margin-top:26px; max-width:36ch;">Footsteps, cloth, props and body interactions, recorded to picture on a <em>custom foley stage.</em> Performance matched to weight, rhythm and intent — every move on screen earns its sound.</div>
+      <div class="copy" style="margin-top:26px; max-width:36ch;">Footsteps, cloth, props and body interactions, recorded to picture on a <em>custom foley stage.</em> Everything's matched to weight, rhythm and intent, so every move on screen earns its sound.</div>
     </div>
 
-    <!-- 1 · Stage A — upper-right portrait -->
-    <div class="abs score-vid-wrap" style="left:1405px; top:132px; width:378px;">
-      <div class="photo deck-hero-wrap score-vid" style="height:499px;">
-        <div class="deck-hero-inner">
-          <video class="featured-hero-video" id="comp-foley-1" playsinline preload="metadata"
-            src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/wkPiuH4MIA/original"></video>
-        </div>
+    <div class="photo deck-hero-wrap" style="position:absolute; left:1405px; top:132px; width:378px; height:499px;">
+      <div class="deck-hero-inner">
+        <video class="featured-hero-video" id="comp-foley-1" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/wkPiuH4MIA/original"></video>
       </div>
     </div>
-
-    <!-- 2 · Surface pit — upper-center portrait -->
-    <div class="abs score-vid-wrap" style="left:909px; top:237px; width:290px;">
-      <div class="photo deck-hero-wrap score-vid" style="height:361px;">
-        <div class="deck-hero-inner">
-          <video class="featured-hero-video" id="comp-foley-2" playsinline preload="metadata"
-            src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/KAM5isc42w/original"></video>
-        </div>
+    <div class="photo deck-hero-wrap" style="position:absolute; left:909px; top:237px; width:290px; height:361px;">
+      <div class="deck-hero-inner">
+        <video class="featured-hero-video" id="comp-foley-2" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/KAM5isc42w/original"></video>
       </div>
     </div>
-
-    <!-- 3 · Cloth — lower-left landscape -->
-    <div class="abs score-vid-wrap" style="left:540px; top:620px; width:306px;">
-      <div class="photo deck-hero-wrap score-vid" style="height:220px;">
-        <div class="deck-hero-inner">
-          <video class="featured-hero-video" id="comp-foley-3" playsinline preload="metadata"
-            src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/XxdMFelNin/original"></video>
-        </div>
+    <div class="photo deck-hero-wrap" style="position:absolute; left:540px; top:620px; width:306px; height:220px;">
+      <div class="deck-hero-inner">
+        <video class="featured-hero-video" id="comp-foley-3" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/XxdMFelNin/original"></video>
       </div>
     </div>
-
-    <!-- 4 · Props — bottom-left portrait -->
-    <div class="abs score-vid-wrap" style="left:152px; top:692px; width:220px;">
-      <div class="photo deck-hero-wrap score-vid" style="height:225px;">
-        <div class="deck-hero-inner">
-          <video class="featured-hero-video" id="comp-foley-4" playsinline preload="metadata"
-            src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/FsvlQ95RJV/original"></video>
-        </div>
+    <div class="photo deck-hero-wrap" style="position:absolute; left:152px; top:692px; width:220px; height:225px;">
+      <div class="deck-hero-inner">
+        <video class="featured-hero-video" id="comp-foley-4" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/FsvlQ95RJV/original"></video>
       </div>
     </div>
-
-    <!-- 5 · Footwear — bottom-center landscape -->
-    <div class="abs score-vid-wrap" style="left:1037px; top:688px; width:471px;">
-      <div class="photo deck-hero-wrap score-vid" style="height:259px;">
-        <div class="deck-hero-inner">
-          <video class="featured-hero-video" id="comp-foley-5" playsinline preload="metadata"
-            src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/7keGXC6gVK/original"></video>
-        </div>
+    <div class="photo deck-hero-wrap" style="position:absolute; left:1037px; top:688px; width:471px; height:259px;">
+      <div class="deck-hero-inner">
+        <video class="featured-hero-video" id="comp-foley-5" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/7keGXC6gVK/original"></video>
       </div>
     </div>
 
     <div id="comp-foley-player" class="abs" style="width:0;height:0;overflow:hidden;opacity:0;pointer-events:none;" aria-hidden="true">
-      <input type="range" id="comp-foley-volume" min="0" max="100" value="100" tabindex="-1">
-    </div>
-
-    <div class="pipe">
-      <span class="step"><b>01</b> Spotting</span><span class="arrow">→</span>
-      <span class="step"><b>02</b> Surface &amp; Prop Build</span><span class="arrow">→</span>
-      <span class="step"><b>03</b> Capture</span><span class="arrow">→</span>
-      <span class="step"><b>04</b> Editorial</span><span class="arrow">→</span>
-      <span class="step"><b>05</b> Delivery (FOL)</span>
+      <input type="range" id="comp-foley-volume" min="0" max="100" value="50" tabindex="-1">
     </div>
 
     <span class="m-bl"></span>
     <span class="m-br"></span>
   </section></div></div></div>
 
+  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="show compose sound-artboard" data-screen-label="11 Compose">
+<span class="m-tl"><b>XYZ</b> <span class="d">· Capability · Original Score</span></span>
+    <span class="m-tr"><span class="d">08 / 11</span></span>
 
-  <!-- ============ 12 — SCORE ============ -->
-  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="show compose sound-artboard" data-screen-label="12 Compose">
-    <span class="m-tl"><b>XYZ</b> <span class="d">· Capability · Original Score</span></span>
-    <span class="m-tr"><span class="d">12 / 15</span></span>
-
-    <div class="abs" style="left:64px; top:85px; width:611px;">
-      <div class="disp" style="font-size:168px; line-height:.9; white-space:nowrap;"><em>Score,</em> Written.</div>
-      <div class="copy" style="margin-top:26px; max-width:580px;">Music written to picture — themes, motifs and the <em>emotional spine.</em> Composed in-house with a small ensemble of session players, built bespoke around the world the film lives in.</div>
+    <div class="abs" style="left:64px; top:130px; width:611px;">
+      <div class="disp" style="font-size:168px; line-height:.9; margin-top:18px;"><em>Score,</em><br/>Written.</div>
+      <div class="copy" style="margin-top:26px; max-width:36ch;">Music written to picture: themes, motifs and the <em>emotional spine.</em> We score in-house with a small ensemble of session players, built around the world the film lives in.</div>
     </div>
 
-    <!-- 1 · AI Awareness — bottom-left landscape -->
-    <div class="abs score-vid-wrap" style="left:124px; top:457px; width:478px;">
-      <span class="cap">AI Awareness</span>
-      <div class="photo deck-hero-wrap score-vid" style="height:363px;">
-        <div class="deck-hero-inner">
-          <video class="featured-hero-video" id="comp-score-1" playsinline preload="metadata"
-            src="/work/sound/ai-awareness/video.mp4"></video>
-        </div>
+    <div class="photo deck-hero-wrap" style="position:absolute; left:1405px; top:132px; width:378px; height:499px;">
+      <div class="deck-hero-inner">
+        <video class="featured-hero-video" id="comp-score-1" playsinline preload="metadata" src="/work/sound/ai-awareness/video.mp4"></video>
       </div>
     </div>
-
-    <!-- 2 · Viled — upper-center portrait -->
-    <div class="abs score-vid-wrap" style="left:865px; top:187px; width:257px;">
-      <span class="cap">Viled</span>
-      <div class="photo deck-hero-wrap score-vid" style="height:351px;">
-        <div class="deck-hero-inner">
-          <video class="featured-hero-video" id="comp-score-2" playsinline preload="metadata"
-            src="https://binsta.dev/api/v1/files/9QPdNWnR8T"></video>
-        </div>
+    <div class="photo deck-hero-wrap" style="position:absolute; left:909px; top:237px; width:290px; height:361px;">
+      <div class="deck-hero-inner">
+        <video class="featured-hero-video" id="comp-score-2" playsinline preload="metadata" src="https://binsta.dev/api/v1/files/9QPdNWnR8T"></video>
       </div>
     </div>
-
-    <!-- 3 · Adidas — top-right landscape -->
-    <div class="abs score-vid-wrap" style="left:1290px; top:121px; width:478px;">
-      <span class="cap">Adidas</span>
-      <div class="photo deck-hero-wrap score-vid" style="height:361px;">
-        <div class="deck-hero-inner">
-          <video class="featured-hero-video" id="comp-score-3" playsinline preload="metadata"
-            src="https://binsta.dev/api/v1/files/6x2apeG8HQ"></video>
-        </div>
+    <div class="photo deck-hero-wrap" style="position:absolute; left:540px; top:620px; width:306px; height:220px;">
+      <div class="deck-hero-inner">
+        <video class="featured-hero-video" id="comp-score-3" playsinline preload="metadata" src="https://binsta.dev/api/v1/files/6x2apeG8HQ"></video>
       </div>
     </div>
-
-    <!-- 4 · LMS — bottom-center landscape -->
-    <div class="abs score-vid-wrap" style="left:713px; top:657px; width:428px;">
-      <span class="cap">LMS</span>
-      <div class="photo deck-hero-wrap score-vid" style="height:242px;">
-        <div class="deck-hero-inner">
-          <video class="featured-hero-video" id="comp-score-4" playsinline preload="metadata"
-            src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/YFUMKYDZ4b/original"></video>
-        </div>
-      </div>
-    </div>
-
-    <!-- 5 · New Era F1 — bottom-right portrait -->
-    <div class="abs score-vid-wrap" style="left:1378px; top:522px; width:266px;">
-      <span class="cap">New Era F1</span>
-      <div class="photo deck-hero-wrap score-vid" style="height:436px;">
-        <div class="deck-hero-inner">
-          <video class="featured-hero-video" id="comp-score-5" playsinline preload="metadata"
-            src="https://r2.vidzflow.com/source/5b0d552d-9e53-4967-9d5b-15a5deb86100.mp4"></video>
-        </div>
+    <div class="photo deck-hero-wrap" style="position:absolute; left:1037px; top:688px; width:471px; height:259px;">
+      <div class="deck-hero-inner">
+        <video class="featured-hero-video" id="comp-score-4" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/YFUMKYDZ4b/original"></video>
       </div>
     </div>
 
     <div id="comp-score-player" class="abs" style="width:0;height:0;overflow:hidden;opacity:0;pointer-events:none;" aria-hidden="true">
-      <input type="range" id="comp-score-volume" min="0" max="100" value="100" tabindex="-1">
+      <input type="range" id="comp-score-volume" min="0" max="100" value="50" tabindex="-1">
     </div>
+
+    <span class="m-bl"></span>
+    <span class="m-br"></span>
   </section></div></div></div>
 
+  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="show foley-score-h sound-artboard" data-screen-label="Foley + Score · Horizontal">
+<span class="m-tl"><b>XYZ</b> <span class="d">· Capability · Foley &amp; Score</span></span>
+    <span class="m-tr"><span class="d">09 / 13</span></span>
 
-  <!-- ============ 13 — PRICING ============ -->
-  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="pricing sound-artboard" data-screen-label="13 Pricing">
-    <span class="m-tl"><b>XYZ</b> <span class="d">· Packages</span></span>
-    <span class="m-tr"><span class="d">13 / 15</span></span>
+    <div class="abs" style="left:64px; top:540px; width:1792px; height:1px; background:var(--line);"></div>
+
+    <div class="abs" style="left:64px; top:150px; width:600px;">
+      <div class="eyb">01 — Foley</div>
+      <div class="disp" style="font-size:96px; line-height:.92; margin-top:14px;"><em>Foley,</em><br/>Performed.</div>
+      <div class="copy" style="margin-top:20px; max-width:36ch;">Footsteps, cloth, props and body interactions, recorded to picture on a <em>custom foley stage.</em> Matched to weight, rhythm and intent.</div>
+    </div>
+    <div class="photo deck-hero-wrap" style="position:absolute; left:548px; top:160px; width:212px; height:275px;">
+      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsh-foley-1" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/wkPiuH4MIA/original"></video></div>
+    </div>
+    <div class="photo deck-hero-wrap" style="position:absolute; left:810px; top:150px; width:260px; height:165px;">
+      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsh-foley-2" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/KAM5isc42w/original"></video></div>
+    </div>
+    <div class="photo deck-hero-wrap" style="position:absolute; left:810px; top:352px; width:205px; height:160px;">
+      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsh-foley-3" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/XxdMFelNin/original"></video></div>
+    </div>
+    <div class="photo deck-hero-wrap" style="position:absolute; left:1140px; top:205px; width:215px; height:255px;">
+      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsh-foley-4" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/FsvlQ95RJV/original"></video></div>
+    </div>
+    <div class="photo deck-hero-wrap" style="position:absolute; left:1430px; top:160px; width:396px; height:300px;">
+      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsh-foley-5" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/7keGXC6gVK/original"></video></div>
+    </div>
+
+    <div class="abs" style="left:64px; top:578px; width:600px;">
+      <div class="eyb">02 — Original Score</div>
+      <div class="disp" style="font-size:96px; line-height:.92; margin-top:14px;"><em>Score,</em><br/>Written.</div>
+      <div class="copy" style="margin-top:20px; max-width:36ch;">Music written to picture: themes, motifs and the <em>emotional spine.</em> Scored in-house with a small ensemble of session players.</div>
+    </div>
+    <div class="photo deck-hero-wrap" style="position:absolute; left:548px; top:588px; width:212px; height:275px;">
+      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsh-score-1" playsinline preload="metadata" src="/work/sound/ai-awareness/video.mp4"></video></div>
+    </div>
+    <div class="photo deck-hero-wrap" style="position:absolute; left:810px; top:578px; width:260px; height:165px;">
+      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsh-score-2" playsinline preload="metadata" src="https://binsta.dev/api/v1/files/9QPdNWnR8T"></video></div>
+    </div>
+    <div class="photo deck-hero-wrap" style="position:absolute; left:810px; top:780px; width:205px; height:160px;">
+      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsh-score-3" playsinline preload="metadata" src="https://binsta.dev/api/v1/files/6x2apeG8HQ"></video></div>
+    </div>
+    <div class="photo deck-hero-wrap" style="position:absolute; left:1140px; top:633px; width:215px; height:255px;">
+      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsh-score-4" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/YFUMKYDZ4b/original"></video></div>
+    </div>
+    <div class="photo deck-hero-wrap" style="position:absolute; left:1430px; top:588px; width:396px; height:300px;">
+      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsh-score-5" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/YFUMKYDZ4b/original"></video></div>
+    </div>
+
+    <div id="fsh-foley-player" class="abs" style="width:0;height:0;overflow:hidden;opacity:0;pointer-events:none;" aria-hidden="true">
+      <input type="range" id="fsh-foley-volume" min="0" max="100" value="50" tabindex="-1">
+    </div>
+    <div id="fsh-score-player" class="abs" style="width:0;height:0;overflow:hidden;opacity:0;pointer-events:none;" aria-hidden="true">
+      <input type="range" id="fsh-score-volume" min="0" max="100" value="50" tabindex="-1">
+    </div>
+
+    <span class="m-bl"></span>
+    <span class="m-br"></span>
+  </section></div></div></div>
+
+  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="show foley-score-v sound-artboard" data-screen-label="Foley + Score · Vertical">
+<span class="m-tl"><b>XYZ</b> <span class="d">· Capability · Foley &amp; Score</span></span>
+    <span class="m-tr"><span class="d">10 / 13</span></span>
+
+    <div class="abs" style="left:960px; top:130px; width:1px; height:820px; background:var(--line);"></div>
+
+    <div class="abs" style="left:64px; top:150px; width:380px;">
+      <div class="eyb">01 — Foley</div>
+      <div class="disp" style="font-size:84px; line-height:.92; margin-top:14px;"><em>Foley,</em><br/>Performed.</div>
+    </div>
+    <div class="copy abs" style="left:470px; top:198px; width:332px;">Footsteps, cloth, props and body interactions, recorded to picture on a <em>custom foley stage.</em> Matched to weight, rhythm and intent.</div>
+    <div class="photo deck-hero-wrap" style="position:absolute; left:64px; top:380px; width:240px; height:262px;">
+      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsv-foley-1" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/wkPiuH4MIA/original"></video></div>
+    </div>
+    <div class="photo deck-hero-wrap" style="position:absolute; left:356px; top:404px; width:188px; height:150px;">
+      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsv-foley-2" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/KAM5isc42w/original"></video></div>
+    </div>
+    <div class="photo deck-hero-wrap" style="position:absolute; left:392px; top:664px; width:216px; height:250px;">
+      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsv-foley-3" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/XxdMFelNin/original"></video></div>
+    </div>
+    <div class="photo deck-hero-wrap" style="position:absolute; left:692px; top:458px; width:204px; height:340px;">
+      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsv-foley-4" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/FsvlQ95RJV/original"></video></div>
+    </div>
+    <div class="photo deck-hero-wrap" style="position:absolute; left:96px; top:686px; width:240px; height:170px;">
+      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsv-foley-5" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/7keGXC6gVK/original"></video></div>
+    </div>
+
+    <div class="abs" style="left:1024px; top:150px; width:380px;">
+      <div class="eyb">02 — Original Score</div>
+      <div class="disp" style="font-size:84px; line-height:.92; margin-top:14px;"><em>Score,</em><br/>Written.</div>
+    </div>
+    <div class="copy abs" style="left:1430px; top:198px; width:332px;">Music written to picture: themes, motifs and the <em>emotional spine.</em> Scored in-house with a small ensemble of session players.</div>
+    <div class="photo deck-hero-wrap" style="position:absolute; left:1024px; top:380px; width:240px; height:262px;">
+      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsv-score-1" playsinline preload="metadata" src="/work/sound/ai-awareness/video.mp4"></video></div>
+    </div>
+    <div class="photo deck-hero-wrap" style="position:absolute; left:1316px; top:404px; width:188px; height:150px;">
+      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsv-score-2" playsinline preload="metadata" src="https://binsta.dev/api/v1/files/9QPdNWnR8T"></video></div>
+    </div>
+    <div class="photo deck-hero-wrap" style="position:absolute; left:1352px; top:664px; width:216px; height:250px;">
+      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsv-score-3" playsinline preload="metadata" src="https://binsta.dev/api/v1/files/6x2apeG8HQ"></video></div>
+    </div>
+    <div class="photo deck-hero-wrap" style="position:absolute; left:1652px; top:458px; width:204px; height:340px;">
+      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsv-score-4" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/YFUMKYDZ4b/original"></video></div>
+    </div>
+    <div class="photo deck-hero-wrap" style="position:absolute; left:1056px; top:686px; width:240px; height:170px;">
+      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsv-score-5" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/YFUMKYDZ4b/original"></video></div>
+    </div>
+
+    <div id="fsv-foley-player" class="abs" style="width:0;height:0;overflow:hidden;opacity:0;pointer-events:none;" aria-hidden="true">
+      <input type="range" id="fsv-foley-volume" min="0" max="100" value="50" tabindex="-1">
+    </div>
+    <div id="fsv-score-player" class="abs" style="width:0;height:0;overflow:hidden;opacity:0;pointer-events:none;" aria-hidden="true">
+      <input type="range" id="fsv-score-volume" min="0" max="100" value="50" tabindex="-1">
+    </div>
+
+    <span class="m-bl"></span>
+    <span class="m-br"></span>
+  </section></div></div></div>
+
+  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="pricing sound-artboard" data-screen-label="12 Pricing">
+<span class="m-tl"><b>XYZ</b> <span class="d">· Packages</span></span>
+    <span class="m-tr"><span class="d">11 / 13</span></span>
 
     <div class="abs" style="left:64px; top:130px; width:680px;">
-      <div class="lbl" style="font-size:12px; margin-bottom:18px;">Three points of entry</div>
-      <div class="disp" style="font-size:168px; line-height:.9;">Packages,<br/><em>simply.</em></div>
-      <div class="ital" style="font-size:22px; line-height:1.3; color:var(--ink-dim); margin-top:28px; margin-left:160px; max-width:30ch;">Pick the one that matches the work — <span style="font-family:var(--sans); font-style:normal; font-weight:500; color:var(--ink);">every package can be tailored</span>, and pieces can be bought á la carte. All prices are starting points.</div>
+      <div class="disp" style="font-size:168px; line-height:1.04;">Ways to<br/><em>work.</em></div>
+      <div class="ital" style="font-size:22px; line-height:1.35; color:var(--ink-dim); margin-top:64px; margin-left:88px; max-width:44ch;">Pick the one that matches the work. <span style="font-family:var(--sans); font-style:normal; font-weight:500; color:var(--ink);">Every package can be tailored to the cut.</span> All prices are starting points.</div>
     </div>
 
-    <div class="abs rule" style="left:788px; right:64px; top:130px;"></div>
-    <div class="tier" style="top:160px;">
+
+    <!-- highlight panel behind the recommended tier -->
+    <div class="abs feathl" style="left:760px; right:36px; top:468px; height:192px;"></div>
+
+    <div class="tier" style="top:280px;">
       <span class="ix">01 · Lean</span>
-      <div class="nm"><em>Design</em> Pass<span class="desc">A single, focused sound design pass on a finished cut.</span><span class="incl">Spotting + Design · Stereo print · 2 revision rounds</span></div>
+      <div class="nm"><em>Sound</em> Design<span class="desc">A single, focused sound design pass on a finished cut.</span></div>
       <div class="price"><span class="from">From</span><span class="num">$3.5k</span><span class="for">Shorts · 30–90s</span></div>
     </div>
-    <div class="tier feature" style="top:440px;">
+    <div class="tier feature" style="top:508px;">
       <span class="ix">02 · Recommended</span>
-      <div class="nm"><em>Full</em> Post<span class="desc">End-to-end audio post — design, foley, dialogue and mix.</span><span class="incl">Design + Foley · Dialogue · Stereo + 5.1 · M&amp;E + Stems · 4 rev rounds</span></div>
+      <div class="nm"><em>Full</em> Audio Post<span class="desc">End-to-end audio post — design, foley, dialogue and mix.</span></div>
       <div class="price"><span class="from">From</span><span class="num">$12k</span><span class="for">Brand films · Commercials</span></div>
     </div>
-    <div class="tier" style="top:720px; border-bottom:none;">
+    <div class="tier" style="top:736px; border-bottom:none;">
       <span class="ix">03 · Complete</span>
-      <div class="nm"><em>Score</em> &amp; Post<span class="desc">Original score and the full post pipeline, built together.</span><span class="incl">Original composition · Live tracking · Everything in Full Post</span></div>
+      <div class="nm"><em>Original</em> Score + Audio Post<span class="desc">Original score and the full post pipeline, built together.</span></div>
       <div class="price"><span class="from">From</span><span class="num">$24k</span><span class="for">Features · Long-form</span></div>
     </div>
 
@@ -936,95 +759,72 @@
     <span class="m-br"></span>
   </section></div></div></div>
 
+  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="crew sound-artboard" data-screen-label="13 Crew">
+<span class="m-tl"><b>XYZ</b> <span class="d">· Crew</span></span>
+    <span class="m-tr"><span class="d">12 / 13</span></span>
 
-  <!-- ============ 14 — CREW ============ -->
-  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="crew sound-artboard" data-screen-label="14 Crew">
-    <span class="m-tl"><b>XYZ</b> <span class="d">· Crew</span></span>
-    <span class="m-tr"><span class="d">14 / 15</span></span>
-
-    <div class="abs" style="left:64px; top:130px; width:611px;">
-      <div class="lbl dim" style="font-size:12px;">The team</div>
-      <div class="disp" style="font-size:200px; line-height:.9; margin-top:18px;">The <em>crew.</em></div>
-      <div class="copy" style="margin-top:24px; max-width:34ch;">One producer fronts the project. Specialists move through the work in sequence — <em>the same hands, every time.</em></div>
+    <!-- restrained headline, left -->
+    <div class="abs" style="left:64px; top:300px; width:680px;">
+      <div class="disp" style="font-size:152px; line-height:.9; margin-top:0;">The<br/><em style="margin-left:64px;">team.</em></div>
+      <p class="copy" style="margin:48px 0 0 56px; font-size:18px; line-height:1.62; max-width:34ch;">Under XYZ, every project is carried by the same core team from first call to final master, so <em>nothing gets lost in translation.</em></p>
     </div>
 
-    <div class="crewgrp" style="left:768px; top:188px;">
-      <div class="glabel"><span class="ix">A</span> <span class="t1">Team 1</span> · Design · Mix · Foley</div>
-      <div class="row">
-        <div class="p">
-          <div class="role">01 / Sound Designer</div>
-          <div class="nm">Ken Palsm</div>
-          <div class="bio">Owns the sonic world of every project — spots picture, designs to it, hands off a clean session.</div>
-        </div>
-        <div class="p">
-          <div class="role">02 / Mix Engineer</div>
-          <div class="nm">William</div>
-          <div class="bio">Delivers final mix in 5.1 and stereo. Stems, M&amp;E and masters to spec — broadcast-ready every time.</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="crewgrp" style="left:1170px; top:560px; width:690px;">
-      <div class="glabel"><span class="ix">B</span> <span class="t1">Team 2</span> · Composition · Arrangement</div>
-      <div class="row">
-        <div class="p">
-          <div class="role">03 / Composer</div>
-          <div class="nm">Ady</div>
-          <div class="bio">Writes and produces score to picture — themes, motifs and the emotional spine.</div>
-        </div>
-        <div class="p">
-          <div class="role">04 / Composer</div>
-          <div class="nm">Yanker</div>
-          <div class="bio">Arrangement, voicing and tracking — works alongside Ady through the score build.</div>
-        </div>
-      </div>
+    <!-- credit roster, right — index · name · discipline · based -->
+    <div class="abs roster" style="left:760px; top:50%; transform:translateY(-50%); width:1096px;">
+      <div class="rhead"><span>Name</span><span>Discipline</span><span class="rl">Based</span></div>
+      <div class="row"><span class="rn">Ken Palsm</span><span class="rr">Sound Designer · Mixer</span><span class="rl">North America</span></div>
+      <div class="row"><span class="rn">William Landry</span><span class="rr">Mix Engineer</span><span class="rl">North America</span></div>
+      <div class="row"><span class="rn">Daryn Ady</span><span class="rr">Sound · Mix · Composer</span><span class="rl">Europe</span></div>
+      <div class="row"><span class="rn">Darmen Yesnazarov</span><span class="rr">Sound · Mix · Composer</span><span class="rl">Europe</span></div>
+      <div class="row"><span class="rn">Gregor Gammaro</span><span class="rr">Sound Designer · Mixer</span><span class="rl">Europe</span></div>
     </div>
 
     <span class="m-bl"></span>
     <span class="m-br"></span>
   </section></div></div></div>
 
+  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="contact sound-artboard" data-screen-label="14 Contact">
+<span class="m-tl"><b>XYZ</b> <span class="d">· Contact</span></span>
+    <span class="m-tr"><span class="d">13 / 13</span></span>
 
-  <!-- ============ 15 — CONTACT ============ -->
-  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="contact sound-artboard" data-screen-label="15 Contact">
-    <span class="m-tl"><b>XYZ</b> <span class="d">· Contact</span></span>
-    <span class="m-tr"><span class="d">15 / 15</span></span>
+    <!-- top hairline + centered tagline -->
+    <div class="abs" style="left:0; right:0; top:46px; text-align:center; font-family:var(--mono); font-size:13px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); font-weight:500;">Sound · Post-Production</div>
+    <div class="abs rule" style="left:64px; right:64px; top:120px;"></div>
 
-    <div class="abs" style="left:64px; top:120px; width:1180px;">
-      <div class="disp" style="font-size:320px; line-height:.84; white-space:nowrap;"><em>Let's</em><br/>make sound.</div>
+    <!-- info band -->
+    <div class="abs cx" style="left:64px; top:300px; width:420px;">
+      <div class="cl lbl-mono">Reach</div>
+      <a class="cl deck-link" href="mailto:inquiries@xyzstudios.co" target="_blank" rel="noopener noreferrer" style="margin-bottom:6px;">inquiries@xyzstudios.co</a>
+      <a class="cl dim deck-link" href="https://xyzstudios.co/sound" target="_blank" rel="noopener noreferrer">xyzstudios.co/sound</a>
+      <div class="cl dim" style="margin-top:26px; font-size:16px; white-space:nowrap;">Suite 3400, 10180 – 101 Street, Edmonton, Alberta T5J 3S4, Canada.</div>
     </div>
 
-    <div class="abs rule" style="left:64px; right:64px; top:753px;"></div>
-
-    <div class="cblock" style="left:64px; top:792px; width:560px;">
-      <div class="k">Email</div>
-      <div class="v"><a href="/contact/" target="_blank" rel="noopener noreferrer" class="deck-link">inquiries@xyzstudios.co</a></div>
-      <div class="s">For new project enquiries</div>
-      <div class="k" style="margin-top:24px;">Website</div>
-      <div class="v"><a href="https://www.xyzstudios.co/" target="_blank" rel="noopener noreferrer" class="deck-link">xyzstudios.co</a></div>
-      <div class="s">/sound</div>
+    <div class="abs cx" style="left:760px; top:300px; width:460px;">
+      <div class="cl lbl-mono">Social</div>
+      <a class="cl deck-link" href="https://www.instagram.com/xyz__studios/" target="_blank" rel="noopener noreferrer" style="margin-bottom:4px;">Instagram</a>
+      <a class="cl deck-link" href="https://www.linkedin.com/company/xyzstudioss/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
     </div>
 
-    <div class="cblock" style="left:691px; top:792px; width:540px;">
-      <div class="k">Co-Founder · Post Producer</div>
-      <div class="v em">Samry Yussuf</div>
-      <div class="s"><a href="mailto:samry@xyzstudios.co" class="deck-link">samry@xyzstudios.co</a></div>
-      <div class="k" style="margin-top:24px;">Co-Founder · Post Producer</div>
-      <div class="v em">Dris Yousif</div>
-      <div class="s"><a href="mailto:dris@xyzstudios.co" class="deck-link">dris@xyzstudios.co</a></div>
+    <div class="abs cx" style="left:1216px; top:300px; width:460px;">
+      <div class="cl lbl-mono">See Also</div>
+      <a class="cl deck-link" href="/capabilities/vfx/" target="_blank" rel="noopener noreferrer">↗ VFX Capabilities Deck</a>
+      <div class="cl dim" style="margin-top:6px; font-size:15px; line-height:1.5;">Visual effects, compositing &amp; finishing.</div>
     </div>
 
-    <div class="cblock" style="left:1296px; top:792px; width:540px;">
-      <div class="k">Instagram</div>
-      <div class="v"><a href="https://www.instagram.com/xyzstudios.sound/" target="_blank" rel="noopener noreferrer" class="deck-link">@xyzstudios.sound</a></div>
-      <div class="k" style="margin-top:24px;">LinkedIn</div>
-      <div class="v"><a href="https://www.linkedin.com/company/xyzstudioss/" target="_blank" rel="noopener noreferrer" class="deck-link">XYZ Studios — Sound</a></div>
+
+    <!-- huge wordmark — translateX centers oversized type for even L/R bleed -->
+    <div class="abs wordmark-wrap">
+      <div class="wordmark">XYZ STUDIOS</div>
     </div>
+
+    <!-- bottom hairline + footer -->
+    <div class="abs rule" style="left:64px; right:64px; bottom:94px;"></div>
+    <span class="m-bl">© 2026 <span class="d">XYZ Studios</span></span>
+    <span class="m-br">Available worldwide</span>
 
     <span class="m-bl"></span>
     <span class="m-br"></span>
   </section></div></div></div>
-
 </div>
 <div id="deck-slide-number" aria-hidden="true"></div>
 <div id="deck-slide-label" aria-hidden="true"></div>
@@ -1035,11 +835,10 @@
 </div>
 
 <div id="pj-cursor" aria-hidden="true">
-  <svg id="pj-cursor-svg" width="18" height="18" viewBox="0 0 24 24" fill="white">
+  <svg id="pj-cursor-svg" width="18" height="18" viewBox="0 0 24 24" fill="#f0ece1">
     <path id="pj-cursor-path" d="M8 5v14l11-7z"/>
   </svg>
 </div>
-
 
 <script src="/capabilities/sound/scripts/image-slot.js"></script>
 <script src="/capabilities/sound/scripts/deck-hero-player.js"></script>
@@ -1248,6 +1047,8 @@ function goTo(idx) {
   if (fromSection && fromSection.classList.contains('cover')) setCoverLabelSuppressed(true);
   syncFixedSlideNumber(idx);
   syncFixedSlideLabel(idx);
+  positionSlideNumber();
+  positionSlideLabel();
 
   to.style.zIndex = '2';
   from.style.zIndex = '1';
@@ -1320,23 +1121,9 @@ deckHeroPlayers = [
     cursorPathId: 'pj-cursor-path'
   }),
   initDeckHeroPlayerSafe({
-    videoId: 'fw-lucid-video',
-    playerId: 'fw-lucid-player',
-    volumeId: 'fw-lucid-volume',
-    cursorId: 'pj-cursor',
-    cursorPathId: 'pj-cursor-path'
-  }),
-  initDeckHeroPlayerSafe({
-    videoId: 'fw-beats-video',
-    playerId: 'fw-beats-player',
-    volumeId: 'fw-beats-volume',
-    cursorId: 'pj-cursor',
-    cursorPathId: 'pj-cursor-path'
-  }),
-  initDeckHeroPlayerSafe({
-    videoId: 'fw-audi-video',
-    playerId: 'fw-audi-player',
-    volumeId: 'fw-audi-volume',
+    videoId: 'sd-before-video',
+    playerId: 'sd-before-player',
+    volumeId: 'sd-before-volume',
     cursorId: 'pj-cursor',
     cursorPathId: 'pj-cursor-path'
   }),
@@ -1377,7 +1164,39 @@ deckHeroPlayers = [
     volumeId: 'comp-score-volume',
     cursorId: 'pj-cursor',
     cursorPathId: 'pj-cursor-path',
-    extraVideoIds: ['comp-score-2', 'comp-score-3', 'comp-score-4', 'comp-score-5']
+    extraVideoIds: ['comp-score-2', 'comp-score-3', 'comp-score-4']
+  }),
+  initDeckHeroPlayerSafe({
+    videoId: 'fsh-foley-1',
+    playerId: 'fsh-foley-player',
+    volumeId: 'fsh-foley-volume',
+    cursorId: 'pj-cursor',
+    cursorPathId: 'pj-cursor-path',
+    extraVideoIds: ['fsh-foley-2', 'fsh-foley-3', 'fsh-foley-4', 'fsh-foley-5']
+  }),
+  initDeckHeroPlayerSafe({
+    videoId: 'fsh-score-1',
+    playerId: 'fsh-score-player',
+    volumeId: 'fsh-score-volume',
+    cursorId: 'pj-cursor',
+    cursorPathId: 'pj-cursor-path',
+    extraVideoIds: ['fsh-score-2', 'fsh-score-3', 'fsh-score-4', 'fsh-score-5']
+  }),
+  initDeckHeroPlayerSafe({
+    videoId: 'fsv-foley-1',
+    playerId: 'fsv-foley-player',
+    volumeId: 'fsv-foley-volume',
+    cursorId: 'pj-cursor',
+    cursorPathId: 'pj-cursor-path',
+    extraVideoIds: ['fsv-foley-2', 'fsv-foley-3', 'fsv-foley-4', 'fsv-foley-5']
+  }),
+  initDeckHeroPlayerSafe({
+    videoId: 'fsv-score-1',
+    playerId: 'fsv-score-player',
+    volumeId: 'fsv-score-volume',
+    cursorId: 'pj-cursor',
+    cursorPathId: 'pj-cursor-path',
+    extraVideoIds: ['fsv-score-2', 'fsv-score-3', 'fsv-score-4', 'fsv-score-5']
   })
 ].filter(Boolean);
 </script>

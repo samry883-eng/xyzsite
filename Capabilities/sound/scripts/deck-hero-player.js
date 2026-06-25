@@ -167,6 +167,8 @@
 
 
 
+    var DEFAULT_VOL_PCT = 50;
+
     var userAdjustedVolume = false;
 
     function applyVolume(val, fromUser) {
@@ -203,13 +205,11 @@
 
         target.muted = false;
 
-        if (!target.volume) target.volume = 1;
-
       });
 
       var initVol = Number(volSlider.value);
 
-      if (isNaN(initVol) || initVol <= 0) initVol = 100;
+      if (isNaN(initVol) || initVol <= 0) initVol = DEFAULT_VOL_PCT;
 
       volSlider.value = String(initVol);
 
@@ -227,7 +227,7 @@
 
         target.muted = false;
 
-        if (!target.volume) target.volume = 1;
+        target.volume = DEFAULT_VOL_PCT / 100;
 
       });
 
