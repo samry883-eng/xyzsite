@@ -360,7 +360,7 @@
 
     <div class="pj-video-area">
       <div class="pj-video-frame">
-        <video id="pj-video" src="https://r2.vidzflow.com/source/eba40295-a63b-45a1-a80d-3324f0b6c750.mp4" playsinline preload="metadata" poster="/work/visual-effects/raid-shadow-legends/poster.jpg"></video>
+        <video id="pj-video" src="https://r2.vidzflow.com/source/eba40295-a63b-45a1-a80d-3324f0b6c750.mp4" playsinline preload="metadata"></video>
       </div>
     </div>
 
@@ -427,7 +427,6 @@
       </div>
     </div></div>
 
-    
     <!-- ── FRAMES — add stills below ─────────────────────── -->
     <!--
       <img src="frame.jpg" alt="">           half-width (default)
@@ -599,7 +598,7 @@
     pageOut.style.pointerEvents = 'all';
     setTimeout(() => {
       if (document.referrer && new URL(document.referrer).host === window.location.host) history.back();
-      else window.location.href = '/work/';
+      else window.location.href = '/projects-v2/';
     }, 420);
   }
   backBtn.addEventListener('click', () => {
@@ -630,6 +629,5 @@
     if (entries[0].isIntersecting) { credits.classList.add('revealed'); obs.disconnect(); }
   }, { threshold: 0.05 }).observe(credits);
 </script>
-<script src="/work/assets/xyz-project-services.js"></script>
 </body>
 </html>

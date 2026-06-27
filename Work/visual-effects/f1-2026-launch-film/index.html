@@ -360,7 +360,7 @@
 
     <div class="pj-video-area">
       <div class="pj-video-frame">
-        <video id="pj-video" src="https://r2.vidzflow.com/source/7c584065-5afb-43e4-9b67-ef1b5b6db304.mp4" playsinline preload="metadata"></video>
+        <video id="pj-video" src="https://r2.vidzflow.com/source/7c584065-5afb-43e4-9b67-ef1b5b6db304.mp4" playsinline preload="metadata" poster="/work/visual-effects/f1-2026-launch-film/poster.jpg"></video>
       </div>
     </div>
 
@@ -598,7 +598,7 @@
     pageOut.style.pointerEvents = 'all';
     setTimeout(() => {
       if (document.referrer && new URL(document.referrer).host === window.location.host) history.back();
-      else window.location.href = '/work/';
+      else window.location.href = '/projects-v2/';
     }, 420);
   }
   backBtn.addEventListener('click', () => {
@@ -629,6 +629,5 @@
     if (entries[0].isIntersecting) { credits.classList.add('revealed'); obs.disconnect(); }
   }, { threshold: 0.05 }).observe(credits);
 </script>
-<script src="/work/assets/xyz-project-services.js"></script>
 </body>
 </html>

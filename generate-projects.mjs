@@ -144,6 +144,7 @@ const ROWS = [
       { video: VF  + '1b4f1208-57d6-4cc8-a828-b4e005070c8d.mp4',         client: 'Wingstop',       title: 'Wingstop',                     date: 'JUN 26' },
       { video: VF  + 'f847ef63-1a1f-470c-af9d-88555f8cd7b5.mp4',         client: 'KNWLS',          title: 'Knwls',                        date: 'JUN 26', slug: 'knwls', poster: '/work/sound/knwls/poster.jpg' },
       { video: VF  + '5fb6c412-713f-4257-bd4c-d3ad16b8ff6f.mp4',         client: 'John Deere',     title: 'After Every Man Jack',         date: 'JUN 26', slug: 'after-every-man-jack', poster: '/work/sound/after-every-man-jack/poster.jpg' },
+      { video: VF  + 'ebf0a35a-8d8f-41f6-840b-982d5c05e3e3.mp4',         client: 'Swarovski',      title: 'Ariana Grande',                date: 'JUN 27', slug: 'swarovski-ariana-grande', poster: '/work/sound/swarovski-ariana-grande/poster.jpg' },
     ]
   },
   {

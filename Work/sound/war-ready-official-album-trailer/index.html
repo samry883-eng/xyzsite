@@ -360,7 +360,7 @@
 
     <div class="pj-video-area">
       <div class="pj-video-frame">
-        <video id="pj-video" src="https://r2.vidzflow.com/source/0ebab23b-0659-4385-873a-8a4b6eecb0d8.mp4" playsinline preload="metadata" poster="/work/sound/war-ready-official-album-trailer/poster.jpg"></video>
+        <video id="pj-video" src="https://r2.vidzflow.com/source/0ebab23b-0659-4385-873a-8a4b6eecb0d8.mp4" playsinline preload="metadata"></video>
       </div>
     </div>
 
@@ -427,7 +427,6 @@
       </div>
     </div></div>
 
-    
     <!-- ── FRAMES — add stills below ─────────────────────── -->
     <!--
       <img src="frame.jpg" alt="">           half-width (default)
@@ -599,7 +598,7 @@
     pageOut.style.pointerEvents = 'all';
     setTimeout(() => {
       if (document.referrer && new URL(document.referrer).host === window.location.host) history.back();
-      else window.location.href = '/work/';
+      else window.location.href = '/projects-v2/';
     }, 420);
   }
   backBtn.addEventListener('click', () => {
@@ -630,6 +629,5 @@
     if (entries[0].isIntersecting) { credits.classList.add('revealed'); obs.disconnect(); }
   }, { threshold: 0.05 }).observe(credits);
 </script>
-<script src="/work/assets/xyz-project-services.js"></script>
 </body>
 </html>

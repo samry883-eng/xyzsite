@@ -1,22 +1,25 @@
 <!DOCTYPE html>
-<html lang="en" class="deck-protect">
+<html lang="en" class="deck-protect" data-fonts-pending>
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <meta name="robots" content="noindex, nofollow" />
 <title>XYZ Studios — Sound · 2026 (Dark)</title>
+<link rel="preload" href="/capabilities/sound/fonts/ZTBrosOskon90s-Regular.otf" as="font" type="font/otf" crossorigin />
+<link rel="preload" href="/capabilities/sound/fonts/ZTBrosOskon90s-Light.otf" as="font" type="font/otf" crossorigin />
+<link rel="preload" href="/capabilities/sound/fonts/ZTBrosOskon90s-Italic.otf" as="font" type="font/otf" crossorigin />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=block" rel="stylesheet" />
 <link rel="stylesheet" href="/capabilities/assets/nda-modal.css" />
 <style>
 
-  @font-face{ font-family:'ZTBros'; src:url('/capabilities/sound/fonts/ZTBrosOskon90s-Regular.otf') format('opentype'); font-weight:400; font-style:normal; font-display:swap; }
-  @font-face{ font-family:'ZTBros'; src:url('/capabilities/sound/fonts/ZTBrosOskon90s-Italic.otf') format('opentype'); font-weight:400; font-style:italic; font-display:swap; }
-  @font-face{ font-family:'ZTBros'; src:url('/capabilities/sound/fonts/ZTBrosOskon90s-Light.otf') format('opentype'); font-weight:300; font-style:normal; font-display:swap; }
-  @font-face{ font-family:'ZTBros'; src:url('/capabilities/sound/fonts/ZTBrosOskon90s-LightItalic.otf') format('opentype'); font-weight:300; font-style:italic; font-display:swap; }
-  @font-face{ font-family:'ZTBros'; src:url('/capabilities/sound/fonts/ZTBrosOskon90s-ExtraLight.otf') format('opentype'); font-weight:200; font-style:normal; font-display:swap; }
-  @font-face{ font-family:'ZTBros'; src:url('/capabilities/sound/fonts/ZTBrosOskon90s-ExtLtIta.otf') format('opentype'); font-weight:200; font-style:italic; font-display:swap; }
+  @font-face{ font-family:'ZTBros'; src:url('/capabilities/sound/fonts/ZTBrosOskon90s-Regular.otf') format('opentype'); font-weight:400; font-style:normal; font-display:block; }
+  @font-face{ font-family:'ZTBros'; src:url('/capabilities/sound/fonts/ZTBrosOskon90s-Italic.otf') format('opentype'); font-weight:400; font-style:italic; font-display:block; }
+  @font-face{ font-family:'ZTBros'; src:url('/capabilities/sound/fonts/ZTBrosOskon90s-Light.otf') format('opentype'); font-weight:300; font-style:normal; font-display:block; }
+  @font-face{ font-family:'ZTBros'; src:url('/capabilities/sound/fonts/ZTBrosOskon90s-LightItalic.otf') format('opentype'); font-weight:300; font-style:italic; font-display:block; }
+  @font-face{ font-family:'ZTBros'; src:url('/capabilities/sound/fonts/ZTBrosOskon90s-ExtraLight.otf') format('opentype'); font-weight:200; font-style:normal; font-display:block; }
+  @font-face{ font-family:'ZTBros'; src:url('/capabilities/sound/fonts/ZTBrosOskon90s-ExtLtIta.otf') format('opentype'); font-weight:200; font-style:italic; font-display:block; }
   :root{
     --bg:        #0d0c0b;
     --paper:     #1e1a13;
@@ -29,7 +32,8 @@
     --sans:      "Geist", system-ui, sans-serif;
     --mono:      "JetBrains Mono", ui-monospace, monospace;
   }
-  html, body { margin:0; padding:0; background:var(--bg); color:var(--ink); font-family:var(--sans); overflow:hidden; height:100%; }
+  html, body { margin:0; padding:0; background:var(--bg); color:var(--ink); font-family:var(--sans); overflow:hidden; height:100%; -webkit-font-smoothing:antialiased; }
+  html.deck-protect[data-fonts-pending] #deck-viewport{ opacity:0; pointer-events:none; }
   section.sound-artboard{
     width:1920px; height:1080px;
     background: var(--bg); color: var(--ink);
@@ -211,7 +215,7 @@
     overflow:visible; pointer-events:none;
   }
   .wordmark{
-    font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; font-weight:500;
+    font-family:var(--display); font-weight:400;
     font-size:360px; line-height:.9; letter-spacing:-.015em; color:var(--ink-dim);
     white-space:nowrap; display:block;
   }
@@ -266,18 +270,19 @@
   }
   a.deck-link{ color:inherit; text-decoration:none; pointer-events:auto; cursor:pointer; transition:opacity .2s ease; }
   a.deck-link:hover{ opacity:.55; }
-  :root{ --dur:.62s; --ease:cubic-bezier(.22,1,.36,1); --deck-pad-x:64px; --deck-pad-y:56px; --pt:32px; --p:var(--deck-pad-x); }
+  :root{ --dur:0.88s; --ease:cubic-bezier(0.76,0,0.24,1); --deck-pad-x:64px; --deck-pad-y:56px; --pt:32px; --p:var(--deck-pad-x); }
   #deck-viewport{ position:fixed; inset:0; z-index:1; background:var(--bg); }
-  #deck-stage{ position:absolute; inset:0; overflow:hidden; background:var(--bg); }
+  #deck-stage{ position:absolute; inset:0; overflow:hidden; background:var(--bg); container-type:size; container-name:deck; }
   #deck{ position:absolute; inset:0; overflow:hidden; background:var(--bg); }
   .slide{ position:absolute; inset:0; background:var(--bg); transform:translateY(100%); transition:transform var(--dur) var(--ease); will-change:transform; overflow:hidden; display:flex; align-items:center; justify-content:center; z-index:0; }
   .slide.active{ transform:translateY(0); }
-  .slide-inner{ width:100%; height:100%; display:flex; align-items:center; justify-content:center; opacity:0; transform:translateY(8px); transition:opacity var(--dur) var(--ease) .08s, transform var(--dur) var(--ease) .08s; }
+  .slide.exit{ transform:translateY(-100%); }
+  .slide-inner{ width:100%; height:100%; display:flex; align-items:center; justify-content:center; opacity:0; transform:translateY(8px); transition:opacity 0.7s cubic-bezier(0.22,1,0.36,1) 0.12s, transform 0.75s cubic-bezier(0.22,1,0.36,1) 0.12s; }
   .slide.active .slide-inner{ opacity:1; transform:translateY(0); }
   .artboard-scaler{ width:1920px; height:1080px; transform-origin:center center; flex-shrink:0; will-change:transform; }
   #progress{ position:absolute; bottom:0; left:0; height:2px; background:rgba(240,236,225,.35); transition:width var(--dur) var(--ease); z-index:200; }
   #nav-dots{ position:absolute; right:max(10px,1.1vw); top:50%; transform:translateY(-50%); display:flex; flex-direction:column; gap:7px; z-index:200; pointer-events:auto; }
-  .dot{ width:4px; height:4px; border-radius:50%; background:rgba(240,236,225,.2); cursor:pointer; transition:background .18s, transform .18s; }
+  .dot{ width:4px; height:4px; border-radius:50%; background:rgba(240,236,225,.22); cursor:pointer; transition:background 0.3s, transform 0.3s; }
   .dot.active{ background:rgba(240,236,225,.75); transform:scale(1.6); }
   #hint{ position:absolute; bottom:calc(var(--deck-pad-y) + 40px); left:50%; transform:translateX(-50%); font-size:10px; letter-spacing:.15em; color:rgba(240,236,225,.22); text-transform:uppercase; z-index:200; transition:opacity 1s; pointer-events:none; }
   #deck-slide-number{
@@ -924,6 +929,25 @@
 <script src="/capabilities/sound/scripts/deck-hero-player.js"></script>
 <script>
 (function () {
+  function revealFonts() {
+    document.documentElement.removeAttribute('data-fonts-pending');
+  }
+  requestAnimationFrame(function () {
+    var critical = document.fonts
+      ? Promise.all([
+          document.fonts.load('400 16px ZTBros'),
+          document.fonts.load('300 16px ZTBros'),
+          document.fonts.load('italic 400 16px ZTBros'),
+        ]).then(function () { return document.fonts.ready; })
+      : Promise.resolve();
+    Promise.race([
+      critical,
+      new Promise(function (r) { setTimeout(r, 2000); }),
+    ]).then(revealFonts, revealFonts);
+  });
+})();
+
+(function () {
   function isDeckLink(el) {
     return el && el.closest && el.closest('a.deck-link');
   }
@@ -974,9 +998,9 @@ const pad2 = (n) => String(n).padStart(2, '0');
 
 function slideDurationMs() {
   const raw = getComputedStyle(document.documentElement).getPropertyValue('--dur').trim();
-  if (!raw) return 620;
-  if (raw.endsWith('ms')) return parseFloat(raw) || 620;
-  return (parseFloat(raw) || 0.62) * 1000;
+  if (!raw) return 880;
+  if (raw.endsWith('ms')) return parseFloat(raw) || 880;
+  return (parseFloat(raw) || 0.88) * 1000;
 }
 
 slides.forEach(function (slide) {
