@@ -266,13 +266,13 @@
   }
   a.deck-link{ color:inherit; text-decoration:none; pointer-events:auto; cursor:pointer; transition:opacity .2s ease; }
   a.deck-link:hover{ opacity:.55; }
-  :root{ --dur:.52s; --ease:cubic-bezier(.76,0,.24,1); --deck-pad-x:64px; --deck-pad-y:56px; --pt:32px; --p:var(--deck-pad-x); }
+  :root{ --dur:.62s; --ease:cubic-bezier(.22,1,.36,1); --deck-pad-x:64px; --deck-pad-y:56px; --pt:32px; --p:var(--deck-pad-x); }
   #deck-viewport{ position:fixed; inset:0; z-index:1; background:var(--bg); }
   #deck-stage{ position:absolute; inset:0; overflow:hidden; background:var(--bg); }
   #deck{ position:absolute; inset:0; overflow:hidden; background:var(--bg); }
   .slide{ position:absolute; inset:0; background:var(--bg); transform:translateY(100%); transition:transform var(--dur) var(--ease); will-change:transform; overflow:hidden; display:flex; align-items:center; justify-content:center; z-index:0; }
   .slide.active{ transform:translateY(0); }
-  .slide-inner{ width:100%; height:100%; display:flex; align-items:center; justify-content:center; opacity:0; transform:translateY(8px); transition:opacity .41s cubic-bezier(.22,1,.36,1) .07s, transform .44s cubic-bezier(.22,1,.36,1) .07s; }
+  .slide-inner{ width:100%; height:100%; display:flex; align-items:center; justify-content:center; opacity:0; transform:translateY(8px); transition:opacity var(--dur) var(--ease) .08s, transform var(--dur) var(--ease) .08s; }
   .slide.active .slide-inner{ opacity:1; transform:translateY(0); }
   .artboard-scaler{ width:1920px; height:1080px; transform-origin:center center; flex-shrink:0; will-change:transform; }
   #progress{ position:absolute; bottom:0; left:0; height:2px; background:rgba(240,236,225,.35); transition:width var(--dur) var(--ease); z-index:200; }
@@ -974,9 +974,9 @@ const pad2 = (n) => String(n).padStart(2, '0');
 
 function slideDurationMs() {
   const raw = getComputedStyle(document.documentElement).getPropertyValue('--dur').trim();
-  if (!raw) return 520;
-  if (raw.endsWith('ms')) return parseFloat(raw) || 520;
-  return (parseFloat(raw) || 0.52) * 1000;
+  if (!raw) return 620;
+  if (raw.endsWith('ms')) return parseFloat(raw) || 620;
+  return (parseFloat(raw) || 0.62) * 1000;
 }
 
 slides.forEach(function (slide) {
