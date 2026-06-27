@@ -69,13 +69,14 @@
       var fromInline = lookupFromCatalog(window.__PROJECTS_CATALOG, mkey);
       if (fromInline) return Promise.resolve(fromInline);
     }
-    return fetch('/work/assets/projects-services.json', { credentials: 'same-origin' })
+    return fetch('/api/projects', { credentials: 'same-origin' })
       .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (map) {
-        if (map && map[mkey]) return map[mkey];
-        return fetch('/api/projects', { credentials: 'same-origin' })
+      .then(function (d) {
+        var fromApi = lookupFromCatalog(d && d.catalog, mkey);
+        if (fromApi) return fromApi;
+        return fetch('/work/assets/projects-services.json', { credentials: 'same-origin' })
           .then(function (r) { return r.ok ? r.json() : null; })
-          .then(function (d) { return lookupFromCatalog(d && d.catalog, mkey) || []; });
+          .then(function (map) { return (map && map[mkey]) || []; });
       })
       .catch(function () { return []; });
   }

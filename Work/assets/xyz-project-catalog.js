@@ -161,14 +161,14 @@
       var fromInline = findInCatalog(window.__PROJECTS_CATALOG, slug, mkey);
       if (fromInline) return Promise.resolve(fromInline);
     }
-    return fetch('/work/assets/projects-preview.json', { credentials: 'same-origin' })
+    return fetch('/api/projects', { credentials: 'same-origin' })
       .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (map) {
-        var fromMap = findInPreviewMap(map, slug, mkey);
-        if (fromMap) return fromMap;
-        return fetch('/api/projects', { credentials: 'same-origin' })
+      .then(function (d) {
+        var fromApi = findInCatalog(d && d.catalog, slug, mkey);
+        if (fromApi) return fromApi;
+        return fetch('/work/assets/projects-preview.json', { credentials: 'same-origin' })
           .then(function (r) { return r.ok ? r.json() : null; })
-          .then(function (d) { return findInCatalog(d && d.catalog, slug, mkey); });
+          .then(function (map) { return findInPreviewMap(map, slug, mkey); });
       })
       .catch(function () { return null; });
   }
