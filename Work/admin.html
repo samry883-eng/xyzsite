@@ -89,22 +89,35 @@
     .btn-ghost {
       font: 700 8px/1 Micross, Arial, sans-serif;
       letter-spacing: 0.2em; text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.4);
-      background: none; border: none; cursor: pointer;
-      padding: 0; transition: color 0.2s;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+      white-space: nowrap;
     }
-    .btn-accent:hover:not(:disabled),
-    .btn-ghost:hover:not(:disabled) { color: #fff; }
+    .btn-accent {
+      background: var(--accent);
+      color: var(--accent-text);
+      border: 1px solid var(--accent);
+      padding: 10px 18px;
+    }
+    .btn-accent:hover:not(:disabled) {
+      background: #fff;
+      color: #000;
+      border-color: #fff;
+    }
+    .btn-ghost {
+      background: transparent;
+      color: rgba(255, 255, 255, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 10px 16px;
+    }
+    .btn-ghost:hover:not(:disabled) {
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.35);
+    }
     .btn-accent:disabled,
     .btn-ghost:disabled { opacity: .4; cursor: default; }
-    .list-tools .btn-accent,
-    .list-tools .btn-ghost,
-    .access-body .btn-accent,
-    .access-body .btn-ghost,
-    .actions-section .btn-accent {
-      padding: 12px 0;
-    }
-    .list-tools { gap: 20px; }
+    a.btn-ghost { text-decoration: none; display: inline-flex; align-items: center; }
+    .list-tools { gap: 8px; }
 
     #app {
       display: grid; grid-template-columns: 260px 1fr; height: 100%;
@@ -137,12 +150,17 @@
     .list-mode { display: flex; flex-direction: column; height: 100%; min-height: 0; }
     .list-header {
       padding: 26px 34px 18px; display: flex; align-items: center; justify-content: space-between;
+      gap: 20px; flex-wrap: wrap;
       border-bottom: 1px solid var(--line); flex: 0 0 auto;
     }
+    .list-header-left {
+      display: flex; align-items: center; gap: 28px; flex-wrap: wrap; min-width: 0; flex: 1;
+    }
+    .list-header-title { flex: none; }
     .list-title { font: 700 28px/1.1 Micross, Arial, sans-serif; letter-spacing: -0.02em; text-transform: uppercase; }
     .list-sub { font-size: 11px; color: var(--muted2); margin-top: 4px; }
-    .list-tools { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-    .status-msg { font: 400 10px/1 Micross, Arial, sans-serif; letter-spacing: .1em; text-transform: uppercase; color: var(--muted2); min-width: 120px; }
+    .list-tools { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; flex: none; }
+    .status-msg { font: 400 10px/1 Micross, Arial, sans-serif; letter-spacing: .1em; text-transform: uppercase; color: var(--muted2); min-width: 120px; margin-right: 4px; }
     .search-input {
       background: transparent; border: none; border-bottom: 1px solid rgba(255, 255, 255, 0.1); color: var(--text);
       font: 400 12px/1.5 Micross, Arial, sans-serif; padding: 10px 0; width: 230px; outline: none;
@@ -510,18 +528,20 @@
   <div class="main">
     <div id="listMode" class="list-mode">
       <div class="list-header">
-        <div>
-          <div class="list-title" id="pageTitle">All Work</div>
-          <div class="list-sub" id="pageSub">0 projects · drag № to reorder</div>
+        <div class="list-header-left">
+          <div class="list-header-title">
+            <div class="list-title" id="pageTitle">All Work</div>
+            <div class="list-sub" id="pageSub">0 projects · drag № to reorder</div>
+          </div>
+          <input class="search-input" type="search" id="search" placeholder="Search title or client…">
         </div>
         <div class="list-tools">
           <span class="status-msg" id="saveMsg">All published</span>
-          <input class="search-input" type="search" id="search" placeholder="Search title or client…">
           <button class="btn-ghost" id="syncBtn" type="button">Sync missing</button>
           <button class="btn-ghost" id="seedBtn" type="button">Seed defaults</button>
           <button class="btn-ghost" id="resetBtn" type="button">Discard</button>
           <button class="btn-accent" id="updateSiteBtn" type="button" title="Save catalog + hero order to Redis/Edge Config and trigger a production rebuild (~30s). Draft saves do not redeploy. If Vercel deploy limit is reached, data is still saved — retry later or push to GitHub main.">Update site</button>
-          <button class="btn-accent" id="addBtnTop" type="button">+ Add project</button>
+          <button class="btn-ghost" id="addBtnTop" type="button">+ Add project</button>
         </div>
       </div>
       <div class="table-head">
@@ -537,7 +557,7 @@
       </div>
       <div class="access-body">
         <div class="access-toolbar">
-          <a class="btn-ghost" href="/capabilities/login?next=%2Fcapabilities%2F" style="text-decoration:none;display:inline-flex;align-items:center">Open deck</a>
+          <a class="btn-ghost" href="/capabilities/login?next=%2Fcapabilities%2F">Open deck</a>
         </div>
         <div class="access-help" id="accessHelp">
           Paste emails below to grant deck access. On live Vercel without Redis, copy the value into
