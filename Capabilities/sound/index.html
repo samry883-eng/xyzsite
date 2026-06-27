@@ -266,18 +266,18 @@
   }
   a.deck-link{ color:inherit; text-decoration:none; pointer-events:auto; cursor:pointer; transition:opacity .2s ease; }
   a.deck-link:hover{ opacity:.55; }
-  :root{ --dur:.88s; --ease:cubic-bezier(.76,0,.24,1); --deck-pad-x:64px; --deck-pad-y:56px; --pt:32px; --p:var(--deck-pad-x); }
+  :root{ --dur:.52s; --ease:cubic-bezier(.76,0,.24,1); --deck-pad-x:64px; --deck-pad-y:56px; --pt:32px; --p:var(--deck-pad-x); }
   #deck-viewport{ position:fixed; inset:0; z-index:1; background:var(--bg); }
   #deck-stage{ position:absolute; inset:0; overflow:hidden; background:var(--bg); }
   #deck{ position:absolute; inset:0; overflow:hidden; background:var(--bg); }
   .slide{ position:absolute; inset:0; background:var(--bg); transform:translateY(100%); transition:transform var(--dur) var(--ease); will-change:transform; overflow:hidden; display:flex; align-items:center; justify-content:center; z-index:0; }
   .slide.active{ transform:translateY(0); }
-  .slide-inner{ width:100%; height:100%; display:flex; align-items:center; justify-content:center; opacity:0; transform:translateY(8px); transition:opacity .7s cubic-bezier(.22,1,.36,1) .12s, transform .75s cubic-bezier(.22,1,.36,1) .12s; }
+  .slide-inner{ width:100%; height:100%; display:flex; align-items:center; justify-content:center; opacity:0; transform:translateY(8px); transition:opacity .41s cubic-bezier(.22,1,.36,1) .07s, transform .44s cubic-bezier(.22,1,.36,1) .07s; }
   .slide.active .slide-inner{ opacity:1; transform:translateY(0); }
   .artboard-scaler{ width:1920px; height:1080px; transform-origin:center center; flex-shrink:0; will-change:transform; }
   #progress{ position:absolute; bottom:0; left:0; height:2px; background:rgba(240,236,225,.35); transition:width var(--dur) var(--ease); z-index:200; }
   #nav-dots{ position:absolute; right:max(10px,1.1vw); top:50%; transform:translateY(-50%); display:flex; flex-direction:column; gap:7px; z-index:200; pointer-events:auto; }
-  .dot{ width:4px; height:4px; border-radius:50%; background:rgba(240,236,225,.2); cursor:pointer; transition:background .3s, transform .3s; }
+  .dot{ width:4px; height:4px; border-radius:50%; background:rgba(240,236,225,.2); cursor:pointer; transition:background .18s, transform .18s; }
   .dot.active{ background:rgba(240,236,225,.75); transform:scale(1.6); }
   #hint{ position:absolute; bottom:calc(var(--deck-pad-y) + 40px); left:50%; transform:translateX(-50%); font-size:10px; letter-spacing:.15em; color:rgba(240,236,225,.22); text-transform:uppercase; z-index:200; transition:opacity 1s; pointer-events:none; }
   #deck-slide-number{
@@ -806,124 +806,6 @@
     <span class="m-br"></span>
   </section></div></div></div>
 
-  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="show foley-score-h sound-artboard" data-screen-label="Foley + Score · Horizontal">
-<span class="m-tl"><b>XYZ</b> <span class="d">· Capability · Foley &amp; Score</span></span>
-    <span class="m-tr"><span class="d">13 / 17</span></span>
-
-    <div class="abs" style="left:64px; top:540px; width:1792px; height:1px; background:var(--line);"></div>
-
-    <div class="abs" style="left:64px; top:150px; width:600px;">
-      <div class="eyb">01 — Foley</div>
-      <div class="disp" style="font-size:96px; line-height:.92; margin-top:14px;"><em>Foley,</em><br/>Performed.</div>
-      <div class="copy" style="margin-top:20px; max-width:36ch;">Footsteps, cloth, props and body interactions, recorded to picture on a <em>custom foley stage.</em> Matched to weight, rhythm and intent.</div>
-    </div>
-    <div class="photo deck-hero-wrap" style="position:absolute; left:548px; top:160px; width:212px; height:275px;">
-      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsh-foley-1" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/wkPiuH4MIA/original"></video></div>
-    </div>
-    <div class="photo deck-hero-wrap" style="position:absolute; left:810px; top:150px; width:260px; height:165px;">
-      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsh-foley-2" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/KAM5isc42w/original"></video></div>
-    </div>
-    <div class="photo deck-hero-wrap" style="position:absolute; left:810px; top:352px; width:205px; height:160px;">
-      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsh-foley-3" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/XxdMFelNin/original"></video></div>
-    </div>
-    <div class="photo deck-hero-wrap" style="position:absolute; left:1140px; top:205px; width:215px; height:255px;">
-      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsh-foley-4" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/FsvlQ95RJV/original"></video></div>
-    </div>
-    <div class="photo deck-hero-wrap" style="position:absolute; left:1430px; top:160px; width:396px; height:300px;">
-      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsh-foley-5" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/7keGXC6gVK/original"></video></div>
-    </div>
-
-    <div class="abs" style="left:64px; top:578px; width:600px;">
-      <div class="eyb">02 — Original Score</div>
-      <div class="disp" style="font-size:96px; line-height:.92; margin-top:14px;"><em>Score,</em><br/>Written.</div>
-      <div class="copy" style="margin-top:20px; max-width:36ch;">Music written to picture: themes, motifs and the <em>emotional spine.</em> Scored in-house with a small ensemble of session players.</div>
-    </div>
-    <div class="photo deck-hero-wrap" style="position:absolute; left:548px; top:588px; width:212px; height:275px;">
-      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsh-score-1" playsinline preload="metadata" src="/work/sound/ai-awareness/video.mp4"></video></div>
-    </div>
-    <div class="photo deck-hero-wrap" style="position:absolute; left:810px; top:578px; width:260px; height:165px;">
-      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsh-score-2" playsinline preload="metadata" src="https://binsta.dev/api/v1/files/9QPdNWnR8T"></video></div>
-    </div>
-    <div class="photo deck-hero-wrap" style="position:absolute; left:810px; top:780px; width:205px; height:160px;">
-      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsh-score-3" playsinline preload="metadata" src="https://binsta.dev/api/v1/files/6x2apeG8HQ"></video></div>
-    </div>
-    <div class="photo deck-hero-wrap" style="position:absolute; left:1140px; top:633px; width:215px; height:255px;">
-      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsh-score-4" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/YFUMKYDZ4b/original"></video></div>
-    </div>
-    <div class="photo deck-hero-wrap" style="position:absolute; left:1430px; top:588px; width:396px; height:300px;">
-      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsh-score-5" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/YFUMKYDZ4b/original"></video></div>
-    </div>
-
-    <div id="fsh-foley-player" class="abs" style="width:0;height:0;overflow:hidden;opacity:0;pointer-events:none;" aria-hidden="true">
-      <input type="range" id="fsh-foley-volume" min="0" max="100" value="50" tabindex="-1">
-    </div>
-    <div id="fsh-score-player" class="abs" style="width:0;height:0;overflow:hidden;opacity:0;pointer-events:none;" aria-hidden="true">
-      <input type="range" id="fsh-score-volume" min="0" max="100" value="50" tabindex="-1">
-    </div>
-
-    <span class="m-bl"></span>
-    <span class="m-br"></span>
-  </section></div></div></div>
-
-  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="show foley-score-v sound-artboard" data-screen-label="Foley + Score · Vertical">
-<span class="m-tl"><b>XYZ</b> <span class="d">· Capability · Foley &amp; Score</span></span>
-    <span class="m-tr"><span class="d">14 / 17</span></span>
-
-    <div class="abs" style="left:960px; top:130px; width:1px; height:820px; background:var(--line);"></div>
-
-    <div class="abs" style="left:64px; top:150px; width:380px;">
-      <div class="eyb">01 — Foley</div>
-      <div class="disp" style="font-size:84px; line-height:.92; margin-top:14px;"><em>Foley,</em><br/>Performed.</div>
-    </div>
-    <div class="copy abs" style="left:470px; top:198px; width:332px;">Footsteps, cloth, props and body interactions, recorded to picture on a <em>custom foley stage.</em> Matched to weight, rhythm and intent.</div>
-    <div class="photo deck-hero-wrap" style="position:absolute; left:64px; top:380px; width:240px; height:262px;">
-      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsv-foley-1" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/wkPiuH4MIA/original"></video></div>
-    </div>
-    <div class="photo deck-hero-wrap" style="position:absolute; left:356px; top:404px; width:188px; height:150px;">
-      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsv-foley-2" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/KAM5isc42w/original"></video></div>
-    </div>
-    <div class="photo deck-hero-wrap" style="position:absolute; left:392px; top:664px; width:216px; height:250px;">
-      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsv-foley-3" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/XxdMFelNin/original"></video></div>
-    </div>
-    <div class="photo deck-hero-wrap" style="position:absolute; left:692px; top:458px; width:204px; height:340px;">
-      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsv-foley-4" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/FsvlQ95RJV/original"></video></div>
-    </div>
-    <div class="photo deck-hero-wrap" style="position:absolute; left:96px; top:686px; width:240px; height:170px;">
-      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsv-foley-5" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/7keGXC6gVK/original"></video></div>
-    </div>
-
-    <div class="abs" style="left:1024px; top:150px; width:380px;">
-      <div class="eyb">02 — Original Score</div>
-      <div class="disp" style="font-size:84px; line-height:.92; margin-top:14px;"><em>Score,</em><br/>Written.</div>
-    </div>
-    <div class="copy abs" style="left:1430px; top:198px; width:332px;">Music written to picture: themes, motifs and the <em>emotional spine.</em> Scored in-house with a small ensemble of session players.</div>
-    <div class="photo deck-hero-wrap" style="position:absolute; left:1024px; top:380px; width:240px; height:262px;">
-      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsv-score-1" playsinline preload="metadata" src="/work/sound/ai-awareness/video.mp4"></video></div>
-    </div>
-    <div class="photo deck-hero-wrap" style="position:absolute; left:1316px; top:404px; width:188px; height:150px;">
-      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsv-score-2" playsinline preload="metadata" src="https://binsta.dev/api/v1/files/9QPdNWnR8T"></video></div>
-    </div>
-    <div class="photo deck-hero-wrap" style="position:absolute; left:1352px; top:664px; width:216px; height:250px;">
-      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsv-score-3" playsinline preload="metadata" src="https://binsta.dev/api/v1/files/6x2apeG8HQ"></video></div>
-    </div>
-    <div class="photo deck-hero-wrap" style="position:absolute; left:1652px; top:458px; width:204px; height:340px;">
-      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsv-score-4" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/YFUMKYDZ4b/original"></video></div>
-    </div>
-    <div class="photo deck-hero-wrap" style="position:absolute; left:1056px; top:686px; width:240px; height:170px;">
-      <div class="deck-hero-inner"><video class="featured-hero-video" id="fsv-score-5" playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/YFUMKYDZ4b/original"></video></div>
-    </div>
-
-    <div id="fsv-foley-player" class="abs" style="width:0;height:0;overflow:hidden;opacity:0;pointer-events:none;" aria-hidden="true">
-      <input type="range" id="fsv-foley-volume" min="0" max="100" value="50" tabindex="-1">
-    </div>
-    <div id="fsv-score-player" class="abs" style="width:0;height:0;overflow:hidden;opacity:0;pointer-events:none;" aria-hidden="true">
-      <input type="range" id="fsv-score-volume" min="0" max="100" value="50" tabindex="-1">
-    </div>
-
-    <span class="m-bl"></span>
-    <span class="m-br"></span>
-  </section></div></div></div>
-
   <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="pricing sound-artboard" data-screen-label="12 Pricing">
 <span class="m-tl"><b>XYZ</b> <span class="d">· Packages</span></span>
     <span class="m-tr"><span class="d">15 / 17</span></span>
@@ -1092,9 +974,9 @@ const pad2 = (n) => String(n).padStart(2, '0');
 
 function slideDurationMs() {
   const raw = getComputedStyle(document.documentElement).getPropertyValue('--dur').trim();
-  if (!raw) return 880;
-  if (raw.endsWith('ms')) return parseFloat(raw) || 880;
-  return (parseFloat(raw) || 0.88) * 1000;
+  if (!raw) return 520;
+  if (raw.endsWith('ms')) return parseFloat(raw) || 520;
+  return (parseFloat(raw) || 0.52) * 1000;
 }
 
 slides.forEach(function (slide) {
@@ -1459,38 +1341,6 @@ deckHeroPlayers = [
     cursorPathId: 'pj-cursor-path',
     extraVideoIds: ['comp-score-2', 'comp-score-3', 'comp-score-4']
   }),
-  initDeckHeroPlayerSafe({
-    videoId: 'fsh-foley-1',
-    playerId: 'fsh-foley-player',
-    volumeId: 'fsh-foley-volume',
-    cursorId: 'pj-cursor',
-    cursorPathId: 'pj-cursor-path',
-    extraVideoIds: ['fsh-foley-2', 'fsh-foley-3', 'fsh-foley-4', 'fsh-foley-5']
-  }),
-  initDeckHeroPlayerSafe({
-    videoId: 'fsh-score-1',
-    playerId: 'fsh-score-player',
-    volumeId: 'fsh-score-volume',
-    cursorId: 'pj-cursor',
-    cursorPathId: 'pj-cursor-path',
-    extraVideoIds: ['fsh-score-2', 'fsh-score-3', 'fsh-score-4', 'fsh-score-5']
-  }),
-  initDeckHeroPlayerSafe({
-    videoId: 'fsv-foley-1',
-    playerId: 'fsv-foley-player',
-    volumeId: 'fsv-foley-volume',
-    cursorId: 'pj-cursor',
-    cursorPathId: 'pj-cursor-path',
-    extraVideoIds: ['fsv-foley-2', 'fsv-foley-3', 'fsv-foley-4', 'fsv-foley-5']
-  }),
-  initDeckHeroPlayerSafe({
-    videoId: 'fsv-score-1',
-    playerId: 'fsv-score-player',
-    volumeId: 'fsv-score-volume',
-    cursorId: 'pj-cursor',
-    cursorPathId: 'pj-cursor-path',
-    extraVideoIds: ['fsv-score-2', 'fsv-score-3', 'fsv-score-4', 'fsv-score-5']
-  })
 ].filter(Boolean);
 </script>
 <script src="/capabilities/assets/nda-modal.js" defer></script>

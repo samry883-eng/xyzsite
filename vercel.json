@@ -125,6 +125,48 @@
       ]
     },
     {
+      "source": "/sound-deck",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "same-origin"
+        }
+      ]
+    },
+    {
+      "source": "/sound-deck/",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "same-origin"
+        }
+      ]
+    },
+    {
       "source": "/work",
       "headers": [
         {
@@ -352,6 +394,14 @@
     {
       "source": "/capabilities/",
       "destination": "/capabilities/index.html"
+    },
+    {
+      "source": "/sound-deck",
+      "destination": "/capabilities/sound/index.html"
+    },
+    {
+      "source": "/sound-deck/",
+      "destination": "/capabilities/sound/index.html"
     }
   ]
 }
