@@ -38,7 +38,7 @@ const ROWS = [
       ] },
       { video: VF  + 'af62bf83-f2c4-4ff5-ae90-e056d209eaae.mp4',         client: 'Cara Delevingne', title: 'I Forgot & Out of My Head',   date: 'MAY 26', poster: '/work/visual-effects/i-forgot-out-of-my-head/poster.jpg', credits: [
         { label: 'Directed by', value: 'Jessica Le Gagne' },
-        { label: 'Production Company USA', value: 'Reset Content' },
+        { label: 'Production Company', value: 'Reset Content' },
       ] },
       { video: VF  + 'ef1dc602-5a95-4973-a0ea-82794726bc4a.mp4',         client: 'Salomon',        title: 'Speedcross 3',                 date: 'OCT 25', credits: [
         { label: 'Directed by', value: 'Lenn Anton' },
