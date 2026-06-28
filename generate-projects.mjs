@@ -135,7 +135,6 @@ const ROWS = [
         { label: 'Sound Mixer', value: 'Ken Psalms & William Landry' },
         { label: 'Directed by', value: 'Joshua Smedina' },
       ] },
-      { video: VF  + '68eb0d30-28c6-4074-a239-6ff8a10dbbf1.mp4',         client: 'Hongqi',         title: 'Hongqi',                       date: 'AUG 19' },
       { video: VF  + '8bdede9c-3055-4065-a194-3f620e6d4f3b.mp4',         client: 'Celsius',        title: 'Spritez Vibez',                date: 'MAY 20', poster: '/work/sound/spritez-vibez/poster.jpg' },
       { video: VF  + '9d988956-2525-48f8-8191-0d028e9493dd.mp4',         client: 'Add Wavs',       title: 'Add Wavs',                     date: 'JUN 26' },
       { video: VF  + 'acddd408-ce03-4c91-a53f-bb3e6f83dafe.mp4',         client: 'TBD',            title: 'Wrapped in Heat',              date: 'JUN 26' },
