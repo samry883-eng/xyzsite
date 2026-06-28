@@ -318,20 +318,8 @@
 
     .wu-filter-body {
       display: grid;
-      grid-template-columns: 1fr;
-      align-items: start;
-      width: 100%;
-    }
-    .wu-filter-group {
-      margin: 0;
-      padding: 0;
-      grid-column: 1;
-      grid-row: 1;
-      justify-self: start;
-    }
-    .wu-filter-group[data-key="services"] {
-      margin-left: clamp(172px, 27vw, 400px);
-      margin-right: 0;
+      grid-template-columns: 2fr 1fr;
+      gap: clamp(32px, 6vw, 64px);
     }
 
     .wu-filter-group-label {
@@ -352,27 +340,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 7px 18px;
-      margin: 0;
-      padding: 0;
       font-size: var(--type-filter-link);
-    }
-    .wu-filter-links--services {
-      display: grid;
-      grid-auto-flow: column;
-      grid-auto-columns: max-content;
-      grid-template-rows: repeat(3, auto);
-      gap: 10px 32px;
-      align-content: start;
-      width: fit-content;
-    }
-    .wu-filter-links--type {
-      display: grid;
-      grid-auto-flow: column;
-      grid-auto-columns: max-content;
-      grid-template-rows: repeat(3, auto);
-      gap: 10px 24px;
-      align-content: start;
-      width: fit-content;
     }
 
     .wu-filter-link {
@@ -398,24 +366,17 @@
     .wu-filter-drop.is-reveal:not(.is-closing) .wu-filter-link { opacity: 1; transform: translateY(0); }
     .wu-filter-drop.is-closing .wu-filter-link { opacity: 0; transform: translateY(-9px); }
     .wu-filter-link:hover { color: var(--fg); }
-    .wu-filter-link.is-active {
-      color: var(--fg);
-      gap: 10px;
-    }
+    .wu-filter-link.is-active { color: var(--fg); }
 
     .wu-filter-marker {
-      width: 0;
+      width: 18px;
       height: 1px;
       background: currentColor;
       opacity: 0;
       flex: none;
-      overflow: hidden;
-      transition: width 0.2s ease, opacity 0.2s ease;
+      transition: opacity 0.2s;
     }
-    .wu-filter-link.is-active .wu-filter-marker {
-      width: 18px;
-      opacity: 1;
-    }
+    .wu-filter-link.is-active .wu-filter-marker { opacity: 1; }
 
     /* ── MAIN GRID ── */
     .wu-main {
@@ -540,13 +501,7 @@
       .nav-logo img { height: 24px; }
       .wu-toolbar { padding: 28px 20px 16px; }
       .wu-main { padding-left: 20px; padding-right: 20px; }
-      .wu-filter-body {
-        display: flex;
-        flex-direction: column;
-        gap: 36px;
-      }
-      .wu-filter-group { grid-column: auto; grid-row: auto; }
-      .wu-filter-group[data-key="services"] { margin-left: 0; margin-right: 0; }
+      .wu-filter-body { grid-template-columns: 1fr; gap: 36px; }
       .wu-filter-inner { padding-left: 20px; padding-right: 20px; }
     }
   </style>
@@ -664,19 +619,14 @@
 
   const FILTER_GROUPS = [
     {
+      key: 'services',
+      label: 'Services',
+      options: ['Creative Direction', 'Visual Effects', 'CGI', 'AI', 'Compositing', 'Clean Up & Beauty', 'Sound Design', 'Mixing & Mastering', 'Compose']
+    },
+    {
       key: 'type',
       label: 'Project Type',
       options: ['Commercial', 'Music Video', 'Brand Film']
-    },
-    {
-      key: 'services',
-      label: 'Services',
-      /* column-flow order: col1 top→bottom, col2, col3 (3×3 grid) */
-      options: [
-        'Creative Direction', 'Visual Effects', 'CGI',
-        'AI', 'Clean Up & Beauty', 'Compositing',
-        'Sound Design', 'Mixing & Mastering', 'Compose'
-      ]
     }
   ];
 
@@ -754,7 +704,7 @@
   }
 
   function sortServicesList(services) {
-    const order = FILTER_GROUPS.find(function (g) { return g.key === 'services'; }).options;
+    const order = FILTER_GROUPS[0].options;
     return services.slice().sort(function (a, b) {
       const ia = order.indexOf(a);
       const ib = order.indexOf(b);
