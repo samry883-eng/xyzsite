@@ -1,2212 +1,1375 @@
 <!DOCTYPE html>
-<!-- Merged deck: cover + About + work grid = pitch-embed; from slide 6 = legacy. Deck PDF. Source: scripts/merge-capabilities-deck.mjs --> /capabilities (slide transitions, side dots, wheel / arrows). -->
-<html lang="en" class="deck-protect">
+<html lang="en" class="deck-protect" data-fonts-pending>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>XYZStudios — Capabilities Deck 2026</title>
-  <meta name="robots" content="noindex, nofollow" />
-  <link rel="stylesheet" href="/capabilities/assets/nda-modal.css" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<meta name="robots" content="noindex, nofollow" />
+<title>XYZ Studios — Visual Effects · 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=block" rel="stylesheet" />
+<link rel="stylesheet" href="/capabilities/assets/nda-modal.css" />
+<style>
+:root {
+  --bg: #000000;
+  --paper: #0a0a0a;
+  --ink: #ffffff;
+  --ink-dim: rgba(255, 255, 255, 0.7);
+  --muted: #8c8c8c;
+  --line: rgba(255, 255, 255, 0.18);
+  --sans: "Geist", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+  --display: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --dur: 0.88s;
+  --ease: cubic-bezier(0.76, 0, 0.24, 1);
+}
 
-    :root {
-      --black: #0b0b0b;
-      --white: #ffffff;
-      --dim: rgba(255,255,255,0.42);
-      --dim2: rgba(255,255,255,0.22);
-      --divider: rgba(255,255,255,0.1);
-      --dur: 0.88s;
-      --ease: cubic-bezier(0.76, 0, 0.24, 1);
-      /* Content frame (horizontal / vertical inset from slide edges) */
-      --deck-pad-x: 64px;
-      --deck-pad-y: 56px;
-      --p: var(--deck-pad-x);
-      --pt: 32px;
-      --media-frame-pad-x: var(--deck-pad-x);
-      --media-frame-pad-y: var(--deck-pad-y);
-    }
+html, body {
+  margin: 0; padding: 0;
+  background: var(--bg); color: var(--ink);
+  font-family: var(--sans);
+  overflow: hidden; height: 100%;
+  -webkit-font-smoothing: antialiased;
+}
 
-    html, body {
-      width: 100%; height: 100%;
-      overflow: hidden;
-      background: var(--black);
-      color: var(--white);
-      /* Match deck PDF / site: Microsoft Sans Serif (system on Windows) */
-      font-family: "Microsoft Sans Serif", "Segoe UI", Tahoma, Geneva, sans-serif;
-      -webkit-font-smoothing: antialiased;
-    }
+html.deck-protect[data-fonts-pending] #deck-viewport { opacity: 0; pointer-events: none; }
 
-    /* Viewer lock: not DRM — deters casual zoom / drag-save / copy / print */
-    html.deck-protect,
-    html.deck-protect body {
-      -webkit-text-size-adjust: 100%;
-      text-size-adjust: 100%;
-      touch-action: manipulation;
-      -webkit-touch-callout: none;
-      user-select: none;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-    }
-    html.deck-protect img,
-    html.deck-protect video {
-      -webkit-user-drag: none;
-      user-select: none;
-      pointer-events: auto;
-    }
-    html.deck-protect a {
-      -webkit-user-drag: none;
-    }
-    @media print {
-      html.deck-protect body {
-        display: none !important;
-      }
-    }
+html.deck-protect, html.deck-protect body {
+  user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+  touch-action: manipulation; -webkit-text-size-adjust: 100%; text-size-adjust: 100%;
+}
+html.deck-protect img, html.deck-protect video { -webkit-user-drag: none; user-select: none; }
+@media print { html.deck-protect body { display: none !important; } }
 
-    /* Deck fills the entire browser viewport (edge to edge) */
-    #deck-viewport {
-      position: fixed;
-      inset: 0;
-      z-index: 1;
-      background: #000;
-    }
-    #deck-stage {
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
-      container-type: size;
-      container-name: deck;
-    }
-    /* ── DECK ── */
-    #deck {
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
-    }
+.vfx-artboard {
+  width: 1920px; height: 1080px;
+  background: var(--bg); color: var(--ink);
+  position: relative; overflow: hidden;
+  font-family: var(--sans);
+}
+.vfx-artboard.bg-paper { background: var(--paper); }
 
-    /* ── SLIDES ── */
-    .slide {
-      position: absolute; inset: 0;
-      transform: translateY(100%);
-      transition: transform var(--dur) var(--ease);
-      will-change: transform;
-      overflow: hidden;
-    }
-    .slide.active { transform: translateY(0%); }
-    .slide.exit   { transform: translateY(-100%); }
+.abs { position: absolute; box-sizing: border-box; }
 
-    .slide-inner {
-      opacity: 0;
-      transform: translateY(8px);
-      transition:
-        opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.12s,
-        transform 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.12s;
-      height: 100%;
-    }
-    .slide.active .slide-inner { opacity: 1; transform: translateY(0); }
+.m-tl, .m-tr, .m-bl, .m-br {
+  position: absolute; font-family: var(--mono); font-size: 13px;
+  letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; color: var(--ink);
+}
+.m-tl { left: 64px; top: 48px; }
+.m-tr { right: 64px; top: 48px; text-align: right; }
+.m-bl { left: 64px; bottom: 44px; }
+.m-br { right: 64px; bottom: 44px; text-align: right; }
+.m-tl .d, .m-tr .d, .m-bl .d, .m-br .d { color: var(--muted); font-weight: 500; }
 
-    /* ── CHROME ── */
-    .xyz-logo {
-      position: absolute; top: var(--pt); left: var(--p);
-      font-size: 11px; font-weight: 500; letter-spacing: 0.13em;
-      color: var(--white); z-index: 10;
-    }
-    .slide-footer-line {
-      position: absolute;
-      bottom: calc(var(--deck-pad-y) + 22px);
-      left: var(--p);
-      right: var(--p);
-      height: 1px; background: var(--divider);
-    }
-    .slide-year {
-      position: absolute;
-      bottom: max(12px, calc(var(--deck-pad-y) * 0.42));
-      left: var(--p);
-      font-size: 11px; color: var(--dim2); z-index: 10;
-    }
-    .slide-cover .slide-year { color: rgba(255,255,255,0.1); }
-    .slide-logo-mark {
-      position: absolute;
-      bottom: max(12px, calc(var(--deck-pad-y) * 0.42));
-      right: var(--p);
-      z-index: 10;
-    }
-    .slide-logo-mark img {
-      height: 30px; width: auto; display: block;
-      opacity: 0.55;
-    }
+.vfx-artboard:not(.cover) .m-tl,
+.vfx-artboard:not(.cover) .m-tr { visibility: hidden; }
 
-    /* Fixed deck chrome — does not move with slide transitions (see #deck-static-chrome) */
-    #deck-static-chrome {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      /* Below .slide-tag / overlays (10+); above plain slide content */
-      z-index: 9;
-      opacity: 0;
-      transition: opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    #deck-static-chrome.deck-static--visible {
-      opacity: 1;
-    }
-    #deck-static-chrome.deck-static--off {
-      opacity: 0;
-      transition: opacity 0.45s ease;
-    }
-    #deck-static-chrome .xyz-logo,
-    #deck-static-chrome .slide-footer-line,
-    #deck-static-chrome .slide-year,
-    #deck-static-chrome .slide-logo-mark {
-      pointer-events: none;
-    }
-    #deck-static-chrome #deck-static-xyz,
-    #deck-static-chrome #deck-static-line {
-      transition:
-        opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
-        visibility 0.65s;
-    }
-    #deck-static-chrome[data-mode="full"] #deck-static-xyz,
-    #deck-static-chrome[data-mode="full"] #deck-static-line {
-      opacity: 1;
-      visibility: visible;
-      transition:
-        opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
-        visibility 0s;
-    }
-    #deck-static-chrome[data-mode="compact"] #deck-static-xyz,
-    #deck-static-chrome[data-mode="compact"] #deck-static-line {
-      opacity: 0;
-      visibility: hidden;
-    }
-    /* Per-slide copies hidden; single layer above */
-    .slide > .xyz-logo,
-    .slide > .slide-footer-line,
-    .slide > .slide-year,
-    .slide > .slide-logo-mark {
-      display: none !important;
-    }
+.lbl {
+  font-family: var(--mono); font-size: 13px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--ink); font-weight: 600;
+}
+.lbl.dim { color: var(--muted); font-weight: 500; }
 
-    .slide-tag {
-      position: absolute; top: var(--pt); right: var(--p);
-      font-size: 11px; color: var(--dim);
-      border-bottom: 1px solid var(--dim); padding-bottom: 2px; z-index: 10;
-    }
-    /* ph = placeholder image block */
-    .ph {
-      width: 100%; height: 100%;
-      background: #161616;
-      overflow: hidden;
-    }
-    .ph img {
-      width: 100%; height: 100%;
-      object-fit: cover; display: block;
-    }
+.copy {
+  font-family: var(--sans); font-size: 18px; line-height: 1.55; color: var(--ink-dim); margin: 0;
+}
+.eyebrow {
+  font-family: var(--mono); font-size: 13px; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--muted);
+}
 
-    /* ════════════════════════════════
-       SLIDE 1 — COVER (top: title + contact; bottom: hero flush to viewport)
-    ════════════════════════════════ */
-    .slide-cover {
-      background: #000;
-      font-family: "Microsoft Sans Serif", "Segoe UI", Tahoma, Geneva, sans-serif;
-      --cover-gutter: var(--deck-pad-x);
-    }
-    .slide-cover .xyz-logo { display: none; }
+.h-hero {
+  margin: 0; font-family: var(--display); font-weight: 700;
+  font-size: 158px; line-height: 0.86; letter-spacing: -0.045em;
+}
+.h-section {
+  margin: 24px 0 0; font-family: var(--display); font-weight: 700;
+  font-size: 84px; line-height: 0.92; letter-spacing: -0.04em;
+}
+.h-pipe {
+  margin: 30px 0 0; font-family: var(--display); font-weight: 700;
+  font-size: 96px; line-height: 0.9; letter-spacing: -0.04em;
+}
+.h-divider {
+  margin: 18px 0 0; font-family: var(--display); font-weight: 700;
+  font-size: 140px; line-height: 0.86; letter-spacing: -0.045em;
+}
+.h-proj {
+  margin: 14px 0 0; font-family: var(--display); font-weight: 700;
+  font-size: 92px; line-height: 0.9; letter-spacing: -0.04em;
+}
+.h-bd {
+  margin: 14px 0 0; font-family: var(--display); font-weight: 700;
+  font-size: 64px; line-height: 0.92; letter-spacing: -0.035em;
+}
+.h-craft {
+  margin: 0; font-family: var(--display); font-weight: 700;
+  font-size: 52px; line-height: 0.98; letter-spacing: -0.035em;
+}
+.h-contact {
+  margin: 30px 0 0; font-family: var(--display); font-weight: 700;
+  font-size: 150px; line-height: 0.86; letter-spacing: -0.045em;
+}
 
-    .slide-cover .slide-inner {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      padding: 0;
-    }
+a.deck-link { color: inherit; text-decoration: none; pointer-events: auto; cursor: pointer; transition: opacity 0.2s; }
+a.deck-link:hover { opacity: 0.55; }
 
-    /* Ref: ~60% black / ~40% photo; title block vertically centered in black */
-    .cover-top-band {
-      flex: 0 0 60%;
-      min-height: 0;
-      position: relative;
-      overflow: hidden;
-      background: #000;
-    }
-    .cover-year-bg {
-      position: absolute;
-      left: 42%;
-      top: 50%;
-      transform: translate(0, -46%);
-      font-size: clamp(120px, 22vw, 260px);
-      font-weight: 400;
-      line-height: 1;
-      letter-spacing: -0.07em;
-      color: rgba(255, 255, 255, 0.055);
-      pointer-events: none;
-      user-select: none;
-      z-index: 0;
-    }
-    .cover-top-row {
-      position: relative;
-      z-index: 1;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 0 var(--cover-gutter) clamp(28px, 6vh, 56px);
-      box-sizing: border-box;
-    }
-    .cover-head-row {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(11.5rem, 20rem);
-      align-items: end;
-      gap: clamp(20px, 4vw, 64px);
-    }
-    .cover-title-col {
-      min-width: 0;
-      max-width: min(46rem, 58vw);
-      padding-right: 8px;
-    }
-    .cover-title {
-      margin: 0;
-      font-size: clamp(52px, 7vw, 108px);
-      font-weight: 700;
-      line-height: 0.88;
-      letter-spacing: -0.035em;
-      color: #fff;
-    }
-    .cover-sub {
-      font-size: clamp(11px, 1.15vw, 13px);
-      color: rgba(255, 255, 255, 0.92);
-      margin-top: clamp(10px, 1.5vh, 16px);
-      font-weight: 400;
-      line-height: 1.45;
-      max-width: 26em;
-    }
-    /* Ref: R column — name white; email smaller grey; meta smallest grey */
-    .cover-contact {
-      text-align: right;
-      justify-self: end;
-      max-width: 19rem;
-    }
-    .cover-contact strong {
-      display: block;
-      font-weight: 600;
-      font-size: 12px;
-      line-height: 1.4;
-      color: #fff;
-      margin-bottom: 8px;
-      letter-spacing: 0.04em;
-    }
-    .cover-contact-email {
-      display: block;
-      font-size: 10.5px;
-      line-height: 1.65;
-      font-weight: 400;
-      color: rgba(255, 255, 255, 0.5);
-      margin-bottom: 6px;
-    }
-    .cover-contact-meta {
-      display: block;
-      font-size: 10px;
-      line-height: 1.55;
-      font-weight: 400;
-      color: rgba(255, 255, 255, 0.42);
-    }
+/* cover */
+.cover-hero {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  transform: scale(1.36); transform-origin: center;
+}
+.cover-grad {
+  position: absolute; inset: 0;
+  background: linear-gradient(rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.05) 34%, rgba(0,0,0,0.92) 100%);
+}
+.cover-headline { left: 64px; top: 50%; transform: translateY(-50%); }
+.cover-aside { right: 64px; top: 50%; transform: translateY(-50%); width: 540px; text-align: right; }
+.cover-copy { font-size: 18px; }
+.cover-cap-tr { position: absolute; right: 64px; top: 48px; text-align: right; }
+.cover .cover-scroll-hint {
+  left: 50%; bottom: 44px; transform: translateX(-50%);
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.22); text-transform: uppercase; z-index: 2;
+}
 
-    /* Ref: ~40% hero, flush to bottom of viewport */
-    .cover-photo-band {
-      flex: 1 1 0;
-      min-height: 0;
-      position: relative;
-      background: #050505;
-      overflow: hidden;
-    }
-    .cover-photo-band img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: 58% 42%;
-      display: block;
-    }
-    .slide-cover .slide-footer-line {
-      display: none;
-    }
-    .slide-cover .slide-year { display: none; }
-    .slide-cover .slide-logo-mark {
-      display: none;
-    }
+/* focus */
+.focus-top { left: 72px; right: 72px; top: 150px; display: flex; justify-content: space-between; align-items: flex-end; }
+.focus-top-r { margin: 0 0 6px; max-width: 420px; text-align: right; font-size: 18px; line-height: 1.6; }
+.focus-strip {
+  left: 72px; right: 72px; top: 470px;
+  display: flex; justify-content: space-between; align-items: flex-start;
+}
+.focus-col img { display: block; height: 360px; width: auto; }
+.focus-cap {
+  margin-top: 16px; font-family: var(--mono); font-size: 11px;
+  letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap;
+}
+.focus-cap .d { color: var(--muted); }
 
-    @media (max-width: 780px) {
-      .cover-head-row {
-        grid-template-columns: 1fr;
-        align-items: start;
-      }
-      .cover-top-row {
-        padding-left: clamp(20px, 5vw, 32px);
-        padding-right: clamp(20px, 5vw, 32px);
-      }
-      .cover-contact {
-        text-align: left;
-        max-width: none;
-        justify-self: start;
-      }
-      .cover-year-bg {
-        left: 3%;
-        font-size: clamp(68px, 18vw, 180px);
-      }
-      .cover-top-band { flex-basis: 54%; max-height: none; }
-    }
+/* pipeline */
+.pipe-intro { left: 72px; right: 72px; top: 230px; }
+.pipe-track { left: 72px; right: 72px; bottom: 220px; }
+.pipe-line { height: 1px; background: var(--line); }
+.pipe-grid { display: grid; grid-template-columns: repeat(8, 1fr); }
+.pipe-node { padding-top: 22px; }
+.pipe-dot { width: 9px; height: 9px; background: var(--ink); border-radius: 50%; margin-top: -4.5px; }
+.pipe-ix { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 24px; }
+.pipe-nm { font-family: var(--display); font-weight: 700; font-size: 22px; letter-spacing: -0.02em; margin-top: 8px; }
+.pipe-foot { left: 72px; bottom: 104px; max-width: 760px; font-size: 20px; line-height: 1.5; }
 
-    /* ════════════════════════════════
-       SLIDE 2 — TABLE OF CONTENTS
-    ════════════════════════════════ */
-    .slide-toc { background: var(--black); }
-    .slide-toc .slide-inner {
-      padding: var(--deck-pad-y) var(--deck-pad-x);
-      display: flex; flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-      gap: clamp(56px, 11vw, 160px);
-      height: 100%;
-      box-sizing: border-box;
-    }
-    .toc-heading-wrap {
-      flex: 0 0 52%;
-      display: flex;
-      flex-direction: column;
-      flex-shrink: 0;
-    }
-    .toc-heading {
-      font-size: clamp(52px, 7.5vw, 100px);
-      font-weight: 300; line-height: 0.92;
-      letter-spacing: -0.03em;
-    }
-    .toc-list {
-      flex: 0 0 auto;
-      min-width: 300px;
-    }
-    .toc-row {
-      display: flex; align-items: baseline; gap: 48px;
-      padding: 18px 0;
-      border: none;
-    }
-    .toc-num {
-      font-size: 12px;
-      color: var(--dim2);
-      min-width: 5ch;
-      font-variant-numeric: tabular-nums;
-      font-feature-settings: "tnum" 1;
-      letter-spacing: 0.02em;
-    }
-    .toc-name { font-size: 16px; font-weight: 300; }
+/* dividers */
+.div-hero { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.div-grad {
+  position: absolute; inset: 0;
+  background: linear-gradient(rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.85) 100%);
+}
+.div-copy { left: 64px; bottom: 80px; }
+.div-eyebrow {
+  font-family: var(--mono); font-size: 13px; letter-spacing: 0.24em;
+  text-transform: uppercase; color: rgba(255,255,255,0.7);
+}
 
-    /* ════════════════════════════════
-       SLIDE 3 — ABOUT
-    ════════════════════════════════ */
-    .slide-about { background: var(--black); }
-    .slide-about .slide-inner { display: grid; grid-template-columns: 1fr 1fr; height: 100%; }
-    .about-img {
-      background: #0a0a0a;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: var(--media-frame-pad-y) var(--media-frame-pad-x) calc(var(--media-frame-pad-y) + 6px);
-      box-sizing: border-box;
-    }
-    .about-img .ph {
-      flex: 1;
-      min-height: min(58vh, 720px);
-      width: 100%;
-      border-radius: 1px;
-      overflow: hidden;
-      clip-path: inset(8% 0 5% 0);
-    }
-    .about-img .ph video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    .about-text {
-      padding: var(--deck-pad-y) var(--deck-pad-x);
-      display: flex; flex-direction: column; justify-content: center;
-      box-sizing: border-box;
-    }
-    .about-heading {
-      font-size: clamp(26px, 3vw, 42px);
-      font-weight: 300; line-height: 1.18;
-      letter-spacing: -0.015em; margin-bottom: 28px;
-    }
-    .about-body { font-size: 13px; color: var(--dim); line-height: 1.75; font-weight: 300; max-width: 480px; }
-    .about-body p + p { margin-top: 16px; }
+/* project hero slides */
+.proj-bg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; display: block; cursor: none;
+}
+.proj-grad,
+.proj-panel { pointer-events: none; }
+.proj-panel .breakdown-btn,
+.proj-panel a.deck-link { pointer-events: auto; }
+.breakdown-btn,
+.deck-go-back { pointer-events: auto; }
 
-    /* ════════════════════════════════
-       SLIDE 4 — HIGHLIGHTED WORK GRID
-    ════════════════════════════════ */
-    .slide-work-grid { background: #0a0a0a; }
-    .slide-work-grid .slide-inner {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(3, 1fr);
-      gap: 3px;
-      padding: var(--media-frame-pad-y) var(--media-frame-pad-x);
-      box-sizing: border-box;
-      height: 100%;
-      min-height: 0;
-      overflow: hidden;
-    }
-    .wg-cell { background: #161616; overflow: hidden; position: relative; min-height: 0; min-width: 0; }
-    .wg-cell .ph { background: #161616; transition: opacity 0.3s; width: 100%; height: 100%; }
-    .wg-cell .ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.bd-cell video { cursor: none; }
 
-    /* ════════════════════════════════
-       SLIDE 5 — WHAT WE DO
-    ════════════════════════════════ */
-    .slide-services { background: var(--black); }
-    .slide-services .slide-inner {
-      padding: var(--deck-pad-y) var(--deck-pad-x);
-      height: 100%; display: flex; flex-direction: column;
-      box-sizing: border-box;
-    }
-    .services-title { display: none; }
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 40px 60px;
-      flex: 1; align-content: center;
-    }
-    .svc { text-align: center; }
-    .svc h3 { font-size: 13px; font-weight: 500; margin-bottom: 10px; }
-    .svc p { font-size: 11.5px; color: var(--dim); line-height: 1.65; font-weight: 300; }
+#pj-cursor {
+  position: fixed; pointer-events: none; z-index: 300;
+  transform: translate(-50%, -50%);
+  opacity: 0; transition: opacity 0.18s ease;
+  flex: none; width: 0; height: 0; overflow: visible;
+}
+#pj-cursor.visible { opacity: 1; }
+#pj-cursor svg { display: block; }
+.proj-grad {
+  position: absolute; inset: 0;
+  background: linear-gradient(rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 26%, rgba(0,0,0,0.18) 54%, rgba(0,0,0,0.92) 100%);
+}
+.proj-panel { left: 64px; right: 64px; bottom: 60px; }
+.proj-panel--rbc { right: 420px; }
+.proj-ey {
+  font-family: var(--mono); font-size: 13px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: rgba(255,255,255,0.78);
+}
+.proj-grid {
+  display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px;
+  margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.24); padding-top: 22px;
+}
+.proj-grid--meta { grid-template-columns: 2fr 1fr 1fr; }
+.proj-lbl {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: rgba(255,255,255,0.55);
+}
+.proj-val { margin-top: 12px; font-size: 15px; line-height: 1.7; color: var(--ink); }
 
-    /* ════════════════════════════════
-       SECTION DIVIDER
-    ════════════════════════════════ */
-    .slide-divider { background: #0d0d0d; }
-    .slide-divider .div-bg {
-      position: absolute; inset: 0; background: #111; overflow: hidden;
-    }
-    .slide-divider .div-bg .ph { background: #111; opacity: 0.4; }
-    .slide-divider .div-bg video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0.4; }
-    .slide-divider .slide-inner {
-      position: relative; z-index: 2;
-      display: flex; align-items: flex-end; justify-content: flex-start;
-      padding: var(--deck-pad-y) var(--deck-pad-x) calc(var(--deck-pad-y) + 44px);
-      height: 100%;
-      box-sizing: border-box;
-    }
-    .div-word {
-      font-size: clamp(64px, 11vw, 148px);
-      font-weight: 700; letter-spacing: -0.02em;
-      line-height: 0.95; text-transform: uppercase;
-    }
+.breakdown-btn {
+  position: absolute; right: 64px; bottom: 60px; z-index: 5;
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 12px 24px; font-family: var(--mono); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: #f2e7d8; background: rgba(0,0,0,0.34);
+  border: 1px solid rgba(242,231,216,0.55); border-radius: 2px;
+  cursor: pointer; backdrop-filter: blur(6px);
+  transition: background 0.32s, border-color 0.32s;
+}
+.breakdown-btn:hover { background: rgba(0,0,0,0.5); }
 
-    /* ════════════════════════════════
-       PROJECT SLIDE (pages 6–9)
-    ════════════════════════════════ */
-    .slide-project { background: #000; }
-    .slide-project > .slide-year,
-    .slide-project > .slide-footer-line,
-    .slide-project > .slide-logo-mark { display: none; }
-    .slide-project .slide-inner { display: none; }
+.deck-go-back {
+  position: absolute; left: 50%; bottom: 44px; z-index: 5;
+  transform: translateX(-50%);
+  padding: 0; border: none; background: none;
+  font-family: var(--mono); font-size: 11px; font-weight: 500;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted); cursor: pointer;
+  transition: color 0.2s;
+}
+.deck-go-back:hover { color: var(--ink); }
 
-    .proj-video-bg {
-      position: absolute; inset: 0; z-index: 0;
-      width: 100%; height: 100%;
-      object-fit: cover; pointer-events: none;
-    }
-    .proj-gradient {
-      position: absolute; inset: 0; z-index: 1;
-      background: linear-gradient(to right,
-        rgba(0,0,0,0.95) 0%,
-        rgba(0,0,0,0.88) 200px,
-        rgba(0,0,0,0.45) 32%,
-        rgba(0,0,0,0) 48%
-      );
-      pointer-events: none;
-    }
+/* breakdown */
+.bd-head {
+  left: 64px; right: 64px; top: 118px;
+  display: grid; grid-template-columns: 1fr 1.1fr; gap: 80px; align-items: start;
+}
+.bd-sub {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--muted);
+}
+.bd-head-r { margin: 6px 0 0; font-size: 17px; line-height: 1.65; }
+.bd-media { inset: 360px 64px 80px; }
+.bd-grid { display: grid; height: 100%; gap: 20px; }
+.bd-grid--sb { grid-template-columns: 1.3fr 1fr; }
+.bd-cell { overflow: hidden; background: #000; }
+.bd-cell img, .bd-cell video { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-    /* Overlay — all positioned text lives here */
-    .proj-overlay {
-      position: absolute; inset: 0; z-index: 3;
-      pointer-events: none;
-      --pc: 3.5%;
-      --pt-color: #F2E7D8;
-      --pd-color: rgba(242,231,216,0.78);
-      --pm-color: rgba(242,231,216,0.55);
-    }
+/* still slides */
+.still-full { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 
-    /* Flex column — vertically centers all blocks between logo and credits */
-    .proj-content-col {
-      position: absolute;
-      top: var(--proj-pad-y, 72px);
-      bottom: calc(var(--proj-pad-y, 72px) + 38px);
-      left: var(--proj-pad-x, 72px);
-      width: min(440px, 34vw);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 26px;
-    }
+/* craft layout */
+.craft-copy { left: 64px; top: 142px; width: 404px; }
+.craft-ix {
+  font-family: var(--mono); font-size: 12px; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 24px;
+}
+.craft-body { margin-top: 26px; font-size: 17px; line-height: 1.6; color: rgba(255,255,255,0.64); }
+.craft-media { inset: 142px 48px 64px 500px; display: flex; flex-direction: column; justify-content: center; gap: 18px; }
+.craft-grid--cg .craft-row { display: flex; gap: 14px; }
+.craft-tile { position: relative; overflow: hidden; flex: 1; min-width: 0; height: 252px; }
+.craft-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.craft-tag {
+  position: absolute; left: 14px; top: 14px; z-index: 2;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--ink); background: rgba(0,0,0,0.55); padding: 5px 9px;
+}
+.craft-grid--comp {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; width: 100%;
+}
 
-    .proj-header-block { width: 100%; }
-    .proj-eyebrow {
-      display: flex; align-items: baseline;
-    }
-    .proj-eyebrow .proj-client {
-      font-size: 11px; font-weight: 600;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      color: var(--pt-color);
-    }
-    .proj-title {
-      font-size: 32px; font-weight: 300;
-      letter-spacing: -0.02em; text-transform: uppercase;
-      line-height: 1; color: var(--pt-color);
-      margin-top: 10px;
-    }
-    .proj-title-rule {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-top: 14px;
-    }
-    .proj-header-divider {
-      flex: 0 0 auto;
-      width: min(148px, 34%);
-      height: 1px;
-      background: var(--pm-color);
-    }
-    .proj-title-rule .proj-year {
-      font-size: 8px; font-weight: 500;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      color: var(--pm-color);
-    }
+/* contact */
+.contact-email {
+  display: inline-block; margin-top: 44px;
+  font-family: var(--display); font-weight: 700; font-size: 42px;
+  letter-spacing: -0.03em; color: var(--ink); text-decoration: none;
+  border-bottom: 1px solid var(--ink); padding-bottom: 8px;
+}
+.contact-main { left: 64px; top: 50%; transform: translateY(-50%); }
 
-    .proj-info-block { width: 100%; }
-    .proj-info-label {
-      font-size: 11px; font-weight: 700;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      color: var(--pt-color); margin-bottom: 8px;
-    }
-    .proj-info-body {
-      font-size: 11px; font-weight: 400;
-      line-height: 1.6; color: var(--pd-color);
-    }
+/* deck chrome */
+#deck-viewport { position: fixed; inset: 0; z-index: 1; background: var(--bg); }
+#deck-stage { position: absolute; inset: 0; overflow: hidden; background: var(--bg); }
+#deck { position: absolute; inset: 0; overflow: hidden; }
+.slide {
+  position: absolute; inset: 0; background: var(--bg);
+  transform: translateY(100%); transition: transform var(--dur) var(--ease);
+  will-change: transform; overflow: hidden;
+  display: flex; align-items: center; justify-content: center; z-index: 0;
+}
+.slide.active { transform: translateY(0); }
+.slide-inner {
+  width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1) 0.12s, transform 0.75s cubic-bezier(0.22,1,0.36,1) 0.12s;
+}
+.slide.active .slide-inner { opacity: 1; transform: translateY(0); }
+.artboard-scaler { width: 1920px; height: 1080px; transform-origin: center center; flex-shrink: 0; will-change: transform; }
 
-    .proj-credit-bl {
-      position: absolute; bottom: calc(var(--deck-pad-y) + 36px); left: var(--p);
-    }
-    .proj-credit-br {
-      position: absolute; bottom: calc(var(--deck-pad-y) + 36px); right: var(--p);
-      text-align: right;
-    }
-    .proj-credit-name {
-      font-size: 10px; font-weight: 500;
-      letter-spacing: 0.05em; text-transform: uppercase;
-      color: var(--pt-color);
-    }
-    .proj-credit-role {
-      font-size: 10px; font-weight: 400;
-      letter-spacing: 0.05em; text-transform: uppercase;
-      color: var(--pm-color);
-    }
+#progress {
+  position: absolute; bottom: 0; left: 0; height: 2px;
+  background: rgba(255,255,255,0.35); transition: width var(--dur) var(--ease); z-index: 200;
+}
+#nav-dots {
+  position: absolute; right: max(10px, 1.1vw); top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 7px; z-index: 200; pointer-events: auto;
+}
+.dot {
+  width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.22);
+  cursor: pointer; transition: background 0.3s, transform 0.3s;
+}
+.dot.active { background: rgba(255,255,255,0.75); transform: scale(1.6); }
+#hint {
+  position: absolute; bottom: 56px; left: 50%; transform: translateX(-50%);
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.22); text-transform: uppercase; z-index: 200;
+  transition: opacity 1s; pointer-events: none;
+}
+#deck-slide-number, #deck-slide-label {
+  position: absolute; z-index: 210; pointer-events: none;
+  font-family: var(--mono); font-size: 13px; letter-spacing: 0.2em;
+  text-transform: uppercase; font-weight: 600; opacity: 0; transition: opacity 0.15s ease;
+}
+#deck-slide-number { text-align: right; font-weight: 500; color: var(--muted); }
+#deck-slide-number.visible, #deck-slide-label.visible { opacity: 1; }
+#deck-slide-label .d { color: var(--muted); font-weight: 500; }
 
-    /* ════════════════════════════════
-       CASE STUDY SLIDE
-    ════════════════════════════════ */
-    .slide-case { background: var(--black); }
-    .slide-case .slide-inner {
-      padding: var(--deck-pad-y) var(--deck-pad-x);
-      height: 100%; display: flex; flex-direction: column;
-      box-sizing: border-box;
-    }
-    .case-top {
-      display: grid; grid-template-columns: 1fr 1fr;
-      margin-bottom: 24px; flex-shrink: 0;
-    }
-    .case-left .case-title {
-      font-size: clamp(44px, 5.8vw, 72px);
-      font-weight: 300; letter-spacing: -0.03em; line-height: 1;
-    }
-    .case-left .case-client {
-      font-size: 12px; color: var(--dim); margin-top: 10px; font-weight: 300;
-    }
-    .case-right {
-      padding-top: 6px; display: flex; flex-direction: column; justify-content: flex-start;
-    }
-    .case-body {
-      font-size: 12px; color: var(--dim); line-height: 1.75;
-      font-weight: 300; max-width: 560px;
-    }
-    .case-body p + p { margin-top: 14px; }
-    .case-images {
-      flex: 1; display: grid; gap: 3px; min-height: 0;
-      box-sizing: border-box;
-    }
-    .case-images.cols-3 { grid-template-columns: repeat(3, 1fr); }
-    .case-images.cols-4 { grid-template-columns: repeat(4, 1fr); }
-    .case-images.mixed-r { grid-template-columns: 2fr 1fr; }
-    .case-images.mixed-wide { grid-template-columns: 1.5fr repeat(2, 1fr); }
-    .case-images.row-2 { grid-template-rows: 1fr 1fr; }
-    .case-images.auto-rows { grid-auto-rows: 1fr; }
-    .ci { background: #161616; overflow: hidden; position: relative; }
-    .ci.span2 { grid-column: span 2; }
-    .ci.span2r { grid-row: span 2; }
+html.deck-portrait-fallback #deck-viewport { overflow: hidden; }
+html.deck-portrait-fallback #deck-stage {
+  position: fixed; left: 50%; top: 50%;
+  width: 100vh; height: 100vw; max-width: 100vh; max-height: 100vw;
+  inset: auto; transform: translate(-50%, -50%) rotate(90deg); transform-origin: center center;
+}
 
-    /* Case study — fixed 1600×900 artboard (Storyboard + slides 12–15; scales uniformly) */
-    .slide-case--fixed { background: #000000; }
-    .slide-case--fixed .slide-inner {
-      position: relative;
-      padding: 0;
-      height: 100%;
-      display: block;
-      box-sizing: border-box;
-    }
-    .slide-case--fixed .slide-tag {
-      top: calc(var(--pt) + 28px);
-    }
-    .sb-scale-root {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-    .sb-artboard {
-      position: relative;
-      width: 1600px;
-      height: 900px;
-      flex-shrink: 0;
-      background: #000000;
-      transform-origin: center center;
-      color: #F5F5F5;
-      --sb-rule: #2A2A2A;
-      --sb-text-2: #9A9A9A;
-      /* Match --deck-pad-x (64px) for parity with other case-study slides */
-      --sb-inset: 64px;
-    }
-    .sb-title {
-      position: absolute;
-      left: var(--sb-inset);
-      top: 63px;
-      width: 448px;
-      font-size: 78px;
-      font-weight: 300;
-      line-height: 0.95;
-      letter-spacing: -0.04em;
-      color: #F5F5F5;
-    }
-    .sb-meta {
-      position: absolute;
-      left: 560px;
-      top: 81px;
-      width: 192px;
-      font-size: 15px;
-      font-weight: 400;
-      line-height: 1.25;
-      color: var(--sb-text-2);
-    }
-    .sb-body {
-      position: absolute;
-      left: auto;
-      right: var(--sb-inset);
-      top: 81px;
-      width: 688px;
-      font-size: 15px;
-      font-weight: 400;
-      line-height: 1.5;
-      color: var(--sb-text-2);
-      text-align: left;
-    }
-    .sb-body p + p {
-      margin-top: 0.75em;
-    }
-    .sb-media-left {
-      position: absolute;
-      left: var(--sb-inset);
-      top: 324px;
-      width: 820px;
-      height: 405px;
-      background: #080808;
-      overflow: hidden;
-    }
-    .sb-media-left img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center;
-      display: block;
-    }
-    .sb-media-right {
-      position: absolute;
-      left: auto;
-      right: var(--sb-inset);
-      top: 324px;
-      width: 628px;
-      height: 405px;
-      background: #000;
-      overflow: hidden;
-    }
-    .sb-media-right .sb-video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center;
-      display: block;
-    }
-    /* Long titles (Pre-vis, Asset Prep, …) — same hierarchy, slightly smaller than “Storyboard” */
-    .sb-title.sb-title--std {
-      font-size: 56px;
-      letter-spacing: -0.035em;
-      line-height: 0.98;
-    }
-    /* Image grid band (replaces split media on non-Storyboard fixed slides) */
-    .sb-media-grid {
-      position: absolute;
-      left: var(--sb-inset);
-      right: var(--sb-inset);
-      top: 324px;
-      height: 405px;
-      display: grid;
-      gap: 3px;
-      box-sizing: border-box;
-    }
-    .sb-media-grid > .ci {
-      min-height: 0;
-      min-width: 0;
-    }
-    .sb-media-grid .ph {
-      width: 100%;
-      height: 100%;
-    }
-    .sb-media-grid .ph img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center;
-      display: block;
-    }
-    /* ════════════════════════════════
-       CRAFT SLIDE
-    ════════════════════════════════ */
-    .slide-craft { background: var(--black); }
-    .slide-craft .slide-inner {
-      padding: var(--deck-pad-y) var(--deck-pad-x);
-      height: 100%; display: flex; flex-direction: column;
-      box-sizing: border-box;
-    }
-    .craft-title {
-      font-size: clamp(44px, 5.8vw, 72px);
-      font-weight: 300; letter-spacing: -0.03em; line-height: 1;
-      flex-shrink: 0;
-    }
-    .craft-body {
-      font-size: 12px; color: var(--dim); line-height: 1.7;
-      max-width: 700px; margin-top: 14px; margin-bottom: 28px;
-      font-weight: 300; flex-shrink: 0;
-    }
-    .craft-images {
-      flex: 1; display: grid; gap: 3px; min-height: 0;
-      box-sizing: border-box;
-    }
-    .craft-images.cols-3 { grid-template-columns: repeat(3, 1fr); }
-    .craft-images.cols-2 { grid-template-columns: 1fr 1fr; }
-    .craft-images.mixed { grid-template-columns: 1.8fr 1fr 1fr; }
-    .craft-images.mixed-l { grid-template-columns: 1.5fr 1fr; }
-    .craft-images.big-left { grid-template-columns: 2fr 1fr; }
-    .ci-craft { background: #161616; overflow: hidden; }
-    .ci-craft.span2r { grid-row: span 2; }
-    .ci-craft .ph { background: #161616; }
+@media (max-width: 900px) {
+  #nav-dots { right: 8px; gap: 9px; }
+  .dot { width: 6px; height: 6px; }
+}
 
-    /* Full-bleed slides (bundled wireframe layout) */
-    .slide-craft-full,
-    .slide-focus-full,
-    .slide-hww-full,
-    .slide-contact-full { background: #000; }
-    .slide-craft-full .slide-inner,
-    .slide-focus-full .slide-inner,
-    .slide-hww-full .slide-inner,
-    .slide-contact-full .slide-inner {
-      padding: 0;
-      height: 100%;
-      position: relative;
-    }
-    .deck-full-img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    .slide-contact-full .contact-left {
-      position: relative;
-      z-index: 4;
-      background: linear-gradient(to right, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.35) 55%, transparent 100%);
-    }
-    .slide-contact-full .contact-right { display: none; }
+@media print, (prefers-reduced-motion: reduce) { * { animation: none !important; } }
 
-    /* ════════════════════════════════
-       OUR FOCUS
-    ════════════════════════════════ */
-    .slide-focus { background: var(--black); }
-    .slide-focus .slide-inner {
-      padding: var(--deck-pad-y) var(--deck-pad-x);
-      height: 100%; display: flex; flex-direction: column;
-      box-sizing: border-box;
-    }
-    .focus-heading {
-      font-size: clamp(40px, 5.5vw, 68px);
-      font-weight: 300; letter-spacing: -0.025em; line-height: 1;
-      flex-shrink: 0; margin-bottom: 24px;
-    }
-    .focus-strip {
-      flex: 1; display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 3px; min-height: 0;
-      margin-bottom: 16px;
-      box-sizing: border-box;
-    }
-    .focus-cell { display: flex; flex-direction: column; position: relative; }
-    .focus-img { flex: 1; background: #161616; overflow: hidden; }
-    .focus-label {
-      font-size: 9px; color: var(--dim2);
-      letter-spacing: 0.08em; margin-top: 8px;
-      text-transform: none; font-weight: 400;
-    }
-    .focus-footer {
-      flex-shrink: 0;
-      border-top: 1px solid var(--divider);
-      padding-top: 16px;
-    }
-    .focus-footer p {
-      font-size: 12px; color: var(--dim); font-weight: 300; line-height: 1.6;
-    }
-
-    /* ════════════════════════════════
-       HOW WE WORK
-    ════════════════════════════════ */
-    .slide-hww { background: var(--black); }
-    .slide-hww .slide-inner { display: grid; grid-template-columns: 1fr 1fr; height: 100%; }
-    .hww-img {
-      background: #141414;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: var(--media-frame-pad-y) var(--media-frame-pad-x);
-      box-sizing: border-box;
-    }
-    .hww-img .ph {
-      flex: 1;
-      min-height: 0;
-      width: 100%;
-    }
-    .hww-text {
-      padding: var(--deck-pad-y) var(--deck-pad-x);
-      display: flex; flex-direction: column; justify-content: center;
-      box-sizing: border-box;
-    }
-    .hww-body { font-size: 12px; color: var(--dim); line-height: 1.75; font-weight: 300; max-width: 400px; }
-    .hww-body p + p { margin-top: 16px; }
-
-    /* ════════════════════════════════
-       CONTACT
-    ════════════════════════════════ */
-    .slide-contact { background: var(--black); }
-    .slide-contact .slide-inner { display: grid; grid-template-columns: 1fr 1fr; height: 100%; }
-    .contact-left {
-      padding: var(--deck-pad-y) var(--deck-pad-x);
-      display: flex; flex-direction: column;
-      height: 100%;
-      min-height: 0;
-      box-sizing: border-box;
-    }
-    .contact-title {
-      font-size: clamp(64px, 10vw, 120px);
-      font-weight: 700; text-transform: uppercase;
-      letter-spacing: -0.02em; line-height: 0.88;
-      margin-top: auto;
-      padding-top: 36px;
-    }
-    .contact-team { display: flex; gap: 44px; margin-bottom: 0; margin-top: 28px; }
-    .cp-name { font-size: 13px; font-weight: 500; }
-    .cp-role { font-size: 11px; color: var(--dim); margin-top: 2px; font-weight: 300; }
-    .contact-block { margin-bottom: 24px; }
-    .contact-block .cb-label { font-size: 11px; color: var(--dim2); margin-bottom: 3px; }
-    .contact-block .cb-value { font-size: 13px; }
-    .contact-block a { color: var(--white); text-decoration: underline; text-underline-offset: 3px; }
-    .contact-socials { display: flex; gap: 0; margin-bottom: 0; }
-    .contact-socials a { font-size: 12px; color: var(--dim); text-decoration: underline; text-underline-offset: 3px; margin-right: 24px; }
-    .contact-right {
-      background: #111;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: var(--deck-pad-y) var(--deck-pad-x);
-      box-sizing: border-box;
-    }
-    .contact-right .ph {
-      flex: 1;
-      min-height: 0;
-      width: 100%;
-      background: linear-gradient(160deg, #141414, #1c1c1c);
-    }
-
-    /* ════════════════════════════════
-       DIRECTOR (full-bleed credit)
-    ════════════════════════════════ */
-    .slide-director { background: var(--black); }
-    .slide-director .slide-inner {
-      height: 100%; display: flex; align-items: center; justify-content: center;
-      padding: var(--deck-pad-y) var(--deck-pad-x);
-      box-sizing: border-box;
-    }
-    .director-stack { text-align: center; }
-    .director-stack .director-label {
-      font-size: 11px; font-weight: 500; letter-spacing: 0.22em;
-      color: var(--dim2); margin-bottom: clamp(12px, 2vh, 20px);
-    }
-    .director-stack .director-name {
-      font-size: clamp(40px, 9vw, 88px); font-weight: 300;
-      letter-spacing: -0.02em; line-height: 1.05;
-    }
-
-    /* ════════════════════════════════
-       YEAR SPLASH (transition)
-    ════════════════════════════════ */
-    .slide-year-splash { background: var(--black); }
-    .slide-year-splash .slide-inner {
-      height: 100%; display: flex; align-items: center; justify-content: center;
-      padding: var(--deck-pad-y) var(--deck-pad-x);
-      box-sizing: border-box;
-    }
-    .year-splash-num {
-      font-size: clamp(100px, 28vw, 280px); font-weight: 700;
-      letter-spacing: -0.04em; line-height: 1;
-      color: rgba(255,255,255,0.08);
-      user-select: none;
-    }
-
-    /* ════════════════════════════════
-       NAV CHROME
-    ════════════════════════════════ */
-    #progress {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      height: 2px;
-      background: rgba(255, 255, 255, 0.45);
-      transition: width var(--dur) var(--ease);
-      z-index: 200;
-    }
-    #nav-dots {
-      position: absolute;
-      right: max(10px, 1.1cqw);
-      top: 50%;
-      transform: translateY(-50%);
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-      z-index: 200;
-      pointer-events: auto;
-    }
-    .dot {
-      width: 4px; height: 4px; border-radius: 50%;
-      background: rgba(255,255,255,0.22); cursor: pointer;
-      transition: background 0.3s, transform 0.3s;
-    }
-    .dot.active { background: rgba(255,255,255,0.85); transform: scale(1.6); }
-    #slide-counter {
-      position: absolute;
-      top: var(--pt);
-      right: var(--p);
-      bottom: auto;
-      left: auto;
-      font-size: 10px;
-      color: rgba(255, 255, 255, 0.22);
-      letter-spacing: 0.1em;
-      z-index: 200;
-      font-variant-numeric: tabular-nums;
-      transition: opacity 0.5s ease;
-      pointer-events: none;
-    }
-    #hint {
-      position: absolute;
-      bottom: calc(var(--deck-pad-y) + 40px);
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 10px; letter-spacing: 0.15em;
-      color: rgba(255,255,255,0.18); text-transform: uppercase;
-      z-index: 200; transition: opacity 1s; pointer-events: none;
-    }
-
-    @media (max-width: 900px) {
-      :root {
-        --deck-pad-x: 24px;
-        --deck-pad-y: 24px;
-        --pt: 20px;
-      }
-      .slide-about .slide-inner, .slide-hww .slide-inner,
-      .slide-contact .slide-inner { grid-template-columns: 1fr; }
-      /* Keep About video visible — was incorrectly hidden with .about-img */
-      .slide-about .slide-inner {
-        grid-template-rows: auto minmax(0, 1fr);
-      }
-      .slide-about .about-img {
-        display: flex;
-        min-height: 38vh;
-        max-height: 52vh;
-        padding-bottom: 12px;
-      }
-      .slide-about .about-img .ph {
-        min-height: min(42vh, 480px);
-      }
-      .hww-img, .contact-right { display: none; }
-      .slide-project .slide-inner { grid-template-columns: 1fr; }
-      .proj-sidebar { border-right: none; border-bottom: 1px solid var(--divider); flex: 0 0 auto; }
-      .toc-heading { min-width: auto; font-size: 36px; }
-      .slide-toc .slide-inner { flex-direction: column; gap: 24px; align-items: stretch; justify-content: center; }
-      .toc-heading-wrap { min-width: auto; }
-      .toc-list { max-width: none; }
-      .services-grid { grid-template-columns: 1fr 1fr; }
-      .case-top { grid-template-columns: 1fr; }
-    }
-
-    /* Slide 1 — Pitch / PDF cover export (full-bleed) */
-    .slide-pitch { background: #000; }
-    .slide-pitch .slide-inner {
-      width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
-      padding: 0;
-    }
-    .slide-pitch img {
-      width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;
-    }
-    #deck-pdf-link {
-      position: absolute;
-      top: var(--pt);
-      right: calc(var(--p) + 6.25rem);
-      left: auto;
-      z-index: 200;
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.38);
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      pointer-events: auto;
-    }
-    #deck-pdf-link:hover { color: rgba(255, 255, 255, 0.65); }
-
-  </style>
+</style>
 </head>
-<body class="is-cover-active">
+<body>
+
 <div id="deck-viewport">
 <div id="deck-stage">
 <div id="deck">
-  <!-- 01 · COVER -->
-  <div class="slide slide-cover active" data-deck-chrome="none">
-    <div class="slide-inner">
-      <section class="cover-top-band" aria-label="Cover">
-        <div class="cover-top-row">
-          <div class="cover-head-row">
-            <div class="cover-title-col">
-              <h1 class="cover-title">Capabilities<br>Deck</h1>
-            </div>
-            <div class="cover-contact">
-              <strong>XYZStudios</strong>
-              <span class="cover-contact-email">Inquiries@xyzstudios.co</span>
-              <span class="cover-contact-meta">International Post-Production Studio | Founded in 2024</span>
-            </div>
-          </div>
-          <p class="cover-sub">This isn't work for hire. It's a partnership.</p>
-        </div>
-      </section>
-      <section class="cover-photo-band" aria-label="Cover photograph">
-        <img
-          src="/capabilities/assets/cover-hero.png"
-          width="1920"
-          height="1080"
-          alt=""
-          decoding="async"
-          fetchpriority="high"
-        />
-      </section>
-    </div>
-  </div>
 
-
-  <!-- ═══════════════════════════════
-       06 · DIVIDER — FULL PRODUCTION
-  ═══════════════════════════════ -->
-  <div class="slide slide-divider">
-    <div class="div-bg"><video muted playsinline preload="auto" onloadedmetadata="this.currentTime=0.1" src="https://r2.vidzflow.com/source/ef1dc602-5a95-4973-a0ea-82794726bc4a.mp4"></video></div>
-    <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-inner"><div class="div-word">Full Production</div></div>
-    <div class="slide-footer-line"></div>
-    <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios"></div>
-  </div>
-
-  <!-- ═══════════════════════════════
-       07 · PROJECT — SALOMON / SPEEDCROSS 6
-  ═══════════════════════════════ -->
-  <div class="slide slide-project has-video">
-    <video class="proj-video-bg" autoplay muted loop playsinline src="https://r2.vidzflow.com/source/ef1dc602-5a95-4973-a0ea-82794726bc4a.mp4"></video>
-    <div class="proj-gradient"></div>
-    <div class="proj-overlay">
-      <div class="proj-content-col">
-        <div class="proj-header-block">
-          <div class="proj-eyebrow">
-            <span class="proj-client">SALOMON</span>
-          </div>
-          <div class="proj-title">SPEEDCROSS 6</div>
-          <div class="proj-title-rule">
-            <span class="proj-header-divider" aria-hidden="true"></span>
-            <span class="proj-year">2025</span>
-          </div>
-        </div>
-        <div class="proj-info-block">
-          <div class="proj-info-label">SCOPE</div>
-          <div class="proj-info-body">
-            Concept to Final Delivery<br>
-            Creative Direction<br>
-            Production<br>
-            VFX · CG · AI<br>
-            Compositing<br>
-            Editing<br>
-            Sound Design &amp; Mix
-          </div>
-        </div>
-        <div class="proj-info-block">
-          <div class="proj-info-label">BUILD</div>
-          <div class="proj-info-body">
-            60% Live Action<br>
-            33% AI<br>
-            7% CGI
-          </div>
-        </div>
-        <div class="proj-info-block">
-          <div class="proj-info-label">OUTPUT</div>
-          <div class="proj-info-body">
-            214 Final Frames<br>
-            2 Hero Shots
-          </div>
-        </div>
-      </div>
-      <div class="proj-credit-bl">
-        <div class="proj-credit-name">LENN ANTON</div>
-        <div class="proj-credit-role">DIRECTOR</div>
-      </div>
-      <div class="proj-credit-br">
-        <div class="proj-credit-name">SALOMON</div>
-        <div class="proj-credit-role">CLIENT</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══════════════════════════════
-       08 · PROJECT — ATOMIC / INTO THE VOID
-  ═══════════════════════════════ -->
-  <div class="slide slide-project has-video">
-    <video class="proj-video-bg" autoplay muted loop playsinline preload="metadata" data-clip-start="24" data-clip-end="33" src="https://r2.vidzflow.com/source/cbf82991-c743-4045-8898-b6ee78efd9b4.mp4"></video>
-    <div class="proj-gradient"></div>
-    <div class="proj-overlay">
-      <div class="proj-content-col">
-        <div class="proj-header-block">
-          <div class="proj-eyebrow">
-            <span class="proj-client">ATOMIC</span>
-          </div>
-          <div class="proj-title">INTO THE VOID</div>
-          <div class="proj-title-rule">
-            <span class="proj-header-divider" aria-hidden="true"></span>
-            <span class="proj-year">2025</span>
-          </div>
-        </div>
-        <div class="proj-info-block">
-          <div class="proj-info-label">SCOPE</div>
-          <div class="proj-info-body">
-            Concept to Final Delivery<br>
-            Creative Direction<br>
-            Production<br>
-            CG · Simulation<br>
-            Compositing<br>
-            Editing<br>
-            Sound Design &amp; Mix
-          </div>
-        </div>
-        <div class="proj-info-block">
-          <div class="proj-info-label">BUILD</div>
-          <div class="proj-info-body">
-            1 Environment<br>
-            92% CG<br>
-            8% AI
-          </div>
-        </div>
-        <div class="proj-info-block">
-          <div class="proj-info-label">OUTPUT</div>
-          <div class="proj-info-body">
-            1400 Final Frames<br>
-            10 Hero Shots
-          </div>
-        </div>
-      </div>
-      <div class="proj-credit-bl">
-        <div class="proj-credit-name">DRIS YOUSIF</div>
-        <div class="proj-credit-role">DIRECTOR</div>
-      </div>
-      <div class="proj-credit-br">
-        <div class="proj-credit-name">CONCEPT PIECE</div>
-        <div class="proj-credit-role">CLIENT</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══════════════════════════════
-       09 · PROJECT — RBC CANADIAN OPEN
-  ═══════════════════════════════ -->
-  <div class="slide slide-project has-video">
-    <video class="proj-video-bg" autoplay muted loop playsinline src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/85D_It6HUS/original"></video>
-    <div class="proj-gradient"></div>
-    <div class="proj-overlay">
-      <div class="proj-content-col">
-        <div class="proj-header-block">
-          <div class="proj-eyebrow">
-            <span class="proj-client">RORY MCILROY</span>
-          </div>
-          <div class="proj-title">RBC CANADIAN OPEN</div>
-          <div class="proj-title-rule">
-            <span class="proj-header-divider" aria-hidden="true"></span>
-            <span class="proj-year">2025</span>
-          </div>
-        </div>
-        <div class="proj-info-block">
-          <div class="proj-info-label">SCOPE</div>
-          <div class="proj-info-body">
-            Concept to Final Delivery<br>
-            Creative Direction<br>
-            Production<br>
-            VFX · CG<br>
-            Compositing<br>
-            Editing<br>
-            Sound Design &amp; Mix
-          </div>
-        </div>
-        <div class="proj-info-block">
-          <div class="proj-info-label">BUILD</div>
-          <div class="proj-info-body">
-            4 Environments<br>
-            72% CG<br>
-            20% Motion Graphics<br>
-            7% Live Action
-          </div>
-        </div>
-        <div class="proj-info-block">
-          <div class="proj-info-label">OUTPUT</div>
-          <div class="proj-info-body">
-            1009 Final Frames<br>
-            8 Hero Shots
-          </div>
-        </div>
-      </div>
-      <div class="proj-credit-bl">
-        <div class="proj-credit-name">XYZSTUDIOS</div>
-        <div class="proj-credit-role">DIRECTOR</div>
-      </div>
-      <div class="proj-credit-br">
-        <div class="proj-credit-name">RBC</div>
-        <div class="proj-credit-role">CLIENT</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══════════════════════════════
-       23 · CRAFT (bundled wireframe intro)
-  ═══════════════════════════════ -->
-  <div class="slide slide-craft-full" data-deck-chrome="compact">
-    <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-tag">Craft</div>
-    <div class="slide-inner">
-      <img class="deck-full-img" src="/capabilities/assets/deck-stills/08-craft.jpg" alt="Craft" decoding="async">
-    </div>
-    <div class="slide-footer-line"></div>
-    <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios"></div>
-  </div>
-
-  <!-- ═══════════════════════════════
-       09 · CREATIVE DEVELOPMENT
-  ═══════════════════════════════ -->
-  <div class="slide slide-craft-full" data-deck-chrome="compact">
-    <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-tag">Craft · Creative Development</div>
-    <div class="slide-inner">
-      <img class="deck-full-img" src="/capabilities/assets/deck-stills/09-creative-development.jpg" alt="" decoding="async">
-    </div>
-    <div class="slide-footer-line"></div>
-    <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios"></div>
-  </div>
-
-  <!-- ═══════════════════════════════
-       10 · CG INTEGRATION
-  ═══════════════════════════════ -->
-  <div class="slide slide-craft-full" data-deck-chrome="compact">
-    <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-tag">Craft · CG Integration</div>
-    <div class="slide-inner">
-      <img class="deck-full-img" src="/capabilities/assets/deck-stills/10-cg-integration.jpg" alt="" decoding="async">
-    </div>
-    <div class="slide-footer-line"></div>
-    <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios"></div>
-  </div>
-
-  <!-- ═══════════════════════════════
-       11 · CG ENVIRONMENTS
-  ═══════════════════════════════ -->
-  <div class="slide slide-craft-full" data-deck-chrome="compact">
-    <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-tag">Craft · CG Environments</div>
-    <div class="slide-inner">
-      <img class="deck-full-img" src="/capabilities/assets/deck-stills/11-cg-environments.jpg" alt="" decoding="async">
-    </div>
-    <div class="slide-footer-line"></div>
-    <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios"></div>
-  </div>
-
-  <!-- ═══════════════════════════════
-       12 · COMPOSITING
-  ═══════════════════════════════ -->
-  <div class="slide slide-craft-full" data-deck-chrome="compact">
-    <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-tag">Craft · Compositing</div>
-    <div class="slide-inner">
-      <img class="deck-full-img" src="/capabilities/assets/deck-stills/12-compositing.jpg" alt="" decoding="async">
-    </div>
-    <div class="slide-footer-line"></div>
-    <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios"></div>
-  </div>
-
-  <!-- ═══════════════════════════════
-       13 · SIMULATION AND FX
-  ═══════════════════════════════ -->
-  <div class="slide slide-craft-full" data-deck-chrome="compact">
-    <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-tag">Craft · Simulation and FX</div>
-    <div class="slide-inner">
-      <img class="deck-full-img" src="/capabilities/assets/deck-stills/13-simulation-and-fx.jpg" alt="" decoding="async">
-    </div>
-    <div class="slide-footer-line"></div>
-    <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios"></div>
-  </div>
-
-  <!-- ═══════════════════════════════
-       14 · POLISH
-  ═══════════════════════════════ -->
-  <div class="slide slide-craft-full" data-deck-chrome="compact">
-    <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-tag">Craft · Polish</div>
-    <div class="slide-inner">
-      <img class="deck-full-img" src="/capabilities/assets/deck-stills/14-polish.jpg" alt="" decoding="async">
-    </div>
-    <div class="slide-footer-line"></div>
-    <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios"></div>
-  </div>
-
-  <!-- ═══════════════════════════════
-       15 · SOUND
-  ═══════════════════════════════ -->
-  <div class="slide slide-craft-full" data-deck-chrome="compact">
-    <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-tag">Craft · Sound</div>
-    <div class="slide-inner">
-      <img class="deck-full-img" src="/capabilities/assets/deck-stills/15-sound.jpg" alt="" decoding="async">
-    </div>
-    <div class="slide-footer-line"></div>
-    <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios"></div>
-  </div>
-
-  <!-- ═══════════════════════════════
-       16 · AI-ASSISTED WORKFLOW
-  ═══════════════════════════════ -->
-  <div class="slide slide-craft-full" data-deck-chrome="compact">
-    <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-tag">Craft · AI-Assisted Workflow</div>
-    <div class="slide-inner">
-      <img class="deck-full-img" src="/capabilities/assets/deck-stills/16-ai-assisted-workflow.jpg" alt="" decoding="async">
-    </div>
-    <div class="slide-footer-line"></div>
-    <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios"></div>
-  </div>
-
-  <!-- ═══════════════════════════════
-       19 · DIVIDER — SELECTED WORK
-  ═══════════════════════════════ -->
-  <div class="slide slide-divider">
-    <div class="div-bg"><div class="ph"><img src="../Work/visual-effects/s-lab-manifesto/image 2.png" alt=""></div></div>
-    <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-inner"><div class="div-word">Selected Work</div></div>
-    <div class="slide-footer-line"></div>
-    <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios"></div>
-  </div>
-
-  <!-- ═══════════════════════════════
-       21 · PROJECT — TOYOTA / ROAD TO PALISADES
-  ═══════════════════════════════ -->
-  <div class="slide slide-project has-video" data-deck-year="2026">
-    <video class="proj-video-bg" autoplay muted loop playsinline src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/9O7xsj76Lw/original"></video>
-    <div class="proj-gradient"></div>
-    <div class="proj-overlay">
-      <div class="proj-content-col">
-        <div class="proj-header-block">
-          <div class="proj-eyebrow">
-            <span class="proj-client">TOYOTA</span>
-          </div>
-          <div class="proj-title">ROAD TO PALISADES</div>
-          <div class="proj-title-rule">
-            <span class="proj-header-divider" aria-hidden="true"></span>
-            <span class="proj-year">2026</span>
-          </div>
-        </div>
-        <div class="proj-info-block">
-          <div class="proj-info-label">SCOPE</div>
-          <div class="proj-info-body">
-            Creative Direction<br>
-            VFX<br>
-            CG<br>
-            Animation<br>
-            Clean Up<br>
-            Compositing
-          </div>
-        </div>
-        <div class="proj-info-block">
-          <div class="proj-info-label">BUILD</div>
-          <div class="proj-info-body">
-            90% Live Action<br>
-            33% AI<br>
-            7% CGI
-          </div>
-        </div>
-        <div class="proj-info-block">
-          <div class="proj-info-label">OUTPUT</div>
-          <div class="proj-info-body">
-            214 Final Frames<br>
-            5 Hero Shots
-          </div>
-        </div>
-      </div>
-      <div class="proj-credit-bl">
-        <div class="proj-credit-name">JACK BOTTI</div>
-        <div class="proj-credit-role">DIRECTOR</div>
-      </div>
-      <div class="proj-credit-br">
-        <div class="proj-credit-name">TOYOTA</div>
-        <div class="proj-credit-role">CLIENT</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══════════════════════════════
-       22 · PROJECT — CONCACAF / GOLD CUP
-  ═══════════════════════════════ -->
-  <div class="slide slide-project has-video" data-deck-year="2025">
-    <video class="proj-video-bg" autoplay muted loop playsinline src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/Bl0RrW0k4E/original"></video>
-    <div class="proj-gradient"></div>
-    <div class="proj-overlay">
-      <div class="proj-content-col">
-        <div class="proj-header-block">
-          <div class="proj-eyebrow">
-            <span class="proj-client">CONCACAF</span>
-          </div>
-          <div class="proj-title">GOLD CUP</div>
-          <div class="proj-title-rule">
-            <span class="proj-header-divider" aria-hidden="true"></span>
-            <span class="proj-year">2025</span>
-          </div>
-        </div>
-        <div class="proj-info-block">
-          <div class="proj-info-label">SCOPE</div>
-          <div class="proj-info-body">
-            CGI<br>
-            Crowd Simulation/ Integration<br>
-            Compositing<br>
-            FX Simulation<br>
-            Clean Up
-          </div>
-        </div>
-        <div class="proj-info-block">
-          <div class="proj-info-label">BUILD</div>
-          <div class="proj-info-body">
-            10% CG<br>
-            10% Motion Graphics<br>
-            80% Live Action
-          </div>
-        </div>
-        <div class="proj-info-block">
-          <div class="proj-info-label">OUTPUT</div>
-          <div class="proj-info-body">
-            730 Final Frames<br>
-            12 Hero Shots
-          </div>
-        </div>
-      </div>
-      <div class="proj-credit-bl">
-        <div class="proj-credit-name">TOBY PREYER</div>
-        <div class="proj-credit-role">DIRECTOR</div>
-      </div>
-      <div class="proj-credit-br">
-        <div class="proj-credit-name">CONCACAF</div>
-        <div class="proj-credit-role">CLIENT</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══════════════════════════════
-       23 · PROJECT — DORITOS X STRANGER THINGS
-  ═══════════════════════════════ -->
-  <div class="slide slide-project has-video" data-deck-year="2025">
-    <video class="proj-video-bg" autoplay muted loop playsinline src="https://r2.vidzflow.com/source/8c451a49-eb58-4534-becf-87f4ca6f51dd.mp4"></video>
-    <div class="proj-gradient"></div>
-    <div class="proj-overlay">
-      <div class="proj-content-col">
-        <div class="proj-header-block">
-          <div class="proj-eyebrow">
-            <span class="proj-client">DORITOS X</span>
-          </div>
-          <div class="proj-title">STRANGER THINGS</div>
-          <div class="proj-title-rule">
-            <span class="proj-header-divider" aria-hidden="true"></span>
-            <span class="proj-year">2025</span>
-          </div>
-        </div>
-        <div class="proj-info-block">
-          <div class="proj-info-label">SCOPE</div>
-          <div class="proj-info-body">
-            CHARACTER RIGGING<br>
-            ANIMATION<br>
-            TEXTURE<br>
-            CG
-          </div>
-        </div>
-        <div class="proj-info-block">
-          <div class="proj-info-label">BUILD</div>
-          <div class="proj-info-body">
-            100% CG
-          </div>
-        </div>
-        <div class="proj-info-block">
-          <div class="proj-info-label">OUTPUT</div>
-          <div class="proj-info-body">
-            214 FINAL FRAMES<br>
-            5 HERO SHOTS
-          </div>
-        </div>
-      </div>
-      <div class="proj-credit-bl">
-        <div class="proj-credit-name">DYLAN BRADSHAW</div>
-        <div class="proj-credit-role">DIRECTOR</div>
-      </div>
-      <div class="proj-credit-br">
-        <div class="proj-credit-name">DORITOS</div>
-        <div class="proj-credit-role">CLIENT</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══════════════════════════════
-       10 · DIVIDER — CASE STUDIES
-  ═══════════════════════════════ -->
-  <div class="slide slide-divider">
-    <div class="div-bg"><video muted playsinline preload="auto" onloadedmetadata="this.currentTime=38" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/85D_It6HUS/original"></video></div>
-    <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-inner"><div class="div-word">Case<br>Studies</div></div>
-    <div class="slide-footer-line"></div>
-    <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios"></div>
-  </div>
-
-  <!-- ═══════════════════════════════
-       11 · CASE STUDY — STORYBOARD (fixed 1600×900 artboard, scales uniformly)
-  ═══════════════════════════════ -->
-  <div class="slide slide-case slide-case--fixed slide-case--storyboard" data-deck-year="2026">
-    <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-tag">Case study</div>
-    <div class="slide-inner">
-      <div class="sb-scale-root">
-        <div class="sb-artboard" aria-hidden="false">
-          <div class="sb-title">Storyboard</div>
-          <div class="sb-meta">Rory McIlroy<br>RBC Canadian Open</div>
-          <div class="sb-body">
-            <p>With no live shoot possible, the client asked us to develop the creative direction and bring the concept to life.</p>
-            <p>We crafted a stylized 3D hype reel, taking the project from concept art through to final execution. Throughout the process, the client remained closely involved, providing notes and feedback as we shaped the visuals to capture Rory’s momentum and the anticipation around the tournament.</p>
-          </div>
-          <div class="sb-media-left">
-            <img src="/capabilities/Case%20Studies/Storyboard%20left%20side.png" alt="">
-          </div>
-          <div class="sb-media-right">
-            <video class="sb-video" autoplay muted loop playsinline preload="auto" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/85D_It6HUS/original"></video>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="slide-footer-line"></div>
-    <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios"></div>
-  </div>
-
-  <!-- ═══════════════════════════════
-       12 · CASE STUDY — PRE-VISUALIZATION
-  ═══════════════════════════════ -->
-  <div class="slide slide-case slide-case--fixed" data-deck-year="2026">
-    <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-tag">Case study</div>
-    <div class="slide-inner">
-      <div class="sb-scale-root">
-        <div class="sb-artboard">
-          <div class="sb-title sb-title--std">Pre-visualization</div>
-          <div class="sb-meta">Rory McIlroy<br>RBC Canadian Open</div>
-          <div class="sb-body">
-            <p>Before moving into final production, we built a full pre-vis to map out pacing, camera moves, and overall flow. This stage gave the client a clear first look at how the story would unfold on screen.</p>
-            <p>By reviewing timing, framing, and energy early on, they were able to provide detailed notes and shape the direction with us. The pre-vis ensured everyone was aligned creatively before resources went into final rendering and polish.</p>
-          </div>
-          <div class="sb-media-grid" style="grid-template-columns: 1.6fr 1fr 1fr; grid-template-rows: 1fr 1fr;">
-            <div class="ci" style="grid-row: span 2;"><div class="ph"><img src="../Work/visual-effects/canadian-open/Golf Final (4) (0-00-36-15).png" alt=""></div></div>
-            <div class="ci"><div class="ph"><img src="../Work/visual-effects/canadian-open/22.png" alt=""></div></div>
-            <div class="ci"><div class="ph"><img src="../Work/visual-effects/canadian-open/2.png" alt=""></div></div>
-            <div class="ci"><div class="ph"><img src="../Work/visual-effects/canadian-open/1.png" alt=""></div></div>
-            <div class="ci"><div class="ph"><img src="../Work/visual-effects/canadian-open/22.png" alt=""></div></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="slide-footer-line"></div>
-    <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios"></div>
-  </div>
-
-  <!-- ═══════════════════════════════
-       13 · CASE STUDY — ASSET PREP
-  ═══════════════════════════════ -->
-  <div class="slide slide-case slide-case--fixed" data-deck-year="2026">
-    <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-tag">Case study</div>
-    <div class="slide-inner">
-      <div class="sb-scale-root">
-        <div class="sb-artboard">
-          <div class="sb-title sb-title--std">Asset Prep</div>
-          <div class="sb-meta">Rory McIlroy<br>RBC Canadian Open</div>
-          <div class="sb-body">
-            <p>The client asked that specific elements be featured within the reel to tie back to Rory and the tournament. We developed 3D assets for the Osprey bird (a nod to the course), Rory's championship ring, the custom Rory gold ball, and the RBC Canadian Open trophy.</p>
-            <p>Each was designed and integrated to enhance the narrative while aligning with the overall creative direction.</p>
-          </div>
-          <div class="sb-media-grid" style="grid-template-columns: 1.4fr 1fr 1fr 1.5fr; grid-template-rows: 1fr 1fr;">
-            <div class="ci" style="grid-row: span 2;"><div class="ph"><img src="../Work/visual-effects/canadian-open/1.png" alt=""></div></div>
-            <div class="ci"><div class="ph"><img src="../Work/visual-effects/canadian-open/22.png" alt=""></div></div>
-            <div class="ci"><div class="ph"><img src="../Work/visual-effects/canadian-open/2.png" alt=""></div></div>
-            <div class="ci" style="grid-row: span 2;"><div class="ph"><img src="../Work/visual-effects/canadian-open/Golf Final (4) (0-00-36-15).png" alt=""></div></div>
-            <div class="ci"><div class="ph"><img src="../Work/visual-effects/canadian-open/22.png" alt=""></div></div>
-            <div class="ci"><div class="ph"><img src="../Work/visual-effects/canadian-open/2.png" alt=""></div></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="slide-footer-line"></div>
-    <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios"></div>
-  </div>
-
-  <!-- ═══════════════════════════════
-       14 · CASE STUDY — ENVIRONMENT
-  ═══════════════════════════════ -->
-  <div class="slide slide-case">
-    <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-tag">Case study</div>
-    <div class="slide-inner">
-      <div class="case-top">
-        <div class="case-left">
-          <div class="case-title">Environment</div>
-          <div class="case-client">Rory McIlroy<br>RBC Canadian Open</div>
-        </div>
-        <div class="case-right">
-          <div class="case-body">
-            <p>Since no shoot was possible, we relied on archival footage of Rory and rebuilt the tournament setting digitally. Using detailed golf course maps as a base, we laid out and modeled the landscapes of Osprey Valley.</p>
-            <p>From there, we re-created and enhanced the textures, rebuilt surfaces, and scattered nature elements to bring the environments to life. The result was a set of realistic, fully CG environments that replicated the real course while still supporting the stylized, cinematic direction of the reel.</p>
-          </div>
-        </div>
-      </div>
-      <div class="case-images" style="grid-template-columns: 1.6fr 1fr 1fr; grid-template-rows: 1fr 1fr;">
-        <div class="ci" style="grid-row: span 2;"><div class="ph"><img src="../Work/visual-effects/canadian-open/Golf Final (4) (0-00-36-15).png" alt=""></div></div>
-        <div class="ci"><div class="ph"><img src="../Work/visual-effects/canadian-open/1.png" alt=""></div></div>
-        <div class="ci"><div class="ph"><img src="../Work/visual-effects/canadian-open/2.png" alt=""></div></div>
-        <div class="ci"><div class="ph"><img src="../Work/visual-effects/canadian-open/22.png" alt=""></div></div>
-        <div class="ci"><div class="ph"><img src="../Work/visual-effects/canadian-open/1.png" alt=""></div></div>
-      </div>
-    </div>
-    <div class="slide-footer-line"></div>
-    <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios"></div>
-  </div>
-
-  <!-- ═══════════════════════════════
-       15 · CASE STUDY — REFERENCE
-  ═══════════════════════════════ -->
-  <div class="slide slide-case">
-    <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-tag">Case study</div>
-    <div class="slide-inner">
-      <div class="case-top">
-        <div class="case-left">
-          <div class="case-title">Reference</div>
-          <div class="case-client">Rory McIlroy<br>RBC Canadian Open</div>
-        </div>
-        <div class="case-right">
-          <div class="case-body">
-            <p>The client provided detailed references of Osprey Valley, which we used as the foundation for the build. These materials ensured the environments were accurate to the real course and helped us deliver a CG space that feels authentic and true to the tournament setting.</p>
-          </div>
-        </div>
-      </div>
-      <div class="case-images" style="grid-template-columns: 1fr 1.5fr 1fr 1fr; grid-template-rows: 1fr 1fr;">
-        <div class="ci" style="grid-row: span 2;"><div class="ph"><img src="../Work/visual-effects/canadian-open/2.png" alt=""></div></div>
-        <div class="ci"><div class="ph"><img src="../Work/visual-effects/canadian-open/22.png" alt=""></div></div>
-        <div class="ci"><div class="ph"><img src="../Work/visual-effects/canadian-open/1.png" alt=""></div></div>
-        <div class="ci"><div class="ph"><img src="../Work/visual-effects/canadian-open/2.png" alt=""></div></div>
-        <div class="ci"><div class="ph"><img src="../Work/visual-effects/canadian-open/Golf Final (4) (0-00-36-15).png" alt=""></div></div>
-        <div class="ci"><div class="ph"><img src="../Work/visual-effects/canadian-open/1.png" alt=""></div></div>
-        <div class="ci"><div class="ph"><img src="../Work/visual-effects/canadian-open/22.png" alt=""></div></div>
-      </div>
-    </div>
-    <div class="slide-footer-line"></div>
-    <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios"></div>
-  </div>
-
-  <!-- ═══════════════════════════════
-       16 · PROJECT — CELSIUS / SPRITZ VIBE
-  ═══════════════════════════════ -->
-  <div class="slide slide-project has-video" data-deck-year="2025">
-    <video class="proj-video-bg" autoplay muted loop playsinline src="https://r2.vidzflow.com/source/c5bfdb30-f5d1-4f1d-a96f-b736b4ab1fcf.mp4"></video>
-    <div class="proj-gradient"></div>
-    <div class="proj-overlay">
-      <div class="proj-content-col">
-        <div class="proj-header-block">
-          <div class="proj-eyebrow">
-            <span class="proj-client">CELSIUS</span>
-          </div>
-          <div class="proj-title">SPRITZ VIBE</div>
-          <div class="proj-title-rule">
-            <span class="proj-header-divider" aria-hidden="true"></span>
-            <span class="proj-year">2025</span>
-          </div>
-        </div>
-        <div class="proj-info-block">
-          <div class="proj-info-label">SCOPE</div>
-          <div class="proj-info-body">
-            Pre-Production<br>
-            VFX<br>
-            CG<br>
-            Simulation<br>
-            Clean Up<br>
-            Compositing<br>
-            Sound Design &amp; Mix
-          </div>
-        </div>
-        <div class="proj-info-block">
-          <div class="proj-info-label">BUILD</div>
-          <div class="proj-info-body">
-            1 Environment<br>
-            40% CG<br>
-            60% Live Action
-          </div>
-        </div>
-        <div class="proj-info-block">
-          <div class="proj-info-label">OUTPUT</div>
-          <div class="proj-info-body">
-            992 Final Frames<br>
-            8 Hero Shots
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══════════════════════════════
-       17 · CASE STUDY — REFERENCES (CELSIUS)
-  ═══════════════════════════════ -->
-  <div class="slide slide-case" data-deck-year="2025">
-    <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-tag">Case study</div>
-    <div class="slide-inner">
-      <div class="case-top">
-        <div class="case-left">
-          <div class="case-title">References</div>
-          <div class="case-client">Celsius<br>Spritz Vibe</div>
-        </div>
-        <div class="case-right">
-          <div class="case-body">
-            <p>Character and environment references were gathered to anchor the look of the athlete, outerwear, and ski gear to real-world materials. This grounded the CG integration and helped us build assets that matched the live-action plates accurately.</p>
-          </div>
-        </div>
-      </div>
-      <div class="case-images" style="grid-template-columns: 1fr 1.2fr 1fr 1.4fr; grid-template-rows: 1fr 1fr;">
-        <div class="ci"><div class="ph"><img src="../Work/visual-effects/road-to-palisades/1.jpg" alt=""></div></div>
-        <div class="ci" style="grid-row: span 2;"><div class="ph"><img src="../Work/visual-effects/speedcross-3/1.png" alt=""></div></div>
-        <div class="ci" style="grid-row: span 2;"><div class="ph"><img src="../Work/visual-effects/road-to-palisades/2.jpg" alt=""></div></div>
-        <div class="ci" style="grid-row: span 2;"><div class="ph"><img src="../Work/visual-effects/s-lab-manifesto/image 1.png" alt=""></div></div>
-        <div class="ci"><div class="ph"><img src="../Work/visual-effects/s-lab-manifesto/image 4.png" alt=""></div></div>
-        <div class="ci"><div class="ph"><img src="../Work/visual-effects/speedcross-3/2.png" alt=""></div></div>
-      </div>
-    </div>
-    <div class="slide-footer-line"></div>
-    <div class="slide-year">2025</div>
-    <div class="slide-logo-mark"><img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios"></div>
-  </div>
-
-  <!-- ═══════════════════════════════
-       18 · CASE STUDY — LIVE ACTION PLATE
-  ═══════════════════════════════ -->
-  <div class="slide slide-case" data-deck-year="2025">
-    <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-tag">Case study</div>
-    <div class="slide-inner">
-      <div class="case-top">
-        <div class="case-left">
-          <div class="case-title">Live Action Plate</div>
-          <div class="case-client">Celsius<br>Spritz Vibe</div>
-        </div>
-        <div class="case-right">
-          <div class="case-body">
-            <p>The live-action plates formed the foundation for the full CG build. On-set data — including camera tracking markers, lighting reference, and lens notes — was captured to ensure accurate integration of all CG elements in post.</p>
-          </div>
-        </div>
-      </div>
-      <div class="case-images" style="grid-template-columns: 1fr 1fr; grid-template-rows: 1fr;">
-        <div class="ci"><div class="ph"><img src="../Work/visual-effects/speedcross-3/3.png" alt=""></div></div>
-        <div class="ci"><div class="ph"><img src="../Work/visual-effects/speedcross-3/4.png" alt=""></div></div>
-      </div>
-    </div>
-    <div class="slide-footer-line"></div>
-    <div class="slide-year">2025</div>
-    <div class="slide-logo-mark"><img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios"></div>
-  </div>
-
-  <!-- ═══════════════════════════════
-       32 · OUR FOCUS
-  ═══════════════════════════════ -->
-  <div class="slide slide-focus-full" data-deck-chrome="compact">
-    <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-tag">Our Focus</div>
-    <div class="slide-inner">
-      <img class="deck-full-img" src="/capabilities/assets/deck-stills/30-our-focus.jpg" alt="Our Focus" decoding="async">
-    </div>
-    <div class="slide-footer-line"></div>
-    <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios"></div>
-  </div>
-
-  <!-- ═══════════════════════════════
-       33 · HOW WE WORK
-  ═══════════════════════════════ -->
-  <div class="slide slide-hww-full" data-deck-chrome="compact">
-    <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-tag">How We Work</div>
-    <div class="slide-inner">
-      <img class="deck-full-img" src="/capabilities/assets/deck-stills/31-how-we-work.jpg" alt="How We Work" decoding="async">
-    </div>
-    <div class="slide-footer-line"></div>
-    <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios"></div>
-  </div>
-
-  <!-- ═══════════════════════════════
-       34 · CONTACT
-  ═══════════════════════════════ -->
-  <div class="slide slide-contact slide-contact-full">
-    <div class="xyz-logo">XYZSTUDIOS</div>
-    <div class="slide-inner">
-      <img class="deck-full-img" src="/capabilities/assets/deck-stills/32-contact.jpg" alt="" decoding="async" aria-hidden="true">
-      <div class="contact-left">
-        <div class="contact-block">
-          <div class="cb-label">Email</div>
-          <div class="cb-value"><a href="mailto:Inquiries@xyzstudios.co">Inquiries@xyzstudios.co</a></div>
-        </div>
-        <div class="contact-block">
-          <div class="cb-label">Website</div>
-          <div class="cb-value"><a href="https://xyzstudios.co" target="_blank">Xyzstudios.co</a></div>
-        </div>
-        <div class="contact-socials">
-          <a href="https://www.instagram.com/xyz__studios/" target="_blank">Instagram</a>
-          <a href="https://www.linkedin.com/company/xyzstudioss/" target="_blank">Linked In</a>
-        </div>
-        <div class="contact-team">
-          <div>
-            <div class="cp-name">Samry Yussuf</div>
-            <div class="cp-role">Post Producer, Co-Founder</div>
-          </div>
-          <div>
-            <div class="cp-name">Dris Yousif</div>
-            <div class="cp-role">Post Producer, Co-Founder</div>
-          </div>
-        </div>
-        <div class="contact-title">CONTACT</div>
-      </div>
-      <div class="contact-right"><div class="ph"><img src="../Work/visual-effects/road-to-palisades/1.jpg" alt=""></div></div>
-    </div>
-    <div class="slide-footer-line"></div>
-    <div class="slide-year">2026</div>
-    <div class="slide-logo-mark"><img src="/capabilities/assets/xyz-logo.png" alt="XYZ Studios"></div>
-  </div>
-
-</div><!-- /deck -->
-
-<!-- Shared deck chrome: locked to viewport; does not animate with slides -->
-<div id="deck-static-chrome" data-mode="full" aria-hidden="false">
-  <div class="xyz-logo" id="deck-static-xyz">XYZSTUDIOS</div>
-  <div class="slide-footer-line" id="deck-static-line"></div>
-  <div class="slide-year" id="deck-static-year">2026</div>
-  <div class="slide-logo-mark" id="deck-static-logo-mark">
-    <img src="/capabilities/assets/xyz-logo.png" alt="" width="120" height="40" decoding="async" />
-  </div>
+<div class="slide active"><div class="slide-inner"><div class="artboard-scaler"><section class="vfx-artboard cover" data-screen-label="01 Cover">
+<span class="m-tl"><b>XYZ</b> <span class="d">· Studios — Visual Effects</span></span>
+<span class="m-tr"></span>
+<img class="cover-hero" src="/capabilities/assets/cover-hero.png" alt="" decoding="async" fetchpriority="high" />
+<div class="cover-grad"></div>
+<div class="abs cover-headline">
+  <h1 class="h-hero">Creative,<br>end to end.</h1>
 </div>
+<div class="abs cover-aside">
+  <p class="copy cover-copy">A boutique post-production house spanning visual effects, CGI, animation and sound — selective on purpose, and hands-on from concept to final delivery.</p>
+</div>
+<a href="mailto:inquiries@xyzstudios.co" class="abs lbl deck-link cover-footer-link" style="left:64px;bottom:48px;font-size:12px;">↗ &nbsp;inquiries@xyzstudios.co</a>
+<span class="abs lbl dim" style="right:64px;bottom:48px;font-size:12px;">xyzstudios.co</span>
+<span class="m-tr cover-cap-tr"><span class="d">Capabilities ·</span> 2026</span>
+<span class="abs cover-scroll-hint">scroll or use arrow keys</span>
+<span class="m-bl"></span><span class="m-br"></span></section></div></div></div>
 
-<!-- NAV CHROME -->
+<div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="vfx-artboard focus bg-paper" data-screen-label="02 Our Focus">
+<span class="m-tl"><b>XYZ</b> <span class="d">· The Studio</span></span>
+<span class="m-tr"><span class="d">02 / 27</span></span>
+<div class="abs focus-top">
+  <div class="focus-top-l">
+    <div class="eyebrow">Our focus</div>
+    <h2 class="h-section">Every stage of the shot,<br>in our hands.</h2>
+  </div>
+  <p class="copy focus-top-r">One shot, tracked end to end — from the first dev pass to the final composite. Same building, same team.</p>
+</div>
+<div class="abs focus-strip">
+    <div class="focus-col">
+      <img src="/capabilities/deck-media/image-4-1.jpg" alt="" loading="lazy" decoding="async" />
+      <div class="focus-cap"><span class="d">01 —</span> Early Development</div>
+    </div>
+    <div class="focus-col">
+      <img src="/capabilities/deck-media/image-4-2.jpg" alt="" loading="lazy" decoding="async" />
+      <div class="focus-cap"><span class="d">02 —</span> Look Exploration</div>
+    </div>
+    <div class="focus-col">
+      <img src="/capabilities/deck-media/image-4-3.jpg" alt="" loading="lazy" decoding="async" />
+      <div class="focus-cap"><span class="d">03 —</span> Full-Shot Execution</div>
+    </div>
+    <div class="focus-col">
+      <img src="/capabilities/deck-media/image-4-4.jpg" alt="" loading="lazy" decoding="async" />
+      <div class="focus-cap"><span class="d">04 —</span> Roto &amp; Matte</div>
+    </div>
+    <div class="focus-col">
+      <img src="/capabilities/deck-media/image-4-5.jpg" alt="" loading="lazy" decoding="async" />
+      <div class="focus-cap"><span class="d">05 —</span> Final Polish</div>
+    </div></div>
+<span class="m-bl"></span><span class="m-br"></span></section></div></div></div>
+
+<div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="vfx-artboard pipeline" data-screen-label="03 Pipeline">
+<span class="m-tl"><b>XYZ</b> <span class="d">· How we work</span></span>
+<span class="m-tr"><span class="d">03 / 27</span></span>
+<div class="abs pipe-intro">
+  <div class="eyebrow">The pipeline</div>
+  <h2 class="h-pipe">From concept<br>to final frame.</h2>
+</div>
+<div class="abs pipe-track">
+  <div class="pipe-line"></div>
+  <div class="pipe-grid">
+    <div class="pipe-node">
+      <div class="pipe-dot"></div>
+      <div class="pipe-ix">01</div>
+      <div class="pipe-nm">Concept</div>
+    </div>
+    <div class="pipe-node">
+      <div class="pipe-dot"></div>
+      <div class="pipe-ix">02</div>
+      <div class="pipe-nm">Pre-vis</div>
+    </div>
+    <div class="pipe-node">
+      <div class="pipe-dot"></div>
+      <div class="pipe-ix">03</div>
+      <div class="pipe-nm">Plate</div>
+    </div>
+    <div class="pipe-node">
+      <div class="pipe-dot"></div>
+      <div class="pipe-ix">04</div>
+      <div class="pipe-nm">Asset</div>
+    </div>
+    <div class="pipe-node">
+      <div class="pipe-dot"></div>
+      <div class="pipe-ix">05</div>
+      <div class="pipe-nm">CG</div>
+    </div>
+    <div class="pipe-node">
+      <div class="pipe-dot"></div>
+      <div class="pipe-ix">06</div>
+      <div class="pipe-nm">Comp</div>
+    </div>
+    <div class="pipe-node">
+      <div class="pipe-dot"></div>
+      <div class="pipe-ix">07</div>
+      <div class="pipe-nm">Polish</div>
+    </div>
+    <div class="pipe-node">
+      <div class="pipe-dot"></div>
+      <div class="pipe-ix">08</div>
+      <div class="pipe-nm">Sound</div>
+    </div></div>
+</div>
+<p class="abs copy pipe-foot">Concept, production and post all happen in the same building, with the same team.</p>
+<span class="m-bl"></span><span class="m-br"></span></section></div></div></div>
+
+<div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="vfx-artboard divider div-full" data-screen-label="04 Full Production">
+<img class="div-hero" src="/Work/visual-effects/s-lab-manifesto/image%201.png" alt="" loading="lazy" decoding="async" />
+<div class="div-grad"></div>
+<span class="m-tl"><b>XYZ</b> <span class="d">· Full Production</span></span>
+<span class="m-tr"><span class="d">04 / 27</span></span>
+<div class="abs div-copy">
+  <div class="div-eyebrow">Concept to delivery</div>
+  <h2 class="h-divider">Full<br>production.</h2>
+</div>
+<span class="m-bl"></span><span class="m-br"></span></section></div></div></div>
+
+<div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="vfx-artboard project" data-screen-label="05 Speedcross 6">
+<video class="proj-bg" muted loop playsinline preload="metadata" src="https://r2.vidzflow.com/source/ef1dc602-5a95-4973-a0ea-82794726bc4a.mp4"></video>
+<div class="proj-grad"></div>
+<span class="m-tl"><b>XYZ</b> <span class="d">· Full Production</span></span>
+<span class="m-tr"><span class="d">05 / 27</span></span>
+
+<div class="abs proj-panel">
+  <div class="proj-ey">Salomon · 2025 — Dir. Lenn Anton</div>
+  <h2 class="h-proj">Speedcross 6</h2>
+  
+    <div class="proj-grid">
+      <div><div class="proj-lbl">Scope</div><div class="proj-val">Concept to Final Delivery · Creative Direction · Production · VFX · CG · AI · Compositing · Editing · Sound Design &amp; Mix</div></div>
+      <div><div class="proj-lbl">Build</div><div class="proj-val">60% Live Action<br>33% AI<br>7% CGI</div></div>
+      <div><div class="proj-lbl">Output</div><div class="proj-val">214 Final Frames<br>2 Hero Shots</div></div>
+    </div>
+</div>
+<span class="m-bl"></span><span class="m-br"></span></section></div></div></div>
+
+<div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="vfx-artboard project" data-screen-label="06 Into the Void">
+<video class="proj-bg" muted loop playsinline preload="metadata" src="https://r2.vidzflow.com/source/cbf82991-c743-4045-8898-b6ee78efd9b4.mp4" data-clip-start="24" data-clip-end="33"></video>
+<div class="proj-grad"></div>
+<span class="m-tl"><b>XYZ</b> <span class="d">· Full Production</span></span>
+<span class="m-tr"><span class="d">06 / 27</span></span>
+
+<div class="abs proj-panel">
+  <div class="proj-ey">Atomic · 2025 — Dir. Dris Yousif</div>
+  <h2 class="h-proj">Into the Void</h2>
+  
+    <div class="proj-grid">
+      <div><div class="proj-lbl">Scope</div><div class="proj-val">Concept to Final Delivery · Creative Direction · Production · CG · Simulation · Compositing · Editing · Sound Design &amp; Mix</div></div>
+      <div><div class="proj-lbl">Build</div><div class="proj-val">1 Environment<br>92% CG<br>8% AI</div></div>
+      <div><div class="proj-lbl">Output</div><div class="proj-val">1400 Final Frames<br>10 Hero Shots</div></div>
+    </div>
+</div>
+<span class="m-bl"></span><span class="m-br"></span></section></div></div></div>
+
+<div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="vfx-artboard project" data-screen-label="07 RBC Canadian Open">
+<video class="proj-bg" muted loop playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/85D_It6HUS/original"></video>
+<div class="proj-grad"></div>
+<span class="m-tl"><b>XYZ</b> <span class="d">· Full Production</span></span>
+<span class="m-tr"><span class="d">07 / 27</span></span>
+<button type="button" class="breakdown-btn">View Breakdown <span>→</span></button>
+<div class="abs proj-panel proj-panel--rbc">
+  <div class="proj-ey">RBC · 2025 — Dir. Samry Yussuf</div>
+  <h2 class="h-proj">RBC Canadian Open</h2>
+  
+    <div class="proj-grid">
+      <div><div class="proj-lbl">Scope</div><div class="proj-val">Concept to Final Delivery · Creative Direction · Production · VFX · CG · Compositing · Editing · Sound Design &amp; Mix</div></div>
+      <div><div class="proj-lbl">Build</div><div class="proj-val">4 Environments<br>72% CG<br>20% MoGraph · 7% Live</div></div>
+      <div><div class="proj-lbl">Output</div><div class="proj-val">1009 Final Frames<br>8 Hero Shots</div></div>
+    </div>
+</div>
+<span class="m-bl"></span><span class="m-br"></span></section></div></div></div>
+
+<div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="vfx-artboard breakdown bg-paper" data-screen-label="08 RBC · Storyboard">
+<span class="m-tl"><b>XYZ</b> <span class="d">· RBC — Breakdown</span></span>
+<span class="m-tr"><span class="d">Breakdown</span> 01 / 05</span>
+<div class="abs bd-head">
+  <div class="bd-head-l">
+    <div class="bd-sub">Rory McIlroy · RBC Canadian Open</div>
+    <h2 class="h-bd">Storyboard</h2>
+  </div>
+  <p class="copy bd-head-r">With no live shoot possible, the client asked us to develop the creative direction and bring the concept to life. We crafted a stylized 3D hype reel — taking the project from concept art through to final execution, with the client closely involved throughout as we shaped the visuals around Rory's momentum and the anticipation of the tournament.</p>
+</div>
+<div class="abs bd-media"><div class="bd-grid bd-grid--sb">
+      <div class="bd-cell"><img src="/capabilities/Case%20Studies/Storyboard%20left%20side.png" alt="" /></div>
+      <div class="bd-cell"><video muted loop playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/85D_It6HUS/original"></video></div>
+    </div></div>
+<button type="button" class="deck-go-back">← Go back</button>
+<span class="m-bl"></span><span class="m-br"></span></section></div></div></div>
+
+<div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="vfx-artboard breakdown bg-paper" data-screen-label="09 RBC · Pre-visualization">
+<span class="m-tl"><b>XYZ</b> <span class="d">· RBC — Breakdown</span></span>
+<span class="m-tr"><span class="d">Breakdown</span> 02 / 05</span>
+<div class="abs bd-head">
+  <div class="bd-head-l">
+    <div class="bd-sub">Rory McIlroy · RBC Canadian Open</div>
+    <h2 class="h-bd">Pre-visualization</h2>
+  </div>
+  <p class="copy bd-head-r">Before moving into final production, we built a full pre-vis to map out pacing, camera moves and overall flow — giving the client a clear first look at how the story would unfold on screen. Reviewing timing, framing and energy early kept everyone aligned creatively before resources went into final rendering and polish.</p>
+</div>
+<div class="abs bd-media"><div class="bd-grid" style="grid-template-columns:1.6fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:18px;">
+      <div class="bd-cell" style="grid-row:span 2"><img src="/Work/visual-effects/canadian-open/Golf%20Final%20(4)%20(0-00-36-15).png" alt="" /></div>
+      <div class="bd-cell"><img src="/Work/visual-effects/canadian-open/22.png" alt="" /></div>
+      <div class="bd-cell"><img src="/Work/visual-effects/canadian-open/2.png" alt="" /></div>
+      <div class="bd-cell"><img src="/Work/visual-effects/canadian-open/1.png" alt="" /></div>
+      <div class="bd-cell"><img src="/Work/visual-effects/canadian-open/22.png" alt="" /></div>
+    </div></div>
+<button type="button" class="deck-go-back">← Go back</button>
+<span class="m-bl"></span><span class="m-br"></span></section></div></div></div>
+
+<div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="vfx-artboard breakdown bg-paper" data-screen-label="10 RBC · Asset Prep">
+<span class="m-tl"><b>XYZ</b> <span class="d">· RBC — Breakdown</span></span>
+<span class="m-tr"><span class="d">Breakdown</span> 03 / 05</span>
+<div class="abs bd-head">
+  <div class="bd-head-l">
+    <div class="bd-sub">Rory McIlroy · RBC Canadian Open</div>
+    <h2 class="h-bd">Asset Prep</h2>
+  </div>
+  <p class="copy bd-head-r">The client asked that specific elements feature within the reel to tie back to Rory and the tournament. We developed 3D assets for the Osprey bird (a nod to the course), Rory's championship ring, the custom gold ball and the RBC Canadian Open trophy — each designed and integrated to enhance the narrative while aligning with the overall creative direction.</p>
+</div>
+<div class="abs bd-media"><div class="bd-grid" style="grid-template-columns:1.4fr 1fr 1fr 1.5fr;grid-template-rows:1fr 1fr;gap:18px;">
+      <div class="bd-cell" style="grid-row:span 2"><img src="/Work/visual-effects/canadian-open/1.png" alt="" /></div>
+      <div class="bd-cell"><img src="/Work/visual-effects/canadian-open/22.png" alt="" /></div>
+      <div class="bd-cell"><img src="/Work/visual-effects/canadian-open/2.png" alt="" /></div>
+      <div class="bd-cell" style="grid-row:span 2"><img src="/Work/visual-effects/canadian-open/Golf%20Final%20(4)%20(0-00-36-15).png" alt="" /></div>
+      <div class="bd-cell"><img src="/Work/visual-effects/canadian-open/22.png" alt="" /></div>
+      <div class="bd-cell"><img src="/Work/visual-effects/canadian-open/2.png" alt="" /></div>
+    </div></div>
+<button type="button" class="deck-go-back">← Go back</button>
+<span class="m-bl"></span><span class="m-br"></span></section></div></div></div>
+
+<div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="vfx-artboard breakdown bg-paper" data-screen-label="11 RBC · Environment">
+<span class="m-tl"><b>XYZ</b> <span class="d">· RBC — Breakdown</span></span>
+<span class="m-tr"><span class="d">Breakdown</span> 04 / 05</span>
+<div class="abs bd-head">
+  <div class="bd-head-l">
+    <div class="bd-sub">Rory McIlroy · RBC Canadian Open</div>
+    <h2 class="h-bd">Environment</h2>
+  </div>
+  <p class="copy bd-head-r">With no shoot possible, we relied on archival footage of Rory and rebuilt the tournament setting digitally. Using detailed course maps as a base, we laid out and modeled the landscapes of Osprey Valley — re-creating and enhancing textures, rebuilding surfaces and scattering nature to deliver fully CG environments that replicate the real course while supporting the stylized, cinematic direction of the reel.</p>
+</div>
+<div class="abs bd-media"><div class="bd-grid" style="grid-template-columns:1.6fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:18px;">
+      <div class="bd-cell" style="grid-row:span 2"><img src="/Work/visual-effects/canadian-open/Golf%20Final%20(4)%20(0-00-36-15).png" alt="" /></div>
+      <div class="bd-cell"><img src="/Work/visual-effects/canadian-open/1.png" alt="" /></div>
+      <div class="bd-cell"><img src="/Work/visual-effects/canadian-open/2.png" alt="" /></div>
+      <div class="bd-cell"><img src="/Work/visual-effects/canadian-open/22.png" alt="" /></div>
+      <div class="bd-cell"><img src="/Work/visual-effects/canadian-open/1.png" alt="" /></div>
+    </div></div>
+<button type="button" class="deck-go-back">← Go back</button>
+<span class="m-bl"></span><span class="m-br"></span></section></div></div></div>
+
+<div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="vfx-artboard breakdown bg-paper" data-screen-label="12 RBC · Reference">
+<span class="m-tl"><b>XYZ</b> <span class="d">· RBC — Breakdown</span></span>
+<span class="m-tr"><span class="d">Breakdown</span> 05 / 05</span>
+<div class="abs bd-head">
+  <div class="bd-head-l">
+    <div class="bd-sub">Rory McIlroy · RBC Canadian Open</div>
+    <h2 class="h-bd">Reference</h2>
+  </div>
+  <p class="copy bd-head-r">The client provided detailed references of Osprey Valley, which we used as the foundation for the build. These materials ensured the environments were accurate to the real course and helped us deliver a CG space that feels authentic and true to the tournament setting.</p>
+</div>
+<div class="abs bd-media"><div class="bd-grid" style="grid-template-columns:1fr 1.5fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:18px;">
+      <div class="bd-cell" style="grid-row:span 2"><img src="/Work/visual-effects/canadian-open/2.png" alt="" /></div>
+      <div class="bd-cell"><img src="/Work/visual-effects/canadian-open/22.png" alt="" /></div>
+      <div class="bd-cell"><img src="/Work/visual-effects/canadian-open/1.png" alt="" /></div>
+      <div class="bd-cell"><img src="/Work/visual-effects/canadian-open/2.png" alt="" /></div>
+      <div class="bd-cell" style="grid-column:span 2"><img src="/Work/visual-effects/canadian-open/Golf%20Final%20(4)%20(0-00-36-15).png" alt="" /></div>
+      <div class="bd-cell"><img src="/Work/visual-effects/canadian-open/1.png" alt="" /></div>
+    </div></div>
+<button type="button" class="deck-go-back">← Go back</button>
+<span class="m-bl"></span><span class="m-br"></span></section></div></div></div>
+
+<div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="vfx-artboard divider div-selected" data-screen-label="13 Selected Work">
+<img class="div-hero" src="/Work/visual-effects/s-lab-manifesto/image%202.png" alt="" loading="lazy" decoding="async" />
+<div class="div-grad"></div>
+<span class="m-tl"><b>XYZ</b> <span class="d">· Selected Work</span></span>
+<span class="m-tr"><span class="d">13 / 27</span></span>
+<div class="abs div-copy">
+  <div class="div-eyebrow">2024 — 2026</div>
+  <h2 class="h-divider">Selected<br>work.</h2>
+</div>
+<span class="m-bl"></span><span class="m-br"></span></section></div></div></div>
+
+<div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="vfx-artboard project" data-screen-label="14 Road to Palisades">
+<video class="proj-bg" muted loop playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/9O7xsj76Lw/original"></video>
+<div class="proj-grad"></div>
+<span class="m-tl"><b>XYZ</b> <span class="d">· Selected Work</span></span>
+<span class="m-tr"><span class="d">14 / 27</span></span>
+
+<div class="abs proj-panel">
+  <div class="proj-ey">Toyota · 2026 — Dir. Jack Botti</div>
+  <h2 class="h-proj">Road to Palisades</h2>
+  
+    <div class="proj-grid">
+      <div><div class="proj-lbl">Scope</div><div class="proj-val">Creative Direction · VFX · CG · Animation · Clean Up · Compositing</div></div>
+      <div><div class="proj-lbl">Build</div><div class="proj-val">90% Live Action<br>33% AI<br>7% CGI</div></div>
+      <div><div class="proj-lbl">Output</div><div class="proj-val">214 Final Frames<br>5 Hero Shots</div></div>
+    </div>
+</div>
+<span class="m-bl"></span><span class="m-br"></span></section></div></div></div>
+
+<div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="vfx-artboard project" data-screen-label="15 Gold Cup">
+<video class="proj-bg" muted loop playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/Bl0RrW0k4E/original"></video>
+<div class="proj-grad"></div>
+<span class="m-tl"><b>XYZ</b> <span class="d">· Selected Work</span></span>
+<span class="m-tr"><span class="d">15 / 27</span></span>
+
+<div class="abs proj-panel">
+  <div class="proj-ey">CONCACAF · 2025 — Dir. Toby Preyer</div>
+  <h2 class="h-proj">Gold Cup</h2>
+  
+    <div class="proj-grid">
+      <div><div class="proj-lbl">Scope</div><div class="proj-val">CGI · Crowd Simulation / Integration · Compositing · FX Simulation · Clean Up</div></div>
+      <div><div class="proj-lbl">Build</div><div class="proj-val">10% CG<br>10% Motion Graphics<br>80% Live Action</div></div>
+      <div><div class="proj-lbl">Output</div><div class="proj-val">730 Final Frames<br>12 Hero Shots</div></div>
+    </div>
+</div>
+<span class="m-bl"></span><span class="m-br"></span></section></div></div></div>
+
+<div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="vfx-artboard project" data-screen-label="16 Stranger Things">
+<video class="proj-bg" muted loop playsinline preload="metadata" src="https://r2.vidzflow.com/source/8c451a49-eb58-4534-becf-87f4ca6f51dd.mp4"></video>
+<div class="proj-grad"></div>
+<span class="m-tl"><b>XYZ</b> <span class="d">· Selected Work</span></span>
+<span class="m-tr"><span class="d">16 / 27</span></span>
+
+<div class="abs proj-panel">
+  <div class="proj-ey">Doritos · 2025 — Dir. Dylan Bradshaw</div>
+  <h2 class="h-proj">Stranger Things</h2>
+  
+    <div class="proj-grid">
+      <div><div class="proj-lbl">Scope</div><div class="proj-val">Character Rigging · Animation · Texture · CG</div></div>
+      <div><div class="proj-lbl">Build</div><div class="proj-val">100% CG</div></div>
+      <div><div class="proj-lbl">Output</div><div class="proj-val">214 Final Frames<br>5 Hero Shots</div></div>
+    </div>
+</div>
+<span class="m-bl"></span><span class="m-br"></span></section></div></div></div>
+
+<div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="vfx-artboard project" data-screen-label="17 Spritz Vibe">
+<video class="proj-bg" muted loop playsinline preload="metadata" src="https://r2.vidzflow.com/source/c5bfdb30-f5d1-4f1d-a96f-b736b4ab1fcf.mp4"></video>
+<div class="proj-grad"></div>
+<span class="m-tl"><b>XYZ</b> <span class="d">· Selected Work</span></span>
+<span class="m-tr"><span class="d">17 / 27</span></span>
+
+<div class="abs proj-panel">
+  <div class="proj-ey">Celsius · 2025</div>
+  <h2 class="h-proj">Spritz Vibe</h2>
+  
+    <div class="proj-grid">
+      <div><div class="proj-lbl">Scope</div><div class="proj-val">Pre-Production · VFX · CG · Simulation · Clean Up · Compositing · Sound Design &amp; Mix</div></div>
+      <div><div class="proj-lbl">Build</div><div class="proj-val">1 Environment<br>40% CG · 60% Live</div></div>
+      <div><div class="proj-lbl">Output</div><div class="proj-val">992 Final Frames<br>8 Hero Shots</div></div>
+    </div>
+</div>
+<span class="m-bl"></span><span class="m-br"></span></section></div></div></div>
+
+<div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="vfx-artboard project" data-screen-label="18 France World Cup">
+<video class="proj-bg" muted loop playsinline preload="metadata" src="https://r2.vidzflow.com/source/d93de57b-6909-4f1e-81d3-8d1f6252c2f7.mp4"></video>
+<div class="proj-grad"></div>
+<span class="m-tl"><b>XYZ</b> <span class="d">· Selected Work</span></span>
+<span class="m-tr"><span class="d">18 / 27</span></span>
+
+<div class="abs proj-panel">
+  <div class="proj-ey">Nike — Dir. Alexis Belhumeur</div>
+  <h2 class="h-proj">France World Cup</h2>
+  
+    <div class="proj-grid proj-grid--meta">
+      <div><div class="proj-lbl">Discipline</div><div class="proj-val">Visual Effects</div></div>
+      <div><div class="proj-lbl">Directed by</div><div class="proj-val">Alexis Belhumeur</div></div>
+      <div><div class="proj-lbl">Agency</div><div class="proj-val">Knas</div></div></div>
+</div>
+<span class="m-bl"></span><span class="m-br"></span></section></div></div></div>
+
+<div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="vfx-artboard project" data-screen-label="19 Sous La Lune">
+<video class="proj-bg" muted loop playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/2oBYsIWabd/original"></video>
+<div class="proj-grad"></div>
+<span class="m-tl"><b>XYZ</b> <span class="d">· Selected Work</span></span>
+<span class="m-tr"><span class="d">19 / 27</span></span>
+
+<div class="abs proj-panel">
+  <div class="proj-ey">Chanel — Dir. Lenn Anton</div>
+  <h2 class="h-proj">Sous La Lune</h2>
+  
+    <div class="proj-grid proj-grid--meta">
+      <div><div class="proj-lbl">Discipline</div><div class="proj-val">AI Production</div></div>
+      <div><div class="proj-lbl">Directed by</div><div class="proj-val">Lenn Anton</div></div>
+      <div><div class="proj-lbl">Produced by</div><div class="proj-val">Obsidian</div></div></div>
+</div>
+<span class="m-bl"></span><span class="m-br"></span></section></div></div></div>
+
+<div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="vfx-artboard project" data-screen-label="20 A Cold Wall">
+<video class="proj-bg" muted loop playsinline preload="metadata" src="https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/LWep2Duvk-/original"></video>
+<div class="proj-grad"></div>
+<span class="m-tl"><b>XYZ</b> <span class="d">· Selected Work</span></span>
+<span class="m-tr"><span class="d">20 / 27</span></span>
+
+<div class="abs proj-panel">
+  <div class="proj-ey">Mercedes-Benz — XYZ Studios</div>
+  <h2 class="h-proj">A Cold Wall</h2>
+  
+    <div class="proj-grid proj-grid--meta">
+      <div><div class="proj-lbl">Discipline</div><div class="proj-val">AI Production</div></div>
+      <div><div class="proj-lbl">Directed by</div><div class="proj-val">XYZ Studios</div></div>
+      <div><div class="proj-lbl">Produced by</div><div class="proj-val">XYZ Studios</div></div></div>
+</div>
+<span class="m-bl"></span><span class="m-br"></span></section></div></div></div>
+
+<div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="vfx-artboard still" data-screen-label="21 Craft">
+<img class="still-full" src="/capabilities/assets/deck-stills/08-craft.jpg" alt="Craft" loading="lazy" decoding="async" />
+<span class="m-bl"></span><span class="m-br"></span></section></div></div></div>
+
+<div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="vfx-artboard still" data-screen-label="22 Creative Dev">
+<img class="still-full" src="/capabilities/assets/deck-stills/09-creative-development.jpg" alt="Creative Development" loading="lazy" decoding="async" />
+<span class="m-bl"></span><span class="m-br"></span></section></div></div></div>
+
+<div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="vfx-artboard craft-layout" data-screen-label="23 CG Integration &amp;amp; Environments">
+<span class="m-tl"><b>XYZ</b> <span class="d">· Craft</span></span>
+<span class="m-tr"><span class="d">23 / 27</span></span>
+<div class="abs craft-copy">
+  <div class="craft-ix">Craft — 03 / 06</div>
+  <h2 class="h-craft">CG Integration &amp; Environments</h2>
+  <p class="copy craft-body">CG elements embedded into live-action plates with accurate tracking, lighting and material response — plus full digital environments, from set extensions to complete builds, matched to the tone of every sequence.</p>
+</div>
+<div class="abs craft-media"><div class="craft-grid craft-grid--cg">
+      <div class="craft-row">
+        <div class="craft-tile"><img src="/capabilities/assets/deck-stills/10-cg-integration.jpg" alt="" /><span class="craft-tag">Integration</span></div>
+        <div class="craft-tile"><img src="/capabilities/deck-media/image-10-1.webp" alt="" /></div>
+        <div class="craft-tile"><img src="/capabilities/deck-media/image-11-2.webp" alt="" /></div>
+      </div>
+      <div class="craft-row">
+        <div class="craft-tile"><img src="/capabilities/assets/deck-stills/11-cg-environments.jpg" alt="" /><span class="craft-tag">Environments</span></div>
+        <div class="craft-tile"><img src="/capabilities/deck-media/image-11-3.jpg" alt="" /></div>
+        <div class="craft-tile"><img src="/capabilities/deck-media/image-11-4.webp" alt="" /></div>
+      </div>
+    </div></div>
+<span class="m-bl"></span><span class="m-br"></span></section></div></div></div>
+
+<div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="vfx-artboard craft-layout" data-screen-label="24 Compositing &amp;amp; Polish">
+<span class="m-tl"><b>XYZ</b> <span class="d">· Craft</span></span>
+<span class="m-tr"><span class="d">24 / 27</span></span>
+<div class="abs craft-copy">
+  <div class="craft-ix">Craft — 04 / 06</div>
+  <h2 class="h-craft">Compositing &amp; Polish</h2>
+  <p class="copy craft-body">Live-action and rendered elements unified through precise control of depth, exposure and colour — then cleanup, beauty work and set extensions that refine continuity and deliver a clean, cohesive finish.</p>
+</div>
+<div class="abs craft-media"><div class="craft-grid craft-grid--comp">
+      <div class="craft-tile"><img src="/capabilities/assets/deck-stills/12-compositing.jpg" alt="" /></div>
+      <div class="craft-tile"><img src="/capabilities/deck-media/image-12-2.jpg" alt="" /></div>
+      <div class="craft-tile"><img src="/capabilities/deck-media/image-12-3.jpg" alt="" /></div>
+      <div class="craft-tile"><img src="/capabilities/assets/deck-stills/14-polish.jpg" alt="" /></div>
+      <div class="craft-tile"><img src="/capabilities/deck-media/image-14-2.jpg" alt="" /></div>
+      <div class="craft-tile"><img src="/capabilities/deck-media/image-14-3.jpg" alt="" /></div>
+    </div></div>
+<span class="m-bl"></span><span class="m-br"></span></section></div></div></div>
+
+<div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="vfx-artboard still" data-screen-label="25 Simulation &amp;amp; FX">
+<img class="still-full" src="/capabilities/assets/deck-stills/13-simulation-and-fx.jpg" alt="Simulation &amp;amp; FX" loading="lazy" decoding="async" />
+<span class="m-bl"></span><span class="m-br"></span></section></div></div></div>
+
+<div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="vfx-artboard still" data-screen-label="26 AI Workflow">
+<img class="still-full" src="/capabilities/assets/deck-stills/16-ai-assisted-workflow.jpg" alt="AI-Assisted Workflow" loading="lazy" decoding="async" />
+<span class="m-bl"></span><span class="m-br"></span></section></div></div></div>
+
+<div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="vfx-artboard contact" data-screen-label="27 Contact">
+<span class="m-tl"><b>XYZ</b> <span class="d">· Studios — Visual Effects</span></span>
+<span class="m-tr"><span class="d">27 / 27</span></span>
+<div class="abs contact-main">
+  <div class="eyebrow">Start a project</div>
+  <h2 class="h-contact">Let's make<br>something.</h2>
+  <a href="mailto:inquiries@xyzstudios.co" class="contact-email deck-link">inquiries@xyzstudios.co</a>
+</div>
+<span class="abs lbl" style="left:64px;bottom:48px;font-size:12px;">Boutique Post-Production House · Est. 2024</span>
+<span class="abs lbl dim" style="right:64px;bottom:48px;font-size:12px;">xyzstudios.co</span>
+<span class="m-bl"></span><span class="m-br"></span></section></div></div></div>
+
+</div>
+<div id="deck-slide-number" aria-hidden="true"></div>
+<div id="deck-slide-label" aria-hidden="true"></div>
 <div id="nav-dots"></div>
 <div id="progress"></div>
-<div id="slide-counter">01 / 30</div>
 <div id="hint">scroll or use arrow keys</div>
+</div>
+</div>
 
-</div><!-- /deck-stage -->
-</div><!-- /deck-viewport -->
+<div id="pj-cursor" aria-hidden="true">
+  <svg id="pj-cursor-svg" width="18" height="18" viewBox="0 0 24 24" fill="#ffffff">
+    <path id="pj-cursor-path" d="M8 5v14l11-7z"/>
+  </svg>
+</div>
 
 <script>
-  /* Deck surface lock (best-effort; screenshots / devtools still possible) */
-  (function () {
-    function block(e) {
-      e.preventDefault();
+(function fontReady() {
+  var done = function () {
+    document.documentElement.removeAttribute('data-fonts-pending');
+  };
+  if (document.fonts && document.fonts.ready) {
+    Promise.race([
+      document.fonts.ready,
+      new Promise(function (r) { setTimeout(r, 2000); }),
+    ]).then(done);
+  } else {
+    setTimeout(done, 100);
+  }
+})();
+
+(function deckProtect() {
+  function block(e) { e.preventDefault(); }
+  function isDeckLink(el) {
+    return el && el.closest && el.closest('a.deck-link, button.breakdown-btn, button.deck-go-back');
+  }
+  document.addEventListener('contextmenu', block, true);
+  document.addEventListener('selectstart', function (e) {
+    if (isDeckLink(e.target)) return;
+    block(e);
+  }, true);
+  document.addEventListener('dragstart', function (e) {
+    if (isDeckLink(e.target)) return;
+    if (e.target && e.target.closest && e.target.closest('img, video')) block(e);
+  }, true);
+  document.addEventListener('copy', block, true);
+  document.addEventListener('cut', block, true);
+  document.addEventListener('keydown', function (e) {
+    if (!e.ctrlKey && !e.metaKey) return;
+    var k = e.key.toLowerCase();
+    if (k === 's' || k === 'p' || k === 'u' || k === 'a') block(e);
+  }, true);
+  window.addEventListener('beforeprint', block);
+})();
+
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+let current = 0;
+let animating = false;
+let breakdownMode = false;
+
+const BREAKDOWN_INDICES = [];
+const REGULAR_INDICES = [];
+slides.forEach(function (slide, i) {
+  const section = slide.querySelector('.vfx-artboard');
+  if (section && section.classList.contains('breakdown')) {
+    BREAKDOWN_INDICES.push(i);
+  } else {
+    REGULAR_INDICES.push(i);
+  }
+});
+const FIRST_BREAKDOWN = BREAKDOWN_INDICES[0];
+const LAST_BREAKDOWN = BREAKDOWN_INDICES[BREAKDOWN_INDICES.length - 1];
+const AFTER_BREAKDOWN = LAST_BREAKDOWN != null ? LAST_BREAKDOWN + 1 : -1;
+let RBC_PROJECT_INDEX = -1;
+slides.forEach(function (slide, i) {
+  if (slide.querySelector('.breakdown-btn')) RBC_PROJECT_INDEX = i;
+});
+
+function isBreakdownIndex(idx) {
+  return BREAKDOWN_INDICES.indexOf(idx) !== -1;
+}
+
+function regularNextIndex(from) {
+  let idx = from + 1;
+  while (idx < total && isBreakdownIndex(idx)) idx++;
+  return idx;
+}
+
+function regularPrevIndex(from) {
+  let idx = from - 1;
+  while (idx >= 0 && isBreakdownIndex(idx)) idx--;
+  return idx;
+}
+
+function resolveNextIndex() {
+  if (breakdownMode) {
+    if (current >= LAST_BREAKDOWN) return AFTER_BREAKDOWN;
+    return current + 1;
+  }
+  return regularNextIndex(current);
+}
+
+function resolvePrevIndex() {
+  if (breakdownMode) {
+    if (current <= FIRST_BREAKDOWN) return RBC_PROJECT_INDEX;
+    return current - 1;
+  }
+  return regularPrevIndex(current);
+}
+
+function enterBreakdown() {
+  if (FIRST_BREAKDOWN == null) return;
+  breakdownMode = true;
+  goTo(FIRST_BREAKDOWN);
+}
+
+function exitBreakdown() {
+  if (!breakdownMode) return;
+  breakdownMode = false;
+  goTo(RBC_PROJECT_INDEX >= 0 ? RBC_PROJECT_INDEX : regularPrevIndex(FIRST_BREAKDOWN));
+}
+
+const dotsWrap = document.getElementById('nav-dots');
+REGULAR_INDICES.forEach(function (slideIdx, i) {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 0 ? ' active' : '');
+  d.dataset.slideIndex = String(slideIdx);
+  d.addEventListener('click', function () { goTo(slideIdx); });
+  dotsWrap.appendChild(d);
+});
+
+const dots = document.querySelectorAll('.dot');
+const prog = document.getElementById('progress');
+const hint = document.getElementById('hint');
+const slideNumberEl = document.getElementById('deck-slide-number');
+const slideLabelEl = document.getElementById('deck-slide-label');
+let hintShown = false;
+
+const pad2 = (n) => String(n).padStart(2, '0');
+
+function slideDurationMs() {
+  const raw = getComputedStyle(document.documentElement).getPropertyValue('--dur').trim();
+  if (!raw) return 880;
+  if (raw.endsWith('ms')) return parseFloat(raw) || 880;
+  return (parseFloat(raw) || 0.88) * 1000;
+}
+
+function slideNumberText(index) {
+  const section = slides[index] && slides[index].querySelector('.vfx-artboard');
+  const mtr = section && section.querySelector('.m-tr .d');
+  if (section && section.classList.contains('breakdown') && mtr) {
+    return mtr.textContent.trim();
+  }
+  return pad2(index + 1) + ' / ' + pad2(total);
+}
+
+function syncArtboardNumbers() {
+  slides.forEach(function (slide, i) {
+    const section = slide.querySelector('.vfx-artboard');
+    const mtr = section && section.querySelector('.m-tr .d');
+    if (!section || section.classList.contains('cover') || !mtr) return;
+    if (section.classList.contains('breakdown')) return;
+    mtr.textContent = pad2(i + 1) + ' / ' + pad2(total);
+  });
+  syncFixedSlideNumber();
+  syncFixedSlideLabel();
+}
+
+function syncFixedSlideNumber(index) {
+  if (!slideNumberEl) return;
+  const idx = index !== undefined ? index : current;
+  const slide = slides[idx];
+  const section = slide && slide.querySelector('.vfx-artboard');
+  if (!section || section.classList.contains('cover')) {
+    slideNumberEl.textContent = '';
+    slideNumberEl.classList.remove('visible');
+    return;
+  }
+  slideNumberEl.textContent = slideNumberText(idx);
+  slideNumberEl.classList.add('visible');
+}
+
+function coverSlideLabelEl() {
+  const section = slides[0] && slides[0].querySelector('.vfx-artboard.cover');
+  return section && section.querySelector('.m-tl');
+}
+
+function setCoverLabelSuppressed(suppress) {
+  const mtl = coverSlideLabelEl();
+  if (mtl) mtl.style.visibility = suppress ? 'hidden' : '';
+}
+
+function syncFixedSlideLabel(index) {
+  if (!slideLabelEl) return;
+  const idx = index !== undefined ? index : current;
+  const slide = slides[idx];
+  const section = slide && slide.querySelector('.vfx-artboard');
+  const mtl = section && section.querySelector('.m-tl');
+  if (!section || section.classList.contains('cover') || !mtl) {
+    slideLabelEl.innerHTML = '';
+    slideLabelEl.classList.remove('visible');
+    return;
+  }
+  slideLabelEl.innerHTML = mtl.innerHTML;
+  slideLabelEl.classList.add('visible');
+}
+
+const PORTRAIT_PHONE_MAX_W = 900;
+
+function isPortraitPhoneViewport() {
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  return w <= PORTRAIT_PHONE_MAX_W && h > w;
+}
+
+function deckFrameSize() {
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  if (isPortraitPhoneViewport()) return { vw: h, vh: w };
+  return { vw: w, vh: h };
+}
+
+function deckScrollHintText() {
+  return isPortraitPhoneViewport() ? 'swipe left or right' : 'scroll or use arrow keys';
+}
+
+function syncCoverScrollHint() {
+  const el = document.querySelector('.cover-scroll-hint');
+  if (el) el.textContent = deckScrollHintText();
+}
+
+function syncPortraitFallback() {
+  const on = isPortraitPhoneViewport();
+  document.documentElement.classList.toggle('deck-portrait-fallback', on);
+  const text = deckScrollHintText();
+  if (hint) hint.textContent = text;
+  syncCoverScrollHint();
+  return on;
+}
+
+function tryLockLandscape() {
+  try {
+    if (screen.orientation && typeof screen.orientation.lock === 'function') {
+      screen.orientation.lock('landscape').catch(function () {});
     }
-    document.addEventListener('contextmenu', block, true);
-    document.addEventListener('selectstart', block, true);
-    document.addEventListener('dragstart', function (e) {
-      if (e.target && (e.target.closest && e.target.closest('img, video'))) block(e);
-    }, true);
-    document.addEventListener('copy', block, true);
-    document.addEventListener('cut', block, true);
-    document.addEventListener('keydown', function (e) {
-      if (!e.ctrlKey && !e.metaKey) return;
-      const k = e.key.toLowerCase();
-      if (k === 's' || k === 'p' || k === 'u') block(e);
-    }, true);
-    window.addEventListener('beforeprint', block);
-  })();
+  } catch (e) {}
+}
 
-  const slides  = document.querySelectorAll('.slide');
-  const total   = slides.length;
-  let current   = 0;
-  let animating = false;
+function positionSlideNumber() {
+  if (!slideNumberEl) return;
+  const frame = deckFrameSize();
+  const s = Math.min(frame.vw / 1920, frame.vh / 1080);
+  slideNumberEl.style.right = ((frame.vw - 1920 * s) / 2 + 64 * s) + 'px';
+  slideNumberEl.style.top = ((frame.vh - 1080 * s) / 2 + 48 * s) + 'px';
+  slideNumberEl.style.fontSize = (13 * s) + 'px';
+}
 
-  // Build dots
-  const dotsWrap = document.getElementById('nav-dots');
-  slides.forEach((_, i) => {
-    const d = document.createElement('div');
-    d.className = 'dot' + (i === 0 ? ' active' : '');
-    d.addEventListener('click', () => goTo(i));
-    dotsWrap.appendChild(d);
+function positionSlideLabel() {
+  if (!slideLabelEl) return;
+  const frame = deckFrameSize();
+  const s = Math.min(frame.vw / 1920, frame.vh / 1080);
+  slideLabelEl.style.left = ((frame.vw - 1920 * s) / 2 + 64 * s) + 'px';
+  slideLabelEl.style.top = ((frame.vh - 1080 * s) / 2 + 48 * s) + 'px';
+  slideLabelEl.style.fontSize = (13 * s) + 'px';
+}
+
+function scaleArtboards() {
+  syncPortraitFallback();
+  const frame = deckFrameSize();
+  const s = Math.min(frame.vw / 1920, frame.vh / 1080);
+  document.querySelectorAll('.artboard-scaler').forEach(function (el) {
+    el.style.transform = 'scale(' + s + ')';
+  });
+  positionSlideNumber();
+  positionSlideLabel();
+}
+
+function slideVideo(slide) {
+  if (!slide) return null;
+  return slide.querySelector('.proj-bg') || slide.querySelector('.bd-cell video');
+}
+
+function projVideoClipSeekStart(vid) {
+  if (!vid || vid.dataset.clipStart === undefined) return;
+  const s = parseFloat(vid.dataset.clipStart, 10);
+  if (!Number.isNaN(s)) vid.currentTime = s;
+}
+
+function whenVideoMeta(v, fn) {
+  if (v.readyState >= 1) fn();
+  else v.addEventListener('loadedmetadata', fn, { once: true });
+}
+
+function bindProjVideoClipRange(vid) {
+  const end = parseFloat(vid.dataset.clipEnd, 10);
+  const start = parseFloat(vid.dataset.clipStart, 10);
+  if (Number.isNaN(end) || Number.isNaN(start)) return;
+  vid.addEventListener('timeupdate', function () {
+    if (vid.currentTime >= end) vid.currentTime = start;
+  });
+  vid.addEventListener('loadedmetadata', function () {
+    vid.currentTime = start;
+  });
+}
+document.querySelectorAll('video[data-clip-start][data-clip-end]').forEach(bindProjVideoClipRange);
+
+function pauseSlideVideos(slide) {
+  if (!slide) return;
+  slide.querySelectorAll('video').forEach(function (v) {
+    v.pause();
+    v.muted = true;
+  });
+}
+
+function prepareSlideVideos(slide) {
+  if (!slide) return;
+  slide.querySelectorAll('video').forEach(function (v) {
+    v.muted = true;
+    v.pause();
+    if (v.hasAttribute('data-clip-start')) {
+      whenVideoMeta(v, projVideoClipSeekStart.bind(null, v));
+    }
+  });
+}
+
+function updateUI() {
+  dots.forEach(function (d) {
+    const slideIdx = parseInt(d.dataset.slideIndex, 10);
+    d.classList.toggle('active', slideIdx === current);
+    d.style.visibility = breakdownMode ? 'hidden' : '';
+  });
+  syncArtboardNumbers();
+  if (breakdownMode && isBreakdownIndex(current)) {
+    const bdPos = BREAKDOWN_INDICES.indexOf(current);
+    prog.style.width = ((bdPos + 1) / BREAKDOWN_INDICES.length * 100) + '%';
+  } else {
+    const regularPos = REGULAR_INDICES.indexOf(current);
+    prog.style.width = ((regularPos + 1) / REGULAR_INDICES.length * 100) + '%';
+  }
+  if (hint) hint.style.visibility = (current === 0 || breakdownMode) ? 'hidden' : '';
+  scaleArtboards();
+}
+
+function goTo(idx) {
+  if (animating || idx === current || idx < 0 || idx >= total) return;
+  if (!breakdownMode && isBreakdownIndex(idx)) return;
+  animating = true;
+  if (!hintShown && hint) { hint.style.opacity = '0'; hintShown = true; }
+
+  const fromIdx = current;
+  const from = slides[fromIdx];
+  const to = slides[idx];
+  const dir = idx > fromIdx ? 1 : -1;
+  const durMs = slideDurationMs();
+
+  pauseSlideVideos(from);
+  const cursorEl = document.getElementById('pj-cursor');
+  if (cursorEl) cursorEl.classList.remove('visible');
+  const fromSection = from && from.querySelector('.vfx-artboard');
+  if (fromSection && fromSection.classList.contains('cover')) setCoverLabelSuppressed(true);
+  syncFixedSlideNumber(idx);
+  syncFixedSlideLabel(idx);
+  positionSlideNumber();
+  positionSlideLabel();
+
+  to.style.zIndex = '2';
+  from.style.zIndex = '1';
+
+  to.style.transition = 'none';
+  to.style.transform = dir > 0 ? 'translateY(100%)' : 'translateY(-100%)';
+  to.classList.add('active');
+
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    to.style.transition = '';
+    from.style.transition = '';
+    to.style.transform = 'translateY(0%)';
+    from.style.transform = dir > 0 ? 'translateY(-100%)' : 'translateY(100%)';
+
+    prepareSlideVideos(to);
+
+    setTimeout(() => {
+      from.classList.remove('active');
+      from.style.transform = '';
+      from.style.transition = '';
+      from.style.zIndex = '';
+      to.style.zIndex = '';
+      current = idx;
+      animating = false;
+      if (current === 0) setCoverLabelSuppressed(false);
+      updateUI();
+    }, durMs);
+  }));
+}
+
+function navigateNext() {
+  const idx = resolveNextIndex();
+  if (idx >= total) return;
+  if (breakdownMode && idx === AFTER_BREAKDOWN) breakdownMode = false;
+  if (breakdownMode && idx === RBC_PROJECT_INDEX) breakdownMode = false;
+  goTo(idx);
+}
+
+function navigatePrev() {
+  const idx = resolvePrevIndex();
+  if (idx < 0) return;
+  if (breakdownMode && idx === RBC_PROJECT_INDEX) breakdownMode = false;
+  goTo(idx);
+}
+
+const next = navigateNext;
+const prev = navigatePrev;
+
+document.querySelectorAll('.breakdown-btn').forEach(function (btn) {
+  btn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    enterBreakdown();
+  });
+});
+
+document.querySelectorAll('.deck-go-back').forEach(function (btn) {
+  btn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    exitBreakdown();
+  });
+});
+
+(function initVfxDeckVideoCursor() {
+  const cursor = document.getElementById('pj-cursor');
+  const cursorPath = document.getElementById('pj-cursor-path');
+  const deckVideos = Array.from(document.querySelectorAll('#deck video'));
+  if (!deckVideos.length) return;
+
+  const PLAY_PATH = 'M8 5v14l11-7z';
+  const PAUSE_PATH = 'M6 19h4V5H6v14zm8-14v14h4V5h-4z';
+  let hoveredVideo = deckVideos[0];
+
+  function updateCursorIcon() {
+    if (!cursorPath || !hoveredVideo) return;
+    cursorPath.setAttribute('d', hoveredVideo.paused ? PLAY_PATH : PAUSE_PATH);
+  }
+
+  function showCustomCursorAt(x, y) {
+    if (!cursor) return;
+    cursor.classList.add('visible');
+    cursor.style.left = x + 'px';
+    cursor.style.top = y + 'px';
+  }
+
+  function hideCustomCursor() {
+    if (cursor) cursor.classList.remove('visible');
+  }
+
+  function toggleVideo(target) {
+    if (!target.paused) {
+      target.pause();
+      return;
+    }
+    if (target.readyState === 0) target.load();
+    function start() {
+      if (target.hasAttribute('data-clip-start')) projVideoClipSeekStart(target);
+      const p = target.play();
+      if (p && p.catch) p.catch(function () {});
+    }
+    if (target.readyState >= 3) start();
+    else target.addEventListener('canplay', start, { once: true });
+  }
+
+  function bindCursorVideo(target) {
+    target.addEventListener('mouseenter', function (e) {
+      hoveredVideo = target;
+      updateCursorIcon();
+      showCustomCursorAt(e.clientX, e.clientY);
+    });
+    target.addEventListener('mouseleave', hideCustomCursor);
+    target.addEventListener('mousemove', function (e) {
+      showCustomCursorAt(e.clientX, e.clientY);
+    });
+    target.addEventListener('click', function (e) {
+      e.stopPropagation();
+      toggleVideo(target);
+      updateCursorIcon();
+    });
+    target.addEventListener('play', updateCursorIcon);
+    target.addEventListener('pause', updateCursorIcon);
+  }
+
+  deckVideos.forEach(function (v) {
+    v.removeAttribute('autoplay');
+    v.pause();
+    v.muted = true;
+    bindCursorVideo(v);
   });
 
-  const dots    = document.querySelectorAll('.dot');
-  const counter = document.getElementById('slide-counter');
-  const prog    = document.getElementById('progress');
-  const hint    = document.getElementById('hint');
-  let hintShown = false;
+  if (cursor) updateCursorIcon();
+})();
 
-  function syncDeckStaticChrome() {
-    const root = document.getElementById('deck-static-chrome');
-    if (!root) return;
-    const slide = slides[current];
-    let mode = slide.dataset.deckChrome;
-    if (!mode) {
-      if (slide.classList.contains('slide-work-grid')) mode = 'compact';
-      else mode = 'full';
-    }
-    const year = slide.dataset.deckYear || '2026';
-    const off = mode === 'none';
-    root.dataset.mode = mode === 'compact' ? 'compact' : 'full';
-    const y = document.getElementById('deck-static-year');
-    if (y) y.textContent = year;
-    root.setAttribute('aria-hidden', off ? 'true' : 'false');
-    root.classList.toggle('deck-static--off', off);
-    root.classList.toggle('deck-static--visible', !off);
+document.addEventListener('wheel', function (e) {
+  if (e.ctrlKey) { e.preventDefault(); return; }
+}, { passive: false });
+document.addEventListener('gesturestart', function (e) { e.preventDefault(); }, { passive: false });
+document.addEventListener('gesturechange', function (e) { e.preventDefault(); }, { passive: false });
+document.addEventListener('gestureend', function (e) { e.preventDefault(); }, { passive: false });
+
+document.addEventListener('keydown', function (e) {
+  if (e.ctrlKey && ['+', '-', '=', '0'].includes(e.key)) { e.preventDefault(); return; }
+  if (['ArrowDown', 'ArrowRight', 'Space', ' '].includes(e.key)) { e.preventDefault(); next(); }
+  if (['ArrowUp', 'ArrowLeft'].includes(e.key)) { e.preventDefault(); prev(); }
+});
+
+let wt;
+document.addEventListener('wheel', function (e) {
+  if (e.ctrlKey) return;
+  clearTimeout(wt);
+  wt = setTimeout(function () { e.deltaY > 0 ? next() : prev(); }, 40);
+}, { passive: true });
+
+let touchStartX = 0;
+let touchStartY = 0;
+document.addEventListener('touchstart', function (e) {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+}, { passive: true });
+document.addEventListener('touchend', function (e) {
+  const portraitFallback = document.documentElement.classList.contains('deck-portrait-fallback');
+  const t = e.changedTouches[0];
+  if (portraitFallback) {
+    const dx = touchStartX - t.clientX;
+    if (Math.abs(dx) > 48) dx > 0 ? next() : prev();
+    return;
   }
+  const dy = touchStartY - t.clientY;
+  if (Math.abs(dy) > 48) dy > 0 ? next() : prev();
+}, { passive: true });
 
-  function updateUI() {
-    dots.forEach((d, i) => d.classList.toggle('active', i === current));
-    const countStr = String(current + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
-    counter.textContent = countStr;
-    document.body.classList.toggle('is-cover-active', current === 0);
-    prog.style.width = ((current + 1) / total * 100) + '%';
-    syncDeckStaticChrome();
-    scaleFixedCaseArtboard();
-    const abSlide = slides[current];
-    if (abSlide && abSlide.classList.contains('slide-about')) {
-      const av = abSlide.querySelector('.about-img video');
-      if (av) {
-        whenVideoMeta(av, function () {
-          projVideoClipSeekStart(av);
-          av.muted = true;
-          if (av.paused) av.play().catch(function () {});
-        });
-      }
-    }
-  }
+syncArtboardNumbers();
+updateUI();
+prepareSlideVideos(slides[0]);
+window.addEventListener('resize', scaleArtboards);
+window.addEventListener('orientationchange', scaleArtboards);
+document.addEventListener('visibilitychange', function () {
+  if (!document.hidden) scaleArtboards();
+});
+tryLockLandscape();
+setTimeout(scaleArtboards, 0);
+setTimeout(function () { if (hint) hint.style.opacity = '0'; }, 4000);
 
-  function slideVideo(slide) {
-    if (!slide) return null;
-    return slide.querySelector('.proj-video-bg') || slide.querySelector('.sb-video');
-  }
-
-  function scaleFixedCaseArtboard() {
-    document.querySelectorAll('.slide-case--fixed .sb-scale-root').forEach(function (root) {
-      var board = root.querySelector('.sb-artboard');
-      if (!board) return;
-      var rw = root.clientWidth;
-      var rh = root.clientHeight;
-      if (rw < 2 || rh < 2) return;
-      var s = Math.min(rw / 1600, rh / 900);
-      board.style.transform = 'scale(' + s + ')';
-    });
-  }
-
-  function projVideoClipSeekStart(vid) {
-    if (!vid || vid.dataset.clipStart === undefined) return;
-    const s = parseFloat(vid.dataset.clipStart, 10);
-    if (!Number.isNaN(s)) vid.currentTime = s;
-  }
-
-  function whenVideoMeta(v, fn) {
-    if (v.readyState >= 1) fn();
-    else v.addEventListener('loadedmetadata', fn, { once: true });
-  }
-
-  function bindProjVideoClipRange(vid) {
-    const end = parseFloat(vid.dataset.clipEnd, 10);
-    const start = parseFloat(vid.dataset.clipStart, 10);
-    if (Number.isNaN(end) || Number.isNaN(start)) return;
-    vid.addEventListener('timeupdate', function () {
-      if (vid.currentTime >= end) vid.currentTime = start;
-    });
-    vid.addEventListener('loadedmetadata', function () {
-      vid.currentTime = start;
-    });
-  }
-  document.querySelectorAll('video[data-clip-start][data-clip-end]').forEach(bindProjVideoClipRange);
-
-  function goTo(idx) {
-    if (animating || idx === current || idx < 0 || idx >= total) return;
-    animating = true;
-    if (!hintShown) { hint.style.opacity = '0'; hintShown = true; }
-
-    const from = slides[current];
-    const to   = slides[idx];
-    const dir  = idx > current ? 1 : -1;
-
-    // Mute outgoing video
-    const fromVid = slideVideo(from);
-    if (fromVid) { fromVid.muted = true; fromVid.play(); }
-
-    to.style.transition = 'none';
-    to.style.transform  = dir > 0 ? 'translateY(100%)' : 'translateY(-100%)';
-    to.classList.add('active');
-
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      to.style.transition  = '';
-      to.style.transform   = 'translateY(0%)';
-      from.style.transform = dir > 0 ? 'translateY(-100%)' : 'translateY(100%)';
-
-      const toClip = to.querySelector('video[data-clip-start][data-clip-end]');
-      const toVid = slideVideo(to);
-      if (toClip) {
-        whenVideoMeta(toClip, function () {
-          projVideoClipSeekStart(toClip);
-          toClip.muted = !(toVid && toClip === toVid);
-          toClip.play().catch(function () {});
-        });
-      } else if (toVid) {
-        toVid.muted = false;
-        toVid.play().catch(function () {});
-      }
-
-      setTimeout(() => {
-        from.classList.remove('active');
-        from.style.transform = '';
-        from.style.transition = '';
-        current = idx;
-        updateUI();
-        animating = false;
-      }, 880);
-    }));
-  }
-
-  // Click on project slides toggles play/pause
-  document.querySelectorAll('.slide-project').forEach(slide => {
-    slide.addEventListener('click', () => {
-      const vid = slideVideo(slide);
-      if (!vid) return;
-      if (vid.paused) { vid.play(); } else { vid.pause(); }
-    });
-  });
-
-  const next = () => goTo(current + 1);
-  const prev = () => goTo(current - 1);
-
-  // Prevent pinch zoom, Ctrl+wheel zoom, keyboard zoom
-  document.addEventListener('wheel', e => {
-    if (e.ctrlKey) { e.preventDefault(); return; }
-  }, { passive: false });
-  document.addEventListener('gesturestart', e => e.preventDefault(), { passive: false });
-  document.addEventListener('gesturechange', e => e.preventDefault(), { passive: false });
-  document.addEventListener('gestureend', e => e.preventDefault(), { passive: false });
-
-  // Keyboard
-  document.addEventListener('keydown', e => {
-    if (e.ctrlKey && ['+', '-', '=', '0'].includes(e.key)) { e.preventDefault(); return; }
-    if (['ArrowDown', 'ArrowRight', 'Space', ' '].includes(e.key)) { e.preventDefault(); next(); }
-    if (['ArrowUp', 'ArrowLeft'].includes(e.key)) { e.preventDefault(); prev(); }
-  });
-
-  // Wheel (debounced)
-  let wt;
-  document.addEventListener('wheel', e => {
-    if (e.ctrlKey) return;
-    clearTimeout(wt);
-    wt = setTimeout(() => { e.deltaY > 0 ? next() : prev(); }, 40);
-  }, { passive: true });
-
-  // Touch
-  let ty = 0;
-  document.addEventListener('touchstart', e => { ty = e.touches[0].clientY; }, { passive: true });
-  document.addEventListener('touchend', e => {
-    const d = ty - e.changedTouches[0].clientY;
-    if (Math.abs(d) > 48) d > 0 ? next() : prev();
-  }, { passive: true });
-
-  updateUI();
-  window.addEventListener('resize', scaleFixedCaseArtboard);
-  (function () {
-    if (typeof ResizeObserver === 'undefined') return;
-    document.querySelectorAll('.slide-case--fixed .sb-scale-root').forEach(function (el) {
-      new ResizeObserver(scaleFixedCaseArtboard).observe(el);
-    });
-  })();
-  setTimeout(scaleFixedCaseArtboard, 0);
-  setTimeout(() => { hint.style.opacity = '0'; }, 4000);
 </script>
 <script src="/capabilities/assets/nda-modal.js" defer></script>
 </body>
