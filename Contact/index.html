@@ -107,13 +107,10 @@
       transition: color 0.2s;
     }
     .ct-inquiry-email:hover { color: rgba(255,255,255,0.78); }
-    /* Shared 2-col tracks: Samry/Sahar + Canada left; Dris + Qatar right */
-    .ct-info-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      column-gap: 48px;
-      row-gap: 32px;
-      align-items: start;
+    .ct-team-list {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
     }
     .ct-team-member {
       display: flex;
@@ -147,13 +144,13 @@
     }
     .ct-team-email:hover { color: #fff; }
     .ct-addresses {
-      display: contents;
+      display: flex;
+      gap: 48px;
+      margin-top: 48px;
     }
     .ct-address-block {
-      margin-top: 16px; /* row-gap 32px + 16px = 48px below team */
+      min-width: 0;
     }
-    .ct-address-block:first-child { grid-column: 1; }
-    .ct-address-block:last-child { grid-column: 2; }
     .ct-address-label {
       font-family: var(--ct-font);
       font-size: var(--ct-address-label-size);
@@ -611,21 +608,14 @@
     .ct-eyebrow { margin-bottom: 12px !important; }
     .ct-inquiry-email { margin-bottom: 40px !important; }
 
-    .ct-info-grid {
-      grid-template-columns: 1fr 1fr !important;
-      column-gap: 20px !important;
-      row-gap: 28px !important;
-    }
-    .ct-info-grid > .ct-team-member:nth-child(1) { grid-column: 1; grid-row: 1; }
-    .ct-info-grid > .ct-team-member:nth-child(2) { grid-column: 2; grid-row: 1; }
-    .ct-info-grid > .ct-team-member:nth-child(3) { grid-column: 1; grid-row: 2; }
+    .ct-team-list { gap: 28px !important; }
     .ct-team-member { gap: 4px !important; min-width: 0; }
 
-    .ct-address-block {
-      margin-top: 16px !important; /* 28 + 16 = 44px below team */
+    .ct-addresses {
+      flex-direction: column !important;
+      gap: 28px !important;
+      margin-top: 44px !important;
     }
-    .ct-address-block:first-child { grid-column: 1 !important; grid-row: 3 !important; }
-    .ct-address-block:last-child { grid-column: 2 !important; grid-row: 3 !important; }
     .ct-address-label { margin-bottom: 10px !important; }
     .ct-address-text { line-height: 1.7 !important; }
 
@@ -666,7 +656,8 @@
     nav { padding: 0 18px !important; }
     .ct-left { padding: 18px 18px 6px !important; }
     .ct-right { padding: 36px 18px 52px !important; }
-    .ct-info-grid { column-gap: 16px !important; row-gap: 26px !important; }
+    .ct-team-list { gap: 26px !important; }
+    .ct-addresses { gap: 26px !important; margin-top: 40px !important; }
     #ct-form { gap: 26px !important; }
   }
 </style>
@@ -693,7 +684,7 @@
       <div class="anim-wrap"><div class="ct-eyebrow anim-item soft" id="an-h1">Contact</div></div>
       <div class="anim-wrap"><a href="mailto:inquiries@xyzstudios.co" class="ct-inquiry-email anim-item soft" id="an-s2">inquiries@xyzstudios.co</a></div>
 
-      <div class="ct-info-grid">
+      <div class="ct-team-list">
         <div class="ct-team-member">
           <div class="anim-wrap"><div class="ct-team-name anim-item soft" id="an-t1">Samry Yussuf</div></div>
           <div class="anim-wrap"><div class="ct-team-role anim-item soft" id="an-t2">Managing Partner / Executive Producer</div></div>
@@ -709,16 +700,16 @@
           <div class="anim-wrap"><div class="ct-team-role anim-item soft" id="an-t8">Producer / Sales</div></div>
           <div class="anim-wrap"><a href="mailto:sahar@xyzstudios.co" class="ct-team-email anim-item soft" id="an-t9">sahar@xyzstudios.co</a></div>
         </div>
+      </div>
 
-        <div class="ct-addresses">
-          <div class="ct-address-block">
-            <div class="anim-wrap"><div class="ct-address-label anim-item soft" id="an-a1">Canada</div></div>
-            <div class="anim-wrap"><div class="ct-address-text anim-item soft" id="an-a2">Suite 3400, 10180 – 101 Street<br>Edmonton, Alberta T5J 3S4</div></div>
-          </div>
-          <div class="ct-address-block">
-            <div class="anim-wrap"><div class="ct-address-label anim-item soft" id="an-a3">Qatar</div></div>
-            <div class="anim-wrap"><div class="ct-address-text anim-item soft" id="an-a4">Porta Arabia, Tower 21<br>The Pearl Island, Doha</div></div>
-          </div>
+      <div class="ct-addresses">
+        <div class="ct-address-block">
+          <div class="anim-wrap"><div class="ct-address-label anim-item soft" id="an-a1">Canada</div></div>
+          <div class="anim-wrap"><div class="ct-address-text anim-item soft" id="an-a2">Suite 3400, 10180 – 101 Street<br>Edmonton, Alberta T5J 3S4</div></div>
+        </div>
+        <div class="ct-address-block">
+          <div class="anim-wrap"><div class="ct-address-label anim-item soft" id="an-a3">Qatar</div></div>
+          <div class="anim-wrap"><div class="ct-address-text anim-item soft" id="an-a4">Porta Arabia, Tower 21<br>The Pearl Island, Doha</div></div>
         </div>
       </div>
 
