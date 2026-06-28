@@ -201,4 +201,27 @@ if (repoName) {
   console.log('Prefixed paths for GitHub Pages repo:', prefix);
 }
 
+// --- Inject analytics (Vercel Web Analytics + Microsoft Clarity) into every page <head> ---
+{
+  const ANALYTICS = `<!-- xyz-analytics -->
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};</script>
+<script defer src="/_vercel/insights/script.js"></script>
+<script type="text/javascript">(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y)})(window,document,"clarity","script","xdydi7vf1q");</script>
+<!-- /xyz-analytics -->
+`;
+  let injected = 0;
+  (function walk(dir) {
+    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+      const p = path.join(dir, e.name);
+      if (e.isDirectory()) { walk(p); continue; }
+      if (path.extname(p).toLowerCase() !== '.html') continue;
+      let s = fs.readFileSync(p, 'utf8');
+      if (s.includes('xyz-analytics') || !/<\/head>/i.test(s)) continue;
+      fs.writeFileSync(p, s.replace(/<\/head>/i, ANALYTICS + '</head>'));
+      injected++;
+    }
+  })(dist);
+  console.log('[analytics] injected into', injected, 'pages');
+}
+
 console.log('Prepared', dist);
