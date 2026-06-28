@@ -108,10 +108,12 @@
       transition: opacity 0.2s;
     }
     .ct-inquiry-email:hover { opacity: 0.72; }
-    .ct-team-grid {
+    /* Shared 2-col tracks: Samry/Sahar + Canada left; Dris + Qatar right */
+    .ct-info-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 32px 48px;
+      column-gap: 48px;
+      row-gap: 32px;
       align-items: start;
     }
     .ct-team-member {
@@ -144,10 +146,13 @@
     }
     .ct-team-email:hover { color: #fff; }
     .ct-addresses {
-      display: flex;
-      gap: 48px;
-      margin-top: 48px;
+      display: contents;
     }
+    .ct-address-block {
+      margin-top: 16px; /* row-gap 32px + 16px = 48px below team */
+    }
+    .ct-address-block:first-child { grid-column: 1; }
+    .ct-address-block:last-child { grid-column: 2; }
     .ct-address-label {
       font-family: var(--ct-font);
       font-size: var(--ct-address-label-size);
@@ -563,26 +568,107 @@
   </style>
   <link rel="prefetch" href="/work/">
 <style id="xyz-contact-fix">
-  /* PHONE ONLY */
-  @media (max-width: 768px){
-    html, body{ height:auto !important; overflow-y:auto !important; overflow-x:hidden !important; }
-    .ct-page{ height:auto !important; min-height:auto !important; display:block !important; padding-top:calc(var(--nav-h) + 6px) !important; }
-    .ct-main{ display:block !important; }
-    .ct-left{ display:block !important; width:100% !important; padding:22px 22px 0 !important; justify-content:flex-start !important; }
-    .ct-right{ display:block !important; width:100% !important; border-left:none !important; padding:28px 22px 40px !important; align-items:stretch !important; }
-    .ct-inquiry-email{ font-size:18px !important; margin-bottom:28px !important; }
-    .ct-team-grid{ gap:24px 20px !important; }
-    .ct-team-name{ font-size:16px !important; }
-    .ct-team-role, .ct-team-email{ font-size:14px !important; }
-    .ct-addresses{ flex-direction:column !important; gap:20px !important; margin-top:28px !important; }
-    .ct-address-text{ font-size:14px !important; }
-    .ct-actions{ margin-top:28px !important; }
-    .ct-join{ margin-top:28px !important; }
-    .ct-section-label{ font-size:12px !important; }
-    .ct-section-links a, .ct-section-links span, .ct-section-links .ct-intro{ font-size:14px !important; }
-    form input, form textarea, .ct-right input, .ct-right textarea{ font-family:var(--ct-font) !important; font-size:16px !important; font-weight:400 !important; }
-    nav{ padding:0 22px !important; }
-    .nav-links{ gap:24px !important; }
+  /* PHONE ONLY — smaller type, generous vertical rhythm */
+  @media (max-width: 768px) {
+    :root {
+      --nav-h: 68px;
+      --ct-eyebrow-size: 8px;
+      --ct-label-size: 7px;
+      --ct-input-size: 11px;
+      --ct-team-name-size: 11px;
+      --ct-team-role-size: 9px;
+      --ct-team-email-size: 9px;
+      --ct-address-label-size: 7px;
+      --ct-address-text-size: 10px;
+      --ct-inquiry-size: 13px;
+      --ct-submit-size: 8px;
+      --ct-nav-link-size: 8px;
+      --ct-body-size: 11px;
+    }
+
+    html, body { height: auto !important; overflow-y: auto !important; overflow-x: hidden !important; }
+    .ct-page { height: auto !important; min-height: auto !important; display: block !important; padding-top: calc(var(--nav-h) + 4px) !important; }
+    .ct-main { display: block !important; }
+
+    nav { padding: 0 20px !important; height: var(--nav-h) !important; }
+    .nav-logo img { height: 24px !important; }
+    .nav-links { gap: 20px !important; }
+
+    .ct-left {
+      display: block !important;
+      width: 100% !important;
+      padding: 20px 20px 8px !important;
+      justify-content: flex-start !important;
+    }
+    .ct-right {
+      display: block !important;
+      width: 100% !important;
+      border-left: none !important;
+      padding: 40px 20px 56px !important;
+      align-items: stretch !important;
+    }
+
+    .ct-eyebrow { margin-bottom: 12px !important; }
+    .ct-inquiry-email { margin-bottom: 40px !important; }
+
+    .ct-info-grid {
+      grid-template-columns: 1fr 1fr !important;
+      column-gap: 20px !important;
+      row-gap: 28px !important;
+    }
+    .ct-info-grid > .ct-team-member:nth-child(1) { grid-column: 1; grid-row: 1; }
+    .ct-info-grid > .ct-team-member:nth-child(2) { grid-column: 2; grid-row: 1; }
+    .ct-info-grid > .ct-team-member:nth-child(3) { grid-column: 1; grid-row: 2; }
+    .ct-team-member { gap: 4px !important; min-width: 0; }
+
+    .ct-address-block {
+      margin-top: 16px !important; /* 28 + 16 = 44px below team */
+    }
+    .ct-address-block:first-child { grid-column: 1 !important; grid-row: 3 !important; }
+    .ct-address-block:last-child { grid-column: 2 !important; grid-row: 3 !important; }
+    .ct-address-label { margin-bottom: 10px !important; }
+    .ct-address-text { line-height: 1.7 !important; }
+
+    .ct-actions { margin-top: 44px !important; gap: 14px !important; }
+    .ct-deck-link { font-size: 10px !important; }
+    .ct-social { gap: 20px !important; }
+    .ct-social a { font-size: 9px !important; }
+
+    .ct-join { margin-top: 44px !important; }
+    .ct-section-label { margin-bottom: 12px !important; }
+    .ct-section-links { gap: 10px !important; }
+
+    .ct-form-heading { margin-bottom: 28px !important; }
+    #ct-form { gap: 28px !important; }
+    .ct-field { padding-bottom: 10px !important; }
+    .ct-label { margin-bottom: 9px !important; letter-spacing: 0.14em !important; }
+
+    form input,
+    form textarea,
+    .ct-right input,
+    .ct-right textarea {
+      font-family: var(--ct-font) !important;
+      font-size: var(--ct-input-size) !important;
+      font-weight: 400 !important;
+      line-height: 1.5 !important;
+    }
+
+    .ct-success-title { font-size: 15px !important; margin-bottom: 12px !important; }
+    .ct-success-body { font-size: var(--ct-body-size) !important; line-height: 1.7 !important; }
+  }
+
+  @media (max-width: 390px) {
+    :root {
+      --ct-inquiry-size: 12px;
+      --ct-team-name-size: 10px;
+      --ct-input-size: 10px;
+    }
+
+    nav { padding: 0 18px !important; }
+    .ct-left { padding: 18px 18px 6px !important; }
+    .ct-right { padding: 36px 18px 52px !important; }
+    .ct-info-grid { column-gap: 16px !important; row-gap: 26px !important; }
+    #ct-form { gap: 26px !important; }
   }
 </style>
 </head>
@@ -608,7 +694,7 @@
       <div class="anim-wrap"><div class="ct-eyebrow anim-item soft" id="an-h1">Contact</div></div>
       <div class="anim-wrap"><a href="mailto:inquiries@xyzstudios.co" class="ct-inquiry-email anim-item soft" id="an-s2">inquiries@xyzstudios.co</a></div>
 
-      <div class="ct-team-grid">
+      <div class="ct-info-grid">
         <div class="ct-team-member">
           <div class="anim-wrap"><div class="ct-team-name anim-item soft" id="an-t1">Samry Yussuf</div></div>
           <div class="anim-wrap"><div class="ct-team-role anim-item soft" id="an-t2">Managing Partner / Executive Producer</div></div>
@@ -624,16 +710,16 @@
           <div class="anim-wrap"><div class="ct-team-role anim-item soft" id="an-t8">Producer / Sales</div></div>
           <div class="anim-wrap"><a href="mailto:sahar@xyzstudios.co" class="ct-team-email anim-item soft" id="an-t9">sahar@xyzstudios.co</a></div>
         </div>
-      </div>
 
-      <div class="ct-addresses">
-        <div class="ct-address-block">
-          <div class="anim-wrap"><div class="ct-address-label anim-item soft" id="an-a1">Canada</div></div>
-          <div class="anim-wrap"><div class="ct-address-text anim-item soft" id="an-a2">Suite 3400, 10180 – 101 Street<br>Edmonton, Alberta T5J 3S4</div></div>
-        </div>
-        <div class="ct-address-block">
-          <div class="anim-wrap"><div class="ct-address-label anim-item soft" id="an-a3">Qatar</div></div>
-          <div class="anim-wrap"><div class="ct-address-text anim-item soft" id="an-a4">Porta Arabia, Tower 21<br>The Pearl Island, Doha</div></div>
+        <div class="ct-addresses">
+          <div class="ct-address-block">
+            <div class="anim-wrap"><div class="ct-address-label anim-item soft" id="an-a1">Canada</div></div>
+            <div class="anim-wrap"><div class="ct-address-text anim-item soft" id="an-a2">Suite 3400, 10180 – 101 Street<br>Edmonton, Alberta T5J 3S4</div></div>
+          </div>
+          <div class="ct-address-block">
+            <div class="anim-wrap"><div class="ct-address-label anim-item soft" id="an-a3">Qatar</div></div>
+            <div class="anim-wrap"><div class="ct-address-text anim-item soft" id="an-a4">Porta Arabia, Tower 21<br>The Pearl Island, Doha</div></div>
+          </div>
         </div>
       </div>
 
