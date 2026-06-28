@@ -330,7 +330,7 @@
       justify-self: start;
     }
     .wu-filter-group[data-key="services"] {
-      margin-left: clamp(180px, 28vw, 420px);
+      margin-left: clamp(172px, 27vw, 400px);
       margin-right: 0;
     }
 
@@ -356,12 +356,20 @@
       padding: 0;
       font-size: var(--type-filter-link);
     }
-    .wu-filter-links--services,
+    .wu-filter-links--services {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: max-content;
+      grid-template-rows: repeat(3, auto);
+      gap: 10px 32px;
+      align-content: start;
+      width: fit-content;
+    }
     .wu-filter-links--type {
       display: grid;
       grid-auto-flow: column;
       grid-auto-columns: max-content;
-      grid-template-rows: repeat(5, auto);
+      grid-template-rows: repeat(3, auto);
       gap: 10px 24px;
       align-content: start;
       width: fit-content;
@@ -663,7 +671,12 @@
     {
       key: 'services',
       label: 'Services',
-      options: ['Creative Direction', 'Visual Effects', 'CGI', 'AI', 'Compositing', 'Clean Up & Beauty', 'Sound Design', 'Mixing & Mastering', 'Compose']
+      /* column-flow order: col1 top→bottom, col2, col3 (3×3 grid) */
+      options: [
+        'Creative Direction', 'Visual Effects', 'CGI',
+        'AI', 'Clean Up & Beauty', 'Compositing',
+        'Sound Design', 'Mixing & Mastering', 'Compose'
+      ]
     }
   ];
 
