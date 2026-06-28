@@ -76,7 +76,10 @@
       --top-stack-h: 140px;
       --col-gap: 56px;
       --row-gap: 66px;
-      --page-pad-x: 52px;
+      --page-pad-x: clamp(20px, 4.2vw, 52px);
+      --filter-marker-w: 18px;
+      --filter-marker-gap: 10px;
+      --filter-marker-slot: 28px;
       --tls: -0.012em;
     }
 
@@ -320,6 +323,13 @@
       display: grid;
       grid-template-columns: 2fr 1fr;
       gap: clamp(32px, 6vw, 64px);
+      align-items: start;
+    }
+
+    .wu-filter-group {
+      min-width: 0;
+      margin: 0;
+      padding: 0;
     }
 
     .wu-filter-group-label {
@@ -337,17 +347,37 @@
     .wu-filter-drop.is-closing .wu-filter-group-label { opacity: 0; transform: translateY(-10px); }
 
     .wu-filter-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px 18px;
       font-size: var(--type-filter-link);
     }
 
-    .wu-filter-link {
+    .wu-filter-links--services {
+      display: grid;
+      grid-auto-flow: column;
+      grid-template-rows: repeat(3, auto);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      column-gap: 18px;
+      row-gap: 7px;
+    }
+
+    .wu-filter-links--services .wu-filter-link {
+      justify-self: start;
+      width: 100%;
+    }
+
+    .wu-filter-links--type {
       display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .wu-filter-link {
+      display: inline-flex;
       align-items: center;
       flex: 0 0 auto;
-      gap: 0;
+      gap: var(--filter-marker-gap);
+      min-width: 0;
+      max-width: 100%;
       background: none;
       border: none;
       padding: 0;
@@ -369,14 +399,34 @@
     .wu-filter-link.is-active { color: var(--fg); }
 
     .wu-filter-marker {
-      width: 18px;
+      width: var(--filter-marker-w);
       height: 1px;
       background: currentColor;
       opacity: 0;
-      flex: none;
+      flex: 0 0 var(--filter-marker-w);
       transition: opacity 0.2s;
     }
     .wu-filter-link.is-active .wu-filter-marker { opacity: 1; }
+
+    /* Mid desktop: stack filter groups before services grid gets cramped in 2fr column */
+    @media (max-width: 1200px) {
+      .wu-filter-body {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+
+      .wu-filter-links--services {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-rows: repeat(5, auto);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .wu-filter-links--services {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(9, auto);
+      }
+    }
 
     /* ── MAIN GRID ── */
     .wu-main {
@@ -487,8 +537,76 @@
       pointer-events: none;
     }
 
+    /* Tablet + phone: one shared gutter, flush filter stack */
     @media (max-width: 1024px) {
+      :root { --page-pad-x: 32px; }
+
+      nav {
+        padding-left: var(--page-pad-x);
+        padding-right: var(--page-pad-x);
+      }
+
+      .wu-toolbar {
+        padding-left: var(--page-pad-x);
+        padding-right: var(--page-pad-x);
+      }
+
+      .wu-filter-inner {
+        padding-left: var(--page-pad-x);
+        padding-right: var(--page-pad-x);
+      }
+
+      .wu-main {
+        padding-left: var(--page-pad-x);
+        padding-right: var(--page-pad-x);
+      }
+
       .wu-grid { grid-template-columns: repeat(2, 1fr); }
+
+      .wu-filter-group,
+      .wu-filter-group-label,
+      .wu-filter-links {
+        margin-left: 0;
+        padding-left: 0;
+      }
+
+      .wu-filter-links--services,
+      .wu-filter-links--type {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        flex-wrap: nowrap;
+        gap: 6px;
+      }
+
+      .wu-filter-link {
+        gap: 0;
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .wu-filter-marker {
+        display: none;
+        width: 0;
+        min-width: 0;
+        margin: 0;
+      }
+
+      .wu-filter-link.is-active {
+        color: var(--fg);
+      }
+    }
+
+    @media (max-width: 820px) {
+      :root { --page-pad-x: 28px; }
+    }
+
+    @media (max-width: 768px) {
+      :root { --page-pad-x: 24px; }
+    }
+
+    @media (max-width: 480px) {
+      :root { --page-pad-x: 20px; }
     }
 
     @media (max-width: 760px) {
@@ -496,13 +614,14 @@
       nav {
         height: auto;
         min-height: 52px;
-        padding: 14px 20px 16px;
+        padding-top: 14px;
+        padding-bottom: 16px;
       }
       .nav-logo img { height: 24px; }
-      .wu-toolbar { padding: 28px 20px 16px; }
-      .wu-main { padding-left: 20px; padding-right: 20px; }
-      .wu-filter-body { grid-template-columns: 1fr; gap: 36px; }
-      .wu-filter-inner { padding-left: 20px; padding-right: 20px; }
+      .wu-toolbar {
+        padding-top: 28px;
+        padding-bottom: 16px;
+      }
     }
   </style>
 </head>
@@ -621,7 +740,11 @@
     {
       key: 'services',
       label: 'Services',
-      options: ['Creative Direction', 'Visual Effects', 'CGI', 'AI', 'Compositing', 'Clean Up & Beauty', 'Sound Design', 'Mixing & Mastering', 'Compose']
+      options: [
+        'Creative Direction', 'Visual Effects', 'CGI',
+        'Compositing', 'Clean Up & Beauty', 'AI',
+        'Sound Design', 'Mixing & Mastering', 'Compose'
+      ]
     },
     {
       key: 'type',
@@ -658,7 +781,7 @@
   }
 
   function projectURL(card, catLabel) {
-    return '/work/' + slugify(catLabel) + '/' + (card.slug || slugify(card.title)) + '/';
+    return '/work/' + (card.slug || slugify(card.title)) + '/';
   }
 
   function getPoster(card) {
@@ -704,7 +827,8 @@
   }
 
   function sortServicesList(services) {
-    const order = FILTER_GROUPS[0].options;
+    const group = FILTER_GROUPS.find(function (g) { return g.key === 'services'; });
+    const order = group ? group.options : [];
     return services.slice().sort(function (a, b) {
       const ia = order.indexOf(a);
       const ib = order.indexOf(b);

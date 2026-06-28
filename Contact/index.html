@@ -9,15 +9,20 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --nav-h: 80px;
-      --p: 48px;
-      --ct-col-top: clamp(48px, 9vh, 120px);
-      --ct-font: Micross, Arial, sans-serif;
-      --ct-nav-size: clamp(9.12px, 0.95vw, min(calc(6.08px + 0.38vw), 10.64px));
-      --ct-body-size: clamp(10.5px, 1.1vw, 12.8px);
-      --ct-head-size: clamp(34px, 5vw, 56px);
-      --ct-stack-tight: clamp(6px, 0.75vh, 9px);
-      --ct-stack: clamp(10px, 1.1vh, 14px);
-      --ct-stack-section: clamp(26px, 3.2vh, 34px);
+      --p: 56px;
+      --ct-font: Micross, Arial, Helvetica, sans-serif;
+      --ct-eyebrow-size: 10px;
+      --ct-label-size: 9px;
+      --ct-input-size: 13px;
+      --ct-team-name-size: 14px;
+      --ct-team-role-size: 11px;
+      --ct-team-email-size: 12px;
+      --ct-address-label-size: 9px;
+      --ct-address-text-size: 12px;
+      --ct-inquiry-size: 16px;
+      --ct-submit-size: 10px;
+      --ct-nav-link-size: 10px;
+      --ct-body-size: 13px;
     }
 
     html, body {
@@ -38,6 +43,25 @@
       padding: 0 var(--p);
     }
     .nav-logo img { height: 29px; width: auto; display: block; }
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 40px;
+      align-items: center;
+    }
+    .nav-links a {
+      font-family: var(--ct-font);
+      font-size: var(--ct-nav-link-size);
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover,
+    .nav-links a.active { color: #fff; }
 
     /* ── PAGE SHELL ── */
     .ct-page {
@@ -48,176 +72,227 @@
       flex-direction: column;
     }
     .ct-main {
-      display: flex;
-      flex-direction: row;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       flex: 1;
       min-height: 0;
     }
 
-    /* ── LEFT COLUMN ── */
+    /* ── LEFT COLUMN (V3) ── */
     .ct-left {
-      flex: 5;
       display: flex;
       flex-direction: column;
-      padding: var(--ct-col-top) 52px 0 var(--p);
+      justify-content: center;
+      padding: 48px 64px;
       min-width: 0;
     }
-
-    /* Left headline + sections */
-    .ct-headline {
+    .ct-eyebrow {
       font-family: var(--ct-font);
-      font-size: var(--ct-head-size);
+      font-size: var(--ct-eyebrow-size);
       font-weight: 400;
-      line-height: 1.08;
-      letter-spacing: -0.03em;
-      color: #fff;
-      margin-bottom: var(--ct-stack);
+      line-height: 1;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
+      color: rgba(255,255,255,0.34);
+      margin-bottom: 16px;
     }
-
-    /* Sections */
-    .ct-sections { flex-shrink: 0; margin-top: 0; }
-    .ct-section { margin-bottom: var(--ct-stack-section); }
-    .ct-section:last-child { margin-bottom: 0; }
-    .ct-section-label {
+    .ct-inquiry-email {
       font-family: var(--ct-font);
-      font-size: var(--ct-nav-size);
+      font-size: var(--ct-inquiry-size);
       font-weight: 400;
       line-height: 1.3;
-      letter-spacing: normal;
-      text-transform: uppercase;
       color: #fff;
-      margin-bottom: var(--ct-stack-tight);
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 40px;
+      transition: opacity 0.2s;
+    }
+    .ct-inquiry-email:hover { opacity: 0.72; }
+    .ct-team-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px 48px;
+      align-items: start;
+    }
+    .ct-team-member {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .ct-team-name {
+      font-family: var(--ct-font);
+      font-size: var(--ct-team-name-size);
+      font-weight: 400;
+      line-height: 1.3;
+      color: #fff;
+    }
+    .ct-team-role {
+      font-family: var(--ct-font);
+      font-size: var(--ct-team-role-size);
+      font-weight: 400;
+      line-height: 1.4;
+      color: rgba(255,255,255,0.42);
+    }
+    .ct-team-email {
+      font-family: var(--ct-font);
+      font-size: var(--ct-team-email-size);
+      font-weight: 400;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.4);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .ct-team-email:hover { color: #fff; }
+    .ct-addresses {
+      display: flex;
+      gap: 48px;
+      margin-top: 48px;
+    }
+    .ct-address-label {
+      font-family: var(--ct-font);
+      font-size: var(--ct-address-label-size);
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 12px;
+    }
+    .ct-address-text {
+      font-family: var(--ct-font);
+      font-size: var(--ct-address-text-size);
+      font-weight: 400;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.38);
+    }
+    .ct-actions {
+      margin-top: 44px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .ct-deck-link {
+      font-family: var(--ct-font);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1;
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .ct-deck-link:hover { color: #fff; }
+    .ct-social {
+      display: flex;
+      gap: 26px;
+    }
+    .ct-social a {
+      font-family: var(--ct-font);
+      font-size: 11px;
+      font-weight: 400;
+      line-height: 1;
+      color: rgba(255,255,255,0.38);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .ct-social a:hover { color: #fff; }
+    .ct-join {
+      margin-top: 40px;
+      padding-top: 32px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+    .ct-section-label {
+      font-family: var(--ct-font);
+      font-size: var(--ct-eyebrow-size);
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.34);
+      margin-bottom: 12px;
     }
     .ct-section-links {
       display: flex;
       flex-direction: column;
-      gap: var(--ct-stack-tight);
+      gap: 8px;
     }
     .ct-section-links a,
     .ct-section-links span {
       font-family: var(--ct-font);
-      font-size: var(--ct-body-size);
+      font-size: var(--ct-team-role-size);
       font-weight: 400;
-      line-height: 1.35;
-      letter-spacing: normal;
-      color: rgba(255,255,255,0.32);
-      text-decoration: none; cursor: pointer;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.42);
+      text-decoration: none;
       transition: color 0.2s;
     }
     .ct-section-links .ct-intro {
-      font-size: var(--ct-body-size);
-      line-height: 1.5;
       max-width: 28em;
       display: block;
-      margin-bottom: 0;
-    }
-    .ct-section-links .ct-action {
-      display: block;
-      margin-top: 0;
     }
     .ct-section-links span { cursor: default; }
-    .ct-section-links a:hover { color: #fff; }
-    .ct-section-links .ct-action { cursor: pointer; }
+    .ct-section-links a:hover,
     .ct-section-links .ct-action:hover { color: #fff; }
+    .ct-section-links .ct-action { cursor: pointer; }
 
-    /* Footer */
-    .ct-foot {
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: row;
-      padding: 32px 0 40px 0;
-    }
-    .ct-foot-left {
-      flex: 5;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      padding-left: var(--p);
-      padding-right: 52px;
-      min-width: 0;
-    }
-    .ct-foot-right {
-      flex: 7;
-      padding-right: var(--p);
-      min-width: 0;
-    }
-    .ct-foot-label {
-      font-family: var(--ct-font);
-      font-size: var(--ct-nav-size);
-      font-weight: 400;
-      line-height: 1.3;
-      letter-spacing: normal;
-      text-transform: uppercase;
-      color: #fff;
-      margin-bottom: 13px;
-    }
-    .ct-foot-info { display: flex; flex-direction: column; gap: 5px; }
-    .ct-foot-info a {
-      font-family: var(--ct-font);
-      font-size: var(--ct-body-size);
-      font-weight: 400;
-      line-height: 1.3;
-      letter-spacing: normal;
-      color: rgba(255,255,255,0.28);
-      text-decoration: none; transition: color 0.2s;
-    }
-    .ct-foot-info a:hover { color: #fff; }
-    .ct-foot-loc {
-      font-family: var(--ct-font);
-      font-size: var(--ct-nav-size);
-      font-weight: 400;
-      line-height: 1.3;
-      letter-spacing: normal;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.28);
-      margin-top: 10px;
-    }
-
-    /* ── RIGHT COLUMN: form ── */
+    /* ── RIGHT COLUMN: form (V3) ── */
     .ct-right {
-      flex: 7;
+      border-left: 1px solid rgba(255,255,255,0.07);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 64px;
+      min-width: 0;
+    }
+    .ct-right .ct-form-stage {
+      width: min(480px, 100%);
+      max-width: 100%;
+    }
+    .ct-form-heading {
+      font-family: var(--ct-font);
+      font-size: var(--ct-label-size);
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.32);
+      margin-bottom: 36px;
+    }
+    #ct-form-wrap > .anim-wrap + #ct-form {
+      margin-top: 0;
+    }
+    #ct-form {
       display: flex;
       flex-direction: column;
-      padding: var(--ct-col-top) var(--p) 0 0;
-      min-width: 0;
+      gap: 30px;
     }
-
     .ct-field {
-      position: relative;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      padding: 20px 0 11px; margin-bottom: 20px;
+      display: block;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 10px;
       transition: border-color 0.2s;
     }
     .ct-field:focus-within { border-color: rgba(255,255,255,0.28); }
     .ct-label {
-      position: absolute;
-      top: 20px; left: 0;
+      display: block;
       font-family: var(--ct-font);
-      font-size: var(--ct-nav-size);
+      font-size: var(--ct-label-size);
       font-weight: 400;
-      line-height: 1.3;
-      letter-spacing: normal;
+      line-height: 1;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.16);
-      transition: top 0.22s cubic-bezier(0.16,1,0.3,1),
-                  font-size 0.22s cubic-bezier(0.16,1,0.3,1),
-                  color 0.22s;
+      color: rgba(255,255,255,0.34);
+      margin-bottom: 9px;
       pointer-events: none;
-    }
-    .ct-field:focus-within .ct-label,
-    .ct-field.filled .ct-label {
-      top: 2px;
-      font-size: calc(var(--ct-nav-size) * 0.88);
-      color: rgba(255,255,255,0.38);
     }
     .ct-field input, .ct-field textarea {
       background: none; border: none; outline: none; width: 100%;
       font-family: var(--ct-font);
-      font-size: var(--ct-body-size);
+      font-size: var(--ct-input-size);
       font-weight: 400;
       line-height: 1.5;
-      letter-spacing: normal;
-      color: #fff; caret-color: rgba(255,255,255,0.5);
+      color: #fff;
+      caret-color: rgba(255,255,255,0.6);
     }
     .ct-field input:-webkit-autofill,
     .ct-field input:-webkit-autofill:hover,
@@ -226,25 +301,26 @@
       -webkit-text-fill-color: #fff;
       transition: background-color 5000s ease-in-out 0s;
     }
-    .ct-field textarea { resize: none; height: 56px; display: block; }
+    .ct-field textarea { resize: none; height: auto; min-height: 1.5em; display: block; }
     .ct-submit {
       font-family: var(--ct-font);
-      font-size: var(--ct-nav-size);
+      font-size: var(--ct-submit-size);
       font-weight: 400;
-      line-height: 1.3;
-      letter-spacing: normal;
+      line-height: 1;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.32);
+      color: rgba(255,255,255,0.55);
       background: none; border: none; cursor: pointer;
       padding: 0; text-align: left; transition: color 0.2s;
-      margin-top: 8px;
+      margin-top: 2px;
     }
     .ct-submit:hover { color: #fff; }
 
-    /* ── CONTACT FORM → SUCCESS (in-column fade, centered in form area) ── */
+    /* ── CONTACT FORM → SUCCESS ── */
     .ct-form-stage {
       position: relative;
-      width: 100%;
+      width: min(480px, 100%);
+      max-width: 100%;
     }
     #ct-form-wrap {
       transition: opacity 0.55s ease;
@@ -335,7 +411,7 @@
     }
     .deck-eyebrow {
       font-family: var(--ct-font);
-      font-size: var(--ct-nav-size);
+      font-size: var(--ct-label-size);
       font-weight: 400;
       line-height: 1.3;
       letter-spacing: normal;
@@ -363,6 +439,9 @@
     }
     #deck-form {
       flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
     .deck-login {
       flex-shrink: 0;
@@ -372,7 +451,7 @@
     }
     .deck-login-label {
       font-family: var(--ct-font);
-      font-size: var(--ct-nav-size);
+      font-size: var(--ct-label-size);
       font-weight: 400;
       line-height: 1.3;
       letter-spacing: normal;
@@ -491,26 +570,21 @@
     html, body{ height:auto !important; overflow-y:auto !important; overflow-x:hidden !important; }
     .ct-page{ height:auto !important; min-height:auto !important; display:block !important; padding-top:calc(var(--nav-h) + 6px) !important; }
     .ct-main{ display:block !important; }
-    .ct-left{ display:block !important; width:100% !important; padding:22px 22px 0 !important; }
-    .ct-right{ display:block !important; width:100% !important; padding:6px 22px 40px !important; }
-    .ct-headline{ font-size: clamp(28px, 8vw, 42px) !important; margin-bottom: 14px !important; }
-    .ct-sections{ margin-bottom:30px !important; }
-    .ct-section{ margin-bottom:24px !important; }
-    .ct-section-links{ gap:8px !important; }
-    .ct-section-label{ margin-bottom:8px !important; font-size:12.8px !important; }
-    .ct-section-links a,
-    .ct-section-links span,
-    .ct-section-links .ct-intro{ font-size:16px !important; }
-    .ct-foot-info a{ font-size:16px !important; }
+    .ct-left{ display:block !important; width:100% !important; padding:22px 22px 0 !important; justify-content:flex-start !important; }
+    .ct-right{ display:block !important; width:100% !important; border-left:none !important; padding:28px 22px 40px !important; align-items:stretch !important; }
+    .ct-inquiry-email{ font-size:18px !important; margin-bottom:28px !important; }
+    .ct-team-grid{ gap:24px 20px !important; }
+    .ct-team-name{ font-size:16px !important; }
+    .ct-team-role, .ct-team-email{ font-size:14px !important; }
+    .ct-addresses{ flex-direction:column !important; gap:20px !important; margin-top:28px !important; }
+    .ct-address-text{ font-size:14px !important; }
+    .ct-actions{ margin-top:28px !important; }
+    .ct-join{ margin-top:28px !important; padding-top:24px !important; }
+    .ct-section-label{ font-size:12px !important; }
+    .ct-section-links a, .ct-section-links span, .ct-section-links .ct-intro{ font-size:14px !important; }
     form input, form textarea, .ct-right input, .ct-right textarea{ font-family:var(--ct-font) !important; font-size:16px !important; font-weight:400 !important; }
-    .ct-foot{ display:none !important; }
-    /* moved blocks */
-    .ct-foot-left.ct-moved{ display:grid !important; grid-template-columns:1fr 1fr !important; gap:16px !important; padding:0 !important; margin-bottom:20px !important; min-width:0 !important; }
-    .ct-foot-right.ct-moved{ display:block !important; padding:0 !important; margin-bottom:20px !important; }
-    .ct-moved .ct-foot-label{ font-size:12.8px !important; letter-spacing:normal !important; color:#fff !important; margin-bottom:6px !important; font-weight:400 !important; }
-    .ct-moved .ct-foot-info{ display:flex !important; flex-direction:column !important; gap:4px !important; }
-    .ct-moved .ct-foot-info a{ font-size:16px !important; color:rgba(255,255,255,.32) !important; font-weight:400 !important; }
-    .ct-moved .ct-foot-loc{ font-size:12.8px !important; letter-spacing:normal !important; color:rgba(255,255,255,.18) !important; margin-top:6px !important; font-weight:400 !important; }
+    nav{ padding:0 22px !important; }
+    .nav-links{ gap:24px !important; }
   }
 </style>
 </head>
@@ -533,20 +607,51 @@
     <!-- LEFT COLUMN -->
     <div class="ct-left">
 
-      <div class="ct-sections">
-        <div class="ct-section">
-          <div class="anim-wrap"><div class="ct-headline anim-item" id="an-h1">Contact Us</div></div>
-          <div class="ct-section-links">
-            <div class="anim-wrap"><a href="mailto:inquiries@xyzstudios.co" class="anim-item soft" id="an-s2">inquiries@xyzstudios.co</a></div>
-            <div class="anim-wrap"><span onclick="openDeckModal()" class="anim-item soft ct-action" id="an-s3">Request capabilities deck &rarr;</span></div>
-          </div>
+      <div class="anim-wrap"><div class="ct-eyebrow anim-item soft" id="an-h1">Contact</div></div>
+      <div class="anim-wrap"><a href="mailto:inquiries@xyzstudios.co" class="ct-inquiry-email anim-item soft" id="an-s2">inquiries@xyzstudios.co</a></div>
+
+      <div class="ct-team-grid">
+        <div class="ct-team-member">
+          <div class="anim-wrap"><div class="ct-team-name anim-item soft" id="an-t1">Samry Yussuf</div></div>
+          <div class="anim-wrap"><div class="ct-team-role anim-item soft" id="an-t2">Managing Partner / Executive Producer</div></div>
+          <div class="anim-wrap"><a href="mailto:samry@xyzstudios.co" class="ct-team-email anim-item soft" id="an-t3">samry@xyzstudios.co</a></div>
         </div>
-        <div class="ct-section">
-          <div class="anim-wrap"><div class="ct-section-label anim-item soft" id="an-s4">Join Us</div></div>
-          <div class="ct-section-links">
-            <div class="anim-wrap"><span class="anim-item soft ct-intro" id="an-s5">Artists interested in working with us can submit their portfolio<br>and a brief introduction for future collaboration opportunities.</span></div>
-            <div class="anim-wrap"><a href="mailto:careers@xyzstudios.co" class="anim-item soft" id="an-s6">careers@xyzstudios.co</a></div>
-          </div>
+        <div class="ct-team-member">
+          <div class="anim-wrap"><div class="ct-team-name anim-item soft" id="an-t4">Dris Yousif</div></div>
+          <div class="anim-wrap"><div class="ct-team-role anim-item soft" id="an-t5">Managing Partner / Creative Director</div></div>
+          <div class="anim-wrap"><a href="mailto:dris@xyzstudios.co" class="ct-team-email anim-item soft" id="an-t6">dris@xyzstudios.co</a></div>
+        </div>
+        <div class="ct-team-member">
+          <div class="anim-wrap"><div class="ct-team-name anim-item soft" id="an-t7">Sahar</div></div>
+          <div class="anim-wrap"><div class="ct-team-role anim-item soft" id="an-t8">Producer / Sales</div></div>
+          <div class="anim-wrap"><a href="mailto:sahar@xyzstudios.co" class="ct-team-email anim-item soft" id="an-t9">sahar@xyzstudios.co</a></div>
+        </div>
+      </div>
+
+      <div class="ct-addresses">
+        <div class="ct-address-block">
+          <div class="anim-wrap"><div class="ct-address-label anim-item soft" id="an-a1">Canada</div></div>
+          <div class="anim-wrap"><div class="ct-address-text anim-item soft" id="an-a2">Suite 3400, 10180 – 101 Street<br>Edmonton, Alberta T5J 3S4</div></div>
+        </div>
+        <div class="ct-address-block">
+          <div class="anim-wrap"><div class="ct-address-label anim-item soft" id="an-a3">Qatar</div></div>
+          <div class="anim-wrap"><div class="ct-address-text anim-item soft" id="an-a4">Porta Arabia, Tower 21<br>The Pearl Island, Doha</div></div>
+        </div>
+      </div>
+
+      <div class="ct-actions">
+        <div class="anim-wrap"><span onclick="openDeckModal()" class="ct-deck-link anim-item soft ct-action" id="an-s3">Request capabilities deck &rarr;</span></div>
+        <div class="ct-social">
+          <div class="anim-wrap"><a href="https://www.instagram.com/xyz__studios/" target="_blank" rel="noopener" class="anim-item soft" id="an-soc1">Instagram</a></div>
+          <div class="anim-wrap"><a href="https://www.linkedin.com/company/xyzstudioss/" target="_blank" rel="noopener" class="anim-item soft" id="an-soc2">LinkedIn</a></div>
+        </div>
+      </div>
+
+      <div class="ct-section ct-join">
+        <div class="anim-wrap"><div class="ct-section-label anim-item soft" id="an-s4">Join Us</div></div>
+        <div class="ct-section-links">
+          <div class="anim-wrap"><span class="anim-item soft ct-intro" id="an-s5">Artists interested in working with us can submit their portfolio<br>and a brief introduction for future collaboration opportunities.</span></div>
+          <div class="anim-wrap"><a href="mailto:careers@xyzstudios.co" class="anim-item soft" id="an-s6">careers@xyzstudios.co</a></div>
         </div>
       </div>
 
@@ -556,24 +661,25 @@
     <div class="ct-right">
       <div class="ct-form-stage">
         <div id="ct-form-wrap">
+          <div class="anim-wrap"><div class="ct-form-heading anim-item soft" id="an-fh">Start a project</div></div>
           <form id="ct-form" action="https://api.web3forms.com/submit" method="POST">
             <input type="hidden" name="access_key" value="f77d3594-3449-447d-8e43-483375d675cd">
             <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;">
             <div class="anim-wrap"><div class="ct-field anim-item soft" id="an-f1">
-              <label class="ct-label" for="f-name">Name *</label>
+              <label class="ct-label" for="f-name">Name</label>
               <input type="text" name="name" id="f-name" autocomplete="name" required>
             </div></div>
             <div class="anim-wrap"><div class="ct-field anim-item soft" id="an-f2">
-              <label class="ct-label" for="f-email">Email *</label>
+              <label class="ct-label" for="f-email">Email</label>
               <input type="email" name="email" id="f-email" autocomplete="email" required>
             </div></div>
             <div class="anim-wrap"><div class="ct-field anim-item soft" id="an-f3">
-              <label class="ct-label" for="f-company">Company *</label>
+              <label class="ct-label" for="f-company">Company</label>
               <input type="text" name="company" id="f-company" autocomplete="organization" required>
             </div></div>
             <div class="anim-wrap"><div class="ct-field anim-item soft" id="an-f4">
-              <label class="ct-label" for="f-message">Tell us about your project *</label>
-              <textarea name="message" id="f-message" required></textarea>
+              <label class="ct-label" for="f-message">Message</label>
+              <textarea name="message" id="f-message" rows="2" required></textarea>
             </div></div>
             <div class="anim-wrap"><button type="submit" class="ct-submit anim-item soft" id="an-f5">Submit &rarr;</button></div>
           </form>
@@ -585,35 +691,6 @@
       </div>
     </div>
 
-  </div>
-
-  <!-- FOOTER -->
-  <div class="ct-foot">
-    <div class="ct-foot-left">
-      <div>
-        <div class="anim-wrap"><div class="ct-foot-label anim-item soft" id="an-ft1">Samry Yussuf</div></div>
-        <div class="ct-foot-info">
-          <div class="anim-wrap"><a href="mailto:samry@xyzstudios.co" class="anim-item soft" id="an-ft2">samry@xyzstudios.co</a></div>
-          <div class="anim-wrap"><a href="tel:+15873405824" class="anim-item soft" id="an-ft3">+1 587 340 5824</a></div>
-        </div>
-        <div class="anim-wrap"><div class="ct-foot-loc anim-item soft" id="an-ft4">Canada</div></div>
-      </div>
-      <div>
-        <div class="anim-wrap"><div class="ct-foot-label anim-item soft" id="an-ft5">Dris Yousif</div></div>
-        <div class="ct-foot-info">
-          <div class="anim-wrap"><a href="mailto:dris@xyzstudios.co" class="anim-item soft" id="an-ft6">dris@xyzstudios.co</a></div>
-          <div class="anim-wrap"><a href="tel:+97471015571" class="anim-item soft" id="an-ft7">+974 7101 5571</a></div>
-        </div>
-        <div class="anim-wrap"><div class="ct-foot-loc anim-item soft" id="an-ft8">Qatar</div></div>
-      </div>
-    </div>
-    <div class="ct-foot-right">
-      <div class="anim-wrap"><div class="ct-foot-label anim-item soft" id="an-ft9">Follow Us</div></div>
-      <div class="ct-foot-info">
-        <div class="anim-wrap"><a href="https://www.instagram.com/xyz__studios/" target="_blank" rel="noopener" class="anim-item soft" id="an-ft10">Instagram</a></div>
-        <div class="anim-wrap"><a href="https://www.linkedin.com/company/xyzstudioss/" target="_blank" rel="noopener" class="anim-item soft" id="an-ft11">LinkedIn</a></div>
-      </div>
-    </div>
   </div>
 
 </div>
@@ -628,7 +705,7 @@
     <div class="deck-title">Request Capabilities Deck</div>
     <div class="deck-sub">Fill out the form below and we'll send you the deck directly.</div>
 
-    <form id="deck-form" style="display:flex;flex-direction:column;">
+    <form id="deck-form">
       <input type="hidden" name="access_key" value="d8aee030-0698-4909-8496-a1b61cb4a567">
       <!-- Web3Forms honeypot: must stay unchecked (bots tick it). Sent as botcheck:false in fetch JSON. -->
       <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;">
@@ -644,7 +721,7 @@
         <label class="ct-label" for="dk-email">Email *</label>
         <input type="email" id="dk-email" name="email" required autocomplete="email">
       </div>
-      <div class="ct-field" id="dk-field-role" style="margin-bottom:20px;">
+      <div class="ct-field" id="dk-field-role">
         <label class="ct-label" for="dk-role">Role / Title</label>
         <input type="text" id="dk-role" name="role" autocomplete="organization-title">
       </div>
@@ -1005,39 +1082,21 @@
   });
 
   function revealItems() {
-    // [id, delay_ms]
     var seq = [
-      // Nav
       ['an-logo', 0],
       ['an-n1',   40],
       ['an-n2',   70],
-      ['an-n3',  100],
-      ['an-n4',  130],
-      // Headline + left sections
-      ['an-h1',  80],
-      ['an-s2', 200],
-      ['an-s3', 250],
-      ['an-s4', 300],
-      ['an-s5', 340],
-      ['an-s6', 390],
-      // Form fields
-      ['an-f1', 200],
-      ['an-f2', 260],
-      ['an-f3', 320],
-      ['an-f4', 380],
-      ['an-f5', 440],
-      // Footer
-      ['an-ft1', 480],
-      ['an-ft2', 510],
-      ['an-ft3', 530],
-      ['an-ft4', 550],
-      ['an-ft5', 480],
-      ['an-ft6', 510],
-      ['an-ft7', 530],
-      ['an-ft8', 550],
-      ['an-ft9', 480],
-      ['an-ft10',510],
-      ['an-ft11',540],
+      ['an-n4',  100],
+      ['an-h1',   80],
+      ['an-s2',  140],
+      ['an-t1',  180], ['an-t2', 200], ['an-t3', 220],
+      ['an-t4',  240], ['an-t5', 260], ['an-t6', 280],
+      ['an-t7',  300], ['an-t8', 320], ['an-t9', 340],
+      ['an-a1',  380], ['an-a2', 400], ['an-a3', 420], ['an-a4', 440],
+      ['an-s3',  480], ['an-soc1', 510], ['an-soc2', 530],
+      ['an-s4',  560], ['an-s5', 590], ['an-s6', 620],
+      ['an-fh',  200],
+      ['an-f1',  260], ['an-f2', 320], ['an-f3', 380], ['an-f4', 440], ['an-f5', 500],
     ];
     seq.forEach(function(pair) {
       var el = document.getElementById(pair[0]);
@@ -1118,24 +1177,6 @@
     e.preventDefault();
     navigateTo(u.pathname+u.search+u.hash);
   },true);
-})();
-</script>
-<script id="xyz-contact-mobile">
-(function(){
-  if(!window.matchMedia('(max-width: 768px)').matches) return;
-  function go(){
-    var sections=document.querySelector('.ct-sections'); var foot=document.querySelector('.ct-foot');
-    if(!sections||!foot) return false; if(foot.dataset.moved) return true;
-    var joinSec=null;
-    sections.querySelectorAll('.ct-section').forEach(function(s){ var l=s.querySelector('.ct-section-label'); if(l && /join\s*us/i.test(l.textContent)) joinSec=s; });
-    if(!joinSec) return false;
-    var fl=foot.querySelector('.ct-foot-left'), fr=foot.querySelector('.ct-foot-right');
-    if(fl){ fl.classList.add('ct-moved'); sections.insertBefore(fl, joinSec); }
-    if(fr){ fr.classList.add('ct-moved'); if(joinSec.nextSibling){ sections.insertBefore(fr, joinSec.nextSibling); } else { sections.appendChild(fr); } }
-    foot.dataset.moved='1'; return true;
-  }
-  if(!go()){ var n=0,iv=setInterval(function(){ n++; if(go()||n>40) clearInterval(iv); },150); }
-  document.addEventListener('DOMContentLoaded',go); window.addEventListener('load',go);
 })();
 </script>
 </body>

@@ -1,26 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 import { buildDefaultCatalog, mergeDefaultCatalogMissing } from '../lib/projects-default-catalog.mjs';
-import { normalizeCatalog, sortServices } from '../lib/projects-store.mjs';
-import { redisConfigured, redisGet } from '../lib/upstash-redis.mjs';
-
-const REDIS_KEY = 'projects_catalog_json';
+import { getProjectsCatalog, normalizeCatalog, sortServices } from '../lib/projects-store.mjs';
 
 function parseCatalogPayload(raw) {
   if (raw == null) return null;
   try {
     const data = typeof raw === 'string' ? JSON.parse(raw) : raw;
     if (data && Array.isArray(data.projects) && data.projects.length) return data;
-  } catch {}
-  return null;
-}
-
-async function fetchCatalogFromRedis() {
-  if (!redisConfigured()) return null;
-  try {
-    const result = await redisGet(REDIS_KEY);
-    if (!result.ok || result.value == null) return null;
-    return parseCatalogPayload(result.value);
   } catch {}
   return null;
 }
@@ -48,20 +35,20 @@ async function fetchCatalogFromEdgeConfig() {
 }
 
 export async function fetchProjectsCatalog(root) {
-  let catalog = await fetchCatalogFromRedis();
-  let source = catalog ? 'redis' : null;
-  if (!catalog) {
+  let catalog = await getProjectsCatalog();
+  let source = catalog?.projects?.length ? 'store' : null;
+  if (!catalog?.projects?.length) {
     catalog = await fetchCatalogFromApi();
     if (catalog) source = 'api';
   }
-  if (!catalog) {
+  if (!catalog?.projects?.length) {
     catalog = await fetchCatalogFromEdgeConfig();
     if (catalog) source = 'edge-config';
   }
-  if (!catalog || !catalog.projects?.length) {
+  if (!catalog?.projects?.length) {
     catalog = buildDefaultCatalog();
     source = 'default';
-  } else {
+  } else if (source !== 'store') {
     const { catalog: merged, added, repaired } = mergeDefaultCatalogMissing(catalog);
     if (added || repaired) {
       catalog = merged;
