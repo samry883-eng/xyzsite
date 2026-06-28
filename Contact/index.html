@@ -198,8 +198,6 @@
     .ct-social a:hover { color: #fff; }
     .ct-join {
       margin-top: 40px;
-      padding-top: 32px;
-      border-top: 1px solid rgba(255,255,255,0.07);
     }
     .ct-section-label {
       font-family: var(--ct-font);
@@ -237,16 +235,16 @@
 
     /* ── RIGHT COLUMN: form (V3) ── */
     .ct-right {
-      border-left: 1px solid rgba(255,255,255,0.07);
       display: flex;
-      align-items: center;
+      align-items: stretch;
       justify-content: center;
       padding: 48px 64px;
       min-width: 0;
     }
     .ct-right .ct-form-stage {
-      width: min(480px, 100%);
+      width: 100%;
       max-width: 100%;
+      align-self: center;
     }
     .ct-form-heading {
       font-family: var(--ct-font);
@@ -319,7 +317,7 @@
     /* ── CONTACT FORM → SUCCESS ── */
     .ct-form-stage {
       position: relative;
-      width: min(480px, 100%);
+      width: 100%;
       max-width: 100%;
     }
     #ct-form-wrap {
@@ -579,7 +577,7 @@
     .ct-addresses{ flex-direction:column !important; gap:20px !important; margin-top:28px !important; }
     .ct-address-text{ font-size:14px !important; }
     .ct-actions{ margin-top:28px !important; }
-    .ct-join{ margin-top:28px !important; padding-top:24px !important; }
+    .ct-join{ margin-top:28px !important; }
     .ct-section-label{ font-size:12px !important; }
     .ct-section-links a, .ct-section-links span, .ct-section-links .ct-intro{ font-size:14px !important; }
     form input, form textarea, .ct-right input, .ct-right textarea{ font-family:var(--ct-font) !important; font-size:16px !important; font-weight:400 !important; }
