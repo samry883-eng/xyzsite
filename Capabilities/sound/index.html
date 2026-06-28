@@ -499,6 +499,40 @@
     <span class="m-br"></span>
   </section></div></div></div>
 
+  <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="featured sound-artboard" data-screen-label="07 Featured · Chanel">
+<span class="m-tl"><b>XYZ</b> <span class="d">· Selected work · 03</span></span>
+    <span class="m-tr"><span class="d">2026 · 07 / 18</span></span>
+
+    <div class="abs featured-copy-col">
+      <div class="lbl dim featured-director-lbl">Director</div>
+      <div class="ital featured-director-name">Lenn Anton</div>
+      <div class="lbl featured-brand-lbl">Chanel</div>
+      <div class="disp featured-title"><em>Sous</em> La Lune</div>
+
+      <div class="meta-h featured-approach-h">Approach</div>
+      <p class="copy featured-approach-copy">Shaped around a dreamlike, nocturnal energy that matches the film's lunar mood. The mix leans into soft atmospheric textures, delicate transitions, and a restrained low-end bed, giving the piece a sense of mystery and elegance while keeping the sound polished and fashion-forward.</p>
+
+      <div class="meta-h featured-services-h">Credits</div>
+      <p class="copy featured-services-copy">Sound Design</p>
+    </div>
+
+    <div class="abs photo deck-hero-wrap featured-hero-wrap" id="fw-chanel-hero">
+      <div class="deck-hero-inner">
+        <video class="featured-hero-video" id="fw-chanel-video" playsinline preload="metadata"
+          poster="https://cdn.prod.website-files.com/69174740184591f142f019c1/6983f5143e88d686965c096c_Chanel4.avif"
+          src="https://r2.vidzflow.com/source/ecb79138-8d57-4410-8bc3-3a6d76564624.mp4"></video>
+        <div class="deck-hero-player-ui" id="fw-chanel-player">
+          <div class="deck-hero-volume-row">
+            <input type="range" class="deck-hero-volume-slider" id="fw-chanel-volume" min="0" max="100" value="50" aria-label="Volume">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <span class="m-bl"></span>
+    <span class="m-br"></span>
+  </section></div></div></div>
+
   <div class="slide"><div class="slide-inner"><div class="artboard-scaler"><section class="featured sound-artboard" data-screen-label="06 Featured · Lucid">
 <span class="m-tl"><b>XYZ</b> <span class="d">· Selected work · 04</span></span>
     <span class="m-tr"><span class="d">2026 · 07 / 17</span></span>
@@ -1266,6 +1300,13 @@ deckHeroPlayers = [
     videoId: 'fw-f1-video',
     playerId: 'fw-f1-player',
     volumeId: 'fw-f1-volume',
+    cursorId: 'pj-cursor',
+    cursorPathId: 'pj-cursor-path'
+  }),
+  initDeckHeroPlayerSafe({
+    videoId: 'fw-chanel-video',
+    playerId: 'fw-chanel-player',
+    volumeId: 'fw-chanel-volume',
     cursorId: 'pj-cursor',
     cursorPathId: 'pj-cursor-path'
   }),
