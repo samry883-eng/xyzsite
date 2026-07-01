@@ -268,12 +268,67 @@
     },
     {
       "source": "/capabilities",
-      "destination": "/capabilities/",
+      "destination": "/deck/",
+      "permanent": true
+    },
+    {
+      "source": "/capabilities/",
+      "destination": "/deck/",
       "permanent": true
     },
     {
       "source": "/Capabilities",
-      "destination": "/capabilities/",
+      "destination": "/deck/",
+      "permanent": true
+    },
+    {
+      "source": "/capabilities/sound",
+      "destination": "/deck/sound",
+      "permanent": true
+    },
+    {
+      "source": "/capabilities/sound/",
+      "destination": "/deck/sound/",
+      "permanent": true
+    },
+    {
+      "source": "/capabilities/vfx",
+      "destination": "/deck/postproduction",
+      "permanent": true
+    },
+    {
+      "source": "/capabilities/vfx/",
+      "destination": "/deck/postproduction/",
+      "permanent": true
+    },
+    {
+      "source": "/capabilities/login",
+      "destination": "/deck/login",
+      "permanent": false
+    },
+    {
+      "source": "/capabilities/login/",
+      "destination": "/deck/login",
+      "permanent": false
+    },
+    {
+      "source": "/capabilities/nda",
+      "destination": "/deck/nda",
+      "permanent": false
+    },
+    {
+      "source": "/capabilities/nda/",
+      "destination": "/deck/nda",
+      "permanent": false
+    },
+    {
+      "source": "/sound-deck",
+      "destination": "/deck/sound/",
+      "permanent": true
+    },
+    {
+      "source": "/sound-deck/",
+      "destination": "/deck/sound/",
       "permanent": true
     },
     {
@@ -360,48 +415,44 @@
       "destination": "/work/admin.html"
     },
     {
-      "source": "/capabilities/login",
-      "destination": "/capabilities/login.html"
-    },
-    {
-      "source": "/capabilities/login/",
-      "destination": "/capabilities/login.html"
-    },
-    {
-      "source": "/capabilities/nda",
-      "destination": "/capabilities/nda.html"
-    },
-    {
-      "source": "/capabilities/nda/",
-      "destination": "/capabilities/nda.html"
-    },
-    {
-      "source": "/capabilities/vfx",
-      "destination": "/capabilities/vfx/index.html"
-    },
-    {
-      "source": "/capabilities/vfx/",
-      "destination": "/capabilities/vfx/index.html"
-    },
-    {
-      "source": "/capabilities/sound",
-      "destination": "/capabilities/sound/index.html"
-    },
-    {
-      "source": "/capabilities/sound/",
-      "destination": "/capabilities/sound/index.html"
-    },
-    {
-      "source": "/capabilities/",
+      "source": "/deck",
       "destination": "/capabilities/index.html"
     },
     {
-      "source": "/sound-deck",
+      "source": "/deck/",
+      "destination": "/capabilities/index.html"
+    },
+    {
+      "source": "/deck/sound",
       "destination": "/capabilities/sound/index.html"
     },
     {
-      "source": "/sound-deck/",
+      "source": "/deck/sound/",
       "destination": "/capabilities/sound/index.html"
+    },
+    {
+      "source": "/deck/postproduction",
+      "destination": "/capabilities/vfx/index.html"
+    },
+    {
+      "source": "/deck/postproduction/",
+      "destination": "/capabilities/vfx/index.html"
+    },
+    {
+      "source": "/deck/login",
+      "destination": "/capabilities/login.html"
+    },
+    {
+      "source": "/deck/login/",
+      "destination": "/capabilities/login.html"
+    },
+    {
+      "source": "/deck/nda",
+      "destination": "/capabilities/nda.html"
+    },
+    {
+      "source": "/deck/nda/",
+      "destination": "/capabilities/nda.html"
     }
   ]
 }

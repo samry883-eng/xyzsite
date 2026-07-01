@@ -1,4 +1,4 @@
-import { next } from '@vercel/edge';
+import { next, rewrite } from '@vercel/edge';
 import {
   verifySessionEdge,
   verifyNdaSessionEdge,
@@ -6,18 +6,42 @@ import {
   verifyShareToken,
   createSoundDeckShareCookies,
   soundDeckShareSetCookieHeaders,
+  isSoundDeckShareEmail,
 } from './lib/session-edge.mjs';
+import {
+  DECK_HUB,
+  DECK_LOGIN,
+  DECK_NDA,
+  DECK_SOUND,
+  isDeckAuthExemptPath,
+  isDeckNdaDeferredPath,
+  isDeckNdaExemptPath,
+  isDeckPath,
+  isSoundDeckEntryPath,
+  isSoundDeckPagePath,
+  isSoundDeckShareAllowedPath,
+  safeDeckNext,
+} from './lib/site-routes.mjs';
+import {
+  WORK_CATEGORIES,
+  WORK_RESERVED_SEGMENTS,
+  WORK_SLUG_TO_CATEGORY,
+} from './lib/work-slug-map.mjs';
 
 const COOKIE = 'xyz_capabilities';
 const NDA_COOKIE = 'xyz_capabilities_nda';
-const SOUND_DECK_DEST = '/capabilities/sound/';
+const SOUND_DECK_DEST = DECK_SOUND;
+const WORK_RESERVED = new Set(WORK_RESERVED_SEGMENTS);
 
 export const config = {
   matcher: [
+    '/deck',
+    '/deck/:path*',
     '/capabilities',
     '/capabilities/:path*',
     '/sound-deck',
     '/sound-deck/:path*',
+    '/work/:path*',
   ],
 };
 
@@ -45,56 +69,13 @@ function pass(p, extraHeaders = {}) {
   return next({ headers });
 }
 
-function isAuthExemptPath(p) {
-  return (
-    p === '/capabilities/login' ||
-    p === '/capabilities/login/' ||
-    p === '/capabilities/login.html' ||
-    p === '/capabilities/admin' ||
-    p === '/capabilities/admin/' ||
-    p === '/capabilities/admin.html'
-  );
-}
-
-function isNdaExemptPath(p) {
-  return (
-    isAuthExemptPath(p) ||
-    p === '/capabilities/nda' ||
-    p === '/capabilities/nda/' ||
-    p === '/capabilities/nda.html'
-  );
-}
-
-/** Deck pages load behind the NDA modal; assets must load for the deck to render. */
-function isNdaDeferredPath(p) {
-  return (
-    p === '/capabilities/' ||
-    p === '/capabilities/index.html' ||
-    p.startsWith('/capabilities/sound') ||
-    p.startsWith('/capabilities/vfx') ||
-    p.startsWith('/capabilities/assets/')
-  );
-}
-
-function isSoundDeckEntryPath(p) {
-  return p === '/sound-deck' || p === '/sound-deck/';
-}
-
-function isSoundDeckPagePath(p) {
-  return (
-    p === '/capabilities/sound' ||
-    p === '/capabilities/sound/' ||
-    p === '/capabilities/sound/index.html'
-  );
-}
-
 function secureCookies(url) {
   return url.protocol === 'https:';
 }
 
 function loginRedirect(request, nextPath) {
-  const login = new URL('/capabilities/login', request.url);
-  login.searchParams.set('next', nextPath);
+  const login = new URL(DECK_LOGIN, request.url);
+  login.searchParams.set('next', safeDeckNext(nextPath));
   return Response.redirect(login, 302);
 }
 
@@ -120,17 +101,49 @@ async function tryExchangeSoundShareToken(request, url, secret) {
   return redirectWithShareCookies(request, url, secret);
 }
 
+function handleWorkRoutes(request, url, p) {
+  const parts = p.replace(/\/+$/, '').split('/').filter(Boolean);
+  if (parts[0] !== 'work' || parts.length < 2) return null;
+
+  const seg1 = parts[1];
+  if (WORK_RESERVED.has(seg1)) return null;
+
+  if (parts.length >= 3 && WORK_CATEGORIES.includes(seg1)) {
+    const slug = parts[2];
+    const isProjectPage =
+      parts.length === 3 || (parts.length === 4 && parts[3] === 'index.html');
+    if (!isProjectPage) return null;
+    const dest = new URL(`/work/${slug}/`, request.url);
+    dest.search = url.search;
+    return Response.redirect(dest, 301);
+  }
+
+  if (parts.length === 2) {
+    const slug = seg1;
+    const cat = WORK_SLUG_TO_CATEGORY[slug];
+    if (!cat) return null;
+    const dest = new URL(`/work/${cat}/${slug}/index.html`, request.url);
+    dest.search = url.search;
+    return rewrite(dest);
+  }
+
+  return null;
+}
+
 export default async function middleware(request) {
   const url = new URL(request.url);
   const p = url.pathname.toLowerCase();
 
-  if (!p.startsWith('/capabilities') && !p.startsWith('/sound-deck')) return next();
+  const workRoute = handleWorkRoutes(request, url, p);
+  if (workRoute) return workRoute;
+
+  if (!isDeckPath(p) && !p.startsWith('/sound-deck')) return next();
 
   const authOff = ['1', 'true', 'yes'].includes(
-    String(process.env.CAPABILITIES_AUTH_DISABLED || '').toLowerCase()
+    String(process.env.CAPABILITIES_AUTH_DISABLED || '').toLowerCase(),
   );
   const ndaOff = ['1', 'true', 'yes'].includes(
-    String(process.env.CAPABILITIES_NDA_DISABLED || '').toLowerCase()
+    String(process.env.CAPABILITIES_NDA_DISABLED || '').toLowerCase(),
   );
   if (authOff) return pass(p);
 
@@ -156,12 +169,12 @@ export default async function middleware(request) {
     return loginRedirect(request, SOUND_DECK_DEST);
   }
 
-  if (p === '/capabilities') {
-    const dest = new URL('/capabilities/', request.url);
+  if (p === '/deck' || p === '/capabilities') {
+    const dest = new URL(DECK_HUB, request.url);
     dest.search = url.search;
     return Response.redirect(dest, 308);
   }
-  if (isAuthExemptPath(p)) return pass(p);
+  if (isDeckAuthExemptPath(p)) return pass(p);
 
   if (isSoundDeckPagePath(p)) {
     const exchanged = await tryExchangeSoundShareToken(request, url, secret);
@@ -171,17 +184,21 @@ export default async function middleware(request) {
   const token = getCookieValue(cookieHeader, COOKIE);
   const email = await verifySessionEdge(token, secret);
   if (!email) {
-    const nextPath = p === '/capabilities' ? '/capabilities/' : url.pathname;
+    const nextPath = p === '/deck' || p === '/capabilities' ? DECK_HUB : url.pathname;
     return loginRedirect(request, nextPath + url.search);
   }
 
-  if (!ndaOff && !isNdaExemptPath(p) && !isNdaDeferredPath(p)) {
+  if (isSoundDeckShareEmail(email) && !isSoundDeckShareAllowedPath(p)) {
+    return loginRedirect(request, url.pathname + url.search);
+  }
+
+  if (!ndaOff && !isDeckNdaExemptPath(p) && !isDeckNdaDeferredPath(p)) {
     const ndaToken = getCookieValue(cookieHeader, NDA_COOKIE);
     const nda = await verifyNdaSessionEdge(ndaToken, secret, email);
     if (!nda) {
-      const ndaUrl = new URL('/capabilities/nda', request.url);
-      const nextPath = p === '/capabilities' ? '/capabilities/' : url.pathname;
-      ndaUrl.searchParams.set('next', nextPath + url.search);
+      const ndaUrl = new URL(DECK_NDA, request.url);
+      const nextPath = p === '/deck' || p === '/capabilities' ? DECK_HUB : url.pathname;
+      ndaUrl.searchParams.set('next', safeDeckNext(nextPath + url.search));
       return Response.redirect(ndaUrl, 302);
     }
   }
