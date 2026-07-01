@@ -941,12 +941,20 @@
   });
 
   (function openDeckFromUrlHash() {
+    function shouldOpenDeckPanel() {
+      if (location.hash === '#deck') return true;
+      try {
+        return new URLSearchParams(location.search).get('tab') === 'capabilities';
+      } catch (err) {
+        return false;
+      }
+    }
     function tryOpen() {
-      if (location.hash !== '#deck') return;
+      if (!shouldOpenDeckPanel()) return;
       setTimeout(function() {
         if (typeof openDeckModal === 'function') openDeckModal();
         try {
-          history.replaceState(null, '', location.pathname + location.search);
+          history.replaceState(null, '', location.pathname);
         } catch (err) {}
       }, 700);
     }

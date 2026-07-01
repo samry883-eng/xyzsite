@@ -189,7 +189,7 @@ export default async function middleware(request) {
   }
 
   if (isSoundDeckShareEmail(email) && !isSoundDeckShareAllowedPath(p)) {
-    return loginRedirect(request, url.pathname + url.search);
+    return loginRedirect(request, DECK_SOUND);
   }
 
   if (!ndaOff && !isDeckNdaExemptPath(p) && !isDeckNdaDeferredPath(p)) {

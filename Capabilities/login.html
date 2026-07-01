@@ -44,16 +44,6 @@
       border-right: 1px solid rgba(255, 255, 255, 0.06);
       overflow: hidden;
     }
-    .split-left .wordmark {
-      position: absolute;
-      top: clamp(20px, 3vh, 36px);
-      left: var(--deck-pad-x);
-      z-index: 2;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.13em;
-      text-transform: uppercase;
-    }
     #site-nav {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -184,6 +174,17 @@
       margin: 0 0 16px;
       min-height: 1.35em;
     }
+    .login-note {
+      font: 400 11px/1.55 Micross, Arial, sans-serif;
+      color: rgba(255, 255, 255, 0.42);
+      margin: 28px 0 0;
+    }
+    .login-note a {
+      color: rgba(255, 255, 255, 0.72);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .login-note a:hover { color: #fff; }
 
     @media (max-width: 900px) {
       .split {
@@ -223,7 +224,6 @@
   </nav>
   <div class="split">
     <aside class="split-left" aria-label="Capabilities">
-      <div class="wordmark">XYZSTUDIOS</div>
       <div class="cover-zone">
         <h1 class="cover-title">Capabilities<br />Deck</h1>
       </div>
@@ -248,6 +248,7 @@
           <div class="err" id="err" aria-live="polite"></div>
           <button type="submit" class="ct-submit" id="btn">Enter &rarr;</button>
         </form>
+        <p class="login-note">Need full deck access? <a href="/contact?tab=capabilities">Request Capabilities</a></p>
       </div>
     </main>
   </div>
@@ -263,23 +264,49 @@
       syncFilled();
 
       var params = new URLSearchParams(window.location.search);
-      var next = params.get('next') || '/capabilities/';
+      var next = params.get('next') || '/deck/';
+      function mapLegacyDeckPath(path) {
+        if (!path || path.indexOf('/capabilities') !== 0) return path;
+        if (path === '/capabilities' || path === '/capabilities/') return '/deck/';
+        if (path.indexOf('/capabilities/sound') === 0) {
+          return '/deck/sound' + path.slice('/capabilities/sound'.length);
+        }
+        if (path.indexOf('/capabilities/vfx') === 0) {
+          return '/deck/postproduction' + path.slice('/capabilities/vfx'.length);
+        }
+        if (path.indexOf('/capabilities/login') === 0) {
+          return '/deck/login' + path.slice('/capabilities/login'.length);
+        }
+        if (path.indexOf('/capabilities/nda') === 0) {
+          return '/deck/nda' + path.slice('/capabilities/nda'.length);
+        }
+        return '/deck/';
+      }
       function safeNext(n) {
-        if (!n || !n.startsWith('/capabilities') || n.indexOf('//') !== -1) return '/capabilities/';
-        if (n === '/capabilities') return '/capabilities/';
-        return n;
+        if (!n || typeof n !== 'string') return '/deck/';
+        var t = n.trim();
+        if (!t.startsWith('/') || t.indexOf('//') !== -1 || t.indexOf('\\') !== -1) return '/deck/';
+        if (t.startsWith('/deck')) return t === '/deck' ? '/deck/' : t;
+        if (t.startsWith('/capabilities')) return mapLegacyDeckPath(t);
+        return '/deck/';
       }
       var target = safeNext(next);
       var err = document.getElementById('err');
       var btn = document.getElementById('btn');
       var form = document.getElementById('f');
 
+      function maybeRedirect(sessionData) {
+        if (!sessionData || !sessionData.ok) return;
+        if (sessionData.limitedAccess) return;
+        window.location.replace(target);
+      }
+
       fetch('/api/capabilities/session', { credentials: 'same-origin' })
         .then(function (r) {
           return r.json().then(function (data) { return { ok: r.ok, data: data }; });
         })
         .then(function (x) {
-          if (x.ok && x.data.ok) window.location.replace(target);
+          if (x.ok && x.data.ok) maybeRedirect(x.data);
         })
         .catch(function () {});
 
