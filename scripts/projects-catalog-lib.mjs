@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import { buildDefaultCatalog, mergeDefaultCatalogMissing } from '../lib/projects-default-catalog.mjs';
-import { getProjectsCatalog, normalizeCatalog, sortServices } from '../lib/projects-store.mjs';
+import { buildDefaultCatalog } from '../lib/projects-default-catalog.mjs';
+import { getProjectsCatalogRaw, normalizeCatalog, sortServices } from '../lib/projects-store.mjs';
 
 function parseCatalogPayload(raw) {
   if (raw == null) return null;
@@ -35,7 +35,7 @@ async function fetchCatalogFromEdgeConfig() {
 }
 
 export async function fetchProjectsCatalog(root) {
-  let catalog = await getProjectsCatalog();
+  let catalog = await getProjectsCatalogRaw();
   let source = catalog?.projects?.length ? 'store' : null;
   if (!catalog?.projects?.length) {
     catalog = await fetchCatalogFromApi();
@@ -48,12 +48,6 @@ export async function fetchProjectsCatalog(root) {
   if (!catalog?.projects?.length) {
     catalog = buildDefaultCatalog();
     source = 'default';
-  } else if (source !== 'store') {
-    const { catalog: merged, added, repaired } = mergeDefaultCatalogMissing(catalog);
-    if (added || repaired) {
-      catalog = merged;
-      source = `${source || 'unknown'}+default-merge${repaired ? '+repair' : ''}`;
-    }
   }
   catalog = normalizeCatalog(catalog, { applyDefaults: true }) || catalog;
   if (source) console.log('[projects-catalog] source:', source, 'count:', catalog.projects.length);
