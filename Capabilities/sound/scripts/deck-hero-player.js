@@ -53,7 +53,9 @@
 
     var PAUSE_PATH = 'M6 19h4V5H6v14zm8-14v14h4V5h-4z';
 
-    var TOUCH_UI = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+    var HOVER_CURSOR = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+    var TOUCH_UI = !HOVER_CURSOR;
 
 
 
@@ -300,7 +302,7 @@
 
     function showCustomCursorAt(x, y) {
 
-      if (!cursor) return;
+      if (!cursor || !HOVER_CURSOR) return;
 
       cursor.classList.add('visible');
 
@@ -314,7 +316,9 @@
 
     function hideCustomCursor() {
 
-      if (cursor) cursor.classList.remove('visible');
+      if (!cursor || !HOVER_CURSOR) return;
+
+      cursor.classList.remove('visible');
 
     }
 
@@ -374,7 +378,7 @@
 
 
 
-      if (TOUCH_UI) {
+      if (!HOVER_CURSOR) {
 
         target.addEventListener('pointerup', function (e) {
 
@@ -390,7 +394,9 @@
 
 
 
-      target.addEventListener('mouseenter', function (e) {
+      target.addEventListener('pointerenter', function (e) {
+
+        if (e.pointerType !== 'mouse') return;
 
         if (volSlider && (e.target === volSlider || volSlider.contains(e.target))) return;
 
@@ -402,9 +408,17 @@
 
       });
 
-      target.addEventListener('mouseleave', hideCustomCursor);
+      target.addEventListener('pointerleave', function (e) {
 
-      target.addEventListener('mousemove', function (e) {
+        if (e.pointerType !== 'mouse') return;
+
+        hideCustomCursor();
+
+      });
+
+      target.addEventListener('pointermove', function (e) {
+
+        if (e.pointerType !== 'mouse') return;
 
         showCustomCursorAt(e.clientX, e.clientY);
 
@@ -426,11 +440,21 @@
 
     if (cursor) {
 
+      if (!HOVER_CURSOR) {
+
+        document.documentElement.classList.add('deck-touch-ui');
+
+        cursor.classList.remove('visible');
+
+      }
+
+
+
       cursorVideos.forEach(bindCursorVideo);
 
 
 
-      if (volSlider) {
+      if (volSlider && HOVER_CURSOR) {
 
         volSlider.addEventListener('mouseenter', hideCustomCursor);
 

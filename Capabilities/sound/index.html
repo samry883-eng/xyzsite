@@ -315,8 +315,12 @@
   }
   #pj-cursor.visible{ opacity:1; }
   #pj-cursor svg{ display:block; }
-  @media (hover: none), (pointer: coarse) {
-    #pj-cursor{ display:none !important; }
+  html.deck-touch-ui #pj-cursor{
+    display:none !important; visibility:hidden !important; opacity:0 !important;
+    pointer-events:none !important;
+  }
+  @media (hover: none), (pointer: coarse), not ((hover: hover) and (pointer: fine)) {
+    #pj-cursor{ display:none !important; visibility:hidden !important; opacity:0 !important; }
     .deck-hero-volume-row{
       width:min(480px, 88%); padding:14px 24px 6px; min-height:48px;
     }
