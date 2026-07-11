@@ -307,6 +307,17 @@
   }
   #pj-cursor.visible{ opacity:1; }
   #pj-cursor svg{ display:block; }
+  @media (hover: none), (pointer: coarse) {
+    .deck-hero-inner .featured-hero-video,
+    .photo.deck-hero-wrap video{
+      cursor:default; touch-action:manipulation; -webkit-tap-highlight-color:transparent;
+    }
+    .photo.deck-hero-wrap[data-deck-paused="1"]::after{
+      content:''; position:absolute; left:50%; top:50%; width:44px; height:44px;
+      transform:translate(-50%,-50%); z-index:4; pointer-events:none; opacity:.88;
+      background:center/contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23f5f5f5'%3E%3Cpath d='M8 5v14l11-7z'/%3E%3C/svg%3E");
+    }
+  }
   .videoframe video{
     position:absolute; inset:0; width:100%; height:100%;
     object-fit:cover; object-position:center center; display:block; background:var(--bg);
@@ -1288,10 +1299,16 @@ document.addEventListener('wheel', e => {
 }, { passive: true });
 
 let touchStartY = 0;
+let touchOnDeckVideo = false;
 document.addEventListener('touchstart', e => {
   touchStartY = e.touches[0].clientY;
+  touchOnDeckVideo = !!(e.target && e.target.closest && e.target.closest('.deck-hero-wrap video, .deck-hero-volume-slider'));
 }, { passive: true });
 document.addEventListener('touchend', e => {
+  if (touchOnDeckVideo) {
+    touchOnDeckVideo = false;
+    return;
+  }
   const t = e.changedTouches[0];
   const dy = touchStartY - t.clientY;
   if (Math.abs(dy) > 48) dy > 0 ? next() : prev();

@@ -53,6 +53,10 @@
 
     var PAUSE_PATH = 'M6 19h4V5H6v14zm8-14v14h4V5h-4z';
 
+    var TOUCH_UI = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+
+    var touchIconTimer = null;
+
 
 
     function updatePlay() {
@@ -140,11 +144,29 @@
       return false;
     }
 
+    function syncTouchPausedUi(target) {
+
+      if (!TOUCH_UI || !target) return;
+
+      var wrap = target.closest ? target.closest('.deck-hero-wrap') : null;
+
+      if (!wrap) return;
+
+      if (target.paused) wrap.setAttribute('data-deck-paused', '1');
+
+      else wrap.removeAttribute('data-deck-paused');
+
+    }
+
+
+
     function toggleVideo(target) {
 
       if (!target.paused) {
 
         target.pause();
+
+        syncTouchPausedUi(target);
 
         return;
 
@@ -154,19 +176,27 @@
 
       if (target.readyState === 0) target.load();
 
-      function start() {
+      applyPlaybackBounds(target);
 
-        applyPlaybackBounds(target);
+      var p = target.play();
 
-        var p = target.play();
+      if (p && p.catch) p.catch(function () {});
 
-        if (p && p.catch) p.catch(function () {});
+      if (target.readyState < 3) {
+
+        target.addEventListener('canplay', function () {
+
+          applyPlaybackBounds(target);
+
+          var p2 = target.play();
+
+          if (p2 && p2.catch) p2.catch(function () {});
+
+        }, { once: true });
 
       }
 
-      if (target.readyState >= 3) start();
-
-      else target.addEventListener('canplay', start, { once: true });
+      syncTouchPausedUi(target);
 
     }
 
@@ -310,7 +340,103 @@
 
 
 
+    function pointerXY(e) {
+
+      if (typeof e.clientX === 'number') return { x: e.clientX, y: e.clientY };
+
+      var t = e.changedTouches && e.changedTouches[0];
+
+      return t ? { x: t.clientX, y: t.clientY } : null;
+
+    }
+
+
+
+    function flashTouchIconAt(target, x, y) {
+
+      if (!cursor || !TOUCH_UI) return;
+
+      hoveredVideo = target;
+
+      updateCursorIcon();
+
+      if (x == null || y == null) {
+
+        var r = target.getBoundingClientRect();
+
+        x = r.left + r.width / 2;
+
+        y = r.top + r.height / 2;
+
+      }
+
+      showCustomCursorAt(x, y);
+
+      if (touchIconTimer) clearTimeout(touchIconTimer);
+
+      touchIconTimer = setTimeout(hideCustomCursor, 850);
+
+    }
+
+
+
+    function handleVideoPointerTap(e, target) {
+
+      if (volSlider && (e.target === volSlider || volSlider.contains(e.target))) return;
+
+      e.preventDefault();
+
+      e.stopPropagation();
+
+      toggleVideo(target);
+
+      updateCursorIcon();
+
+      var xy = pointerXY(e);
+
+      flashTouchIconAt(target, xy ? xy.x : null, xy ? xy.y : null);
+
+    }
+
+
+
     function bindCursorVideo(target) {
+
+      target.addEventListener('play', function () {
+
+        updateCursorIcon();
+
+        syncTouchPausedUi(target);
+
+      });
+
+      target.addEventListener('pause', function () {
+
+        updateCursorIcon();
+
+        syncTouchPausedUi(target);
+
+      });
+
+      syncTouchPausedUi(target);
+
+
+
+      if (TOUCH_UI) {
+
+        target.addEventListener('pointerup', function (e) {
+
+          if (e.pointerType === 'mouse') return;
+
+          handleVideoPointerTap(e, target);
+
+        }, { passive: false });
+
+        return;
+
+      }
+
+
 
       target.addEventListener('mouseenter', function (e) {
 
@@ -338,11 +464,9 @@
 
         updateCursorIcon();
 
+        syncTouchPausedUi(target);
+
       });
-
-      target.addEventListener('play', updateCursorIcon);
-
-      target.addEventListener('pause', updateCursorIcon);
 
     }
 
