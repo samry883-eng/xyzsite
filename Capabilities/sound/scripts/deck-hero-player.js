@@ -129,6 +129,17 @@
 
 
 
+    function ensureVideoSrc(target) {
+      var deferred = target.getAttribute('data-src');
+      if (deferred && !target.getAttribute('src')) {
+        target.setAttribute('src', deferred);
+        target.removeAttribute('data-src');
+        target.preload = 'auto';
+        return true;
+      }
+      return false;
+    }
+
     function toggleVideo(target) {
 
       if (!target.paused) {
@@ -138,6 +149,8 @@
         return;
 
       }
+
+      ensureVideoSrc(target);
 
       if (target.readyState === 0) target.load();
 
