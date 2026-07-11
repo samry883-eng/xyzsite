@@ -285,14 +285,22 @@
   .deck-hero-volume-row{
     display:flex; justify-content:center; align-items:center;
     width:min(420px, 72%); pointer-events:none; padding:10px 20px 4px;
+    min-height:44px; box-sizing:border-box;
   }
   .deck-hero-volume-slider{
     -webkit-appearance:none; appearance:none; width:100%; height:3px; margin:0; padding:0;
     border-radius:2px; background:rgba(245,245,245,.22); cursor:pointer; pointer-events:auto;
+    touch-action:none;
+  }
+  .deck-hero-volume-slider::-webkit-slider-runnable-track{
+    height:3px; border-radius:2px; background:rgba(245,245,245,.22);
   }
   .deck-hero-volume-slider::-webkit-slider-thumb{
     -webkit-appearance:none; width:10px; height:10px; border-radius:50%;
-    background:var(--ink); box-shadow:0 0 1px rgba(0,0,0,.18);
+    background:var(--ink); box-shadow:0 0 1px rgba(0,0,0,.18); margin-top:-3.5px;
+  }
+  .deck-hero-volume-slider::-moz-range-track{
+    height:3px; border-radius:2px; background:rgba(245,245,245,.22); border:0;
   }
   .deck-hero-volume-slider::-moz-range-thumb{
     width:10px; height:10px; border:0; border-radius:50%; background:var(--ink);
@@ -308,6 +316,18 @@
   #pj-cursor.visible{ opacity:1; }
   #pj-cursor svg{ display:block; }
   @media (hover: none), (pointer: coarse) {
+    #pj-cursor{ display:none !important; }
+    .deck-hero-volume-row{
+      width:min(480px, 88%); padding:14px 24px 6px; min-height:48px;
+    }
+    .deck-hero-volume-slider{ height:6px; }
+    .deck-hero-volume-slider::-webkit-slider-runnable-track{ height:6px; }
+    .deck-hero-volume-slider::-webkit-slider-thumb{
+      width:24px; height:24px; margin-top:-9px;
+      box-shadow:0 1px 4px rgba(0,0,0,.28);
+    }
+    .deck-hero-volume-slider::-moz-range-track{ height:6px; }
+    .deck-hero-volume-slider::-moz-range-thumb{ width:24px; height:24px; }
     .deck-hero-inner .featured-hero-video,
     .photo.deck-hero-wrap video{
       cursor:default; touch-action:manipulation; -webkit-tap-highlight-color:transparent;
@@ -1121,12 +1141,19 @@ function deferDeckVideo(v) {
 }
 
 function restoreDeckVideo(v, preloadMeta) {
-  var src = v.getAttribute('data-src');
-  if (!src) return;
-  v.setAttribute('src', src);
-  v.removeAttribute('data-src');
-  v.preload = preloadMeta ? 'metadata' : 'none';
-  try { v.load(); } catch (e) {}
+  var deferred = v.getAttribute('data-src');
+  if (deferred) {
+    v.setAttribute('src', deferred);
+    v.removeAttribute('data-src');
+  }
+  if (!v.getAttribute('src')) return;
+  var want = preloadMeta ? 'metadata' : 'none';
+  if (v.preload !== want) {
+    v.preload = want;
+    try { v.load(); } catch (e) {}
+  } else if (deferred) {
+    try { v.load(); } catch (e) {}
+  }
 }
 
 function prepareDeckVideos(activeIndex) {
@@ -1138,9 +1165,11 @@ function prepareDeckVideos(activeIndex) {
   }
   slides.forEach(function (slide, i) {
     var dist = i - activeIndex;
-    var near = (dist >= 0 && dist <= DECK_VIDEO_LOOKAHEAD) || dist === -1;
+    var isActive = dist === 0;
+    var near = isActive || (dist >= 0 && dist <= DECK_VIDEO_LOOKAHEAD) || dist === -1;
     deckSlideVideos(slide).forEach(function (v) {
-      if (near) restoreDeckVideo(v, dist === 0);
+      if (isActive) restoreDeckVideo(v, true);
+      else if (near) restoreDeckVideo(v, false);
       else if (v.getAttribute('src')) deferDeckVideo(v);
     });
   });
@@ -1302,7 +1331,7 @@ let touchStartY = 0;
 let touchOnDeckVideo = false;
 document.addEventListener('touchstart', e => {
   touchStartY = e.touches[0].clientY;
-  touchOnDeckVideo = !!(e.target && e.target.closest && e.target.closest('.deck-hero-wrap video, .deck-hero-volume-slider'));
+  touchOnDeckVideo = !!(e.target && e.target.closest && e.target.closest('.deck-hero-wrap video, .deck-hero-volume-slider, .deck-hero-volume-row'));
 }, { passive: true });
 document.addEventListener('touchend', e => {
   if (touchOnDeckVideo) {

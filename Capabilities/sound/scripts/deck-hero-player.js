@@ -55,8 +55,6 @@
 
     var TOUCH_UI = window.matchMedia('(hover: none), (pointer: coarse)').matches;
 
-    var touchIconTimer = null;
-
 
 
     function updatePlay() {
@@ -340,46 +338,6 @@
 
 
 
-    function pointerXY(e) {
-
-      if (typeof e.clientX === 'number') return { x: e.clientX, y: e.clientY };
-
-      var t = e.changedTouches && e.changedTouches[0];
-
-      return t ? { x: t.clientX, y: t.clientY } : null;
-
-    }
-
-
-
-    function flashTouchIconAt(target, x, y) {
-
-      if (!cursor || !TOUCH_UI) return;
-
-      hoveredVideo = target;
-
-      updateCursorIcon();
-
-      if (x == null || y == null) {
-
-        var r = target.getBoundingClientRect();
-
-        x = r.left + r.width / 2;
-
-        y = r.top + r.height / 2;
-
-      }
-
-      showCustomCursorAt(x, y);
-
-      if (touchIconTimer) clearTimeout(touchIconTimer);
-
-      touchIconTimer = setTimeout(hideCustomCursor, 850);
-
-    }
-
-
-
     function handleVideoPointerTap(e, target) {
 
       if (volSlider && (e.target === volSlider || volSlider.contains(e.target))) return;
@@ -389,12 +347,6 @@
       e.stopPropagation();
 
       toggleVideo(target);
-
-      updateCursorIcon();
-
-      var xy = pointerXY(e);
-
-      flashTouchIconAt(target, xy ? xy.x : null, xy ? xy.y : null);
 
     }
 
