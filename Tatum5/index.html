@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Tatum 5 — Zero Pressure</title>
+<style>
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0; padding:0; height:100%;
+    background:#000;
+    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+    overflow:hidden;
+  }
+
+  /* ---------- surround + boxed 16:9 frame ---------- */
+  .surround{
+    position:fixed; inset:0; background:#1f1f1f;
+    display:flex; align-items:center; justify-content:center;
+  }
+  /* InDesign-style: page fills the window, slim margins, no size cap */
+  .frame-wrap{
+    position:relative;
+    width:min(98.5vw, calc((100vh - 44px) * 1.7778));
+    height:min(98.5vw / 1.7778, calc(100vh - 44px));
+    background:#0a0a0a;
+    box-shadow:0 8px 40px rgba(0,0,0,.5);
+    overflow:hidden;
+  }
+
+  /* ---------- slides ---------- */
+  #deck{ position:relative; width:100%; height:100%; }
+  .slide{
+    position:absolute; inset:0;
+    opacity:0; visibility:hidden;
+    transition:opacity .5s ease, visibility .5s;
+  }
+  .slide.active{ opacity:1; visibility:visible; z-index:2; }
+  .slide img{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:contain; display:block;
+  }
+  .slide .missing{
+    position:absolute; inset:0; display:flex; flex-direction:column; gap:8px;
+    align-items:center; justify-content:center; background:#111;
+    font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:#777;
+  }
+  .slide .missing b{ color:#ddd; letter-spacing:.05em; }
+
+  /* video inlaid over a board's framed area */
+  .slide .inlay{
+    position:absolute; z-index:3; background:#000;
+    object-fit:cover; display:block;
+  }
+
+  /* ---------- nav arrows (outside frame) ---------- */
+  .nav-btn{
+    position:fixed; top:50%; transform:translateY(-50%); z-index:40;
+    width:34px; height:34px; border:none; background:transparent;
+    color:#e8e8e8; font-size:22px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    opacity:.55; transition:opacity .2s;
+  }
+  .nav-btn:hover{ opacity:1; }
+  .nav-btn.prev{ left:18px; } .nav-btn.next{ right:18px; }
+
+  /* ---------- page counter (InDesign style) ---------- */
+  .counter{
+    position:fixed; bottom:12px; left:50%; transform:translateX(-50%);
+    z-index:40; font-size:12px; letter-spacing:.04em; color:#b5b5b5;
+    user-select:none;
+  }
+</style>
+</head>
+<body>
+
+<div class="surround">
+  <div class="frame-wrap">
+    <div id="deck"></div>
+  </div>
+
+  <button class="nav-btn prev" id="prevBtn" aria-label="Previous slide">‹</button>
+  <button class="nav-btn next" id="nextBtn" aria-label="Next slide">›</button>
+  <div class="counter" id="counter">1 of 9</div>
+</div>
+
+<script>
+  // ---- Slide images (drop the files next to this index.html) ----
+  // A slide can be a plain filename, or {img, video:{src, left, top, width, height}}
+  // to play a video inlaid over the board's framed area (percentages of the 1920x1080 board).
+  const SLIDES = [
+    'slide-01.png',
+    { img: 'slide-02.png',
+      video: { src: 'https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/P83Ep2hz0O/original', left: '20.16%', top: '10.83%', width: '73.96%', height: '67.04%' } },
+    'slide-03.jpg',
+    'slide-04.jpg',
+    'slide-05.jpg',
+    'slide-06.jpg',
+    'slide-07.jpg',
+    'slide-08.jpg',
+    'slide-09.jpg'
+  ];
+
+  const deck = document.getElementById('deck');
+  SLIDES.forEach((item, i) => {
+    const cfg = typeof item === 'string' ? { img: item } : item;
+    const s = document.createElement('section');
+    s.className = 'slide' + (i === 0 ? ' active' : '');
+    const img = document.createElement('img');
+    img.src = cfg.img;
+    img.alt = 'Slide ' + (i + 1);
+    if (i > 1) img.loading = 'lazy';
+    img.onerror = () => {
+      const d = document.createElement('div');
+      d.className = 'missing';
+      d.innerHTML = '<b>' + cfg.img + '</b><span>Place image next to this file</span>';
+      img.replaceWith(d);
+    };
+    s.appendChild(img);
+    if (cfg.video && cfg.video.src && !cfg.video.src.includes('_URL_HERE')) {
+      const v = document.createElement('video');
+      v.className = 'inlay';
+      v.src = cfg.video.src;
+      v.muted = true; v.loop = true; v.playsInline = true;
+      v.preload = i <= 1 ? 'auto' : 'metadata';
+      v.style.left = cfg.video.left; v.style.top = cfg.video.top;
+      v.style.width = cfg.video.width; v.style.height = cfg.video.height;
+      s.appendChild(v);
+    }
+    deck.appendChild(s);
+  });
+
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let current = 0;
+
+  const counterEl = document.getElementById('counter');
+
+  function render(){
+    slides.forEach((s, i) => {
+      s.classList.toggle('active', i === current);
+      const v = s.querySelector('video');
+      if (v) { if (i === current) { v.play().catch(()=>{}); } else { v.pause(); } }
+    });
+    counterEl.textContent = (current + 1) + ' of ' + total;
+  }
+
+  function goTo(i){
+    current = Math.max(0, Math.min(total - 1, i));
+    render();
+  }
+  document.getElementById('nextBtn').addEventListener('click', () => goTo(current + 1));
+  document.getElementById('prevBtn').addEventListener('click', () => goTo(current - 1));
+
+  window.addEventListener('keydown', (e) => {
+    if (['ArrowRight','PageDown',' '].includes(e.key)) { goTo(current + 1); e.preventDefault(); }
+    if (['ArrowLeft','PageUp'].includes(e.key)) { goTo(current - 1); e.preventDefault(); }
+  });
+
+  let touchX = null;
+  window.addEventListener('touchstart', e => touchX = e.touches[0].clientX);
+  window.addEventListener('touchend', e => {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (dx > 50) goTo(current - 1);
+    if (dx < -50) goTo(current + 1);
+    touchX = null;
+  });
+
+  render();
+</script>
+</body>
+</html>

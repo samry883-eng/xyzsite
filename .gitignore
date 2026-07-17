@@ -28,6 +28,11 @@ Capabilities/screenshots/
 !Work/**/*.png
 !Work/**/*.jpg
 !Work/**/*.jpeg
+# Tatum 5 unlisted deck slides (served at /tatum-5)
+!Tatum5/**/*.jpg
+!Tatum5/**/*.jpeg
+!Tatum5/**/*.png
+!Tatum5/**/*.webp
 # Allow shipped capabilities deck assets (overrides patterns above)
 !Capabilities/assets/
 !Capabilities/assets/**

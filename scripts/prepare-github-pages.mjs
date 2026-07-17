@@ -169,6 +169,11 @@ copyFile(path.join(root, 'Contact', 'versions2.html'), path.join(dist, 'contact-
 
 copyDir(path.join(root, 'Services'), path.join(dist, 'services'));
 copyDir(path.join(root, 'Capabilities'), path.join(dist, 'capabilities'));
+
+// Unlisted deck pages (reachable only by direct URL, not linked from the site)
+if (fs.existsSync(path.join(root, 'Tatum5'))) {
+  copyDir(path.join(root, 'Tatum5'), path.join(dist, 'tatum-5'));
+}
 copyDir(path.join(root, 'Admin'), path.join(dist, 'admin'));
 
 const rootExtras = ['capabilitiesdeck.html'];
