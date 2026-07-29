@@ -1031,13 +1031,17 @@ function findHomeItemForProject(p, list) {
 }
 
 function buildHomeItemFromProject(p) {
+  var startVal = (p.homeHero && p.homeHero.start != null) ? p.homeHero.start : 0;
   var existing = findHomeItemForProject(p);
-  if (existing) return existing;
+  if (existing) {
+    existing.start = String(startVal);
+    return existing;
+  }
   return {
     key: homeKeyForProject(p),
     client: p.client,
     title: p.title,
-    start: String(heroStartFor(p)),
+    start: String(startVal),
     video: p.video || '',
     cat: categoryLabel(p.category),
     mkey: catalogMkey(p)
@@ -1080,12 +1084,13 @@ function addProjectToHomeList(p) {
 function refreshHomeListItem(p) {
   if (!workOrder || !workOrder.homeList || !isInHomeList(p)) return;
   var list = workOrder.homeList;
+  var startVal = (p.homeHero && p.homeHero.start != null) ? p.homeHero.start : 0;
   var i;
   for (i = 0; i < list.length; i++) {
     if (!matchProjectToHomeItem(list[i], [p])) continue;
     var kept = list[i];
     var fresh = buildHomeItemFromProject(p);
-    fresh.start = String(heroStartFor(p));
+    fresh.start = String(startVal);
     if (kept.key) fresh.key = kept.key;
     list[i] = fresh;
     buildHomeReelIndex(draft.projects);
