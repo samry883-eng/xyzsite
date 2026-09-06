@@ -400,15 +400,15 @@
   "rewrites": [
     {
       "source": "/dashboard",
-      "destination": "https://xyz-os.vercel.app/dashboard"
+      "destination": "https://xyz-hq-deploy.vercel.app/dashboard"
     },
     {
       "source": "/dashboard/",
-      "destination": "https://xyz-os.vercel.app/dashboard"
+      "destination": "https://xyz-hq-deploy.vercel.app/dashboard"
     },
     {
       "source": "/dashboard/:path*",
-      "destination": "https://xyz-os.vercel.app/dashboard/:path*"
+      "destination": "https://xyz-hq-deploy.vercel.app/dashboard/:path*"
     },
     {
       "source": "/work",
