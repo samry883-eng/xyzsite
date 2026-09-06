@@ -399,6 +399,14 @@
   ],
   "rewrites": [
     {
+      "source": "/dashboard",
+      "destination": "https://xyz-os.vercel.app/dashboard"
+    },
+    {
+      "source": "/dashboard/:path*",
+      "destination": "https://xyz-os.vercel.app/dashboard/:path*"
+    },
+    {
       "source": "/work",
       "destination": "/work/unified/index.html"
     },
