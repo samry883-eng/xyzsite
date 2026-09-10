@@ -642,8 +642,9 @@ try{
     if(!url) return;
     var idx=parseInt(it.getAttribute("data-slide-index")||"0",10);
     try{sessionStorage.setItem("xyz-home-slide",String(idx));sessionStorage.setItem("xyz-from-home","1");}catch(err){}
-    var sep=url.indexOf("?")>=0?"&":"?";
-    url=url+sep+"from=home&slide="+encodeURIComponent(idx);
+    /* No query string: xyz-from-home and xyz-home-slide were just written to
+       sessionStorage above, and xyz-home-return.js already falls back to both,
+       so the params were redundant and only made the URL long. */
     e.preventDefault();
     e.stopPropagation();
     navigate(url);
