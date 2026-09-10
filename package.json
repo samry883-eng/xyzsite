@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node serve.mjs",
     "dev": "node serve.mjs",
-    "build": "node scripts/build-home-previews.mjs && node scripts/extract-project-posters.mjs && node scripts/prepare-github-pages.mjs",
+    "build": "node scripts/build-home-previews.mjs && node scripts/extract-project-posters.mjs && node scripts/generate-work-slug-map.mjs && node scripts/prepare-github-pages.mjs",
     "build:home-previews": "node scripts/build-home-previews.mjs",
     "extract:posters": "node scripts/extract-project-posters.mjs",
     "inject:home-order": "node scripts/inject-home-order.mjs",
@@ -22,7 +22,8 @@
     "capabilities:grant-and-print": "node scripts/capabilities-grant-and-print.mjs",
     "deck:allow": "node scripts/deck-allow-add.mjs",
     "deck:export-stills": "node scripts/export-bundled-deck-stills.mjs",
-    "build:deck": "node scripts/build-deck.mjs"
+    "build:deck": "node scripts/build-deck.mjs",
+    "generate:slug-map": "node scripts/generate-work-slug-map.mjs"
   },
   "engines": {
     "node": ">=20"
