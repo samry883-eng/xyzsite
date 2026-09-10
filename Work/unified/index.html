@@ -1102,8 +1102,10 @@
     });
   }
 
-  function navigateTo(url, poster) {
-    const dest = poster ? url + '?poster=' + encodeURIComponent(poster) : url;
+  function navigateTo(url) {
+    // Project pages carry their own baked-in poster.jpg, so passing the poster
+    // through the query string only produced very long encoded URLs.
+    const dest = url;
     if (!pageOut) {
       window.location.href = dest;
       return;
@@ -1163,7 +1165,7 @@
         });
       }
 
-      wrap.addEventListener('click', function () { navigateTo(p.url, p.poster); });
+      wrap.addEventListener('click', function () { navigateTo(p.url); });
       bindCardHover(wrap, p);
       gridEl.appendChild(wrap);
     });
