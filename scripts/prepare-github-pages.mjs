@@ -72,6 +72,23 @@ copyDir(path.join(root, 'Home', 'assets'), path.join(dist, 'assets'));
 
 copyDir(path.join(root, 'Work'), path.join(dist, 'work'));
 
+// A draft is off the site, so its page does not ship. The file stays in the
+// repo and comes back on the next build the moment it is published again.
+try {
+  const catalogForDrafts = await fetchProjectsCatalog(root);
+  let pulled = 0;
+  for (const p of (catalogForDrafts.projects || [])) {
+    if (!p.draft || !p.slug) continue;
+    for (const dir of [
+      path.join(dist, 'work', p.category || '', p.slug),
+      path.join(dist, 'work', p.slug),
+    ]) {
+      if (fs.existsSync(dir)) { fs.rmSync(dir, { recursive: true, force: true }); pulled++; }
+    }
+  }
+  if (pulled) console.log('[drafts] pulled', pulled, 'draft page(s) out of the build');
+} catch (e) { console.warn('[drafts] failed:', e && e.message); }
+
 // Scaffold any catalog project pages missing from Work/ (writes into dist/work/)
 try {
   const catalogForPages = await fetchProjectsCatalog(root);
