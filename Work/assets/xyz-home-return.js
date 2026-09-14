@@ -59,6 +59,9 @@
     var slide = slideIndex();
     try {
       sessionStorage.setItem('xyz-home-return', '1');
+      // Timestamped so a navigation that never completes (user aborts, closes,
+      // hits back) cannot make a later plain visit to / boot into return mode.
+      sessionStorage.setItem('xyz-home-return-at', String(Date.now()));
       sessionStorage.setItem('xyz-home-slide', String(slide));
       sessionStorage.setItem('xyz-from-home', '1');
     } catch (e) {}
@@ -74,6 +77,20 @@
     var go = function () {
       location.assign('/?return=1&slide=' + encodeURIComponent(slide));
     };
+
+    // If we are somehow still on this page, retreat the cover instead of
+    // leaving the visitor staring at a white panel.
+    setTimeout(function () {
+      if (document.visibilityState === 'hidden') return;
+      try {
+        panel.style.transition = 'transform .3s ease';
+        panel.style.transform = 'translateY(100%)';
+        panel.style.pointerEvents = 'none';
+        sessionStorage.removeItem('xyz-home-return');
+        sessionStorage.removeItem('xyz-home-return-at');
+      } catch (e) {}
+      navigating = false;
+    }, 3000);
 
     if (QS) {
       QS.cover(panel, go);
