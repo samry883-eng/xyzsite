@@ -847,6 +847,8 @@
         services: p.services || [],
         type: [p.projectType || 'Commercial'],
         selected: !!p.featured,
+        selectedOrder: p.selectedOrder,
+        sortOrder: p.sortOrder || 0,
         clipStart: p.clipStart,
         clipEnd: p.clipEnd,
       });
@@ -902,7 +904,14 @@
 
   function visibleProjects() {
     let list = PROJECTS.slice();
-    if (state.mode === 'selected') list = list.filter(function (p) { return p.selected; });
+    if (state.mode === 'selected') {
+      // Selected Work keeps its own running order, independent of All.
+      list = list.filter(function (p) { return p.selected; }).sort(function (a, b) {
+        var oa = a.selectedOrder == null ? a.sortOrder : a.selectedOrder;
+        var ob = b.selectedOrder == null ? b.sortOrder : b.selectedOrder;
+        return (oa || 0) - (ob || 0);
+      });
+    }
     return list.filter(matchesFilters);
   }
 
