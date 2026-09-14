@@ -835,7 +835,7 @@
     const catLabel = function (slug) {
       return ({ 'visual-effects': 'Visual Effects', sound: 'Sound', ai: 'AI', 'making-of': 'Making Of' })[slug] || slug;
     };
-    baked.projects.slice().sort(function (a, b) { return (a.sortOrder || 0) - (b.sortOrder || 0); }).forEach(function (p) {
+    baked.projects.slice().filter(function (p) { return !p.draft; }).sort(function (a, b) { return (a.sortOrder || 0) - (b.sortOrder || 0); }).forEach(function (p) {
       PROJECTS.push({
         id: p.id,
         client: p.client,
