@@ -82,12 +82,12 @@
     z-index: 100000 !important;
     background: #fff !important;
   }
-  html.xyz-home-returning:not(.xyz-home-return-revealing) .hero_list-wrapper {
-    opacity: 0 !important;
-    visibility: hidden !important;
-  }
-  /* Return reveal: hero must be fully visible under the sliding panel — no fade-in gap */
-  html.xyz-home-returning.xyz-home-return-revealing .hero_list-wrapper {
+  /* Return from project: the hero is composed at full strength *underneath* the
+     white cover (#page-out), so when the cover lifts the titles, footer and
+     bottom text are already there — exactly as they are on a first load, where
+     the same fade happens behind the intro loader and is never seen. Hiding it
+     until the reveal started cost ~150ms of blank chrome plus a 300ms fade. */
+  html.xyz-home-returning .hero_list-wrapper {
     opacity: 1 !important;
     visibility: visible !important;
     transition: none !important;
@@ -437,7 +437,7 @@ try{
     var nav=document.querySelector(".navigation");
     if(nav) nav.setAttribute("data-navigation-status","not-active");
   }
-  function prepHeroForReturn(){
+  function prepHeroForReturn(markRevealing){
     var info=window.__XYZ_HOME_RETURN;
     var n=info?(info.slide||0):0;
     var item=document.querySelector('.hero_item[data-slide-index="'+n+'"]');
@@ -457,7 +457,8 @@ try{
       if(it===item){try{var p=v.play();if(p&&p.catch)p.catch(function(){});}catch(e){}}
       else{try{v.pause();}catch(e){}}
     });
-    document.documentElement.classList.add("xyz-hero-ready","xyz-home-return-revealing");
+    document.documentElement.classList.add("xyz-hero-ready");
+    if(markRevealing!==false) document.documentElement.classList.add("xyz-home-return-revealing");
     document.dispatchEvent(new CustomEvent("xyz-exiting"));
     document.dispatchEvent(new CustomEvent("xyz-return-prep"));
   }
@@ -494,6 +495,12 @@ try{
   }
 
   if(document.documentElement.classList.contains("xyz-home-returning")){
+    /* This script sits after the hero markup, so the slides already exist. Pick
+       the right one and mark it active NOW rather than at DOMContentLoaded: the
+       footer and titles key off .xyz-active-slide, and waiting for Webflow to
+       finish booting is what made them pop in a beat late. The cover is still
+       down, so none of this is visible until the reveal. */
+    try{ prepHeroForReturn(false); }catch(e){}
     if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",revealFromProject);
     else revealFromProject();
     window.addEventListener("pageshow",function(e){if(e.persisted&&document.documentElement.classList.contains("xyz-home-returning"))revealFromProject();});
