@@ -24,7 +24,14 @@ const esc = (s) =>
     .replace(/"/g, '&quot;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
-const clean = (s) => String(s ?? '').replace(/\s+/g, ' ').trim();
+const decode = (s) =>
+  String(s ?? '')
+    .replace(/&quot;/g, '"')
+    .replace(/&#0?39;|&apos;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&');
+const clean = (s) => decode(s).replace(/\s+/g, ' ').trim();
 const clip = (s, n = 158) => {
   s = clean(s);
   if (s.length <= n) return s;
@@ -47,7 +54,7 @@ function projectMeta(p) {
   const name = client && client.toLowerCase() !== title.toLowerCase() ? `${title} for ${client}` : title;
   const services = (p.services || []).map((s) => clean(s)).filter(Boolean);
   const kind = clean(p.projectType || 'Commercial').toLowerCase();
-  const did = services.length ? list(services.map((s) => s.toLowerCase())) : CATEGORY[p.category] || 'post-production';
+  const did = services.length ? list(services) : CATEGORY[p.category] || 'post-production';
   const director = (p.credits || []).find((c) => /director/i.test(c.label || ''))?.value;
   const agency = (p.credits || []).find((c) => /agency/i.test(c.label || ''))?.value;
   let d = `${name}, a ${kind} by XYZ Studios. What we did: ${did}.`;
@@ -215,6 +222,11 @@ export function runSeoPass(dist, catalog) {
     const f = candidates.find((x) => fs.existsSync(x));
     if (!f) continue;
     const meta = projectMeta(p);
+    // Share previews need a JPG/PNG (Facebook and LinkedIn skip AVIF).
+    const dir = path.dirname(f);
+    const local = ['poster.jpg', 'frame.jpg'].find((x) => fs.existsSync(path.join(dir, x)));
+    if (local) meta.image = '/' + path.relative(dist, path.join(dir, local)).replace(/\\/g, '/');
+    else if (!meta.image || /\.avif(\?|$)/i.test(meta.image)) meta.image = null;
     const r = apply(f, meta);
     if (r) {
       done.push(r);
