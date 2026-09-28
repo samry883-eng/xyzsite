@@ -72,7 +72,7 @@ function projectMeta(p) {
 const PAGES = {
   'index.html': {
     url: '/',
-    h1: 'XYZ Studios: Visual Effects & Sound Studio',
+    h1: 'XYZ Studios: Creative Production Studio',
     description:
       'XYZ Studios is an international post-production studio for VFX, CGI, finishing and sound on commercials and brand films. We make the film or finish yours.',
     alt: 'XYZ Studios',
