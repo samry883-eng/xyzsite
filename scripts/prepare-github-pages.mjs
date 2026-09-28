@@ -8,6 +8,7 @@ import { loadMkeyLookup, slimHomeRow, fetchWorkOrderForBuild } from './home-orde
 import { injectProjectsCatalogFile, fetchProjectsCatalog, writeProjectsServicesMap, writeProjectsPreviewMap } from './projects-catalog-lib.mjs';
 import { extractProjectPosters } from './extract-project-posters.mjs';
 import { scaffoldMissingProjectPages } from '../lib/scaffold-project-page.mjs';
+import { runSeoPass } from './seo-pass.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
@@ -223,12 +224,21 @@ if (repoName) {
   console.log('Prefixed paths for GitHub Pages repo:', prefix);
 }
 
-// --- Inject analytics (Vercel Web Analytics + Microsoft Clarity) into every page <head> ---
+// --- SEO: descriptions, share previews, h1, alt text, robots.txt, sitemap.xml ---
+try {
+  const catalogForSeo = await fetchProjectsCatalog(root);
+  const seo = runSeoPass(dist, catalogForSeo);
+  console.log('[seo] updated', seo.length, 'pages;', seo.filter((x) => x.h1).length, 'h1 added;', seo.reduce((n, x) => n + x.alts, 0), 'alt texts added');
+} catch (e) { console.warn('[seo] pass failed:', e && e.message); }
+
+// --- Inject analytics (Vercel Web Analytics + Microsoft Clarity) into public pages <head> ---
+// Private pages (deck, admin, redirect stubs) are left out so their visits do not
+// count as site traffic. Anyone who has opened XYZ HQ (/dashboard, same origin)
+// is marked internal there and is not tracked here either, so team use of the
+// dashboard never shows up in the site's visits, bounces or dead clicks.
 {
   const ANALYTICS = `<!-- xyz-analytics -->
-<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};</script>
-<script defer src="/_vercel/insights/script.js"></script>
-<script type="text/javascript">(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y)})(window,document,"clarity","script","xdydi7vf1q");</script>
+<script>(function(){var internal=false;try{internal=localStorage.getItem("xyz-internal")==="1";}catch(e){}window.__xyzInternal=internal;window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};if(internal)return;var v=document.createElement("script");v.defer=true;v.src="/_vercel/insights/script.js";document.head.appendChild(v);(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y)})(window,document,"clarity","script","xdydi7vf1q");})();</script>
 <!-- /xyz-analytics -->
 `;
   let injected = 0;
@@ -237,8 +247,11 @@ if (repoName) {
       const p = path.join(dir, e.name);
       if (e.isDirectory()) { walk(p); continue; }
       if (path.extname(p).toLowerCase() !== '.html') continue;
+      const rel = path.relative(dist, p).replace(/\\/g, '/');
+      if (/^(capabilities|admin|tatum-5|deck|contact-versions|projects|projects-v2)\//i.test(rel) || /^work\/(admin|adminv2)\.html$/i.test(rel) || /^work\/(archive|project)\//i.test(rel) || /^contact\/versions/i.test(rel) || /^capabilitiesdeck\.html$/i.test(rel)) continue;
       let s = fs.readFileSync(p, 'utf8');
       if (s.includes('xyz-analytics') || !/<\/head>/i.test(s)) continue;
+      if (/http-equiv=["']refresh["']/i.test(s)) continue;
       fs.writeFileSync(p, s.replace(/<\/head>/i, ANALYTICS + '</head>'));
       injected++;
     }
