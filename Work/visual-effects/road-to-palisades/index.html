@@ -330,6 +330,19 @@
     .pj-cr-sound-rows .pj-cr-cols + .pj-cr-cols { margin-top: 22px; }
     .pj-cr-col-lbl { font: 400 8px/1 Micross, Arial, sans-serif; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.22); margin-bottom: 10px; -webkit-font-smoothing: antialiased; }
     .pj-cr-col-val { font: 400 13px/1.5 Micross, Arial, sans-serif; color: rgba(255,255,255,0.75); }
+    /* xyz-touch-player: on touch screens the player controls are a 1-2px bar and
+       10px-tall labels, so give them finger-sized tap areas (invisible, no layout change). */
+    @media (hover: none), (pointer: coarse) {
+      #pj-scrub, #pj-track { touch-action: pan-y; }
+      #pj-scrub::before, #pj-track::before {
+        content: ""; position: absolute; left: 0; right: 0; top: -16px; bottom: -16px;
+      }
+      #pj-scrub:hover { transform: none; }
+      #pj-play-btn, #pj-mute-btn, #pj-fs-btn { position: relative; }
+      #pj-play-btn::after, #pj-mute-btn::after, #pj-fs-btn::after {
+        content: ""; position: absolute; top: -14px; bottom: -14px; left: -8px; right: -8px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -482,18 +495,18 @@
     if (total && isFinite(vid.duration) && vid.duration > 0) total.textContent = fmt(vid.duration);
   }
 
+  // play() has to run inside the tap itself: iPhone only allows sound-on playback
+  // from a direct tap, and won't start buffering until play is asked for. Waiting
+  // for 'canplay' first meant the tap was spent and nothing played.
   function togglePlay() {
     if (!vid.paused) { vid.pause(); return; }
-    if (vid.readyState === 0) vid.load();
-    videoFrame && videoFrame.classList.add('is-buffering');
-    function start() {
-      vid.play().catch(function () {}).finally(function () {
-        videoFrame && videoFrame.classList.remove('is-buffering');
-      });
-    }
-    if (vid.readyState >= 3) start();
-    else vid.addEventListener('canplay', start, { once: true });
+    const p = vid.play();
+    if (p && p.catch) p.catch(function () {});
   }
+  function setBuffering(on) { videoFrame && videoFrame.classList.toggle('is-buffering', on); }
+  vid.addEventListener('waiting', () => setBuffering(true));
+  vid.addEventListener('playing', () => setBuffering(false));
+  vid.addEventListener('pause',   () => setBuffering(false));
 
   vid.addEventListener('loadedmetadata', syncDuration);
   vid.addEventListener('durationchange', syncDuration);
@@ -514,15 +527,19 @@
   }
 
   let _raf = null;
-  function _tick() {
+  function _paint() {
     const cur = vid.currentTime, dur = vid.duration || 0;
     document.querySelector('.hero_video-time-current').textContent = fmt(cur);
     document.querySelector('.hero_video-time-total').textContent = fmt(dur);
     const pct = dur ? cur / dur : 0;
     progress.style.width = (pct * 100) + '%';
     handle.style.left = (pct * 100) + '%';
+  }
+  function _tick() {
+    _paint();
     _raf = requestAnimationFrame(_tick);
   }
+  vid.addEventListener('seeked', _paint);
   function _startRaf() { if (!_raf) _raf = requestAnimationFrame(_tick); }
   function _stopRaf()  { if (_raf) { cancelAnimationFrame(_raf); _raf = null; } }
   vid.addEventListener('play',  () => { updatePlay(); _startRaf(); });
@@ -536,12 +553,16 @@
   const PLAY_PATH  = 'M8 5v14l11-7z';
   const PAUSE_PATH = 'M6 19h4V5H6v14zm8-14v14h4V5h-4z';
   function updateCursorIcon() { cursorPath.setAttribute('d', vid.paused ? PLAY_PATH : PAUSE_PATH); }
-  vid.addEventListener('mouseenter', () => cursor.classList.add('visible'));
-  vid.addEventListener('mouseleave', () => cursor.classList.remove('visible'));
-  vid.addEventListener('mousemove',  e  => {
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top  = e.clientY + 'px';
-  });
+  // Mouse only. On a phone a tap fires these too, and the first tap got spent
+  // showing the cursor instead of playing the video.
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    vid.addEventListener('mouseenter', () => cursor.classList.add('visible'));
+    vid.addEventListener('mouseleave', () => cursor.classList.remove('visible'));
+    vid.addEventListener('mousemove',  e  => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top  = e.clientY + 'px';
+    });
+  }
   vid.addEventListener('play',  updateCursorIcon);
   vid.addEventListener('pause', updateCursorIcon);
 
@@ -551,7 +572,13 @@
   muteBtn.addEventListener('click', () => { vid.muted = !vid.muted; updateMute(); });
 
   // Fullscreen — enter only; CSS hides fsBtn when in fullscreen; Back btn becomes Close
-  fsBtn.addEventListener('click', () => { stage.requestFullscreen && stage.requestFullscreen(); });
+  // iPhone has no fullscreen for page elements, only the video's own player.
+  fsBtn.addEventListener('click', () => {
+    const native = () => { if (vid.webkitEnterFullscreen) vid.webkitEnterFullscreen(); };
+    if (!stage.requestFullscreen) { native(); return; }
+    const p = stage.requestFullscreen();
+    if (p && p.catch) p.catch(native);
+  });
   document.addEventListener('fullscreenchange', () => {
     const fs = !!document.fullscreenElement;
     stage.classList.toggle('is-fullscreen', fs);
@@ -570,9 +597,22 @@
     const pct = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
     if (isFinite(vid.duration)) vid.currentTime = pct * vid.duration;
   }
-  scrub.addEventListener('mousedown', e => { scrubbing = true; seekTo(e); });
-  document.addEventListener('mousemove', e => { if (scrubbing) seekTo(e); });
-  document.addEventListener('mouseup',   () => { scrubbing = false; });
+  // Pointer events cover mouse and touch, so the bar can be dragged on a phone too.
+  // Seeks are batched to one per frame so a drag doesn't flood the video with seeks.
+  let _seekEv = null, _seekRaf = 0;
+  function queueSeek(e) {
+    _seekEv = e;
+    if (_seekRaf) return;
+    _seekRaf = requestAnimationFrame(() => { _seekRaf = 0; seekTo(_seekEv); });
+  }
+  scrub.addEventListener('pointerdown', e => {
+    scrubbing = true;
+    try { scrub.setPointerCapture(e.pointerId); } catch (err) {}
+    seekTo(e);
+  });
+  scrub.addEventListener('pointermove', e => { if (scrubbing) queueSeek(e); });
+  scrub.addEventListener('pointerup',     () => { scrubbing = false; });
+  scrub.addEventListener('pointercancel', () => { scrubbing = false; });
 
 
   // Page enter: white panel slides up (matches Work → project cover handoff)
