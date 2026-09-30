@@ -190,6 +190,9 @@
       .catch(function () { return null; });
   }
 
+  // The Work grid loads this file only for the map (hover previews).
+  window.xyzPlayableVideo = playableVideo;
+
   var slug = projectSlugFromPath();
   if (!slug) return;
 

@@ -666,6 +666,7 @@
   </main>
 
 <script src="/work/assets/xyz-quick-slide.js"></script>
+<script src="/work/assets/xyz-project-catalog.js"></script>
 <script>
 (function () {
   const VF = 'https://r2.vidzflow.com/source/';
@@ -1096,7 +1097,8 @@
       wrap.classList.add('wc-hover-active');
       video.muted = true;
       if (!video.src && video.dataset.src) {
-        video.src = video.dataset.src;
+        // Lighter web encode when one exists (Speedcross 3's upload is a 50 Mbps master).
+        video.src = window.xyzPlayableVideo ? window.xyzPlayableVideo(video.dataset.src) : video.dataset.src;
         video.load();
       }
       if (project.clipStart != null) video.currentTime = project.clipStart;
