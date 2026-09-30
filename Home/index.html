@@ -313,6 +313,15 @@ try{
 
 
 <script>document.addEventListener("DOMContentLoaded",function(){function loadxyz(e){var t=document.createElement("script");t.setAttribute("src",e);t.setAttribute("type","module");document.body.appendChild(t)}var src=window.location.host.includes("webflow.io")?"https://slater.app/17909.js":"https://assets.slater.app/slater/17909.js?v=1.0";loadxyz(src);})</script>
+<script>/* xyz-no-idle-reload */(function(){
+  /* Slater file 58986.js reloads the page after 5 minutes with no mouse, key, scroll or
+     touch (it listens on document). Anyone watching the reel hands-off had the page
+     reload under them. That timer is inside a Slater module the site can't reach, so it
+     gets nudged instead: a non-bubbling 'scroll' on document every minute resets it.
+     Only document-level scroll listeners see it (Lenis and ScrollTrigger listen on window).
+     Safe to delete once 58986.js is removed in the Slater dashboard. */
+  setInterval(function(){ try{ document.dispatchEvent(new Event('scroll')); }catch(e){} }, 60000);
+})();</script>
 
 <script async type="module" src="https://cdn.jsdelivr.net/npm/@finsweet/attributes@2/attributes.js" fs-mirrorclick fs-list></script>
 
