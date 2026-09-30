@@ -16,14 +16,21 @@ This was rebuilt to kill a whole class of bugs. How it works now:
 2. At **build time**, `scripts/prepare-github-pages.mjs` fetches `workOrder` (Edge Config -> fallback live `/api/site-order` -> fallback baked default) and injects it into `dist/index.html` as `window.__HOME_ORDER`, replacing the `/*XYZ_BUILD_ORDER*/` placeholder.
 3. The page rebuilds the hero list **synchronously** from `window.__HOME_ORDER` (the `/* xyz-home-reel */` inline script, runs at parse time BEFORE Slater). There is **NO runtime fetch**, so nothing races Slater. Slater then plays a clean static list.
 4. Saving in the admin (`POST /api/site-order`) writes Edge Config **and auto-triggers a production redeploy** (via Vercel API), so the baked order refreshes hands-off in ~30s.
-5. Two small support scripts in `Home/index.html`:
-   - `/* xyz-hero-playback-fix */`: Slater does NOT autoplay videos or hide duplicate footers on its own here, so this plays the active video, pauses the rest, hides non-active `.hero_content-footer` (de-dupes the identical bottom links), briefly holds slide 0, and keeps crossfades smooth (opacity-based, leaves `.hero_content` alone so titles still slide).
-   - `/* xyz-video-preload */`: LIGHT preload of the first ~4 videos only (no ongoing interval, NO buffer release).
+5. Support scripts in `Home/index.html`:
+   - `/* xyz-hero-playback-fix */`: Slater does NOT autoplay videos or hide duplicate footers on its own here, so this plays the active video, pauses the rest, hides non-active `.hero_content-footer` (de-dupes the identical bottom links), briefly holds slide 0, and keeps crossfades smooth (opacity-based, leaves `.hero_content` alone so titles still slide). Before Slater lays the slides out it plays only the first slide. It reads GSAP's inline styles (not getComputedStyle) and is exposed as `window.__xyzHeroTick`, which the small "nudge" script calls on load/visibility/pageshow.
+   - `/* xyz-home-reel */` sets `preload="auto"` only on the first slide and the one after it; the rest get `metadata` and Slater's background loader pulls them in one at a time. (`/* xyz-video-preload */` was removed: it set `preload="auto"` on and played all 8 at once, which made phones lag.)
 
 ## CRITICAL - do NOT reintroduce (these each caused outages)
 
 - Do NOT make the page `fetch('/api/site-order')` at runtime to rebuild the hero. That async rebuild raced Slater = wrong first video, missing UI, "order resets to original", stuck/8-videos-playing. Order is baked at build now.
 - Do NOT preload all 8 videos, and do NOT release videos at runtime with `preload="none"`+`load()`. Preloading all froze the tab (memory/decoder exhaustion); runtime release caused black frames / thumbnail-freeze-then-jump.
+- Do NOT call `play()` on every hero video (the old "play all" kicker and `xyz-video-preload` did). Only the slide on screen plays; on phones 8 videos decoding at once is the lag.
+
+## Project pages (Work/**/index.html) on phones
+
+- Each page carries its own player script (template: `Work/visual-effects/into-the-void/index.html`, used by `lib/scaffold-project-page.mjs`). `togglePlay` must call `vid.play()` directly inside the tap: iPhone only allows sound-on playback from the gesture itself and won't buffer before play, so waiting for `canplay` first breaks it.
+- The custom play/pause cursor is mouse-only (`(hover: hover) and (pointer: fine)`); on touch it ate the first tap. Scrub bar uses pointer events (touch drag works). Full Screen falls back to `video.webkitEnterFullscreen()` on iPhone. `/* xyz-touch-player */` CSS gives the thin controls finger-sized tap areas.
+- Heavy uploads get a lighter web encode in `Work/assets/video/` (x264 slow, `-tune grain -crf 20 -maxrate 7M`), committed as `<name>.mp4.partNN` pieces that `joinSplitFiles` in `scripts/prepare-github-pages.mjs` joins back into `<name>.mp4` at build (a plain `.mp4` there works too; `serve.mjs` local dev does not join them), mapped by CMS video URL in `LIGHT_VIDEO` in `Work/assets/xyz-project-catalog.js` and baked into the page's `src`. Replacing a film's video in the CMS bypasses the map automatically.
 - Slater (`assets.slater.app/slater/17909.js`, project 17909, edited in the Slater dashboard) controls transitions only.
 
 ## Gotchas

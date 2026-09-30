@@ -12,6 +12,21 @@
     'making-of': 'Making Of',
   };
 
+  /* Lighter web encodes of films whose uploaded file is too heavy to stream on a
+     phone (Speedcross 3's upload was a 50 Mbps master, ~220 MB for 35 s). Keyed by
+     the CMS video URL, so if a film's video is replaced in the CMS the new upload
+     is used as-is. Files live in Work/assets/video/. */
+  var LIGHT_VIDEO = {
+    'https://r2.vidzflow.com/source/ef1dc602-5a95-4973-a0ea-82794726bc4a.mp4': '/work/assets/video/speedcross-3.mp4',
+    'https://r2.vidzflow.com/source/cbf82991-c743-4045-8898-b6ee78efd9b4.mp4': '/work/assets/video/into-the-void.mp4',
+    'https://r2.vidzflow.com/source/214a3ae2-01ca-4593-8949-98a7191f6548.mp4': '/work/assets/video/ss26-teaser.mp4',
+    'https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/Clp65xDTmS/original': '/work/assets/video/ai.mp4',
+  };
+
+  function playableVideo(url) {
+    return LIGHT_VIDEO[url] || url;
+  }
+
   function sortServices(services) {
     return (services || []).slice().sort(function (a, b) {
       var ia = SERVICE_ORDER.indexOf(a);
@@ -147,9 +162,11 @@
 
     var vid = document.getElementById('pj-video');
     if (vid && project.video) {
-      var changed = vid.getAttribute('src') !== project.video;
-      if (changed) {
-        vid.setAttribute('src', project.video);
+      var src = playableVideo(project.video);
+      var changed = vid.getAttribute('src') !== src;
+      // Never swap the file under someone who already pressed play.
+      if (changed && vid.paused && !vid.currentTime) {
+        vid.setAttribute('src', src);
         vid.load();
       }
       if (project.poster) vid.setAttribute('poster', project.poster);

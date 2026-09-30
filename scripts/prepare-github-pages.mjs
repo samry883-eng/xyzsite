@@ -28,6 +28,25 @@ function copyDir(src, dest) {
   }
 }
 
+// Big videos are committed as <name>.mp4.part00, .part01, ... (each piece stays
+// under the size limit of the GitHub API route they were uploaded through).
+// Join them back into <name>.mp4 in dist and drop the pieces.
+function joinSplitFiles(dir) {
+  if (!fs.existsSync(dir)) return;
+  const groups = {};
+  for (const name of fs.readdirSync(dir)) {
+    const m = name.match(/^(.+)\.part(\d+)$/);
+    if (m) (groups[m[1]] = groups[m[1]] || []).push(name);
+  }
+  for (const [target, parts] of Object.entries(groups)) {
+    parts.sort();
+    const buf = Buffer.concat(parts.map((p) => fs.readFileSync(path.join(dir, p))));
+    fs.writeFileSync(path.join(dir, target), buf);
+    for (const p of parts) fs.rmSync(path.join(dir, p));
+    console.log('[video-parts] joined', target, 'from', parts.length, 'parts,', buf.length, 'bytes');
+  }
+}
+
 function copyFile(src, dest) {
   fs.mkdirSync(path.dirname(dest), { recursive: true });
   fs.copyFileSync(src, dest);
@@ -72,6 +91,7 @@ try {
 copyDir(path.join(root, 'Home', 'assets'), path.join(dist, 'assets'));
 
 copyDir(path.join(root, 'Work'), path.join(dist, 'work'));
+joinSplitFiles(path.join(dist, 'work', 'assets', 'video'));
 
 // A draft is off the site, so its page does not ship. The file stays in the
 // repo and comes back on the next build the moment it is published again.
