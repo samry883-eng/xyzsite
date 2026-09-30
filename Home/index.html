@@ -260,6 +260,7 @@
     src="https://r2.vidzflow.com/source/fb5e495e-8460-4277-a7aa-08accd388af0.mp4"
     type="video/mp4"></video></div><div class="hero_vid-content"><div class="div-block-78"><div class="div-block-80"><div class="div-block-79"><div class="projects-dimmed">Directed by</div><div class="text-block-63">Lachlan McClellan</div></div><div class="div-block-79"><div class="projects-dimmed">Category</div><div class="projects_tags video-content w-dyn-list"><div role="list" class="collection-list negative-margin w-dyn-items"><div role="listitem" class="_1243 w-dyn-item"><div projects-video-tags="Sound " class="projects_item-title">Sound </div></div><div role="listitem" class="_1243 w-dyn-item"><div projects-video-tags="Selected Work" class="projects_item-title">Selected Work</div></div></div></div></div></div></div></div></div></div></div></div></div><div class="background-load"><img src="https://cdn.prod.website-files.com/6917408c1d0fee8fc2c58505/693f18c4429b0ce190802a9a_loader-6%4016x.png" loading="lazy" data-w-id="f4f2b1fb-31bc-53fd-cee2-f44cfcb02a1b" alt="" class="image-6"/></div></div><script>window.__HOME_ORDER={"homeList":[{"key":"nba-2026-finals","client":"NBA","title":"2026 Finals","start":"0","video":"https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/QXPhjJBFtd/original","cat":"Visual Effects","mkey":"visual-effects/2026-finals","href":"/work/2026-finals/"},{"key":"salomon-speedcross-3","client":"Salomon","title":"Speedcross 3","start":"25","video":"https://r2.vidzflow.com/source/ef1dc602-573-a0ea-82a95-49794726bc4a.mp4","cat":"Visual Effects","mkey":"visual-effects/speedcross-3"},{"key":"salomon-s-lab-manifesto","client":"Salomon","title":"s/lab Manifesto","start":"25","video":"https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/PcB8hb2-uO/original","cat":"Visual Effects","mkey":"visual-effects/s-lab-manifesto"},{"key":"nike-france-world-cup","client":"Nike","title":"France World Cup","start":"11","video":"https://r2.vidzflow.com/source/d93de57b-6909-4f1e-81d3-8d1f6252c2f7.mp4","cat":"Visual Effects","mkey":"visual-effects/france-world-cup"},{"key":"nike-imagine-theres-no-limit","client":"Nike","title":"Imagine There's No Limit","start":"0","video":"https://r2.vidzflow.com/source/55e60562-4203-4bba-8dc5-4343d1e5a127.mp4","cat":"AI","mkey":"ai/imagine-theres-no-limit"},{"key":"chanel-sous-la-lune","client":"Chanel","title":"Sous La Lune","start":"0","video":"https://xgjzloifyvgpbmyonaya.supabase.co/storage/v1/object/public/files/2oBYsIWabd/original","cat":"AI","mkey":"ai/sous-la-lune"}]};/*XYZ_BUILD_ORDER*/</script>
 <script>/* xyz-home-reel */(function(){function sec(x){x=String(x==null?'':x).trim();if(!x)return 0;if(x.indexOf(':')>=0){var p=x.split(':');return Math.round((parseInt(p[0],10)||0)*60+(parseFloat(p[1])||0));}return Math.round(parseFloat(x)||0);}
+function soon(i){var r=window.__XYZ_HOME_RETURN;var f=r?(r.slide||0):0;var n=(window.__HOME_ORDER&&window.__HOME_ORDER.homeList||[]).length||1;return i===f||i===(f+1)%n;}
 function upd(item,node,idx){
   node.setAttribute('data-slide-index',idx);
   var t=node.querySelector('.text-block-61'); if(t)t.textContent=item.title||'';
@@ -278,7 +279,7 @@ function upd(item,node,idx){
     else if(item.mkey) node.setAttribute('data-xyz-href','/work/'+item.mkey+'/');
     if(clip&&src){
       src.setAttribute('src',clip);
-      v.muted=true; v.setAttribute('playsinline',''); v.setAttribute('preload',item.preview?'auto':'metadata'); v.loop=true;
+      v.muted=true; v.setAttribute('playsinline',''); v.setAttribute('preload',(item.preview&&soon(idx))?'auto':'metadata'); v.loop=true;
       try{v.load();}catch(e){}
       var seek=function(){
         try{
@@ -530,18 +531,15 @@ try{
 </script>
 <script>
 (function () {
-  function playHeroVideos() {
-    document.querySelectorAll('.hero_vid video, .hero_vid-container video, .w-background-video video').forEach(function (v) {
-      v.muted = true;
-      v.setAttribute('playsinline', '');
-      v.setAttribute('webkit-playsinline', '');
-      if (v.paused) v.play().catch(function () {});
-    });
-  }
+  /* Nudge playback when the page settles, comes back into view or gets its first
+     touch (iOS can hold autoplay until then). Only the slide on screen plays:
+     calling play() on every hero video made phones download and decode all of
+     them at once, which is what made the home page lag. */
+  function kick() { if (window.__xyzHeroTick) window.__xyzHeroTick(); }
   function schedulePlay() {
-    playHeroVideos();
-    setTimeout(playHeroVideos, 500);
-    setTimeout(playHeroVideos, 1500);
+    kick();
+    setTimeout(kick, 500);
+    setTimeout(kick, 1500);
   }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', schedulePlay);
@@ -554,25 +552,36 @@ try{
     if (!document.hidden) schedulePlay();
   });
   window.addEventListener('pageshow', schedulePlay);
-  document.addEventListener('touchstart', function once() {
-    schedulePlay();
-    document.removeEventListener('touchstart', once);
-  }, { passive: true, once: true });
 })();
 </script>
 
 <style>/* xyz-hero-flash-fix */.hero_list-wrapper{opacity:0!important}html.xyz-hero-ready .hero_list-wrapper{opacity:1!important;transition:opacity .3s ease}.background-load{display:none!important}</style>
 <script>/* xyz-hero-playback-fix */(function(){
-  function vis(it){var vc=it.querySelector(".hero_vid-container");if(!vc)return 0;return parseFloat(getComputedStyle(vc).opacity)||0;}
+  /* Plays the slide on screen and pauses the rest. Reads the inline styles GSAP
+     writes rather than getComputedStyle, and does nothing on touchmove/scroll,
+     so it costs next to nothing while a phone is swiping. */
+  function laidOut(items){ return !!items[0] && items[0].style.position==="absolute"; } // Slater has set the slides up
+  function firstIdx(n){ var r=window.__XYZ_HOME_RETURN; var f=r?(r.slide||0):0; return (f>=0&&f<n)?f:0; }
+  function shown(it){ return it.style.display!=="none"; }
+  function vis(it){
+    if(!shown(it))return 0;
+    var vc=it.querySelector(".hero_vid-container"); if(!vc)return 0;
+    var o=vc.style.opacity; if(o==="")o=getComputedStyle(vc).opacity;
+    return parseFloat(o)||0;
+  }
+  function zOf(it){ var z=it.style.zIndex; if(z===""||z==="auto")z=getComputedStyle(it).zIndex; return parseInt(z,10)||0; }
   function activeIdx(items){
+    if(!laidOut(items)) return firstIdx(items.length);
     var mz=-1, a=0;
     items.forEach(function(it,i){
-      var z=parseInt(getComputedStyle(it).zIndex,10)||0;
+      if(!shown(it))return;
+      var z=zOf(it);
       if(z>mz){mz=z;a=i;}
       else if(z===mz && i>a){a=i;}
     });
     return a;
   }
+  function play(v){ if(v&&v.paused){ var p=v.play(); if(p&&p.catch)p.catch(function(){}); } }
   var footerIdx=-1, pending=-1, pendingN=0;
   function tick(){
     try{
@@ -580,8 +589,7 @@ try{
       if(!items.length)return;
       if(items.length===1){
         items[0].classList.add("xyz-active-slide");
-        var v0=items[0].querySelector("video");
-        if(v0&&v0.paused){ var p0=v0.play(); if(p0&&p0.catch)p0.catch(function(){}); }
+        play(items[0].querySelector("video"));
         return;
       }
       var a=activeIdx(items);
@@ -591,28 +599,21 @@ try{
         footerIdx=pending;
         items.forEach(function(it,i){it.classList.toggle("xyz-active-slide",i===footerIdx);});
       }
+      var early=!laidOut(items);
       items.forEach(function(it,i){
         var v=it.querySelector("video"); if(!v)return;
-        if(vis(it)>0.01){ if(v.paused){ var p=v.play(); if(p&&p.catch)p.catch(function(){}); } }
+        if(early ? i===a : vis(it)>0.01){ play(v); }
         else if(!v.paused){ try{v.pause();}catch(e){} }
       });
     }catch(e){}
   }
+  window.__xyzHeroTick=tick;
   function reveal(){ try{document.documentElement.classList.add("xyz-hero-ready");}catch(e){} }
   document.addEventListener("xyz-exiting",reveal);
   document.addEventListener("xyz-return-prep",function(){tick();reveal();});
   setTimeout(reveal,3200);
   setInterval(tick,90); tick();
-  ["wheel","scroll","touchmove","keydown","pointerdown"].forEach(function(ev){window.addEventListener(ev,function(){tick();},{passive:true});});
-})();</script>
-<script>/* xyz-video-preload */(function(){
-  function go(){
-    document.querySelectorAll(".hero_item video").forEach(function(v){
-      v.muted=true; v.setAttribute("preload","auto");
-      try{ if(v.paused){ var p=v.play(); if(p&&p.catch)p.catch(function(){}); } }catch(e){}
-    });
-  }
-  if(document.readyState!=="loading")go(); else document.addEventListener("DOMContentLoaded",go);
+  ["wheel","keydown","pointerdown","touchend"].forEach(function(ev){window.addEventListener(ev,function(){tick();},{passive:true});});
 })();</script>
 <script>/* xyz-hero-project-link */(function(){
   function activeItem(){
