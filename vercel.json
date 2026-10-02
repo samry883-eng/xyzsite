@@ -395,6 +395,16 @@
       "source": "/work/adminv2/",
       "destination": "/work/admin",
       "permanent": true
+    },
+    {
+      "source": "/direction",
+      "destination": "https://claude.ai/artifact/AAaV2JJxWfAryi1acmCJKf",
+      "permanent": false
+    },
+    {
+      "source": "/direction/",
+      "destination": "https://claude.ai/artifact/AAaV2JJxWfAryi1acmCJKf",
+      "permanent": false
     }
   ],
   "rewrites": [
