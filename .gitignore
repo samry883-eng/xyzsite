@@ -33,6 +33,9 @@ Capabilities/screenshots/
 !Tatum5/**/*.jpeg
 !Tatum5/**/*.png
 !Tatum5/**/*.webp
+# Direction unlisted deck media (served at /direction)
+!Direction/**/*.jpg
+!Direction/**/*.png
 # Allow shipped capabilities deck assets (overrides patterns above)
 !Capabilities/assets/
 !Capabilities/assets/**

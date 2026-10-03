@@ -212,6 +212,11 @@ copyDir(path.join(root, 'Capabilities'), path.join(dist, 'capabilities'));
 if (fs.existsSync(path.join(root, 'Tatum5'))) {
   copyDir(path.join(root, 'Tatum5'), path.join(dist, 'tatum-5'));
 }
+// 2026 Direction deck: xyzstudios.co/direction (unlisted, like tatum-5)
+if (fs.existsSync(path.join(root, 'Direction'))) {
+  copyDir(path.join(root, 'Direction'), path.join(dist, 'direction'));
+  joinSplitFiles(path.join(dist, 'direction', 'media'));
+}
 copyDir(path.join(root, 'Admin'), path.join(dist, 'admin'));
 
 const rootExtras = ['capabilitiesdeck.html'];
@@ -268,7 +273,7 @@ try {
       if (e.isDirectory()) { walk(p); continue; }
       if (path.extname(p).toLowerCase() !== '.html') continue;
       const rel = path.relative(dist, p).replace(/\\/g, '/');
-      if (/^(capabilities|admin|tatum-5|deck|contact-versions|projects|projects-v2)\//i.test(rel) || /^work\/(admin|adminv2)\.html$/i.test(rel) || /^work\/(archive|project)\//i.test(rel) || /^contact\/versions/i.test(rel) || /^capabilitiesdeck\.html$/i.test(rel)) continue;
+      if (/^(capabilities|admin|tatum-5|direction|deck|contact-versions|projects|projects-v2)\//i.test(rel) || /^work\/(admin|adminv2)\.html$/i.test(rel) || /^work\/(archive|project)\//i.test(rel) || /^contact\/versions/i.test(rel) || /^capabilitiesdeck\.html$/i.test(rel)) continue;
       let s = fs.readFileSync(p, 'utf8');
       if (s.includes('xyz-analytics') || !/<\/head>/i.test(s)) continue;
       if (/http-equiv=["']refresh["']/i.test(s)) continue;

@@ -234,6 +234,10 @@ function getStaticFilePath(urlPath) {
     filePath = path.join(CONTACT, 'index.html');
   } else if (p === '/services' || p === '/services/') {
     filePath = path.join(__dirname, 'Services', 'index.html');
+  } else if (p === '/direction' || p === '/direction/') {
+    filePath = path.join(__dirname, 'Direction', 'index.html');
+  } else if (p.startsWith('/direction/')) {
+    filePath = path.join(__dirname, 'Direction', p.slice('/direction/'.length));
   } else if (p === '/tatum-5' || p === '/tatum-5/') {
     filePath = path.join(__dirname, 'Tatum5', 'index.html');
   } else if (p.startsWith('/tatum-5/')) {

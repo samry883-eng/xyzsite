@@ -245,6 +245,7 @@ export function runSeoPass(dist, catalog) {
     'Disallow: /admin',
     'Disallow: /api/',
     'Disallow: /tatum-5',
+    'Disallow: /direction',
     'Disallow: /contact-versions',
     '',
     `Sitemap: ${SITE}/sitemap.xml`,
